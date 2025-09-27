@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('resupplies', function (Blueprint $table) {
+        Schema::create('resupplies', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('run_id');
             $table->foreign('run_id')->references('id')->on('runs')->cascadeOnDelete();
@@ -41,7 +41,7 @@ return new class extends Migration
             $table->timestamps();
         });
         /* Derived data columns */
-        Schema::table('resupplies', function (Blueprint $table) {
+        Schema::table('resupplies', function (Blueprint $table): void {
             $table->unsignedBigInteger('__revenue')->default(0)->comment('Total revenue generated from this resupply');
             $table->unsignedBigInteger('__card_revenue')->default(0)->comment('Total card revenue generated from this resupply');
             $table->unsignedBigInteger('__cash_revenue')->default(0)->comment('Total cash revenue generated from this resupply');
@@ -53,7 +53,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('resupplies', function (Blueprint $table) {
+        Schema::table('resupplies', function (Blueprint $table): void {
             $table->index('run_id');
             $table->index('placement_id');
             $table->index('route_id');

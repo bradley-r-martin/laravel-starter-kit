@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('qr_codes', function (Blueprint $table) {
+        Schema::create('qr_codes', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('code')->nullable()->unique();
 
@@ -29,7 +29,7 @@ return new class extends Migration
         });
 
         /* Derived data columns */
-        Schema::table('qr_codes', function (Blueprint $table) {
+        Schema::table('qr_codes', function (Blueprint $table): void {
             $table->unsignedBigInteger('__deferred_revenue')->default(0)->comment('Total deferred revenue from all transactions for this QR code');
             $table->unsignedBigInteger('__realised_revenue')->default(0)->comment('Total realised revenue from all transactions for this QR code');
             $table->timestamp('__last_transaction_at')->nullable()->comment('Timestamp of the most recent transaction for this QR code');
@@ -38,7 +38,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('qr_codes', function (Blueprint $table) {
+        Schema::table('qr_codes', function (Blueprint $table): void {
             $table->index('code');
             $table->index('operator_id');
             $table->index('placement_id');

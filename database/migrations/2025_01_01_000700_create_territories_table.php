@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('territories', function (Blueprint $table) {
+        Schema::create('territories', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('operator_id');
             $table->foreign('operator_id')->references('id')->on('operators')->cascadeOnDelete();
@@ -25,13 +25,13 @@ return new class extends Migration
         });
 
         /* Derived data columns */
-        Schema::table('territories', function (Blueprint $table) {
+        Schema::table('territories', function (Blueprint $table): void {
             $table->string('__operator_name')->nullable()->comment('Name from the associated operator record');
             $table->timestamp('__last_transaction_at')->nullable()->comment('Timestamp of the most recent transaction for this territory');
         });
 
         /* Performance indexes */
-        Schema::table('territories', function (Blueprint $table) {
+        Schema::table('territories', function (Blueprint $table): void {
             $table->index('operator_id');
             $table->index('merchant_account_id');
             $table->index('name');

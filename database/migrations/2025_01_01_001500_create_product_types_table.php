@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_types', function (Blueprint $table) {
+        Schema::create('product_types', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('name');
             $table->string('short_name')->nullable();
@@ -23,12 +23,12 @@ return new class extends Migration
         });
 
         /* Derived data columns */
-        Schema::table('product_types', function (Blueprint $table) {
+        Schema::table('product_types', function (Blueprint $table): void {
             $table->unsignedBigInteger('__products_count')->default(0)->comment('Number of products of this type');
         });
 
         /* Performance indexes */
-        Schema::table('product_types', function (Blueprint $table) {
+        Schema::table('product_types', function (Blueprint $table): void {
             $table->index('name');
             $table->index('closed_at');
         });

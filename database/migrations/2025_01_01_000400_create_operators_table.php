@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('operators', function (Blueprint $table) {
+        Schema::create('operators', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('name');
             $table->string('email')->nullable();
@@ -27,13 +27,13 @@ return new class extends Migration
         });
 
         /* Derived data columns */
-        Schema::table('operators', function (Blueprint $table) {
+        Schema::table('operators', function (Blueprint $table): void {
             $table->unsignedInteger('__territories_count')->default(0)->comment('Number of territories assigned to this operator');
             $table->timestamp('__last_transaction_at')->nullable()->comment('Timestamp of the most recent transaction for this operator');
         });
 
         /* Performance indexes */
-        Schema::table('operators', function (Blueprint $table) {
+        Schema::table('operators', function (Blueprint $table): void {
             $table->index('name');
             $table->index('email');
             $table->index('closed_at');

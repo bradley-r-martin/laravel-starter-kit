@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::dropIfExists('users');
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('operator_id');
             $table->foreign('operator_id')->references('id')->on('operators')->cascadeOnDelete();
@@ -34,12 +34,12 @@ return new class extends Migration
         });
 
         /* Derived data columns */
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table): void {
             $table->string('__operator_name')->nullable()->comment('Name from the associated operator record');
         });
 
         /* Performance indexes */
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table): void {
             $table->index('operator_id');
             $table->index('role_id');
             $table->index('email');
@@ -55,7 +55,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('users');
 
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();

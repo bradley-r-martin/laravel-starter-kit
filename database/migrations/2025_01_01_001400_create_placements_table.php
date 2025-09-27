@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('placements', function (Blueprint $table) {
+        Schema::create('placements', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('site_id');
             $table->foreign('site_id')->references('id')->on('sites')->cascadeOnDelete();
@@ -34,7 +34,7 @@ return new class extends Migration
         });
 
         /* Derived data columns */
-        Schema::table('placements', function (Blueprint $table) {
+        Schema::table('placements', function (Blueprint $table): void {
             $table->unsignedInteger('__unit_count')->default(0)->comment('Total number of units in this placement');
             $table->string('__qr_code_code')->nullable()->comment('QR code from the associated qr_code record');
             $table->string('__snackware_name')->nullable()->comment('Name from the associated snackware record');
@@ -46,7 +46,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('placements', function (Blueprint $table) {
+        Schema::table('placements', function (Blueprint $table): void {
             $table->index('site_id');
             $table->index('operator_id');
             $table->index('territory_id');

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('product_type_id');
             $table->foreign('product_type_id')->references('id')->on('product_types')->cascadeOnDelete();
@@ -34,14 +34,14 @@ return new class extends Migration
         });
 
         /* Derived data columns */
-        Schema::table('products', function (Blueprint $table) {
+        Schema::table('products', function (Blueprint $table): void {
             $table->string('__product_type_name')->nullable()->comment('Name from the associated product_type record');
             $table->string('__product_type_icon')->nullable()->comment('Icon from the associated product_type record');
             $table->string('__manufacturer_name')->nullable()->comment('Name from the associated manufacturer record');
         });
 
         /* Performance indexes */
-        Schema::table('products', function (Blueprint $table) {
+        Schema::table('products', function (Blueprint $table): void {
             $table->index('product_type_id');
             $table->index('manufacturer_id');
             $table->index('name');

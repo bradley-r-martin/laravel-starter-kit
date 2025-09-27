@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contacts', function (Blueprint $table) {
+        Schema::create('contacts', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('operator_id');
             $table->foreign('operator_id')->references('id')->on('operators')->cascadeOnDelete();
@@ -31,7 +31,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('contacts', function (Blueprint $table) {
+        Schema::table('contacts', function (Blueprint $table): void {
             $table->index('operator_id');
             $table->index('territory_id');
             $table->index('site_id');

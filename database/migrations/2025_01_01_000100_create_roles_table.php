@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('name');
             $table->string('description')->nullable();
@@ -23,12 +23,12 @@ return new class extends Migration
         });
 
         /* Derived data columns */
-        Schema::table('roles', function (Blueprint $table) {
+        Schema::table('roles', function (Blueprint $table): void {
             $table->unsignedInteger('__users_count')->default(0)->comment('Number of active users in the role');
         });
 
         /* Performance indexes */
-        Schema::table('roles', function (Blueprint $table) {
+        Schema::table('roles', function (Blueprint $table): void {
             $table->index('name');
             $table->index('closed_at');
             $table->index('hidden');

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('snackware', function (Blueprint $table) {
+        Schema::create('snackware', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('territory_id');
             $table->foreign('territory_id')->references('id')->on('territories')->cascadeOnDelete();
@@ -28,7 +28,7 @@ return new class extends Migration
         });
 
         /* Derived data columns */
-        Schema::table('snackware', function (Blueprint $table) {
+        Schema::table('snackware', function (Blueprint $table): void {
             $table->unsignedInteger('__product_count')->default(0)->comment('Number of products in this snackware');
             $table->unsignedInteger('__placements_count')->default(0)->comment('Number of placements using this snackware');
             $table->unsignedBigInteger('__wholesale_from')->default(0)->comment('Minimum wholesale price for products in this snackware');
@@ -36,7 +36,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('snackware', function (Blueprint $table) {
+        Schema::table('snackware', function (Blueprint $table): void {
             $table->index('territory_id');
             $table->index('operator_id');
             $table->index('name');

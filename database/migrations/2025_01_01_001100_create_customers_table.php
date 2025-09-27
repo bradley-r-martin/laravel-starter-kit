@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('customers', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('first_name');
             $table->string('last_name')->nullable();
@@ -25,7 +25,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('customers', function (Blueprint $table) {
+        Schema::table('customers', function (Blueprint $table): void {
             $table->index('email');
             $table->index(['first_name', 'last_name']);
         });

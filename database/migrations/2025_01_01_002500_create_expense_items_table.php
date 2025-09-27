@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('expense_items', function (Blueprint $table) {
+        Schema::create('expense_items', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('item')->nullable();
             $table->integer('units')->default(1);
@@ -35,12 +35,12 @@ return new class extends Migration
             $table->timestamps();
         });
         /* Derived data columns */
-        Schema::table('expense_items', function (Blueprint $table) {
+        Schema::table('expense_items', function (Blueprint $table): void {
             $table->string('__product_name')->nullable()->comment('Name from the associated product record');
         });
 
         /* Performance indexes */
-        Schema::table('expense_items', function (Blueprint $table) {
+        Schema::table('expense_items', function (Blueprint $table): void {
             $table->index('product_id');
             $table->index('expense_id');
             $table->index('wholesaler_id');

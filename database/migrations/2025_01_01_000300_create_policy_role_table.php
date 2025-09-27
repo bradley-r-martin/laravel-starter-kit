@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('policy_role', function (Blueprint $table) {
+        Schema::create('policy_role', function (Blueprint $table): void {
             $table->string('policy_namespace');
             $table->ulid('role_id');
             $table->timestamps();
@@ -24,7 +24,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('policy_role', function (Blueprint $table) {
+        Schema::table('policy_role', function (Blueprint $table): void {
             $table->index('policy_namespace');
             $table->index('role_id');
         });

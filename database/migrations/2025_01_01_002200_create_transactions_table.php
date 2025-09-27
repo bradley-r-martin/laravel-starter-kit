@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('type');
             $table->string('method');
@@ -58,7 +58,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('transactions', function (Blueprint $table) {
+        Schema::table('transactions', function (Blueprint $table): void {
             $table->index('type');
             $table->index('method');
             $table->index('placement_id');

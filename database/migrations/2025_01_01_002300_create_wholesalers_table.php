@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wholesalers', function (Blueprint $table) {
+        Schema::create('wholesalers', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('name');
             $table->timestamp('closed_at')->nullable();
@@ -21,7 +21,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('wholesalers', function (Blueprint $table) {
+        Schema::table('wholesalers', function (Blueprint $table): void {
             $table->index('name');
             $table->index('closed_at');
         });

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('merchant_accounts', function (Blueprint $table) {
+        Schema::create('merchant_accounts', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('provider');
             $table->ulid('operator_id');
@@ -23,7 +23,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('merchant_accounts', function (Blueprint $table) {
+        Schema::table('merchant_accounts', function (Blueprint $table): void {
             $table->index('operator_id');
             $table->index('provider');
         });

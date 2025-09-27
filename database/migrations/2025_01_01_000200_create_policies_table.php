@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('policies', function (Blueprint $table) {
+        Schema::create('policies', function (Blueprint $table): void {
             $table->string('namespace')->primary();
             $table->string('policy')->nullable();
             $table->string('ability')->nullable();
@@ -23,13 +23,13 @@ return new class extends Migration
         });
 
         /* Derived data columns */
-        Schema::table('policies', function (Blueprint $table) {
+        Schema::table('policies', function (Blueprint $table): void {
             $table->unsignedInteger('__roles_count')->default(0)->comment('Number of roles that have this policy assigned');
             $table->unsignedInteger('__users_count')->default(0)->comment('Number of users that have this policy through their roles');
         });
 
         /* Performance indexes */
-        Schema::table('policies', function (Blueprint $table) {
+        Schema::table('policies', function (Blueprint $table): void {
             $table->index('policy');
             $table->index('ability');
             $table->index('hidden');

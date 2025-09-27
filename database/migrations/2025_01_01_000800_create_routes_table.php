@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('routes', function (Blueprint $table) {
+        Schema::create('routes', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('territory_id');
             $table->foreign('territory_id')->references('id')->on('territories')->cascadeOnDelete();
@@ -27,7 +27,7 @@ return new class extends Migration
         });
 
         /* Derived data columns */
-        Schema::table('routes', function (Blueprint $table) {
+        Schema::table('routes', function (Blueprint $table): void {
             $table->unsignedInteger('__sites_count')->default(0)->comment('Number of sites on this route');
             $table->timestamp('__next_run_at')->nullable()->comment('Scheduled time for the next run on this route');
             $table->timestamp('__last_run_at')->nullable()->comment('Timestamp of the most recent run on this route');
@@ -42,7 +42,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('routes', function (Blueprint $table) {
+        Schema::table('routes', function (Blueprint $table): void {
             $table->index('territory_id');
             $table->index('operator_id');
             $table->index('name');

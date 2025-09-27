@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_snackware', function (Blueprint $table) {
+        Schema::create('product_snackware', function (Blueprint $table): void {
             $table->ulid('snackware_id');
             $table->foreign('snackware_id')->references('id')->on('snackware')->cascadeOnDelete();
             $table->ulid('product_id');
@@ -23,7 +23,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('product_snackware', function (Blueprint $table) {
+        Schema::table('product_snackware', function (Blueprint $table): void {
             $table->index('snackware_id');
             $table->index('product_id');
         });

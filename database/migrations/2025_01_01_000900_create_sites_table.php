@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sites', function (Blueprint $table) {
+        Schema::create('sites', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('territory_id');
             $table->foreign('territory_id')->references('id')->on('territories')->cascadeOnDelete();
@@ -31,7 +31,7 @@ return new class extends Migration
         });
 
         /* Derived data columns */
-        Schema::table('sites', function (Blueprint $table) {
+        Schema::table('sites', function (Blueprint $table): void {
             $table->unsignedInteger('__placements_count')->default(0)->comment('Number of placements at this site');
             $table->unsignedBigInteger('__deferred_revenue')->default(0)->comment('Total deferred revenue from all placements at this site');
             $table->unsignedBigInteger('__realised_revenue')->default(0)->comment('Total realised revenue from all placements at this site');
@@ -47,7 +47,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('sites', function (Blueprint $table) {
+        Schema::table('sites', function (Blueprint $table): void {
             $table->index('territory_id');
             $table->index('operator_id');
             $table->index('route_id');

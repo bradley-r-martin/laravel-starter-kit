@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('runs', function (Blueprint $table) {
+        Schema::create('runs', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('route_id')->nullable();
             $table->foreign('route_id')->references('id')->on('routes')->cascadeOnDelete();
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->timestamps();
         });
         /* Derived data columns */
-        Schema::table('runs', function (Blueprint $table) {
+        Schema::table('runs', function (Blueprint $table): void {
             $table->unsignedInteger('__sites_count')->default(0)->comment('Number of sites visited during this run');
             $table->unsignedBigInteger('__revenue')->default(0)->comment('Total revenue generated during this run');
             $table->unsignedBigInteger('__cash_revenue')->default(0)->comment('Total cash revenue generated during this run');
@@ -40,7 +40,7 @@ return new class extends Migration
         });
 
         /* Performance indexes */
-        Schema::table('runs', function (Blueprint $table) {
+        Schema::table('runs', function (Blueprint $table): void {
             $table->index('route_id');
             $table->index('operator_id');
             $table->index('territory_id');
