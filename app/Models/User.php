@@ -4,23 +4,16 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Carbon\CarbonInterface;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-/**
- * @property-read int $id
- * @property-read string $name
- * @property-read string $email
- * @property-read CarbonInterface|null $email_verified_at
- * @property-read string $password
- * @property-read string|null $remember_token
- * @property-read CarbonInterface $created_at
- * @property-read CarbonInterface $updated_at
- */
 final class User extends Authenticatable implements MustVerifyEmail
 {
+    use HasUlids;
     use Notifiable;
 
     /**
@@ -34,15 +27,46 @@ final class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Get the operator that owns this user.
      */
-    public function casts(): array
+    public function operator(): BelongsTo
+    {
+        return $this->belongsTo(Operator::class);
+    }
+
+    /**
+     * Get the role for this user.
+     */
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Get the contacts for this user.
+     */
+    public function contacts(): HasMany
+    {
+        return $this->hasMany(Contact::class);
+    }
+
+    /**
+     * Get the transactions for this user.
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    protected function casts(): array
     {
         return [
+            'phone' => 'array',
+            'address' => 'array',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'closed_at' => 'datetime',
+            'suspended_at' => 'datetime',
         ];
     }
 }

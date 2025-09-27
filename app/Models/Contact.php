@@ -1,0 +1,46 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+final class Contact extends Model
+{
+    use HasUlids;
+
+    /**
+     * Get the operator that owns this contact.
+     */
+    public function operator(): BelongsTo
+    {
+        return $this->belongsTo(Operator::class);
+    }
+
+    /**
+     * Get the territory that owns this contact.
+     */
+    public function territory(): BelongsTo
+    {
+        return $this->belongsTo(Territory::class);
+    }
+
+    /**
+     * Get the site that owns this contact.
+     */
+    public function site(): BelongsTo
+    {
+        return $this->belongsTo(Site::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'phone' => 'array',
+            'closed_at' => 'datetime',
+        ];
+    }
+}
