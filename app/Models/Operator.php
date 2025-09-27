@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\AddressCast;
+use App\Casts\EntityCast;
 use App\Casts\PhoneCast;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
@@ -123,7 +124,7 @@ final class Operator extends Model
         return [
             'address' => AddressCast::class,
             'phone' => PhoneCast::class,
-            'entity' => 'array',
+            'entity' => EntityCast::class,
             'closed_at' => 'datetime',
             'suspended_at' => 'datetime',
         ];
