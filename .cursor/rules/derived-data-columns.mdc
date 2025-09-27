@@ -1,0 +1,200 @@
+=== foundation rules ===
+
+# Derived Data Columns Migration Rule
+
+## Purpose
+When creating or modifying migration files in the `database/migrations` folder, always include derived data columns for performance optimization. These columns store computed/aggregated data that is updated when relational data changes, enabling fast reads without complex joins.
+
+## Auto-Apply Conditions
+This rule automatically applies when:
+- Creating new migration files in `database/migrations/` folder
+- Editing existing migration files in `database/migrations/` folder
+- Using `php artisan make:migration` commands
+- Working with files matching pattern `database/migrations/*.php`
+- When the user mentions "migration", "database schema", "table creation", or "derived data"
+
+## Trigger Keywords
+The following keywords will automatically trigger this rule:
+- "migration"
+- "create table"
+- "database schema"
+- "derived data"
+- "aggregated data"
+- "performance optimization"
+- "database/migrations"
+- "Schema::create"
+- "Schema::table"
+
+---
+
+## Principles
+
+1. **Naming Convention**
+   - All derived data columns MUST be prefixed with double underscores: `__`
+   - Use descriptive names that indicate what data is being derived
+   - Examples: `__territories_count`, `__last_transaction_at`, `__total_revenue`
+
+2. **Placement in Migration**
+   - Create derived data columns in a separate `Schema::table()` call after the main table creation
+   - Use a comment `/* Derived data columns */` to clearly separate this section
+   - This separation makes the migration structure clear and maintainable
+
+3. **Column Types and Defaults**
+   - Use appropriate data types for the derived data (integer for counts, timestamp for dates, decimal for amounts)
+   - Always provide sensible default values
+   - Use `nullable()` for optional derived data
+   - Use `default(0)` for count columns
+   - Use `default(0.00)` for monetary amounts
+
+4. **Performance Considerations**
+   - These columns are updated via database triggers, model observers, or application logic
+   - They should never be manually updated in application code
+   - Always include indexes on frequently queried derived columns
+
+---
+
+## Migration Structure
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('table_name', function (Blueprint $table) {
+            // Main table columns
+            $table->ulid('id')->primary();
+            $table->string('name');
+            // ... other main columns
+            $table->timestamps();
+        });
+
+        /* Derived data columns */
+        Schema::table('table_name', function (Blueprint $table) {
+            $table->unsignedInteger('__related_items_count')->default(0);
+            $table->timestamp('__last_activity_at')->nullable();
+            $table->decimal('__total_amount', 10, 2)->default(0.00);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('table_name');
+    }
+};
+```
+
+---
+
+## Common Derived Data Patterns
+
+### Count Columns
+```php
+$table->unsignedInteger('__orders_count')->default(0);
+$table->unsignedInteger('__active_users_count')->default(0);
+$table->unsignedInteger('__pending_tasks_count')->default(0);
+```
+
+### Date/Time Columns
+```php
+$table->timestamp('__last_login_at')->nullable();
+$table->timestamp('__last_payment_at')->nullable();
+$table->timestamp('__first_created_at')->nullable();
+```
+
+### Amount/Value Columns
+```php
+$table->decimal('__total_revenue', 10, 2)->default(0.00);
+$table->decimal('__average_rating', 3, 2)->default(0.00);
+$table->unsignedInteger('__total_points')->default(0);
+```
+
+### Status/Aggregate Columns
+```php
+$table->string('__status_summary')->nullable();
+$table->json('__recent_activities')->nullable();
+$table->boolean('__has_active_subscription')->default(false);
+```
+
+---
+
+## Indexing Derived Columns
+
+Always add indexes to derived columns that will be frequently queried:
+
+```php
+/* Derived data columns */
+Schema::table('table_name', function (Blueprint $table) {
+    $table->unsignedInteger('__orders_count')->default(0);
+    $table->timestamp('__last_activity_at')->nullable();
+    
+    // Add indexes for performance
+    $table->index('__orders_count');
+    $table->index('__last_activity_at');
+});
+```
+
+---
+
+## Update Mechanisms
+
+Derived data columns should be updated through:
+
+1. **Model Observers** - Automatically update when related models change
+2. **Database Triggers** - For complex calculations
+3. **Scheduled Jobs** - For expensive aggregations
+4. **Event Sourcing** - Via projectors when events are applied
+
+Never update these columns directly in application code - always use the established update mechanisms.
+
+---
+
+## Examples
+
+### User Table with Derived Data
+```php
+/* Derived data columns */
+Schema::table('users', function (Blueprint $table) {
+    $table->unsignedInteger('__orders_count')->default(0);
+    $table->timestamp('__last_order_at')->nullable();
+    $table->decimal('__total_spent', 10, 2)->default(0.00);
+    $table->boolean('__is_vip_customer')->default(false);
+    
+    $table->index('__orders_count');
+    $table->index('__total_spent');
+    $table->index('__is_vip_customer');
+});
+```
+
+### Product Table with Derived Data
+```php
+/* Derived data columns */
+Schema::table('products', function (Blueprint $table) {
+    $table->unsignedInteger('__sales_count')->default(0);
+    $table->decimal('__average_rating', 3, 2)->default(0.00);
+    $table->timestamp('__last_sold_at')->nullable();
+    $table->boolean('__is_bestseller')->default(false);
+    
+    $table->index('__sales_count');
+    $table->index('__average_rating');
+    $table->index('__is_bestseller');
+});
+```
+
+---
+
+## Cursor Instructions
+
+- Always include derived data columns when creating new tables
+- Use the `__` prefix for all derived columns
+- Separate derived columns in their own `Schema::table()` call
+- Add appropriate indexes for performance
+- Consider what aggregated data would be useful for fast queries
+- Document the purpose of each derived column in comments

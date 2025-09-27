@@ -1,0 +1,119 @@
+# Laravel Migrations Development Rule
+
+## Overview
+When working with Laravel migrations, the approach differs between development and production environments. This rule ensures clean migration history and prevents migration pollution during development.
+
+## Development Environment Detection
+- **Development**: When `composer.json` version is set to `"0.0.0"`, the project hasn't been deployed yet
+- **Production**: When `composer.json` version is a semantic version (e.g., `"1.0.0"`), the project has been deployed
+
+## Development Environment Rules
+
+### 1. Modify Existing Migrations
+- **NEVER create new migration files** when a table migration already exists
+- **ALWAYS modify existing migration files** to add new fields, indexes, or constraints
+- Check for existing migrations before creating new ones using `list_dir` on `database/migrations/`
+
+### 2. Migration File Naming Pattern
+- Look for existing migrations with patterns like:
+  - `*_create_{table_name}_table.php` for table creation
+  - `*_add_{field_name}_to_{table_name}_table.php` for field additions
+  - `*_modify_{table_name}_table.php` for table modifications
+
+### 3. Before Creating New Migrations
+1. **Check existing migrations** using `list_dir` on `database/migrations/`
+2. **Search for similar table migrations** using `grep` for table names
+3. **Modify existing migration** if found, rather than creating new one
+
+### 4. When to Create New Migrations (Development)
+Only create new migration files when:
+- Creating a completely new table that doesn't exist
+- Adding a new table that has no existing migration
+
+## Production Environment Rules
+
+### 1. Always Create New Migrations
+- **ALWAYS create new migration files** for any database changes
+- **NEVER modify existing migration files** that have been deployed
+- Use descriptive migration names with timestamps
+
+### 2. Migration Naming Convention
+- `YYYY_MM_DD_HHMMSS_descriptive_migration_name.php`
+- Be specific about what the migration does
+- Use snake_case for migration names
+
+## Examples
+
+### Development Environment (composer.json version: "0.0.0")
+
+**❌ WRONG - Creating new migration when one exists:**
+```bash
+php artisan make:migration add_email_to_users_table
+```
+
+**✅ CORRECT - Modifying existing migration:**
+```php
+// In existing 0001_01_01_000000_create_users_table.php
+Schema::create('users', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->string('email')->unique(); // Added this field
+    $table->timestamp('email_verified_at')->nullable();
+    $table->string('password');
+    $table->rememberToken();
+    $table->timestamps();
+});
+```
+
+### Production Environment (composer.json version: "1.0.0")
+
+**✅ CORRECT - Creating new migration:**
+```bash
+php artisan make:migration add_email_to_users_table
+```
+
+## Implementation Steps
+
+1. **Check composer.json version** to determine environment
+2. **List existing migrations** to see what's already there
+3. **Search for related table migrations** if adding fields
+4. **Modify existing migration** (development) or **create new migration** (production)
+5. **Use descriptive names** for new migrations in production
+
+## Migration File Structure
+
+### Development - Modify Existing
+```php
+// In existing migration file
+Schema::create('users', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    // Add new fields here instead of creating new migration
+    $table->string('email')->unique();
+    $table->timestamps();
+});
+```
+
+### Production - Create New
+```php
+// In new migration file: 2025_01_27_120000_add_email_to_users_table.php
+Schema::table('users', function (Blueprint $table) {
+    $table->string('email')->unique()->after('name');
+});
+```
+
+## Best Practices
+
+1. **Always check existing migrations first**
+2. **Use meaningful migration names**
+3. **Include rollback methods** in new migrations
+4. **Test migrations** before committing
+5. **Keep migrations atomic** - one logical change per migration in production
+6. **Document complex migrations** with comments
+
+## Tools to Use
+
+- `list_dir` on `database/migrations/` to see existing migrations
+- `grep` to search for specific table names in migration files
+- `read_file` to examine existing migration content before modifying
+- `search_replace` to modify existing migration files in development

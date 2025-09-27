@@ -1,0 +1,172 @@
+Unified Coding Standards & Project Guidelines
+
+You are an expert in PHP, Laravel, Pest, Tailwind, Inertia & React.
+This project uses Laravel 12+, PHP ^8.2 || ^8.4, Pest, React, TypeScript, Tailwind, Mantine UI, Inertia, SquareUp, PostgreSQL, Laravel Cloud.
+
+# 1. Coding Standards
+
+Use PHP 8.4 features where possible (minimum ^8.2).
+
+Follow pint.json coding rules.
+
+Enforce strict types and array shapes via PHPStan.
+
+Do not use outdated or deprecated PHP features.
+
+Run:
+
+composer lint after code changes.
+
+composer test before finalizing work.
+
+All code must have test coverage.
+
+Do not remove tests without approval.
+
+# 2. Project Structure & Architecture
+
+Stick to existing structure — no new folders.
+
+Delete .gitkeep when adding files.
+
+Avoid DB:: calls; always use Model::query().
+
+No dependency changes without approval.
+
+Follow Laravel’s MVC architecture and directory structure (12.x+).
+
+Do not duplicate functionality; check existing directories before adding files.
+
+## 2.1 Directory Conventions
+
+Controllers (app/Http/Controllers)
+
+No abstract/base controllers.
+
+Use controllers to connect Inertia + Laravel backend cleanly.
+
+Requests (app/Http/Requests)
+
+Use FormRequest classes for validation.
+
+Name them with Create, Update, Delete suffixes.
+
+Models (app/Models)
+
+Avoid fillable.
+
+Always generate a {Model}Factory with each model.
+
+Migrations (database/migrations)
+
+Do not add down() methods in new migrations.
+
+Middleware
+
+Register in bootstrap/app.php (not app/Http/Kernel.php).
+
+Service Providers
+
+Only AppServiceProvider is allowed.
+
+If needed, register new providers in bootstrap/providers.php.
+
+Console Scheduler
+
+Place scheduled commands in routes/console.php.
+
+Event Listeners
+
+Rely on Laravel 11+ auto-discovery via type-hinting.
+
+3. Testing
+
+Use Pest PHP exclusively.
+
+Maintain clear test directory structure:
+
+Console → tests/Feature/Console
+
+Controllers → tests/Feature/Http
+
+Actions → tests/Unit/Actions
+
+Models → tests/Unit/Models
+
+Jobs → tests/Unit/Jobs
+
+4. Styling & UI
+
+Use Tailwind CSS (never Bootstrap).
+
+Keep UI minimal.
+
+For React, use Shadcn/ui components where appropriate.
+
+5. Laravel + React + Inertia
+
+Define routes only in /routes/web.php.
+
+Avoid React routing; Laravel owns routing.
+
+Do not put routes inside JS/TS/React directories.
+
+Use Inertia::render() in controllers for data fetching instead of useEffect, unless:
+
+Live updates, sockets, polling, or client-interactivity is required.
+
+Use <Link> from @inertiajs/react for navigation, not <a>.
+
+Use useForm() from @inertiajs/react for forms.
+
+Avoid axios/fetch inside components unless for non-Inertia background logic.
+
+Do not place Inertia form logic inside render body.
+
+Keep React components under 200 lines if possible (abstract to hooks/utils).
+
+Name React files with hyphen format (firstword-secondword.tsx).
+
+Always use .tsx for components/hooks.
+
+Wrap browser-only code with guards to avoid SSR mismatches.
+
+Do not use localStorage/sessionStorage in Inertia SSR components.
+
+Be mindful of sensitive data — never expose it through shared Inertia props.
+
+6. Error Handling & Security
+
+Use Laravel’s exception handling and logging features.
+
+Create custom exceptions when needed.
+
+Use try-catch for expected exceptions.
+
+Apply CSRF protection.
+
+Sanitize user inputs before processing.
+
+7. Rebuilding Assets
+
+After frontend changes, recompile assets.
+
+Run composer run dev (not npm run dev).
+
+8. Common Paths
+
+Controllers → /app/Http/Controllers/*
+
+Middleware → /app/Http/Middleware/*
+
+Models → /app/Models/*
+
+Policies → /app/Policies/*
+
+Service Provider → /app/Providers/AppServiceProvider.php
+
+Database schema → /database/migrations/*
+
+React code → /resources/js/* (components, pages, layouts, hooks, lib, types)
+
+Routes → /routes/*

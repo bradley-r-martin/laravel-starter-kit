@@ -1,0 +1,107 @@
+---
+alwaysApply: true
+---
+<laravel-event-sourcing-guidelines>
+=== foundation rules ===
+
+# Laravel Event Sourcing Cursor Rule
+
+## Purpose
+When generating Laravel code, always use **Spatie Laravel Event Sourcing (v7+)** patterns for any domain logic, state changes, or event-driven features.
+
+---
+
+## Principles
+
+1. **Aggregates**
+   - All state-changing logic must live in an Aggregate root.
+   - Aggregates apply events; they do **not directly modify the database**.
+   - Example: `UserAggregate` handles user-related state changes.
+
+2. **Events**
+   - All domain events must extend `Spatie\EventSourcing\StoredEvents\ShouldBeStored`.
+   - Event names should be in **past-tense**: `UserRegistered`, `OrderPlaced`, `PaymentReceived`.
+   - Include only the necessary data to **reconstruct state**.
+
+3. **Projectors**
+   - Keep read-models in sync with events.
+   - Projectors listen to events and update database tables or views.
+   - Example: `UserProjector` updates `users` table when `UserRegistered` occurs.
+
+4. **Reactors**
+   - Reactors perform side effects (emails, notifications, set session data, etc.) when events occur.
+   - Reactors must **never change the aggregate state**—use events only for side effects.
+
+5. **Event Sourcing Rules**
+   - Never bypass the Aggregate when changing state.
+   - Always emit events to reflect state changes.
+   - Projectors and Reactors handle downstream effects.
+   - Ensure **idempotency**: any event may be replayed multiple times without adverse effects.
+
+6. **Database**
+   - Aggregate state is **reconstructed from events**; do not rely on database state in Aggregates.
+   - Read models are updated by Projectors.
+
+---
+
+## Examples
+
+### Aggregate Example
+```php
+use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
+
+class UserAggregate extends AggregateRoot
+{
+    public function registerUser(string $name, string $email)
+    {
+        $this->recordThat(new UserRegistered($name, $email));
+    }
+
+    protected function applyUserRegistered(UserRegistered $event): void
+    {
+        $this->name = $event->name;
+        $this->email = $event->email;
+    }
+}
+```
+
+### Event Example
+```php
+use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
+
+class UserRegistered extends ShouldBeStored
+{
+    public function __construct(
+        public string $name,
+        public string $email
+    ) {}
+}
+```
+
+### Projector Example
+```php
+use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
+
+class UserProjector extends Projector
+{
+    public function onUserRegistered(UserRegistered $event): void
+    {
+        User::create([
+            'name' => $event->name,
+            'email' => $event->email,
+        ]);
+    }
+}
+```
+
+# Cursor Instructions
+
+Always generate Aggregate → Event → Projector/Reactors structure for state-changing logic.
+
+Avoid using Laravel Models for state mutation inside Aggregates.
+
+Keep naming consistent: ActionPerformed for events, ActionHandler for Projectors/Reactors.
+
+Include type hints and PHP 8.2+ features.
+
+Follow Laravel 12+ conventions and PSR-12 style.
