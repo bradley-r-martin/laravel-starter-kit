@@ -69,4 +69,50 @@ final class Address
             'longitude' => $this->longitude,
         ];
     }
+
+    public function formatted(): string
+    {
+        $result = '';
+
+        function fm(string $base, ?string $part, string $prefix = '', string $suffix = ''): string
+        {
+            return $part ? $base.$prefix.$part.$suffix : $base;
+        }
+
+        // Unit/Apartment
+        $result = fm($result, $this->unit, '', '/');
+
+        // Lot number
+        if ($this->lot_no) {
+            $lotNo = preg_replace('/lot\s*/i', '', (string) $this->lot_no);
+            $result = fm($result, $lotNo, 'Lot ', ' ');
+        }
+
+        // Level
+        $result = fm($result, $this->level, 'Level ', ', ');
+
+        // Building name
+        $result = fm($result, $this->building_name, '', ', ');
+
+        // Street address
+        $result = fm($result, $this->street_number, '', ' ');
+        $result = fm($result, $this->street_name, '', ' ');
+        $result = fm($result, $this->street_type, '', ' ');
+        $result = fm($result, $this->street_suffix, '', '');
+
+        // Suburb
+        $result = fm($result, str($this->suburb)->title(), ', ');
+
+        // State
+        $result = fm($result, str($this->state ?? '')->upper(), ', ');
+
+        // Postcode
+        $result = fm($result, $this->postcode, ' ');
+
+        if ($this->country) {
+            $result = fm($result, str($this->country)->title(), ', ');
+        }
+
+        return mb_trim(preg_replace('/^,\s*/', '', $result));
+    }
 }
