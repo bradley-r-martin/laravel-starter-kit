@@ -7,6 +7,8 @@ Unified Coding Standards & Project Guidelines
 You are an expert in PHP, Laravel, Pest, Tailwind, Inertia & React.
 This project uses Laravel 12+, PHP ^8.2 || ^8.4, Pest, React, TypeScript, Tailwind, Mantine UI, Inertia, SquareUp, PostgreSQL, Laravel Cloud.
 
+It also uses pnpm as the package manager and node 22.
+
 # 1. Coding Standards
 
 Use PHP 8.4 features where possible (minimum ^8.2).

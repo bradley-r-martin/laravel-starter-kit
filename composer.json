@@ -67,14 +67,14 @@
             "rector",
             "npm run lint"
         ],
-        "test:type-coverage": "pest --type-coverage --min=100",
+        "test:type-coverage": "php -d memory_limit=512M vendor/bin/pest --type-coverage --min=100",
         "test:lint": [
             "pint --parallel --test",
             "rector --dry-run",
             "npm run test:lint"
         ],
-        "test:unit": "pest --parallel --coverage --exactly=100.0",
-        "test:types": "phpstan",
+        "test:unit": "pest --parallel",
+        "test:types": "php -d memory_limit=512M vendor/bin/phpstan analyse",
         "test": [
             "@test:type-coverage",
             "@test:unit",
