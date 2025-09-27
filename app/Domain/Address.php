@@ -26,7 +26,7 @@ final class Address
 
     public static function fromArray(?array $attributes): self
     {
-        if (! $attributes) {
+        if ($attributes === null || $attributes === []) {
             return new self();
         }
 
@@ -76,15 +76,15 @@ final class Address
 
         function fm(string $base, ?string $part, string $prefix = '', string $suffix = ''): string
         {
-            return $part ? $base.$prefix.$part.$suffix : $base;
+            return $part !== null && $part !== '' && $part !== '0' ? $base.$prefix.$part.$suffix : $base;
         }
 
         // Unit/Apartment
         $result = fm($result, $this->unit, '', '/');
 
         // Lot number
-        if ($this->lot_no) {
-            $lotNo = preg_replace('/lot\s*/i', '', (string) $this->lot_no);
+        if ($this->lot_no !== null && $this->lot_no !== '' && $this->lot_no !== '0') {
+            $lotNo = preg_replace('/lot\s*/i', '', $this->lot_no);
             $result = fm($result, $lotNo, 'Lot ', ' ');
         }
 
@@ -109,7 +109,7 @@ final class Address
         // Postcode
         $result = fm($result, $this->postcode, ' ');
 
-        if ($this->country) {
+        if ($this->country !== '' && $this->country !== '0') {
             $result = fm($result, str($this->country)->title(), ', ');
         }
 

@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 
 final class PhoneCast implements CastsAttributes
 {
-    public function get(Model $model, string $key, mixed $value, array $attributes): ?Phone
+    public function get(Model $model, string $key, mixed $value, array $attributes): Phone
     {
-        return $value ? Phone::fromArray(json_decode($value, true)) : new Phone();
+        return $value ? Phone::fromArray(json_decode((string) $value, true)) : new Phone();
     }
 
     public function set(Model $model, string $key, mixed $value, array $attributes): ?string

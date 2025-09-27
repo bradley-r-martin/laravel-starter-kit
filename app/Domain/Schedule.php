@@ -7,8 +7,9 @@ namespace App\Domain;
 use DateTimeImmutable;
 use DateTimeInterface;
 use RRule\RRule;
+use Stringable;
 
-final class Schedule
+final class Schedule implements Stringable
 {
     public function __construct(
         public string $rrule
@@ -21,7 +22,7 @@ final class Schedule
 
     public static function fromString(?string $rrule): ?self
     {
-        return $rrule ? new self($rrule) : null;
+        return $rrule !== null && $rrule !== '' && $rrule !== '0' ? new self($rrule) : null;
     }
 
     public function toArray(): array

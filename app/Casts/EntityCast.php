@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 
 final class EntityCast implements CastsAttributes
 {
-    public function get(Model $model, string $key, mixed $value, array $attributes): ?Entity
+    public function get(Model $model, string $key, mixed $value, array $attributes): Entity
     {
-        return $value ? Entity::fromArray(json_decode($value, true)) : new Entity();
+        return $value ? Entity::fromArray(json_decode((string) $value, true)) : new Entity();
     }
 
     public function set(Model $model, string $key, mixed $value, array $attributes): ?string

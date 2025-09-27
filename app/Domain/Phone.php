@@ -16,7 +16,7 @@ final class Phone
 
     public static function fromArray(?array $attributes): self
     {
-        if (! $attributes) {
+        if ($attributes === null || $attributes === []) {
             return new self();
         }
 
@@ -42,23 +42,23 @@ final class Phone
 
     public function formatted(): ?string
     {
-        if (! $this->number) {
+        if ($this->number === null || $this->number === '' || $this->number === '0') {
             return null;
         }
 
         $parts = [];
 
-        if ($this->country_code) {
+        if ($this->country_code !== null && $this->country_code !== '' && $this->country_code !== '0') {
             $parts[] = $this->country_code;
         }
 
-        if ($this->area_code) {
+        if ($this->area_code !== null && $this->area_code !== '' && $this->area_code !== '0') {
             $parts[] = "({$this->area_code})";
         }
 
         $parts[] = $this->number;
 
-        if ($this->extension) {
+        if ($this->extension !== null && $this->extension !== '' && $this->extension !== '0') {
             $parts[] = "ext {$this->extension}";
         }
 

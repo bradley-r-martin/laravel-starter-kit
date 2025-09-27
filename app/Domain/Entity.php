@@ -13,7 +13,7 @@ final class Entity
 
     public static function fromArray(?array $attributes): self
     {
-        if (! $attributes) {
+        if ($attributes === null || $attributes === []) {
             return new self();
         }
 

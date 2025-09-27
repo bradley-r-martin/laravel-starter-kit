@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 
 final class AddressCast implements CastsAttributes
 {
-    public function get(Model $model, string $key, mixed $value, array $attributes): ?Address
+    public function get(Model $model, string $key, mixed $value, array $attributes): Address
     {
-        return $value ? Address::fromArray(json_decode($value, true)) : new Address();
+        return $value ? Address::fromArray(json_decode((string) $value, true)) : new Address();
     }
 
     public function set(Model $model, string $key, mixed $value, array $attributes): ?string
