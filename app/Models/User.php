@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\AddressCast;
+use App\Casts\PhoneCast;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -61,8 +63,8 @@ final class User extends Authenticatable implements MustVerifyEmail
     protected function casts(): array
     {
         return [
-            'phone' => 'array',
-            'address' => 'array',
+            'phone' => PhoneCast::class,
+            'address' => AddressCast::class,
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'closed_at' => 'datetime',

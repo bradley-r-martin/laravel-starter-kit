@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\AddressCast;
+use App\Casts\PhoneCast;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,8 +25,8 @@ final class Customer extends Model
     protected function casts(): array
     {
         return [
-            'phone' => 'array',
-            'address' => 'array',
+            'phone' => PhoneCast::class,
+            'address' => AddressCast::class,
         ];
     }
 }

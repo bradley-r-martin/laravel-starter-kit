@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\ScheduleCast;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -48,6 +49,7 @@ final class Route extends Model
     protected function casts(): array
     {
         return [
+            'schedule' => ScheduleCast::class,
             'closed_at' => 'datetime',
             'skipped_until' => 'datetime',
         ];

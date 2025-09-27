@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\AddressCast;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -80,7 +81,7 @@ final class Site extends Model
     protected function casts(): array
     {
         return [
-            'address' => 'array',
+            'address' => AddressCast::class,
             'opening_hours' => 'array',
             'closed_at' => 'datetime',
         ];

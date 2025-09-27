@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\AddressCast;
+use App\Casts\PhoneCast;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -119,8 +121,8 @@ final class Operator extends Model
     protected function casts(): array
     {
         return [
-            'address' => 'array',
-            'phone' => 'array',
+            'address' => AddressCast::class,
+            'phone' => PhoneCast::class,
             'entity' => 'array',
             'closed_at' => 'datetime',
             'suspended_at' => 'datetime',
