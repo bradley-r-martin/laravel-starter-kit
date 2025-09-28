@@ -14,6 +14,8 @@ final class Manufacturer extends Model
 
     /**
      * Get the products for this manufacturer.
+     *
+     * @return HasMany<Product, $this>
      */
     public function products(): HasMany
     {

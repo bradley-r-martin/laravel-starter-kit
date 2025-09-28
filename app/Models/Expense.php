@@ -15,6 +15,8 @@ final class Expense extends Model
 
     /**
      * Get the operator for this expense.
+     *
+     * @return BelongsTo<Operator, $this>
      */
     public function operator(): BelongsTo
     {
@@ -23,6 +25,8 @@ final class Expense extends Model
 
     /**
      * Get the expense items for this expense.
+     *
+     * @return HasMany<ExpenseItem, $this>
      */
     public function expenseItems(): HasMany
     {

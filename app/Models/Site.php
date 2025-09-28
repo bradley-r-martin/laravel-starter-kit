@@ -16,6 +16,8 @@ final class Site extends Model
 
     /**
      * Get the territory that owns this site.
+     *
+     * @return BelongsTo<Territory, $this>
      */
     public function territory(): BelongsTo
     {
@@ -24,6 +26,8 @@ final class Site extends Model
 
     /**
      * Get the operator that owns this site.
+     *
+     * @return BelongsTo<Operator, $this>
      */
     public function operator(): BelongsTo
     {
@@ -32,6 +36,8 @@ final class Site extends Model
 
     /**
      * Get the route that this site belongs to.
+     *
+     * @return BelongsTo<Route, $this>
      */
     public function route(): BelongsTo
     {
@@ -40,6 +46,8 @@ final class Site extends Model
 
     /**
      * Get the contacts for this site.
+     *
+     * @return HasMany<Contact, $this>
      */
     public function contacts(): HasMany
     {
@@ -48,6 +56,8 @@ final class Site extends Model
 
     /**
      * Get the placements for this site.
+     *
+     * @return HasMany<Placement, $this>
      */
     public function placements(): HasMany
     {
@@ -56,6 +66,8 @@ final class Site extends Model
 
     /**
      * Get the QR codes for this site.
+     *
+     * @return HasMany<QrCode, $this>
      */
     public function qrCodes(): HasMany
     {
@@ -64,6 +76,8 @@ final class Site extends Model
 
     /**
      * Get the transactions for this site.
+     *
+     * @return HasMany<Transaction, $this>
      */
     public function transactions(): HasMany
     {
@@ -72,6 +86,8 @@ final class Site extends Model
 
     /**
      * Get the resupplies for this site.
+     *
+     * @return HasMany<Resupply, $this>
      */
     public function resupplies(): HasMany
     {

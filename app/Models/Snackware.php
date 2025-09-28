@@ -16,6 +16,8 @@ final class Snackware extends Model
 
     /**
      * Get the territory that owns this snackware.
+     *
+     * @return BelongsTo<Territory, $this>
      */
     public function territory(): BelongsTo
     {
@@ -24,6 +26,8 @@ final class Snackware extends Model
 
     /**
      * Get the operator that owns this snackware.
+     *
+     * @return BelongsTo<Operator, $this>
      */
     public function operator(): BelongsTo
     {
@@ -32,6 +36,8 @@ final class Snackware extends Model
 
     /**
      * Get the products for this snackware.
+     *
+     * @return BelongsToMany<Product, $this>
      */
     public function products(): BelongsToMany
     {
@@ -40,6 +46,8 @@ final class Snackware extends Model
 
     /**
      * Get the placements for this snackware.
+     *
+     * @return HasMany<Placement, $this>
      */
     public function placements(): HasMany
     {
@@ -48,6 +56,8 @@ final class Snackware extends Model
 
     /**
      * Get the resupplies for this snackware.
+     *
+     * @return HasMany<Resupply, $this>
      */
     public function resupplies(): HasMany
     {
@@ -56,6 +66,8 @@ final class Snackware extends Model
 
     /**
      * Get the transactions for this snackware.
+     *
+     * @return HasMany<Transaction, $this>
      */
     public function transactions(): HasMany
     {

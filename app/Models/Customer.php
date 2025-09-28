@@ -16,6 +16,8 @@ final class Customer extends Model
 
     /**
      * Get the transactions for this customer.
+     *
+     * @return HasMany<Transaction, $this>
      */
     public function transactions(): HasMany
     {

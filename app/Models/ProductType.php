@@ -15,6 +15,8 @@ final class ProductType extends Model
 
     /**
      * Get the products for this product type.
+     *
+     * @return HasMany<Product, $this>
      */
     public function products(): HasMany
     {
@@ -23,6 +25,8 @@ final class ProductType extends Model
 
     /**
      * Get the placements for this product type.
+     *
+     * @return BelongsToMany<Placement, $this>
      */
     public function placements(): BelongsToMany
     {

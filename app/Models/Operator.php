@@ -17,6 +17,8 @@ final class Operator extends Model
 
     /**
      * Get the merchant accounts for this operator.
+     *
+     * @return HasMany<MerchantAccount, $this>
      */
     public function merchantAccounts(): HasMany
     {
@@ -25,6 +27,8 @@ final class Operator extends Model
 
     /**
      * Get the territories for this operator.
+     *
+     * @return HasMany<Territory, $this>
      */
     public function territories(): HasMany
     {
@@ -33,6 +37,8 @@ final class Operator extends Model
 
     /**
      * Get the users for this operator.
+     *
+     * @return HasMany<User, $this>
      */
     public function users(): HasMany
     {
@@ -41,6 +47,8 @@ final class Operator extends Model
 
     /**
      * Get the routes for this operator.
+     *
+     * @return HasMany<Route, $this>
      */
     public function routes(): HasMany
     {
@@ -49,6 +57,8 @@ final class Operator extends Model
 
     /**
      * Get the sites for this operator.
+     *
+     * @return HasMany<Site, $this>
      */
     public function sites(): HasMany
     {
@@ -57,6 +67,8 @@ final class Operator extends Model
 
     /**
      * Get the contacts for this operator.
+     *
+     * @return HasMany<Contact, $this>
      */
     public function contacts(): HasMany
     {
@@ -65,6 +77,8 @@ final class Operator extends Model
 
     /**
      * Get the snackware for this operator.
+     *
+     * @return HasMany<Snackware, $this>
      */
     public function snackware(): HasMany
     {
@@ -73,6 +87,8 @@ final class Operator extends Model
 
     /**
      * Get the QR codes for this operator.
+     *
+     * @return HasMany<QrCode, $this>
      */
     public function qrCodes(): HasMany
     {
@@ -81,6 +97,8 @@ final class Operator extends Model
 
     /**
      * Get the placements for this operator.
+     *
+     * @return HasMany<Placement, $this>
      */
     public function placements(): HasMany
     {
@@ -89,6 +107,8 @@ final class Operator extends Model
 
     /**
      * Get the runs for this operator.
+     *
+     * @return HasMany<Run, $this>
      */
     public function runs(): HasMany
     {
@@ -97,6 +117,8 @@ final class Operator extends Model
 
     /**
      * Get the resupplies for this operator.
+     *
+     * @return HasMany<Resupply, $this>
      */
     public function resupplies(): HasMany
     {
@@ -105,6 +127,8 @@ final class Operator extends Model
 
     /**
      * Get the transactions for this operator.
+     *
+     * @return HasMany<Transaction, $this>
      */
     public function transactions(): HasMany
     {
@@ -113,6 +137,8 @@ final class Operator extends Model
 
     /**
      * Get the expenses for this operator.
+     *
+     * @return HasMany<Expense, $this>
      */
     public function expenses(): HasMany
     {

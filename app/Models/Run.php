@@ -15,6 +15,8 @@ final class Run extends Model
 
     /**
      * Get the route for this run.
+     *
+     * @return BelongsTo<Route, $this>
      */
     public function route(): BelongsTo
     {
@@ -23,6 +25,8 @@ final class Run extends Model
 
     /**
      * Get the operator for this run.
+     *
+     * @return BelongsTo<Operator, $this>
      */
     public function operator(): BelongsTo
     {
@@ -31,6 +35,8 @@ final class Run extends Model
 
     /**
      * Get the territory for this run.
+     *
+     * @return BelongsTo<Territory, $this>
      */
     public function territory(): BelongsTo
     {
@@ -39,6 +45,8 @@ final class Run extends Model
 
     /**
      * Get the resupplies for this run.
+     *
+     * @return HasMany<Resupply, $this>
      */
     public function resupplies(): HasMany
     {
@@ -47,6 +55,8 @@ final class Run extends Model
 
     /**
      * Get the transactions for this run.
+     *
+     * @return HasMany<Transaction, $this>
      */
     public function transactions(): HasMany
     {

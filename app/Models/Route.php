@@ -16,6 +16,8 @@ final class Route extends Model
 
     /**
      * Get the territory that owns this route.
+     *
+     * @return BelongsTo<Territory, $this>
      */
     public function territory(): BelongsTo
     {
@@ -24,6 +26,8 @@ final class Route extends Model
 
     /**
      * Get the operator that owns this route.
+     *
+     * @return BelongsTo<Operator, $this>
      */
     public function operator(): BelongsTo
     {
@@ -32,6 +36,8 @@ final class Route extends Model
 
     /**
      * Get the sites for this route.
+     *
+     * @return HasMany<Site, $this>
      */
     public function sites(): HasMany
     {
@@ -40,6 +46,8 @@ final class Route extends Model
 
     /**
      * Get the runs for this route.
+     *
+     * @return HasMany<Run, $this>
      */
     public function runs(): HasMany
     {

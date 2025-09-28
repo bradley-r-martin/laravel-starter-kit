@@ -15,6 +15,8 @@ final class Resupply extends Model
 
     /**
      * Get the run for this resupply.
+     *
+     * @return BelongsTo<Run, $this>
      */
     public function run(): BelongsTo
     {
@@ -23,6 +25,8 @@ final class Resupply extends Model
 
     /**
      * Get the operator for this resupply.
+     *
+     * @return BelongsTo<Operator, $this>
      */
     public function operator(): BelongsTo
     {
@@ -31,6 +35,8 @@ final class Resupply extends Model
 
     /**
      * Get the territory for this resupply.
+     *
+     * @return BelongsTo<Territory, $this>
      */
     public function territory(): BelongsTo
     {
@@ -39,6 +45,8 @@ final class Resupply extends Model
 
     /**
      * Get the site for this resupply.
+     *
+     * @return BelongsTo<Site, $this>
      */
     public function site(): BelongsTo
     {
@@ -47,6 +55,8 @@ final class Resupply extends Model
 
     /**
      * Get the placement for this resupply.
+     *
+     * @return BelongsTo<Placement, $this>
      */
     public function placement(): BelongsTo
     {
@@ -55,6 +65,8 @@ final class Resupply extends Model
 
     /**
      * Get the snackware for this resupply.
+     *
+     * @return BelongsTo<Snackware, $this>
      */
     public function snackware(): BelongsTo
     {
@@ -63,6 +75,8 @@ final class Resupply extends Model
 
     /**
      * Get the transactions for this resupply.
+     *
+     * @return HasMany<Transaction, $this>
      */
     public function transactions(): HasMany
     {

@@ -30,6 +30,8 @@ final class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Get the operator that owns this user.
+     *
+     * @return BelongsTo<Operator, $this>
      */
     public function operator(): BelongsTo
     {
@@ -38,6 +40,8 @@ final class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Get the role for this user.
+     *
+     * @return BelongsTo<Role, $this>
      */
     public function role(): BelongsTo
     {
@@ -46,6 +50,8 @@ final class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Get the contacts for this user.
+     *
+     * @return HasMany<Contact, $this>
      */
     public function contacts(): HasMany
     {
@@ -54,6 +60,8 @@ final class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Get the transactions for this user.
+     *
+     * @return HasMany<Transaction, $this>
      */
     public function transactions(): HasMany
     {

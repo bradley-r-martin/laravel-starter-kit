@@ -14,6 +14,8 @@ final class Role extends Model
 
     /**
      * Get the policies that belong to this role.
+     *
+     * @return BelongsToMany<Policy, $this>
      */
     public function policies(): BelongsToMany
     {
@@ -22,6 +24,8 @@ final class Role extends Model
 
     /**
      * Get the users that belong to this role.
+     *
+     * @return BelongsToMany<User, $this>
      */
     public function users(): BelongsToMany
     {

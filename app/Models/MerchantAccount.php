@@ -15,6 +15,8 @@ final class MerchantAccount extends Model
 
     /**
      * Get the operator that owns this merchant account.
+     *
+     * @return BelongsTo<Operator, $this>
      */
     public function operator(): BelongsTo
     {
@@ -23,6 +25,8 @@ final class MerchantAccount extends Model
 
     /**
      * Get the territories for this merchant account.
+     *
+     * @return HasMany<Territory, $this>
      */
     public function territories(): HasMany
     {
@@ -31,6 +35,8 @@ final class MerchantAccount extends Model
 
     /**
      * Get the transactions for this merchant account.
+     *
+     * @return HasMany<Transaction, $this>
      */
     public function transactions(): HasMany
     {

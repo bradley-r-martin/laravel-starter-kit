@@ -15,6 +15,8 @@ final class Contact extends Model
 
     /**
      * Get the operator that owns this contact.
+     *
+     * @return BelongsTo<Operator, $this>
      */
     public function operator(): BelongsTo
     {
@@ -23,6 +25,8 @@ final class Contact extends Model
 
     /**
      * Get the territory that owns this contact.
+     *
+     * @return BelongsTo<Territory, $this>
      */
     public function territory(): BelongsTo
     {
@@ -31,6 +35,8 @@ final class Contact extends Model
 
     /**
      * Get the site that owns this contact.
+     *
+     * @return BelongsTo<Site, $this>
      */
     public function site(): BelongsTo
     {

@@ -14,6 +14,8 @@ final class Transaction extends Model
 
     /**
      * Get the customer for this transaction.
+     *
+     * @return BelongsTo<Customer, $this>
      */
     public function customer(): BelongsTo
     {
@@ -22,6 +24,8 @@ final class Transaction extends Model
 
     /**
      * Get the operator for this transaction.
+     *
+     * @return BelongsTo<Operator, $this>
      */
     public function operator(): BelongsTo
     {
@@ -30,6 +34,8 @@ final class Transaction extends Model
 
     /**
      * Get the territory for this transaction.
+     *
+     * @return BelongsTo<Territory, $this>
      */
     public function territory(): BelongsTo
     {
@@ -38,6 +44,8 @@ final class Transaction extends Model
 
     /**
      * Get the site for this transaction.
+     *
+     * @return BelongsTo<Site, $this>
      */
     public function site(): BelongsTo
     {
@@ -46,6 +54,8 @@ final class Transaction extends Model
 
     /**
      * Get the placement for this transaction.
+     *
+     * @return BelongsTo<Placement, $this>
      */
     public function placement(): BelongsTo
     {
@@ -54,6 +64,8 @@ final class Transaction extends Model
 
     /**
      * Get the snackware for this transaction.
+     *
+     * @return BelongsTo<Snackware, $this>
      */
     public function snackware(): BelongsTo
     {
@@ -62,6 +74,8 @@ final class Transaction extends Model
 
     /**
      * Get the QR code for this transaction.
+     *
+     * @return BelongsTo<QrCode, $this>
      */
     public function qrCode(): BelongsTo
     {
@@ -70,6 +84,8 @@ final class Transaction extends Model
 
     /**
      * Get the run for this transaction.
+     *
+     * @return BelongsTo<Run, $this>
      */
     public function run(): BelongsTo
     {
@@ -78,6 +94,8 @@ final class Transaction extends Model
 
     /**
      * Get the resupply for this transaction.
+     *
+     * @return BelongsTo<Resupply, $this>
      */
     public function resupply(): BelongsTo
     {
@@ -86,6 +104,8 @@ final class Transaction extends Model
 
     /**
      * Get the user for this transaction.
+     *
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -94,6 +114,8 @@ final class Transaction extends Model
 
     /**
      * Get the merchant account for this transaction.
+     *
+     * @return BelongsTo<MerchantAccount, $this>
      */
     public function merchantAccount(): BelongsTo
     {

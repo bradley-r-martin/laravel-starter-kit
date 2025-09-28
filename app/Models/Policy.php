@@ -17,6 +17,8 @@ final class Policy extends Model
 
     /**
      * Get the roles that have this policy.
+     *
+     * @return BelongsToMany<Role, $this>
      */
     public function roles(): BelongsToMany
     {

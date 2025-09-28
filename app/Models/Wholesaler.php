@@ -16,6 +16,8 @@ final class Wholesaler extends Model
 
     /**
      * Get the expense items for this wholesaler.
+     *
+     * @return HasMany<ExpenseItem, $this>
      */
     public function expenseItems(): HasMany
     {

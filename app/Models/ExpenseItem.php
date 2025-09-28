@@ -14,6 +14,8 @@ final class ExpenseItem extends Model
 
     /**
      * Get the expense for this expense item.
+     *
+     * @return BelongsTo<Expense, $this>
      */
     public function expense(): BelongsTo
     {
@@ -22,6 +24,8 @@ final class ExpenseItem extends Model
 
     /**
      * Get the product for this expense item.
+     *
+     * @return BelongsTo<Product, $this>
      */
     public function product(): BelongsTo
     {
@@ -30,6 +34,8 @@ final class ExpenseItem extends Model
 
     /**
      * Get the wholesaler for this expense item.
+     *
+     * @return BelongsTo<Wholesaler, $this>
      */
     public function wholesaler(): BelongsTo
     {

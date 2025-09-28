@@ -15,6 +15,8 @@ final class Territory extends Model
 
     /**
      * Get the operator that owns this territory.
+     *
+     * @return BelongsTo<Operator, $this>
      */
     public function operator(): BelongsTo
     {
@@ -23,6 +25,8 @@ final class Territory extends Model
 
     /**
      * Get the merchant account for this territory.
+     *
+     * @return BelongsTo<MerchantAccount, $this>
      */
     public function merchantAccount(): BelongsTo
     {
@@ -31,6 +35,8 @@ final class Territory extends Model
 
     /**
      * Get the routes for this territory.
+     *
+     * @return HasMany<Route, $this>
      */
     public function routes(): HasMany
     {
@@ -39,6 +45,8 @@ final class Territory extends Model
 
     /**
      * Get the sites for this territory.
+     *
+     * @return HasMany<Site, $this>
      */
     public function sites(): HasMany
     {
@@ -47,6 +55,8 @@ final class Territory extends Model
 
     /**
      * Get the contacts for this territory.
+     *
+     * @return HasMany<Contact, $this>
      */
     public function contacts(): HasMany
     {
@@ -55,6 +65,8 @@ final class Territory extends Model
 
     /**
      * Get the snackware for this territory.
+     *
+     * @return HasMany<Snackware, $this>
      */
     public function snackware(): HasMany
     {
@@ -63,6 +75,8 @@ final class Territory extends Model
 
     /**
      * Get the placements for this territory.
+     *
+     * @return HasMany<Placement, $this>
      */
     public function placements(): HasMany
     {
@@ -71,6 +85,8 @@ final class Territory extends Model
 
     /**
      * Get the runs for this territory.
+     *
+     * @return HasMany<Run, $this>
      */
     public function runs(): HasMany
     {
@@ -79,6 +95,8 @@ final class Territory extends Model
 
     /**
      * Get the resupplies for this territory.
+     *
+     * @return HasMany<Resupply, $this>
      */
     public function resupplies(): HasMany
     {
@@ -87,6 +105,8 @@ final class Territory extends Model
 
     /**
      * Get the transactions for this territory.
+     *
+     * @return HasMany<Transaction, $this>
      */
     public function transactions(): HasMany
     {

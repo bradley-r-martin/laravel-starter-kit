@@ -16,6 +16,8 @@ final class Placement extends Model
 
     /**
      * Get the site that owns this placement.
+     *
+     * @return BelongsTo<Site, $this>
      */
     public function site(): BelongsTo
     {
@@ -24,6 +26,8 @@ final class Placement extends Model
 
     /**
      * Get the operator that owns this placement.
+     *
+     * @return BelongsTo<Operator, $this>
      */
     public function operator(): BelongsTo
     {
@@ -32,6 +36,8 @@ final class Placement extends Model
 
     /**
      * Get the territory that owns this placement.
+     *
+     * @return BelongsTo<Territory, $this>
      */
     public function territory(): BelongsTo
     {
@@ -40,6 +46,8 @@ final class Placement extends Model
 
     /**
      * Get the snackware for this placement.
+     *
+     * @return BelongsTo<Snackware, $this>
      */
     public function snackware(): BelongsTo
     {
@@ -48,6 +56,8 @@ final class Placement extends Model
 
     /**
      * Get the QR code for this placement.
+     *
+     * @return BelongsTo<QrCode, $this>
      */
     public function qrCode(): BelongsTo
     {
@@ -56,6 +66,8 @@ final class Placement extends Model
 
     /**
      * Get the product types for this placement.
+     *
+     * @return BelongsToMany<ProductType, $this>
      */
     public function productTypes(): BelongsToMany
     {
@@ -65,6 +77,8 @@ final class Placement extends Model
 
     /**
      * Get the resupplies for this placement.
+     *
+     * @return HasMany<Resupply, $this>
      */
     public function resupplies(): HasMany
     {
@@ -73,6 +87,8 @@ final class Placement extends Model
 
     /**
      * Get the transactions for this placement.
+     *
+     * @return HasMany<Transaction, $this>
      */
     public function transactions(): HasMany
     {

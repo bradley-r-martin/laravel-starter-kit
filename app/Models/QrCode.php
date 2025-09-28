@@ -15,6 +15,8 @@ final class QrCode extends Model
 
     /**
      * Get the operator that owns this QR code.
+     *
+     * @return BelongsTo<Operator, $this>
      */
     public function operator(): BelongsTo
     {
@@ -23,6 +25,8 @@ final class QrCode extends Model
 
     /**
      * Get the placement that this QR code belongs to.
+     *
+     * @return BelongsTo<Placement, $this>
      */
     public function placement(): BelongsTo
     {
@@ -31,6 +35,8 @@ final class QrCode extends Model
 
     /**
      * Get the transactions for this QR code.
+     *
+     * @return HasMany<Transaction, $this>
      */
     public function transactions(): HasMany
     {

@@ -16,6 +16,8 @@ final class Product extends Model
 
     /**
      * Get the product type for this product.
+     *
+     * @return BelongsTo<ProductType, $this>
      */
     public function productType(): BelongsTo
     {
@@ -24,6 +26,8 @@ final class Product extends Model
 
     /**
      * Get the manufacturer for this product.
+     *
+     * @return BelongsTo<Manufacturer, $this>
      */
     public function manufacturer(): BelongsTo
     {
@@ -32,6 +36,8 @@ final class Product extends Model
 
     /**
      * Get the snackware for this product.
+     *
+     * @return BelongsToMany<Snackware, $this>
      */
     public function snackware(): BelongsToMany
     {
@@ -40,6 +46,8 @@ final class Product extends Model
 
     /**
      * Get the expense items for this product.
+     *
+     * @return HasMany<ExpenseItem, $this>
      */
     public function expenseItems(): HasMany
     {
