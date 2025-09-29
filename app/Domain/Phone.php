@@ -24,11 +24,11 @@ final class Phone
         }
 
         return new self(
-            country_code: isset($attributes['country_code']) ? (string) $attributes['country_code'] : null,
-            area_code: isset($attributes['area_code']) ? (string) $attributes['area_code'] : null,
-            number: isset($attributes['number']) ? (string) $attributes['number'] : null,
-            extension: isset($attributes['extension']) ? (string) $attributes['extension'] : null,
-            type: isset($attributes['type']) ? (string) $attributes['type'] : null,
+            country_code: $attributes['country_code'] ?? null,
+            area_code: $attributes['area_code'] ?? null,
+            number: $attributes['number'] ?? null,
+            extension: $attributes['extension'] ?? null,
+            type: $attributes['type'] ?? null,
         );
     }
 

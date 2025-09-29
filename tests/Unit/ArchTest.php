@@ -12,6 +12,7 @@ arch('models')
         'Illuminate',
         'App',
         'Spatie',
+        'Carbon',
     ]);
 
 arch('controllers')

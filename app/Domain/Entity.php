@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain;
 
+use Illuminate\Support\Stringable;
+
 final class Entity
 {
     public function __construct(
@@ -12,7 +14,7 @@ final class Entity
     ) {}
 
     /**
-     * @param  array<string, string|null>|null  $attributes
+     * @param  array{id?: string|null, type?: string|null}|null  $attributes
      */
     public static function fromArray(?array $attributes): self
     {
@@ -21,13 +23,13 @@ final class Entity
         }
 
         return new self(
-            id: isset($attributes['id']) ? (string) $attributes['id'] : null,
-            type: isset($attributes['type']) ? (string) $attributes['type'] : null,
+            id: $attributes['id'] ?? null,
+            type: $attributes['type'] ?? null,
         );
     }
 
     /**
-     * @return array<string, string|null>
+     * @return array{id: string|null, type: string|null}
      */
     public function toArray(): array
     {
@@ -45,7 +47,10 @@ final class Entity
 
         return (string) str($this->type ?? '')
             ->upper()
-            ->when($this->type !== null, fn ($s) => $s->prepend('(')->append(') '))
+            ->when(
+                $this->type !== null,
+                fn (Stringable $string): Stringable => $string->prepend('(')->append(') '),
+            )
             ->append($this->id ?? '');
     }
 }

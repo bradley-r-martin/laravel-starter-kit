@@ -85,7 +85,7 @@ final class Address
 
         // Lot number
         if ($this->lot_no !== null && $this->lot_no !== '' && $this->lot_no !== '0') {
-            $lotNo = preg_replace('/lot\s*/i', '', (string) $this->lot_no);
+            $lotNo = preg_replace('/lot\s*/i', '', $this->lot_no);
             $result = $this->fm($result, $lotNo, 'Lot ', ' ');
         }
 
