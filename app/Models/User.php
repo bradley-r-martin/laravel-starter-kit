@@ -9,6 +9,7 @@ use App\Casts\PhoneCast;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -66,6 +67,37 @@ final class User extends Authenticatable implements MustVerifyEmail
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    /**
+     * Get the policies for this user through their role.
+     *
+     * @return BelongsToMany<Policy, $this>
+     */
+    public function policies(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Policy::class,
+            'policy_role',
+            'role_id',
+            'policy_namespace'
+        )->where('role_id', $this->role_id);
+    }
+
+    /**
+     * Check if the user is allowed to perform an action.
+     */
+    public function allowed(string $ability): bool
+    {
+        $policies = $this->policies()->get();
+        $namespaces = [];
+
+        /** @var Policy $policy */
+        foreach ($policies as $policy) {
+            $namespaces[] = $policy->namespace;
+        }
+
+        return in_array($ability, $namespaces, true);
     }
 
     protected function casts(): array
