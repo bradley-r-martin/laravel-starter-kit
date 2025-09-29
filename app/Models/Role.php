@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class Role extends Model
 {
@@ -15,11 +16,11 @@ final class Role extends Model
     /**
      * Get the policies that belong to this role.
      *
-     * @return BelongsToMany<Policy, $this>
+     * @return HasMany<Policy, $this>
      */
-    public function policies(): BelongsToMany
+    public function policies(): HasMany
     {
-        return $this->belongsToMany(Policy::class, 'policy_role', 'role_id', 'policy_namespace');
+        return $this->hasMany(Policy::class);
     }
 
     /**

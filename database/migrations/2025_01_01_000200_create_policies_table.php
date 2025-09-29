@@ -14,22 +14,27 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('policies', function (Blueprint $table): void {
-            $table->string('namespace')->primary();
-            $table->string('policy')->nullable();
-            $table->string('ability')->nullable();
-            $table->string('description')->nullable();
+            $table->ulid('id')->primary();
+            $table->ulid('role_id');
+            $table->string('policy');
+            $table->string('ability');
+            $table->string('description');
             $table->boolean('hidden')->default(false);
             $table->timestamps();
+
+            $table->unique(['role_id', 'policy', 'ability']);
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
         });
 
         /* Derived data columns */
         Schema::table('policies', function (Blueprint $table): void {
-            $table->unsignedInteger('__roles_count')->default(0)->comment('Number of roles that have this policy assigned');
-            $table->unsignedInteger('__users_count')->default(0)->comment('Number of users that have this policy through their roles');
+            $table->unsignedInteger('__roles_count')->default(0);
+            $table->unsignedInteger('__users_count')->default(0);
         });
 
         /* Performance indexes */
         Schema::table('policies', function (Blueprint $table): void {
+            $table->index('role_id');
             $table->index('policy');
             $table->index('ability');
             $table->index('hidden');

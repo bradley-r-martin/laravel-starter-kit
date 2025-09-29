@@ -9,7 +9,6 @@ use App\Casts\PhoneCast;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -72,16 +71,11 @@ final class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get the policies for this user through their role.
      *
-     * @return BelongsToMany<Policy, $this>
+     * @return HasMany<Policy, $this>
      */
-    public function policies(): BelongsToMany
+    public function policies(): HasMany
     {
-        return $this->belongsToMany(
-            Policy::class,
-            'policy_role',
-            'role_id',
-            'policy_namespace'
-        )->where('role_id', $this->role_id);
+        return $this->hasMany(Policy::class, 'role_id', 'role_id');
     }
 
     /**
@@ -94,7 +88,7 @@ final class User extends Authenticatable implements MustVerifyEmail
 
         /** @var Policy $policy */
         foreach ($policies as $policy) {
-            $namespaces[] = $policy->namespace;
+            $namespaces[] = $policy->policy.'@'.$policy->ability;
         }
 
         return in_array($ability, $namespaces, true);

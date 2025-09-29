@@ -4,25 +4,22 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 final class Policy extends Model
 {
-    public $incrementing = false;
-
-    protected $primaryKey = 'namespace';
-
-    protected $keyType = 'string';
+    use HasUlids;
 
     /**
-     * Get the roles that have this policy.
+     * Get the role.
      *
-     * @return BelongsToMany<Role, $this>
+     * @return BelongsTo<Role, $this>
      */
-    public function roles(): BelongsToMany
+    public function role(): BelongsTo
     {
-        return $this->belongsToMany(Role::class, 'policy_role', 'policy_namespace', 'role_id');
+        return $this->belongsTo(Role::class);
     }
 
     protected function casts(): array
