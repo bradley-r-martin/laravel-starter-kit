@@ -11,6 +11,9 @@ final class Entity
         public ?string $type = null
     ) {}
 
+    /**
+     * @param  array<string, string|null>|null  $attributes
+     */
     public static function fromArray(?array $attributes): self
     {
         if ($attributes === null || $attributes === []) {
@@ -18,11 +21,14 @@ final class Entity
         }
 
         return new self(
-            id: $attributes['id'] ?? null,
-            type: $attributes['type'] ?? null,
+            id: isset($attributes['id']) ? (string) $attributes['id'] : null,
+            type: isset($attributes['type']) ? (string) $attributes['type'] : null,
         );
     }
 
+    /**
+     * @return array<string, string|null>
+     */
     public function toArray(): array
     {
         return [
@@ -33,6 +39,13 @@ final class Entity
 
     public function formatted(): ?string
     {
-        return str($this->type)->upper()->prepend('(')->append(') ')->append($this->id);
+        if ($this->id === null && $this->type === null) {
+            return null;
+        }
+
+        return (string) str($this->type ?? '')
+            ->upper()
+            ->when($this->type !== null, fn ($s) => $s->prepend('(')->append(') '))
+            ->append($this->id ?? '');
     }
 }

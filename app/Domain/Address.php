@@ -24,6 +24,9 @@ final class Address
         public ?float $longitude = null,
     ) {}
 
+    /**
+     * @param  array<string, string|float|null>|null  $attributes
+     */
     public static function fromArray(?array $attributes): self
     {
         if ($attributes === null || $attributes === []) {
@@ -31,24 +34,27 @@ final class Address
         }
 
         return new self(
-            place_id: $attributes['place_id'] ?? null,
-            building_name: $attributes['building_name'] ?? null,
-            lot_no: $attributes['lot_no'] ?? null,
-            country: $attributes['country'] ?? 'Australia',
-            level: $attributes['level'] ?? null,
-            postcode: $attributes['postcode'] ?? null,
-            state: $attributes['state'] ?? null,
-            street_name: $attributes['street_name'] ?? null,
-            street_number: $attributes['street_number'] ?? null,
-            street_type: $attributes['street_type'] ?? null,
-            street_suffix: $attributes['street_suffix'] ?? null,
-            suburb: $attributes['suburb'] ?? null,
-            unit: $attributes['unit'] ?? null,
-            latitude: isset($attributes['latitude']) ? (float) $attributes['latitude'] : null,
-            longitude: isset($attributes['longitude']) ? (float) $attributes['longitude'] : null,
+            place_id: isset($attributes['place_id']) ? (string) $attributes['place_id'] : null,
+            building_name: isset($attributes['building_name']) ? (string) $attributes['building_name'] : null,
+            lot_no: isset($attributes['lot_no']) ? (string) $attributes['lot_no'] : null,
+            country: isset($attributes['country']) ? (string) $attributes['country'] : 'Australia',
+            level: isset($attributes['level']) ? (string) $attributes['level'] : null,
+            postcode: isset($attributes['postcode']) ? (string) $attributes['postcode'] : null,
+            state: isset($attributes['state']) ? (string) $attributes['state'] : null,
+            street_name: isset($attributes['street_name']) ? (string) $attributes['street_name'] : null,
+            street_number: isset($attributes['street_number']) ? (string) $attributes['street_number'] : null,
+            street_type: isset($attributes['street_type']) ? (string) $attributes['street_type'] : null,
+            street_suffix: isset($attributes['street_suffix']) ? (string) $attributes['street_suffix'] : null,
+            suburb: isset($attributes['suburb']) ? (string) $attributes['suburb'] : null,
+            unit: isset($attributes['unit']) ? (string) $attributes['unit'] : null,
+            latitude: isset($attributes['latitude']) && is_numeric($attributes['latitude']) ? (float) $attributes['latitude'] : null,
+            longitude: isset($attributes['longitude']) && is_numeric($attributes['longitude']) ? (float) $attributes['longitude'] : null,
         );
     }
 
+    /**
+     * @return array<string, string|float|null>
+     */
     public function toArray(): array
     {
         return [
@@ -74,45 +80,48 @@ final class Address
     {
         $result = '';
 
-        function fm(string $base, ?string $part, string $prefix = '', string $suffix = ''): string
-        {
-            return $part !== null && $part !== '' && $part !== '0' ? $base.$prefix.$part.$suffix : $base;
-        }
-
         // Unit/Apartment
-        $result = fm($result, $this->unit, '', '/');
+        $result = $this->fm($result, $this->unit, '', '/');
 
         // Lot number
         if ($this->lot_no !== null && $this->lot_no !== '' && $this->lot_no !== '0') {
-            $lotNo = preg_replace('/lot\s*/i', '', $this->lot_no);
-            $result = fm($result, $lotNo, 'Lot ', ' ');
+            $lotNo = preg_replace('/lot\s*/i', '', (string) $this->lot_no);
+            $result = $this->fm($result, $lotNo, 'Lot ', ' ');
         }
 
         // Level
-        $result = fm($result, $this->level, 'Level ', ', ');
+        $result = $this->fm($result, $this->level, 'Level ', ', ');
 
         // Building name
-        $result = fm($result, $this->building_name, '', ', ');
+        $result = $this->fm($result, $this->building_name, '', ', ');
 
         // Street address
-        $result = fm($result, $this->street_number, '', ' ');
-        $result = fm($result, $this->street_name, '', ' ');
-        $result = fm($result, $this->street_type, '', ' ');
-        $result = fm($result, $this->street_suffix, '', '');
+        $result = $this->fm($result, $this->street_number, '', ' ');
+        $result = $this->fm($result, $this->street_name, '', ' ');
+        $result = $this->fm($result, $this->street_type, '', ' ');
+        $result = $this->fm($result, $this->street_suffix, '', '');
 
         // Suburb
-        $result = fm($result, str($this->suburb)->title(), ', ');
+        $result = $this->fm($result, $this->suburb !== null ? (string) str($this->suburb)->title() : null, ', ');
 
         // State
-        $result = fm($result, str($this->state ?? '')->upper(), ', ');
+        $result = $this->fm($result, $this->state !== null ? (string) str($this->state)->upper() : null, ', ');
 
         // Postcode
-        $result = fm($result, $this->postcode, ' ');
+        $result = $this->fm($result, $this->postcode, ' ');
 
+        // Country
         if ($this->country !== '' && $this->country !== '0') {
-            $result = fm($result, str($this->country)->title(), ', ');
+            $result = $this->fm($result, (string) str($this->country)->title(), ', ');
         }
 
-        return mb_trim(preg_replace('/^,\s*/', '', $result));
+        return mb_trim((string) preg_replace('/^,\s*/', '', $result));
+    }
+
+    private function fm(string $base, ?string $part, string $prefix = '', string $suffix = ''): string
+    {
+        return $part !== null && $part !== '' && $part !== '0'
+            ? $base.$prefix.$part.$suffix
+            : $base;
     }
 }

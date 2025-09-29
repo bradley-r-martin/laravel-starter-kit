@@ -25,11 +25,17 @@ final class Schedule implements Stringable
         return $rrule !== null && $rrule !== '' && $rrule !== '0' ? new self($rrule) : null;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function toArray(): array
     {
         return ['rrule' => $this->rrule];
     }
 
+    /**
+     * @return RRule<DateTimeInterface>
+     */
     public function instance(): RRule
     {
         return new RRule($this->rrule);
@@ -37,11 +43,20 @@ final class Schedule implements Stringable
 
     public function nextOccurrence(?DateTimeInterface $after = null): ?DateTimeInterface
     {
-        return $this->instance()->getOccurrencesAfter($after ?? new DateTimeImmutable(), false, 1)[0] ?? null;
+        /** @var DateTimeInterface[] $occurrences */
+        $occurrences = $this->instance()->getOccurrencesAfter($after ?? new DateTimeImmutable(), false, 1);
+
+        return $occurrences[0] ?? null;
     }
 
+    /**
+     * @return DateTimeInterface[]
+     */
     public function allOccurrences(DateTimeInterface $until, int $limit = 100): array
     {
-        return $this->instance()->getOccurrencesBetween(new DateTimeImmutable(), $until, $limit);
+        /** @var DateTimeInterface[] $occurrences */
+        $occurrences = $this->instance()->getOccurrencesBetween(new DateTimeImmutable(), $until, $limit);
+
+        return $occurrences;
     }
 }
