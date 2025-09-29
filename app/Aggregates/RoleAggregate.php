@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Aggregates;
 
+use App\Events\Role\PolicyAttachedToRole;
+use App\Events\Role\PolicyDetachedFromRole;
 use App\Events\Role\RoleClosed;
 use App\Events\Role\RoleCreated;
 use App\Events\Role\RoleUpdated;
@@ -21,6 +23,11 @@ final class RoleAggregate extends AggregateRoot
     public ?DateTimeImmutable $closedAt = null;
 
     public ?string $closedReason = null;
+
+    /**
+     * @var array<int, string>
+     */
+    public array $policyNamespaces = [];
 
     public function createRole(
         string $name,
@@ -53,6 +60,28 @@ final class RoleAggregate extends AggregateRoot
     public function closeRole(string $reason = 'No reason provided'): self
     {
         $this->recordThat(new RoleClosed(reason: $reason));
+
+        return $this;
+    }
+
+    public function attachPolicy(string $policyNamespace): self
+    {
+        if (in_array($policyNamespace, $this->policyNamespaces, true)) {
+            return $this;
+        }
+
+        $this->recordThat(new PolicyAttachedToRole(policyNamespace: $policyNamespace));
+
+        return $this;
+    }
+
+    public function detachPolicy(string $policyNamespace): self
+    {
+        if (! in_array($policyNamespace, $this->policyNamespaces, true)) {
+            return $this;
+        }
+
+        $this->recordThat(new PolicyDetachedFromRole(policyNamespace: $policyNamespace));
 
         return $this;
     }
