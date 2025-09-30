@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\File;
 use ReflectionClass;
 use ReflectionMethod;
 
-final class PolicyCleanupCommand extends Command
+final class PolicyPruneCommand extends Command
 {
-    protected $signature = 'policies:cleanup 
+    protected $signature = 'policies:prune 
                             {--dry-run : Show what would be removed without actually removing}
                             {--force : Force removal without confirmation}';
 
