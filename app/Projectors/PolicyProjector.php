@@ -24,7 +24,7 @@ final class PolicyProjector extends Projector
 
     public function onPolicyAttached(PolicyAttached $event): void
     {
-        if (! $this->aggregateUuid) {
+        if ($this->aggregateUuid === null || $this->aggregateUuid === '' || $this->aggregateUuid === '0') {
             return;
         }
 
@@ -39,7 +39,7 @@ final class PolicyProjector extends Projector
 
     public function onPolicyDetached(PolicyDetached $event): void
     {
-        if (! $this->aggregateUuid) {
+        if ($this->aggregateUuid === null || $this->aggregateUuid === '' || $this->aggregateUuid === '0') {
             return;
         }
 
@@ -53,7 +53,7 @@ final class PolicyProjector extends Projector
 
     public function onPolicyDeprecated(PolicyDeprecated $event): void
     {
-        if (! $this->aggregateUuid) {
+        if ($this->aggregateUuid === null || $this->aggregateUuid === '' || $this->aggregateUuid === '0') {
             return;
         }
 
