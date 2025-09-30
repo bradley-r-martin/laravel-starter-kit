@@ -11,6 +11,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.4.0",
+        "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.31.1",
         "nunomaduro/essentials": "^1.0.1",
         "rlanvin/php-rrule": "^2.6",
