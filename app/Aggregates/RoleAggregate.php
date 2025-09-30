@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Aggregates;
 
-use App\Events\Role\PolicyAttachedToRole;
-use App\Events\Role\PolicyDetachedFromRole;
+use App\Events\Policy\PolicyAttached;
+use App\Events\Policy\PolicyDeprecated;
+use App\Events\Policy\PolicyDetached;
 use App\Events\Role\RoleClosed;
 use App\Events\Role\RoleCreated;
 use App\Events\Role\RoleUpdated;
@@ -28,6 +29,11 @@ final class RoleAggregate extends AggregateRoot
      * @var array<int, string>
      */
     public array $policyNamespaces = [];
+
+    /**
+     * @var array<int, array{0: string, 1: string}>
+     */
+    public array $attachedPolicies = [];
 
     public function createRole(
         string $name,
@@ -64,25 +70,72 @@ final class RoleAggregate extends AggregateRoot
         return $this;
     }
 
-    public function attachPolicy(string $policyNamespace): self
-    {
-        if (in_array($policyNamespace, $this->policyNamespaces, true)) {
-            return $this;
+    public function attachPolicy(
+        string $policy,
+        string $ability,
+        string $description = '',
+        bool $hidden = false
+    ): self {
+        // Check if policy is already attached
+        $policyKey = [$policy, $ability];
+        if (in_array($policyKey, $this->attachedPolicies, true)) {
+            return $this; // Policy already attached, no event recorded
         }
 
-        $this->recordThat(new PolicyAttachedToRole(policyNamespace: $policyNamespace));
+        $this->recordThat(new PolicyAttached(
+            policy: $policy,
+            ability: $ability,
+            description: $description,
+            hidden: $hidden
+        ));
 
         return $this;
     }
 
-    public function detachPolicy(string $policyNamespace): self
+    public function detachPolicy(string $policy, string $ability): self
     {
-        if (! in_array($policyNamespace, $this->policyNamespaces, true)) {
-            return $this;
+        // Check if policy is attached
+        $policyKey = [$policy, $ability];
+        if (! in_array($policyKey, $this->attachedPolicies, true)) {
+            return $this; // Policy not attached, no event recorded
         }
 
-        $this->recordThat(new PolicyDetachedFromRole(policyNamespace: $policyNamespace));
+        $this->recordThat(new PolicyDetached(
+            policy: $policy,
+            ability: $ability
+        ));
 
         return $this;
+    }
+
+    public function deprecatePolicy(string $policy, string $ability): self
+    {
+        $this->recordThat(new PolicyDeprecated(
+            policy: $policy,
+            ability: $ability
+        ));
+
+        return $this;
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applyPolicyAttached(PolicyAttached $event): void
+    {
+        $this->attachedPolicies[] = [$event->policy, $event->ability];
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applyPolicyDetached(PolicyDetached $event): void
+    {
+        $policyKey = [$event->policy, $event->ability];
+        $index = array_search($policyKey, $this->attachedPolicies, true);
+        if ($index !== false) {
+            unset($this->attachedPolicies[$index]);
+            $this->attachedPolicies = array_values($this->attachedPolicies);
+        }
     }
 }
