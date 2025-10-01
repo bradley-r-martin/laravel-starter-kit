@@ -11,3 +11,7 @@ Route::prefix('roles')->name('roles.')->group(function () {
     Route::get('/create', [RoleCreateController::class, 'view'])->name('create');
     Route::post('/create', [RoleCreateController::class, 'process'])->name('store');
 });
+
+Route::get('/dashboard', function () {
+    return inertia('Dashboard');
+})->middleware('auth')->name('dashboard');

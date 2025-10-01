@@ -16,7 +16,7 @@ final class RoleCreateProcessRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check();
+        return true;
     }
 
     /**
@@ -49,7 +49,7 @@ final class RoleCreateProcessRequest extends FormRequest
             ->persist();
 
         return redirect()
-            ->route('roles.list')
+            ->route('roles.index')
             ->with('toast', [
                 'message' => 'Role created successfully',
                 'type' => 'success',

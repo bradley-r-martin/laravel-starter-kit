@@ -36,6 +36,9 @@ return new class extends Migration
         /* Derived data columns */
         Schema::table('users', function (Blueprint $table): void {
             $table->string('__operator_name')->nullable()->comment('Name from the associated operator record');
+            $table->timestamp('__last_login_at')->nullable()->comment('Last successful login timestamp');
+            $table->string('__last_login_ip')->nullable()->comment('IP address of last login');
+            $table->text('__last_login_user_agent')->nullable()->comment('User agent of last login');
         });
 
         /* Performance indexes */

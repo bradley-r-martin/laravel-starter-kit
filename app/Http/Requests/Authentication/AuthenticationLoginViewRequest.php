@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Role;
+namespace App\Http\Requests\Authentication;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
-final class RoleListViewRequest extends FormRequest
+final class AuthenticationLoginViewRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,7 +30,7 @@ final class RoleListViewRequest extends FormRequest
     public function respond(): Response
     {
         return inertia()
-            ->render('Role/List', [])
+            ->render('Authentication/Login', [])
             ->toResponse($this);
     }
 }
