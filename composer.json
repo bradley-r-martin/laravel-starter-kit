@@ -15,7 +15,8 @@
         "laravel/framework": "^12.31.1",
         "nunomaduro/essentials": "^1.0.1",
         "rlanvin/php-rrule": "^2.6",
-        "spatie/laravel-event-sourcing": "^7.12"
+        "spatie/laravel-event-sourcing": "^7.12",
+        "tightenco/ziggy": "^2.6"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24.1",
