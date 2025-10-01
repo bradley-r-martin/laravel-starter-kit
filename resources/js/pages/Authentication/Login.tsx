@@ -38,7 +38,7 @@ const Login: FunctionComponent<LoginProps> = () => {
                                     </label>
                                     <input
                                         id="email"
-                                        type="email"
+                                        type="text"
                                         value={data.email}
                                         onChange={(e) => setData('email', e.target.value)}
                                         autoComplete="email"
