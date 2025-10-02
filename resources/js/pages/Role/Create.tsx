@@ -46,7 +46,6 @@ export default function Create() {
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                     error={errors.name}
-                                    
                                 />
 
                                 <Textarea

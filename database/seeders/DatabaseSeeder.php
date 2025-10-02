@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Models\Operator;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,11 +16,17 @@ final class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $operator = Operator::create([
+            'name' => 'Test Operator',
+            'email' => 'operator@example.com',
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
+        User::create([
+            'operator_id' => $operator->id,
+            'first_name' => 'Test',
+            'last_name' => 'User',
             'email' => 'test@example.com',
+            'password' => bcrypt('password'),
         ]);
     }
 }
