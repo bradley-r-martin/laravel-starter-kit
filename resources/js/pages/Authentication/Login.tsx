@@ -5,7 +5,7 @@ import { Head, useForm } from '@inertiajs/react';
 import {
     Button,
     Container,
-    Group,
+    Divider,
     Paper,
     PasswordInput,
     Stack,
@@ -13,6 +13,7 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
+import { KeyRoundIcon } from 'lucide-react';
 import { FunctionComponent } from 'react';
 
 interface LoginProps {}
@@ -44,6 +45,7 @@ const Login: FunctionComponent<LoginProps> = () => {
                                 action={{ url: route('login.process'), method: 'post' }}
                             >
                                 <Stack gap="md">
+                           
                                     <Field name="email" form={form}>
                                         <TextInput
                                             label="Email"
@@ -61,12 +63,16 @@ const Login: FunctionComponent<LoginProps> = () => {
                                         />
                                     </Field>
 
-                                    <Group justify="flex-end" mt="md">
-                                        <Button type="submit" loading={processing}>
+                                    <Button type="submit" loading={processing}>
                                             Sign in
                                         </Button>
-                                    </Group>
+                                    <Divider label="or" labelPosition='center' />
+                                    <Button type="button" variant='default' leftSection={<KeyRoundIcon className='size-5 stroke-[1.5]'/>}>
+                                            Sign-in with Passkey
+                                        </Button>
                                 </Stack>
+                           
+                                      
                             </Form>
                         </FormErrorSound>
                     </Paper>
