@@ -42,14 +42,16 @@ export default function Create() {
                             <Stack gap="md">
                                 <TextInput
                                     label="Name"
+                                    name="name"
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                     error={errors.name}
-                                    required
+                                    
                                 />
 
                                 <Textarea
                                     label="Description"
+                                    name="description"
                                     value={data.description}
                                     onChange={(e) => setData('description', e.target.value)}
                                     error={errors.description}
@@ -58,6 +60,7 @@ export default function Create() {
 
                                 <Checkbox
                                     label="Hidden"
+                                    name="hidden"
                                     checked={data.hidden}
                                     onChange={(e) => setData('hidden', e.target.checked)}
                                 />

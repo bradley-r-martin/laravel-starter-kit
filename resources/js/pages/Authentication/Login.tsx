@@ -45,34 +45,39 @@ const Login: FunctionComponent<LoginProps> = () => {
                                 action={{ url: route('login.process'), method: 'post' }}
                             >
                                 <Stack gap="md">
-                           
                                     <Field name="email" form={form}>
                                         <TextInput
                                             label="Email"
+                                            name="email"
                                             type="text"
                                             autoComplete="email"
                                             autoFocus
-                                            required
+                                            
                                         />
                                     </Field>
                                     <Field name="password" form={form}>
                                         <PasswordInput
                                             label="Password"
+                                            name="password"
                                             autoComplete="current-password"
-                                            required
+                                            
                                         />
                                     </Field>
 
                                     <Button type="submit" loading={processing}>
-                                            Sign in
-                                        </Button>
-                                    <Divider label="or" labelPosition='center' />
-                                    <Button type="button" variant='default' leftSection={<KeyRoundIcon className='size-5 stroke-[1.5]'/>}>
-                                            Sign-in with Passkey
-                                        </Button>
+                                        Sign in
+                                    </Button>
+                                    <Divider label="or" labelPosition="center" />
+                                    <Button
+                                        type="button"
+                                        variant="default"
+                                        leftSection={
+                                            <KeyRoundIcon className="size-5 stroke-[1.5]" />
+                                        }
+                                    >
+                                        Sign-in with Passkey
+                                    </Button>
                                 </Stack>
-                           
-                                      
                             </Form>
                         </FormErrorSound>
                     </Paper>
