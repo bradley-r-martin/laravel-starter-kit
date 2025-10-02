@@ -1,26 +1,24 @@
 import { Head, Link } from '@inertiajs/react';
+import { Button, Container, Group, Paper, Stack, Text, Title } from '@mantine/core';
 
 export default function List() {
     return (
         <>
             <Head title="Roles" />
-            <div className="min-h-screen bg-gray-100 py-12">
-                <div className="mx-auto max-w-7xl">
-                    <div className="mb-6 flex items-center justify-between">
-                        <h1 className="text-3xl font-bold text-gray-900">Roles</h1>
-                        <Link
-                            href={route('roles.create')}
-                            className="rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
-                        >
-                            Create Role
+            <Container size="xl" py="xl">
+                <Stack gap="xl">
+                    <Group justify="space-between" align="center">
+                        <Title order={1}>Roles</Title>
+                        <Link href={route('roles.create')}>
+                            <Button>Create Role</Button>
                         </Link>
-                    </div>
+                    </Group>
 
-                    <div className="rounded-lg bg-white p-8 shadow-md">
-                        <p className="text-gray-600">Roles list will go here</p>
-                    </div>
-                </div>
-            </div>
+                    <Paper shadow="sm" p="xl" radius="md" withBorder>
+                        <Text c="dimmed">Roles list will go here</Text>
+                    </Paper>
+                </Stack>
+            </Container>
         </>
     );
 }

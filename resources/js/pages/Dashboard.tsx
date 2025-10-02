@@ -1,4 +1,5 @@
 import { Head } from '@inertiajs/react';
+import { Container, Paper, Stack, Text, Title } from '@mantine/core';
 import { FunctionComponent } from 'react';
 
 interface DashboardProps {}
@@ -7,20 +8,20 @@ const Dashboard: FunctionComponent<DashboardProps> = () => {
     return (
         <>
             <Head title="Dashboard" />
-            <div className="min-h-screen bg-gray-100 py-12">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="mb-6">
-                        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-                        <p className="mt-2 text-sm text-gray-600">Welcome to your dashboard</p>
-                    </div>
+            <Container size="xl" py="xl">
+                <Stack gap="xl">
+                    <Stack gap="xs">
+                        <Title order={1}>Dashboard</Title>
+                        <Text size="sm" c="dimmed">
+                            Welcome to your dashboard
+                        </Text>
+                    </Stack>
 
-                    <div className="rounded-lg bg-white p-8 shadow-md">
-                        <p className="text-gray-700">
-                            You are now logged in and viewing the dashboard.
-                        </p>
-                    </div>
-                </div>
-            </div>
+                    <Paper shadow="sm" p="xl" radius="md" withBorder>
+                        <Text>You are now logged in and viewing the dashboard.</Text>
+                    </Paper>
+                </Stack>
+            </Container>
         </>
     );
 };

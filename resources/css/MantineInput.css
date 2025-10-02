@@ -1,0 +1,36 @@
+.mantine-PasswordInput-innerInput,
+.mantine-Input-input {
+    @apply rounded-sm;
+
+    &[data-variant='filled'] {
+        @apply border border-zinc-200 bg-zinc-200;
+
+        &:focus {
+            @apply border border-blue-500;
+        }
+    }
+
+    &[data-variant='default'] {
+        @apply overflow-visible text-slate-600 shadow-inner drop-shadow;
+
+        &[data-error='true']:focus {
+            @apply bg-red-500/5 text-red-600 caret-red-500 ring-red-500/20 selection:bg-red-500/30 selection:text-red-800;
+        }
+    }
+
+    &:focus {
+        @apply bg-blue-500/10 text-blue-600 caret-blue-500 ring-2 ring-blue-500/20 outline-none selection:bg-blue-500/30 selection:text-blue-800;
+    }
+
+    &[data-variant='outline'] {
+        @apply border-2 border-zinc-300 bg-white px-4 !py-5;
+
+        &:focus {
+            @apply border-2 border-blue-500 ring-0;
+        }
+    }
+}
+
+.sq-card-message {
+    display: none;
+}

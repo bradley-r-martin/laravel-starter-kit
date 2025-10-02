@@ -1,91 +1,77 @@
+import Field from '@/components/Field';
+import Form from '@/components/Form';
+import FormErrorSound from '@/components/FormErrorSound';
 import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler, FunctionComponent } from 'react';
+import {
+    Button,
+    Container,
+    Group,
+    Paper,
+    PasswordInput,
+    Stack,
+    Text,
+    TextInput,
+    Title,
+} from '@mantine/core';
+import { FunctionComponent } from 'react';
 
 interface LoginProps {}
 
 const Login: FunctionComponent<LoginProps> = () => {
-    const { data, setData, post, processing, errors } = useForm({
+    const form = useForm({
         email: '',
         password: '',
     });
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
-        post(route('login.process'));
-    };
+    const { processing } = form;
 
     return (
         <>
             <Head title="Login" />
-            <div className="min-h-screen bg-gray-100 py-12">
-                <div className="mx-auto max-w-md">
-                    <div className="mb-6">
-                        <h1 className="text-3xl font-bold text-gray-900">Login</h1>
-                        <p className="mt-2 text-sm text-gray-600">
+            <Container size="xs" py="xl" h="100vh">
+                <Stack gap="xl">
+                    <Stack gap="xs">
+                        <Title order={1}>Login</Title>
+                        <Text size="sm" c="dimmed">
                             Sign in to your account to continue
-                        </p>
-                    </div>
+                        </Text>
+                    </Stack>
 
-                    <div className="rounded-lg bg-white p-8 shadow-md">
-                        <form onSubmit={submit}>
-                            <div className="space-y-6">
-                                <div>
-                                    <label
-                                        htmlFor="email"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Email
-                                    </label>
-                                    <input
-                                        id="email"
-                                        type="text"
-                                        value={data.email}
-                                        onChange={(e) => setData('email', e.target.value)}
-                                        autoComplete="email"
-                                        autoFocus
-                                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                                    />
-                                    {errors.email && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                                    )}
-                                </div>
+                    <Paper shadow="sm" p="xl" radius="md" withBorder>
+                        <FormErrorSound>
+                            <Form
+                                form={form}
+                                action={{ url: route('login.process'), method: 'post' }}
+                            >
+                                <Stack gap="md">
+                                    <Field name="email" form={form}>
+                                        <TextInput
+                                            label="Email"
+                                            type="text"
+                                            autoComplete="email"
+                                            autoFocus
+                                            required
+                                        />
+                                    </Field>
+                                    <Field name="password" form={form}>
+                                        <PasswordInput
+                                            label="Password"
+                                            autoComplete="current-password"
+                                            required
+                                        />
+                                    </Field>
 
-                                <div>
-                                    <label
-                                        htmlFor="password"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Password
-                                    </label>
-                                    <input
-                                        id="password"
-                                        type="password"
-                                        value={data.password}
-                                        onChange={(e) => setData('password', e.target.value)}
-                                        autoComplete="current-password"
-                                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                                    />
-                                    {errors.password && (
-                                        <p className="mt-1 text-sm text-red-600">
-                                            {errors.password}
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div className="flex items-center justify-end">
-                                    <button
-                                        type="submit"
-                                        disabled={processing}
-                                        className="rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700 disabled:opacity-50"
-                                    >
-                                        {processing ? 'Signing in...' : 'Sign in'}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                                    <Group justify="flex-end" mt="md">
+                                        <Button type="submit" loading={processing}>
+                                            Sign in
+                                        </Button>
+                                    </Group>
+                                </Stack>
+                            </Form>
+                        </FormErrorSound>
+                    </Paper>
+                </Stack>
+            </Container>
         </>
     );
 };
