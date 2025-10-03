@@ -12,10 +12,10 @@ Route::get('/', function () {
 });
 
 Route::get('/login', [AuthenticationLoginController::class, 'view'])->name('login');
-Route::post('/login', [AuthenticationLoginController::class, 'process'])->name('login.process');
+Route::post('/login', [AuthenticationLoginController::class, 'process'])->middleware('throttle:login')->name('login.process');
 
 Route::get('/recovery', [AuthenticationRecoveryController::class, 'view'])->name('recovery');
-Route::post('/recovery', [AuthenticationRecoveryController::class, 'process'])->name('recovery.process');
+Route::post('/recovery', [AuthenticationRecoveryController::class, 'process'])->middleware('throttle:recovery')->name('recovery.process');
 
 Route::get('/reset-password', [AuthenticationResetController::class, 'view'])->name('reset');
 Route::post('/reset-password', [AuthenticationResetController::class, 'process'])->name('reset.process');

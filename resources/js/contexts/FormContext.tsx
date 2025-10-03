@@ -1,4 +1,3 @@
-
 import { InertiaFormProps } from '@inertiajs/react';
 import { createContext } from 'react';
 

@@ -1,7 +1,7 @@
+import useFormContext from '@/hooks/useFormContext';
 import merge from 'merge-props';
 import React, { FunctionComponent } from 'react';
 import Slot from './Slot';
-import useFormContext from '@/hooks/useFormContext';
 
 interface FieldProps {
     type?: 'text' | 'number' | 'password' | 'email' | 'checkbox' | 'radio' | 'select' | 'textarea';

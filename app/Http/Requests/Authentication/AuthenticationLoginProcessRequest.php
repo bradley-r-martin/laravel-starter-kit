@@ -7,11 +7,8 @@ namespace App\Http\Requests\Authentication;
 use App\Aggregates\UserAggregate;
 use App\Models\User;
 use DateTimeImmutable;
-use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -38,38 +35,18 @@ final class AuthenticationLoginProcessRequest extends FormRequest
         ];
     }
 
-    public function rate_limit_key(): string
-    {
-
-        $email = request()->string('email')->lower()->toString();
-
-        return $email.'|'.request()->ip();
-    }
-
     public function respond(): Response
     {
         $email = request()->string('email')->toString();
         $password = request()->string('password')->toString();
         $remember = true;
 
-        if (RateLimiter::tooManyAttempts($this->rate_limit_key(), 5)) {
-            event(new Lockout(request()));
-            $seconds = RateLimiter::availableIn($this->rate_limit_key());
-            throw ValidationException::withMessages([
-                'email' => trans('auth.throttle', [
-                    'seconds' => $seconds,
-                    'minutes' => ceil($seconds / 60),
-                ]),
-            ]);
-        }
-
         if (! Auth::validate(['email' => $email, 'password' => $password])) {
-            RateLimiter::hit($this->rate_limit_key());
+
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
             ]);
         }
-        RateLimiter::clear(Str::lower($email).'|'.request()->ip());
 
         // Get the authenticated user
         /** @var User $user */
