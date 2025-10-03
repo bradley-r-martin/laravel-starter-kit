@@ -2,7 +2,7 @@ import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import MainLayout from '@/Layouts/MainLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { Button, Container, Paper, Stack, Text, TextInput, Title } from '@mantine/core';
 import { FunctionComponent } from 'react';
 
@@ -47,6 +47,7 @@ const Recovery: FunctionComponent<RecoveryProps> = () => {
                                     <Button type="submit" loading={processing}>
                                         Send Recovery Link
                                     </Button>
+                                    <Link href={route('login')}>Back to login</Link>
                                 </Stack>
                             </Form>
                         </FormErrorSound>

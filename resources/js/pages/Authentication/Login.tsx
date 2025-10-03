@@ -2,7 +2,7 @@ import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import MainLayout from '@/Layouts/MainLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import {
     Button,
     Container,
@@ -62,6 +62,7 @@ const Login: FunctionComponent<LoginProps> = () => {
                                             autoComplete="current-password"
                                         />
                                     </Field>
+                                    <Link href={route('recovery')}>Forgot password?</Link>
 
                                     <Button type="submit" loading={processing}>
                                         Sign in
