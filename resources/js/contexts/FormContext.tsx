@@ -1,18 +1,11 @@
-import { VisitOptions } from '@inertiajs/core';
+
+import { InertiaFormProps } from '@inertiajs/react';
 import { createContext } from 'react';
 
-type FormContextType = {
-    action: {
-        url: string;
-        method: string;
-    };
-    headers: Omit<VisitOptions, 'data' | 'method'>;
-    data: () => Record<string, any>;
-    errors: () => Record<string, string>;
-    submit: () => void;
-    reset: () => void;
+type FormContextType<Data extends Record<string, any>> = {
+    inertiaFormInstance: InertiaFormProps<Data>;
 };
 
-const FormContext = createContext<FormContextType | undefined>(undefined);
+const FormContext = createContext<FormContextType<any> | undefined>(undefined);
 
 export default FormContext;

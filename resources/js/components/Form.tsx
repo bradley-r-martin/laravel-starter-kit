@@ -1,3 +1,4 @@
+import FormContext from '@/contexts/FormContext';
 import { InertiaFormProps } from '@inertiajs/react';
 import { FunctionComponent, HTMLAttributes } from 'react';
 
@@ -32,9 +33,11 @@ const Form: FunctionComponent<FormProps> = (props) => {
     };
 
     return (
-        <form onSubmit={onSubmit} {...restProps}>
-            {children}
-        </form>
+        <FormContext.Provider value={{ inertiaFormInstance: form }}>
+            <form onSubmit={onSubmit} {...restProps}>
+                {children}
+            </form>
+        </FormContext.Provider>
     );
 };
 

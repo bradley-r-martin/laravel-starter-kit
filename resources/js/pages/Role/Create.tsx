@@ -1,3 +1,6 @@
+import Field from '@/components/Field';
+import Form from '@/components/Form';
+import FormErrorSound from '@/components/FormErrorSound';
 import { Head, Link, useForm } from '@inertiajs/react';
 import {
     Anchor,
@@ -11,19 +14,15 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
-import { FormEventHandler } from 'react';
 
 export default function Create() {
-    const { data, setData, post, processing, errors } = useForm({
+    const form = useForm({
         name: '',
         description: '',
         hidden: false,
     });
+    const { processing } = form
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
-        post(route('roles.store'));
-    };
 
     return (
         <>
@@ -32,50 +31,46 @@ export default function Create() {
                 <Stack gap="xl">
                     <Group justify="space-between" align="center">
                         <Title order={1}>Create Role</Title>
-                        <Link href={route('roles.index')}>
-                            <Button variant="default">Back to List</Button>
-                        </Link>
+                        <Button component={Link} href={route('roles.index')} variant="default">Back to List</Button>
                     </Group>
 
                     <Paper shadow="sm" p="xl" radius="md" withBorder>
-                        <form onSubmit={submit}>
+                    <FormErrorSound>
+                        <Form form={form} action={{ url: route('roles.store'), method: 'post' }}>
                             <Stack gap="md">
-                                <TextInput
-                                    label="Name"
-                                    name="name"
-                                    value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
-                                    error={errors.name}
-                                />
+                                <Field name="name">
+                                    <TextInput
+                                        label="Name"
+                                        name="name"
+                                    />
+                                </Field>
 
-                                <Textarea
-                                    label="Description"
-                                    name="description"
-                                    value={data.description}
-                                    onChange={(e) => setData('description', e.target.value)}
-                                    error={errors.description}
-                                    rows={4}
-                                />
+                                <Field name="description">
+                                    <Textarea
+                                        label="Description"
+                                        name="description"
+                                        rows={4}
+                                    />
+                                </Field>
 
-                                <Checkbox
-                                    label="Hidden"
-                                    name="hidden"
-                                    checked={data.hidden}
-                                    onChange={(e) => setData('hidden', e.target.checked)}
-                                />
-
+                                <Field name="hidden" type='checkbox'>
+                                    <Checkbox
+                                        label="Hidden"
+                                        name="hidden"
+                                    />
+                                </Field>
                                 <Group justify="flex-end" mt="md">
-                                    <Link href={route('roles.index')}>
-                                        <Anchor component="button" type="button" c="dimmed">
-                                            Cancel
-                                        </Anchor>
-                                    </Link>
+                                 
+                                    <Anchor component={Link} href={route('roles.index')} type="button" c="dimmed">
+                                        Cancel
+                                    </Anchor>
                                     <Button type="submit" loading={processing}>
                                         {processing ? 'Creating...' : 'Create Role'}
                                     </Button>
                                 </Group>
                             </Stack>
-                        </form>
+                        </Form>
+                        </FormErrorSound>
                     </Paper>
                 </Stack>
             </Container>

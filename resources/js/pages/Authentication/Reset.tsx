@@ -52,7 +52,7 @@ const Reset: FunctionComponent<ResetProps> = ({ token, email }) => {
                                 }}
                             >
                                 <Stack gap="md">
-                                    <Field name="email" form={form}>
+                                    <Field name="email">
                                         <TextInput
                                             label="Email"
                                             name="email"
@@ -62,7 +62,7 @@ const Reset: FunctionComponent<ResetProps> = ({ token, email }) => {
                                         />
                                     </Field>
 
-                                    <Field name="password" form={form}>
+                                    <Field name="password">
                                         <PasswordInput
                                             label="New Password"
                                             name="password"
@@ -71,7 +71,7 @@ const Reset: FunctionComponent<ResetProps> = ({ token, email }) => {
                                         />
                                     </Field>
 
-                                    <Field name="password_confirmation" form={form}>
+                                    <Field name="password_confirmation">
                                         <PasswordInput
                                             label="Confirm Password"
                                             name="password_confirmation"

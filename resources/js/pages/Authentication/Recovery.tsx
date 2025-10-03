@@ -34,7 +34,7 @@ const Recovery: FunctionComponent<RecoveryProps> = () => {
                                 action={{ url: route('recovery.process'), method: 'post' }}
                             >
                                 <Stack gap="md">
-                                    <Field name="email" form={form}>
+                                    <Field name="email">
                                         <TextInput
                                             label="Email"
                                             name="email"

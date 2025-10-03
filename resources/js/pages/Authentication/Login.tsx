@@ -46,7 +46,7 @@ const Login: FunctionComponent<LoginProps> = () => {
                                 action={{ url: route('login.process'), method: 'post' }}
                             >
                                 <Stack gap="md">
-                                    <Field name="email" form={form}>
+                                    <Field name="email">
                                         <TextInput
                                             label="Email"
                                             name="email"
@@ -55,7 +55,7 @@ const Login: FunctionComponent<LoginProps> = () => {
                                             autoFocus
                                         />
                                     </Field>
-                                    <Field name="password" form={form}>
+                                    <Field name="password">
                                         <PasswordInput
                                             label="Password"
                                             name="password"
