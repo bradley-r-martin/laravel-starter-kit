@@ -50,7 +50,11 @@ final class AuthenticationResetProcessRequest extends FormRequest
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            return redirect()->route('login')->with('status', __($status));
+            return redirect()->route('login')
+                ->with('toast', [
+                    'message' => __($status),
+                    'type' => 'success',
+                ]);
         }
 
         throw ValidationException::withMessages([

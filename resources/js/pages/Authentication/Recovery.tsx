@@ -1,6 +1,7 @@
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
+import MainLayout from '@/Layouts/MainLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { Button, Container, Paper, Stack, Text, TextInput, Title } from '@mantine/core';
 import { FunctionComponent } from 'react';
@@ -15,7 +16,7 @@ const Recovery: FunctionComponent<RecoveryProps> = () => {
     const { processing } = form;
 
     return (
-        <>
+        <MainLayout>
             <Head title="Account Recovery" />
             <Container size="xs" py="xl" h="100vh">
                 <Stack gap="xl">
@@ -52,7 +53,7 @@ const Recovery: FunctionComponent<RecoveryProps> = () => {
                     </Paper>
                 </Stack>
             </Container>
-        </>
+        </MainLayout>
     );
 };
 

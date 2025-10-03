@@ -30,6 +30,7 @@
         "@mantine/core": "^8.3.2",
         "@mantine/form": "^8.3.2",
         "@mantine/hooks": "^8.3.2",
+        "@mantine/notifications": "^8.3.3",
         "lucide-react": "^0.544.0",
         "merge-props": "^6.0.0",
         "react": "^19.1.1",

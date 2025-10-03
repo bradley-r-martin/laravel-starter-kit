@@ -1,6 +1,7 @@
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
+import MainLayout from '@/Layouts/MainLayout';
 import { Head, useForm } from '@inertiajs/react';
 import {
     Button,
@@ -27,7 +28,7 @@ const Login: FunctionComponent<LoginProps> = () => {
     const { processing } = form;
 
     return (
-        <>
+        <MainLayout>
             <Head title="Login" />
             <Container size="xs" py="xl" h="100vh">
                 <Stack gap="xl">
@@ -81,7 +82,7 @@ const Login: FunctionComponent<LoginProps> = () => {
                     </Paper>
                 </Stack>
             </Container>
-        </>
+        </MainLayout>
     );
 };
 

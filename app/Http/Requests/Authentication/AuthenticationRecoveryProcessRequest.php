@@ -52,6 +52,9 @@ final class AuthenticationRecoveryProcessRequest extends FormRequest
         }
 
         // Always return the same response to prevent email enumeration
-        return back();
+        return redirect()->route('login')->with('toast', [
+            'message' => 'Recovery email sent successfully',
+            'type' => 'success',
+        ]);
     }
 }
