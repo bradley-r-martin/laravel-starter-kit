@@ -34,10 +34,9 @@ it('can destroy a closed role through the browser', function (): void {
 
 it('prevents destroying a role that is not closed', function (): void {
     ['territory' => $territory, 'user' => $user] = createTestEnvironment();
-    $roleId = createRole('Active Manager', 'Active manager role', false);
-    $role = Role::findOrFail($roleId);
+    $role = createRole('Active Manager', 'Active manager role', false);
 
-    $page = $this->as($user, $territory)->visit("/roles/{$roleId}/destroy");
+    $page = $this->as($user, $territory)->visit("/roles/{$role->id}/destroy");
 
     $page->assertTitle("Destroy Role: {$role->name} - Laravel")
         ->assertSee('Destroy Role')

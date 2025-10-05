@@ -7,10 +7,9 @@ use App\Models\Role;
 
 it('can update a role through the browser', function (): void {
     ['territory' => $territory, 'user' => $user] = createTestEnvironment();
-    $roleId = createRole('Manager', 'Manager role', false);
-    $role = Role::findOrFail($roleId);
+    $role = createRole('Manager', 'Manager role', false);
 
-    $page = $this->as($user, $territory)->visit("/roles/{$roleId}/update");
+    $page = $this->as($user, $territory)->visit("/roles/{$role->id}/update");
 
     $page->assertTitle("Update Role: {$role->name} - Laravel")
         ->assertSee('Update Role')
@@ -56,9 +55,9 @@ it('prevents updating a closed role', function (): void {
 
 it('shows validation errors when updating with invalid data', function (): void {
     ['territory' => $territory, 'user' => $user] = createTestEnvironment();
-    $roleId = createRole();
+    $role = createRole();
 
-    $this->as($user, $territory)->visit("/roles/{$roleId}/update")
+    $this->as($user, $territory)->visit("/roles/{$role->id}/update")
         ->fill('name', '')
         ->fill('description', '')
         ->submit()
@@ -68,11 +67,10 @@ it('shows validation errors when updating with invalid data', function (): void 
 
 it('can cancel role update', function (): void {
     ['territory' => $territory, 'user' => $user] = createTestEnvironment();
-    $roleId = createRole();
-    $role = Role::findOrFail($roleId);
+    $role = createRole();
     $originalName = $role->name;
 
-    $this->as($user, $territory)->visit("/roles/{$roleId}/update")
+    $this->as($user, $territory)->visit("/roles/{$role->id}/update")
         ->fill('name', 'Changed Name')
         ->press('Cancel')
         ->assertPathIs('/roles')

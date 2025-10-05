@@ -1,0 +1,105 @@
+import Field from '@/components/Field';
+import Form from '@/components/Form';
+import FormErrorSound from '@/components/FormErrorSound';
+import { Head, useForm } from '@inertiajs/react';
+import { Modal, useModal } from '@inertiaui/modal-react';
+import {
+    Anchor,
+    Button,
+    Group,
+    PasswordInput,
+    Select,
+    Stack,
+    TextInput,
+    Title,
+} from '@mantine/core';
+
+interface SelectOption {
+    value: string;
+    label: string;
+}
+
+interface CreateProps {
+    roles: SelectOption[];
+    operators: SelectOption[];
+}
+
+export default function Create({ roles, operators }: CreateProps) {
+    const modal = useModal();
+    const form = useForm({
+        operator_id: '',
+        role_id: '',
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: '',
+    });
+    const { processing } = form;
+
+    return (
+        <>
+            <Head title="Create User" />
+            <Modal>
+                <Title order={2} mb="lg">
+                    Create User
+                </Title>
+
+                <FormErrorSound>
+                    <Form
+                        form={form}
+                        action={{ url: route('users.store'), method: 'post' }}
+                        onSuccess={() => modal?.close()}
+                    >
+                        <Stack gap="md">
+                            <Field name="operator_id">
+                                <Select
+                                    label="Operator"
+                                    name="operator_id"
+                                    placeholder="Select an operator"
+                                    data={operators}
+                                    searchable
+                                />
+                            </Field>
+
+                            <Field name="role_id">
+                                <Select
+                                    label="Role"
+                                    name="role_id"
+                                    placeholder="Select a role"
+                                    data={roles}
+                                    searchable
+                                    clearable
+                                />
+                            </Field>
+
+                            <Field name="first_name">
+                                <TextInput label="First Name" name="first_name" required />
+                            </Field>
+
+                            <Field name="last_name">
+                                <TextInput label="Last Name" name="last_name" required />
+                            </Field>
+
+                            <Field name="email">
+                                <TextInput label="Email" name="email" type="email" required />
+                            </Field>
+
+                            <Field name="password">
+                                <PasswordInput label="Password" name="password" required />
+                            </Field>
+
+                            <Group justify="flex-end" mt="md">
+                                <Anchor onClick={() => modal?.close()} type="button" c="dimmed">
+                                    Cancel
+                                </Anchor>
+                                <Button type="submit" loading={processing}>
+                                    {processing ? 'Creating...' : 'Create User'}
+                                </Button>
+                            </Group>
+                        </Stack>
+                    </Form>
+                </FormErrorSound>
+            </Modal>
+        </>
+    );
+}

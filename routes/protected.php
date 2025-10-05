@@ -8,6 +8,7 @@ use App\Http\Controllers\Role\RoleCreateController;
 use App\Http\Controllers\Role\RoleDestroyController;
 use App\Http\Controllers\Role\RoleListController;
 use App\Http\Controllers\Role\RoleUpdateController;
+use App\Http\Controllers\User\UserCreateController;
 use App\Http\Controllers\User\UserListController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,8 @@ Route::middleware('territory')->group(function () {
 
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserListController::class, 'view'])->name('index');
+        Route::get('/create', [UserCreateController::class, 'view'])->name('create');
+        Route::post('/create', [UserCreateController::class, 'process'])->name('store');
     });
 
     Route::get('/dashboard', function () {

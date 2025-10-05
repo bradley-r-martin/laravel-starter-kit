@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregates;
 
+use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
 use DateTimeImmutable;
@@ -11,6 +12,16 @@ use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 final class UserAggregate extends AggregateRoot
 {
+    public ?string $operatorId = null;
+
+    public ?string $roleId = null;
+
+    public ?string $firstName = null;
+
+    public ?string $lastName = null;
+
+    public ?string $email = null;
+
     public ?DateTimeImmutable $lastLoginAt = null;
 
     public ?string $lastLoginIpAddress = null;
@@ -22,6 +33,26 @@ final class UserAggregate extends AggregateRoot
     public ?DateTimeImmutable $lastRecoveryRequestedAt = null;
 
     public int $recoveryRequestCount = 0;
+
+    public function create(
+        string $operatorId,
+        string $roleId,
+        string $firstName,
+        string $lastName,
+        string $email,
+        string $password,
+    ): self {
+        $this->recordThat(new UserCreated(
+            operatorId: $operatorId,
+            roleId: $roleId,
+            firstName: $firstName,
+            lastName: $lastName,
+            email: $email,
+            password: $password,
+        ));
+
+        return $this;
+    }
 
     public function login(
         string $ipAddress,
@@ -73,5 +104,17 @@ final class UserAggregate extends AggregateRoot
     {
         $this->lastRecoveryRequestedAt = $event->timestamp;
         $this->recoveryRequestCount++;
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applyUserCreated(UserCreated $event): void
+    {
+        $this->operatorId = $event->operatorId;
+        $this->roleId = $event->roleId;
+        $this->firstName = $event->firstName;
+        $this->lastName = $event->lastName;
+        $this->email = $event->email;
     }
 }

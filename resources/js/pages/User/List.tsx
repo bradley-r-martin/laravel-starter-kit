@@ -1,7 +1,8 @@
 import MainLayout from '@/Layouts/MainLayout';
 import { Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
-import { Badge, Container, Group, Paper, Stack, Table, Text, Title } from '@mantine/core';
+import { ModalLink } from '@inertiaui/modal-react';
+import { Badge, Button, Container, Group, Paper, Stack, Table, Text, Title } from '@mantine/core';
 
 interface User {
     id: string;
@@ -28,6 +29,9 @@ export default function List({ users }: Props) {
                 <Stack gap="xl">
                     <Group justify="space-between" align="center">
                         <Title order={1}>Users</Title>
+                        <ModalLink href={route('users.create')} navigate={true}>
+                            <Button>Create User</Button>
+                        </ModalLink>
                     </Group>
 
                     <Paper shadow="sm" radius="md" withBorder>

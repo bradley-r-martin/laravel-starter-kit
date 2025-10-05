@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Projectors;
 
+use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
+use App\Models\Operator;
 use App\Models\User;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 use Spatie\EventSourcing\StoredEvents\StoredEvent;
@@ -18,6 +20,22 @@ final class UserProjector extends Projector
         $this->aggregateUuid = $storedEvent->aggregate_uuid;
 
         parent::handle($storedEvent);
+    }
+
+    public function onUserCreated(UserCreated $event): void
+    {
+        $operator = Operator::findOrFail($event->operatorId);
+
+        User::create([
+            'id' => $this->aggregateUuid,
+            'operator_id' => $event->operatorId,
+            'role_id' => $event->roleId,
+            'first_name' => $event->firstName,
+            'last_name' => $event->lastName,
+            'email' => $event->email,
+            'password' => $event->password,
+            '__operator_name' => $operator->name,
+        ]);
     }
 
     public function onUserLoggedIn(UserLoggedIn $event): void

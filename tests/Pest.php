@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\Role;
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -104,14 +105,14 @@ function createRole(
     string $description = 'Manager role',
     bool $hidden = false,
     ?string $id = null
-): string {
+): Role {
     $roleId = $id ?? (string) Illuminate\Support\Str::ulid();
 
     App\Aggregates\RoleAggregate::retrieve($roleId)
         ->create($name, $description, $hidden)
         ->persist();
 
-    return $roleId;
+    return Role::findOrFail($roleId);
 }
 
 /**
@@ -121,7 +122,8 @@ function createTestEnvironment(): array
 {
     $operator = createOperator();
     $territory = createTerritory($operator);
-    $user = createUser($operator);
+    $role = createRole();
+    $user = createUser($operator, roleId: $role->id);
 
-    return compact('operator', 'territory', 'user');
+    return compact('operator', 'territory', 'user', 'role');
 }

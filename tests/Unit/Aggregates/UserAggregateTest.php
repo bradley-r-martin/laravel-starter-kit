@@ -3,8 +3,60 @@
 declare(strict_types=1);
 
 use App\Aggregates\UserAggregate;
+use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
+
+describe('User Creation', function () {
+    it('records user creation event', function () {
+        $hashedPassword = '$2y$12$abcdefghijklmnopqrstuv';
+
+        $aggregate = UserAggregate::retrieve('user-0')
+            ->create(
+                operatorId: 'operator-1',
+                roleId: 'role-1',
+                firstName: 'John',
+                lastName: 'Doe',
+                email: 'john.doe@example.com',
+                password: $hashedPassword
+            );
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserCreated::class)
+            ->operatorId->toBe('operator-1')
+            ->roleId->toBe('role-1')
+            ->firstName->toBe('John')
+            ->lastName->toBe('Doe')
+            ->email->toBe('john.doe@example.com')
+            ->password->toBe($hashedPassword);
+    });
+
+    it('records user creation with null role', function () {
+        $hashedPassword = '$2y$12$xyz123456789abcdefghij';
+
+        $aggregate = UserAggregate::retrieve('user-00')
+            ->create(
+                operatorId: 'operator-1',
+                roleId: 'role-1',
+                firstName: 'Jane',
+                lastName: 'Smith',
+                email: 'jane.smith@example.com',
+                password: $hashedPassword
+            );
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserCreated::class)
+            ->operatorId->toBe('operator-1')
+            ->roleId->toBe('role-1')
+            ->firstName->toBe('Jane')
+            ->lastName->toBe('Smith')
+            ->password->toBe($hashedPassword);
+    });
+});
 
 describe('User Login', function () {
     it('records user login event', function () {
