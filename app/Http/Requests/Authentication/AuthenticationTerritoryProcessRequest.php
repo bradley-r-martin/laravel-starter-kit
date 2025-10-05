@@ -55,6 +55,7 @@ final class AuthenticationTerritoryProcessRequest extends FormRequest
 
         // Store the territory ID in a cookie (30 days)
         Cookie::queue('selected_territory', $territoryId, 60 * 24 * 30);
+        $this->session()->put('selected_territory', $territoryId);
 
         return redirect()->intended('/dashboard');
     }
