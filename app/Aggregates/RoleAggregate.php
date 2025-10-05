@@ -9,6 +9,7 @@ use App\Events\Policy\PolicyDeprecated;
 use App\Events\Policy\PolicyDetached;
 use App\Events\Role\RoleClosed;
 use App\Events\Role\RoleCreated;
+use App\Events\Role\RoleDestroyed;
 use App\Events\Role\RoleUpdated;
 use DateTimeImmutable;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
@@ -66,6 +67,13 @@ final class RoleAggregate extends AggregateRoot
     public function close(string $reason): self
     {
         $this->recordThat(new RoleClosed(reason: $reason));
+
+        return $this;
+    }
+
+    public function destroy(): self
+    {
+        $this->recordThat(new RoleDestroyed);
 
         return $this;
     }

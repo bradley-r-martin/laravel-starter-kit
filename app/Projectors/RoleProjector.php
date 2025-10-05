@@ -6,6 +6,7 @@ namespace App\Projectors;
 
 use App\Events\Role\RoleClosed;
 use App\Events\Role\RoleCreated;
+use App\Events\Role\RoleDestroyed;
 use App\Events\Role\RoleUpdated;
 use App\Models\Role;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
@@ -62,5 +63,12 @@ final class RoleProjector extends Projector
         $role->update([
             'closed_at' => now(),
         ]);
+    }
+
+    public function onRoleDestroyed(RoleDestroyed $event): void
+    {
+        $role = Role::findOrFail($this->aggregateUuid);
+
+        $role->delete();
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Authentication\AuthenticationTerritoryController;
 use App\Http\Controllers\Role\RoleCloseController;
 use App\Http\Controllers\Role\RoleCreateController;
+use App\Http\Controllers\Role\RoleDestroyController;
 use App\Http\Controllers\Role\RoleListController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,8 @@ Route::middleware('territory')->group(function () {
         Route::post('/create', [RoleCreateController::class, 'process'])->name('store');
         Route::get('/{role}/close', [RoleCloseController::class, 'view'])->name('close');
         Route::post('/{role}/close', [RoleCloseController::class, 'process'])->name('close');
+        Route::get('/{role}/destroy', [RoleDestroyController::class, 'view'])->name('destroy');
+        Route::delete('/{role}/destroy', [RoleDestroyController::class, 'process'])->name('destroy');
     });
 
     Route::get('/dashboard', function () {

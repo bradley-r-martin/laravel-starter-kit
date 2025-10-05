@@ -15,7 +15,7 @@ import {
     Title,
     Tooltip,
 } from '@mantine/core';
-import { XIcon } from 'lucide-react';
+import { TrashIcon, XIcon } from 'lucide-react';
 
 interface Role {
     id: string;
@@ -105,25 +105,49 @@ export default function List({ roles }: Props) {
                                                     </Text>
                                                 </Table.Td>
                                                 <Table.Td>
-                                                    {!role.closed_at && (
-                                                        <ModalLink
-                                                            href={route('roles.close', role.id)}
-                                                            navigate={true}
-                                                        >
-                                                            <Tooltip
-                                                                label="Close Role"
-                                                                position="left"
+                                                    <Group gap="xs">
+                                                        {!role.closed_at && (
+                                                            <ModalLink
+                                                                href={route('roles.close', role.id)}
+                                                                navigate={true}
                                                             >
-                                                                <ActionIcon
-                                                                    variant="subtle"
-                                                                    color="red"
-                                                                    size="sm"
+                                                                <Tooltip
+                                                                    label="Close Role"
+                                                                    position="left"
                                                                 >
-                                                                    <XIcon className="size-4" />
-                                                                </ActionIcon>
-                                                            </Tooltip>
-                                                        </ModalLink>
-                                                    )}
+                                                                    <ActionIcon
+                                                                        variant="subtle"
+                                                                        color="orange"
+                                                                        size="sm"
+                                                                    >
+                                                                        <XIcon className="size-4" />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+                                                            </ModalLink>
+                                                        )}
+                                                        {role.closed_at && (
+                                                            <ModalLink
+                                                                href={route(
+                                                                    'roles.destroy',
+                                                                    role.id
+                                                                )}
+                                                                navigate={true}
+                                                            >
+                                                                <Tooltip
+                                                                    label="Destroy Role"
+                                                                    position="left"
+                                                                >
+                                                                    <ActionIcon
+                                                                        variant="subtle"
+                                                                        color="red"
+                                                                        size="sm"
+                                                                    >
+                                                                        <TrashIcon className="size-4" />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+                                                            </ModalLink>
+                                                        )}
+                                                    </Group>
                                                 </Table.Td>
                                             </Table.Tr>
                                         ))}
