@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\Operator;
+use App\Models\Territory;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,6 +20,11 @@ final class DatabaseSeeder extends Seeder
         $operator = Operator::create([
             'name' => 'Test Operator',
             'email' => 'operator@example.com',
+        ]);
+
+        Territory::create([
+            'operator_id' => $operator->id,
+            'name' => 'Test Territory',
         ]);
 
         User::create([

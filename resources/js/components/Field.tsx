@@ -20,6 +20,8 @@ const Field: FunctionComponent<FieldProps> = (props) => {
                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
                     if (type === 'checkbox') {
                         inertiaFormInstance.setData(name, e.target.checked);
+                    } else if (type === 'radio') {
+                        inertiaFormInstance.setData(name, e);
                     } else {
                         inertiaFormInstance.setData(name, e.target.value);
                     }

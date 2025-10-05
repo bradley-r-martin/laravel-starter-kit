@@ -4,12 +4,18 @@ declare(strict_types=1);
 
 use App\Models\Operator;
 use App\Models\Role;
+use App\Models\Territory;
 use App\Models\User;
 
 it('can create a role through the browser', function (): void {
     $operator = Operator::create([
         'name' => 'Test Operator',
         'email' => 'operator@example.com',
+    ]);
+
+    $territory = Territory::create([
+        'operator_id' => $operator->id,
+        'name' => 'Test Territory',
     ]);
 
     $user = User::create([
@@ -20,9 +26,7 @@ it('can create a role through the browser', function (): void {
         'password' => bcrypt('password'),
     ]);
 
-    $this->actingAs($user);
-
-    $page = visit('/roles/create');
+    $page = $this->as($user, $territory)->visit('/roles/create');
 
     $page->assertTitle('Create Role - Laravel')
         ->assertSee('Create Role')
@@ -58,6 +62,11 @@ it('shows validation errors', function (): void {
         'email' => 'operator@example.com',
     ]);
 
+    $territory = Territory::create([
+        'operator_id' => $operator->id,
+        'name' => 'Test Territory',
+    ]);
+
     $user = User::create([
         'operator_id' => $operator->id,
         'first_name' => 'Test',
@@ -66,9 +75,7 @@ it('shows validation errors', function (): void {
         'password' => bcrypt('password'),
     ]);
 
-    $this->actingAs($user);
-
-    $page = visit('/roles/create');
+    $page = $this->as($user, $territory)->visit('/roles/create');
 
     $page->assertTitle('Create Role - Laravel')
         ->assertNoJavascriptErrors();
@@ -89,6 +96,11 @@ it('can cancel role creation with screenshots', function (): void {
         'email' => 'operator@example.com',
     ]);
 
+    $territory = Territory::create([
+        'operator_id' => $operator->id,
+        'name' => 'Test Territory',
+    ]);
+
     $user = User::create([
         'operator_id' => $operator->id,
         'first_name' => 'Test',
@@ -97,9 +109,7 @@ it('can cancel role creation with screenshots', function (): void {
         'password' => bcrypt('password'),
     ]);
 
-    $this->actingAs($user);
-
-    $page = visit('/roles/create');
+    $page = $this->as($user, $territory)->visit('/roles/create');
 
     $page->assertTitle('Create Role - Laravel')
         ->fill('name', 'Test Role')
@@ -122,6 +132,11 @@ it('can navigate between create and list pages', function (): void {
         'email' => 'operator@example.com',
     ]);
 
+    $territory = Territory::create([
+        'operator_id' => $operator->id,
+        'name' => 'Test Territory',
+    ]);
+
     $user = User::create([
         'operator_id' => $operator->id,
         'first_name' => 'Test',
@@ -130,10 +145,8 @@ it('can navigate between create and list pages', function (): void {
         'password' => bcrypt('password'),
     ]);
 
-    $this->actingAs($user);
-
     // Start at list page
-    $page = visit('/roles');
+    $page = $this->as($user, $territory)->visit('/roles');
 
     $page->assertTitle('Roles - Laravel')
         ->assertSee('Roles')

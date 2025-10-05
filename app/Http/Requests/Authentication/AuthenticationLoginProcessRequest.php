@@ -65,6 +65,6 @@ final class AuthenticationLoginProcessRequest extends FormRequest
         // Actually log the user in
         Auth::login($user, $remember);
 
-        return redirect()->intended('/dashboard');
+        return redirect()->intended('/territory');
     }
 }

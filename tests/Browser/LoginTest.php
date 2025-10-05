@@ -37,7 +37,7 @@ it('successfully logs in with valid credentials', function (): void {
         ->fill('email', 'test@example.com')
         ->fill('password', 'password')
         ->press('Sign in')
-        ->assertPathIs('/dashboard')
+        ->assertPathIs('/territory')
         ->assertNoJavascriptErrors();
 
     // Verify user is authenticated
@@ -130,6 +130,6 @@ it('shows processing state while submitting', function (): void {
     // Note: In a real browser test, we'd verify the button changes to 'Signing in...'
     // but this is hard to catch in Pest's browser tests due to timing
     $page->press('Sign in')
-        ->assertPathIs('/dashboard')
+        ->assertPathIs('/territory')
         ->assertNoJavascriptErrors();
 });
