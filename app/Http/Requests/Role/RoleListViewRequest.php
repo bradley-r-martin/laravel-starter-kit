@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Role;
 
+use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -29,8 +30,26 @@ final class RoleListViewRequest extends FormRequest
 
     public function respond(): Response
     {
+
+        $roles = Role::query()
+            ->select(['id', 'name', 'description', 'hidden', 'closed_at', '__users_count', 'created_at'])
+            ->orderBy('created_at', 'desc')
+            ->paginate()
+            /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Role $role}> $roles */
+            ->through(fn (Role $role): array => [
+                'id' => $role->id,
+                'name' => $role->name,
+                'description' => $role->description,
+                'hidden' => $role->hidden,
+                'users_count' => $role->__users_count,
+                'closed_at' => $role->closed_at,
+                'created_at' => $role->created_at,
+            ]);
+
         return inertia()
-            ->render('Role/List', [])
+            ->render('Role/List', [
+                'roles' => $roles,
+            ])
             ->toResponse($this);
     }
 }
