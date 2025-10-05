@@ -4,11 +4,18 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Role;
 
+use App\Services\PolicyDiscoveryService;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 final class RoleCreateViewRequest extends FormRequest
 {
+    public function __construct(
+        private readonly PolicyDiscoveryService $policyDiscoveryService
+    ) {
+        parent::__construct();
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -29,8 +36,12 @@ final class RoleCreateViewRequest extends FormRequest
 
     public function respond(): Response
     {
+        $availablePolicies = $this->policyDiscoveryService->discoverAvailablePolicies();
+
         return inertia()
-            ->modal('Role/Create', [])
+            ->modal('Role/Create', [
+                'availablePolicies' => $availablePolicies,
+            ])
             ->baseRoute('roles.index')
             ->toResponse($this);
     }

@@ -18,12 +18,14 @@ const Field: FunctionComponent<FieldProps> = (props) => {
             {...merge(restProps, {
                 value: inertiaFormInstance.data[name],
                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                    if (type === 'checkbox') {
-                        inertiaFormInstance.setData(name, e.target.checked);
-                    } else if (type === 'radio') {
-                        inertiaFormInstance.setData(name, e);
+                    if (typeof e === 'object' && 'target' in e) {
+                        if (type === 'checkbox') {
+                            inertiaFormInstance.setData(name, e.target.checked);
+                        } else {
+                            inertiaFormInstance.setData(name, e.target.value);
+                        }
                     } else {
-                        inertiaFormInstance.setData(name, e.target.value);
+                        inertiaFormInstance.setData(name, e);
                     }
                 },
                 error: inertiaFormInstance.errors[name],

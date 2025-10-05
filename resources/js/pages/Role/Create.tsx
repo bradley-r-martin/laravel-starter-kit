@@ -1,16 +1,22 @@
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
+import { TransferInput, TransferItem } from '@/components/TransferInput';
 import { Head, useForm } from '@inertiajs/react';
 import { Modal, useModal } from '@inertiaui/modal-react';
 import { Anchor, Button, Checkbox, Group, Stack, Textarea, TextInput, Title } from '@mantine/core';
 
-export default function Create() {
+interface CreateProps {
+    availablePolicies: TransferItem[];
+}
+
+export default function Create({ availablePolicies }: CreateProps) {
     const modal = useModal();
     const form = useForm({
         name: '',
         description: '',
         hidden: false,
+        policies: [] as string[],
     });
     const { processing } = form;
 
@@ -40,6 +46,15 @@ export default function Create() {
                             <Field name="hidden" type="checkbox">
                                 <Checkbox label="Hidden" name="hidden" />
                             </Field>
+
+                            <Field name="policies">
+                                <TransferInput
+                                    label="Policies"
+                                    items={availablePolicies}
+                                    className="max-h-[300px]"
+                                />
+                            </Field>
+
                             <Group justify="flex-end" mt="md">
                                 <Anchor onClick={() => modal?.close()} type="button" c="dimmed">
                                     Cancel

@@ -1,6 +1,7 @@
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
+import { TransferInput, TransferItem } from '@/components/TransferInput';
 import { Head, useForm } from '@inertiajs/react';
 import { Modal, useModal } from '@inertiaui/modal-react';
 import {
@@ -22,13 +23,15 @@ interface Role {
     description: string | null;
     hidden: boolean;
     closed_at: string | null;
+    policies: string[];
 }
 
 interface Props {
     role: Role;
+    availablePolicies: TransferItem[];
 }
 
-export default function Update({ role }: Props) {
+export default function Update({ role, availablePolicies }: Props) {
     const modal = useModal();
     const isClosed = !!role.closed_at;
 
@@ -36,6 +39,7 @@ export default function Update({ role }: Props) {
         name: role.name || '',
         description: role.description || '',
         hidden: role.hidden || false,
+        policies: role.policies || ([] as string[]),
     });
 
     const { processing } = form;
@@ -82,6 +86,15 @@ export default function Update({ role }: Props) {
 
                             <Field name="hidden" type="checkbox">
                                 <Checkbox label="Hidden" name="hidden" disabled={isClosed} />
+                            </Field>
+
+                            <Field name="policies">
+                                <TransferInput
+                                    className="max-h-[300px]"
+                                    label="Policies"
+                                    items={availablePolicies}
+                                    disabled={isClosed}
+                                />
                             </Field>
 
                             <Group justify="flex-end" mt="md">

@@ -30,23 +30,39 @@ final class RoleCreateProcessRequest extends FormRequest
             'name' => 'required|string|max:255',
             'description' => 'string|max:255',
             'hidden' => 'boolean',
+            'policies' => 'array',
+            'policies.*' => 'string',
         ];
     }
 
     public function respond(): Response
     {
-        /** @var array{name: string, description: string, hidden: bool} $data */
+        /** @var array{name: string, description: string, hidden: bool, policies?: array<int, string>} $data */
         $data = $this->validated();
 
         $roleId = (string) Str::ulid();
 
-        RoleAggregate::retrieve($roleId)
+        $aggregate = RoleAggregate::retrieve($roleId)
             ->create(
                 (string) $data['name'],
                 (string) $data['description'],
                 (bool) $data['hidden']
-            )
-            ->persist();
+            );
+
+        // Attach selected policies
+        if (isset($data['policies'])) {
+            foreach ($data['policies'] as $policyString) {
+                [$policy, $ability] = explode('@', $policyString, 2);
+                $aggregate->attachPolicy(
+                    policy: $policy,
+                    ability: $ability,
+                    description: '',
+                    hidden: false
+                );
+            }
+        }
+
+        $aggregate->persist();
 
         return redirect()
             ->route('roles.index')
