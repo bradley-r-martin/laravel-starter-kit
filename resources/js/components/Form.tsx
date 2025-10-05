@@ -5,6 +5,7 @@ import { FunctionComponent, HTMLAttributes } from 'react';
 interface FormProps
     extends Omit<HTMLAttributes<HTMLFormElement>, 'action' | 'onSubmit' | 'onError'> {
     onError?: (errors: Record<string, string>) => void;
+    onSuccess?: () => void;
     form: InertiaFormProps<any>;
     action?: {
         url: string;
@@ -13,7 +14,7 @@ interface FormProps
 }
 
 const Form: FunctionComponent<FormProps> = (props) => {
-    const { form, children, action, onError, ...restProps } = props;
+    const { form, children, action, onError, onSuccess, ...restProps } = props;
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -26,6 +27,9 @@ const Form: FunctionComponent<FormProps> = (props) => {
                 {
                     onError: (errors) => {
                         onError?.(errors);
+                    },
+                    onSuccess: () => {
+                        onSuccess?.();
                     },
                 }
             );

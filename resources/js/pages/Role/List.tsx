@@ -1,4 +1,5 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
+import { ModalLink } from '@inertiaui/modal-react';
 import { Button, Container, Group, Paper, Stack, Text, Title } from '@mantine/core';
 
 export default function List() {
@@ -9,9 +10,9 @@ export default function List() {
                 <Stack gap="xl">
                     <Group justify="space-between" align="center">
                         <Title order={1}>Roles</Title>
-                        <Link href={route('roles.create')}>
+                        <ModalLink href={route('roles.create')} navigate={true}>
                             <Button>Create Role</Button>
-                        </Link>
+                        </ModalLink>
                     </Group>
 
                     <Paper shadow="sm" p="xl" radius="md" withBorder>

@@ -8,6 +8,9 @@ dependencies:
   '@inertiajs/core':
     specifier: ^2.2.4
     version: 2.2.4
+  '@inertiaui/modal-react':
+    specifier: link:vendor/inertiaui/modal/react
+    version: link:vendor/inertiaui/modal/react
   '@mantine/core':
     specifier: ^8.3.2
     version: 8.3.2(@mantine/hooks@8.3.2)(@types/react@19.1.16)(react-dom@19.1.1)(react@19.1.1)
@@ -20,6 +23,9 @@ dependencies:
   '@mantine/notifications':
     specifier: ^8.3.3
     version: 8.3.3(@mantine/core@8.3.2)(@mantine/hooks@8.3.2)(react-dom@19.1.1)(react@19.1.1)
+  axios:
+    specifier: ^1.12.2
+    version: 1.12.2
   lucide-react:
     specifier: ^0.544.0
     version: 0.544.0(react@19.1.1)

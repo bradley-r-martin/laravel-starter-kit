@@ -30,7 +30,8 @@ final class RoleCreateViewRequest extends FormRequest
     public function respond(): Response
     {
         return inertia()
-            ->render('Role/Create', [])
+            ->modal('Role/Create', [])
+            ->baseRoute('roles.index')
             ->toResponse($this);
     }
 }
