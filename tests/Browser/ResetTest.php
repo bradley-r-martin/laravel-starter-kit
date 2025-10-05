@@ -2,30 +2,16 @@
 
 declare(strict_types=1);
 
-use App\Models\Operator;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 
 it('displays the reset password page', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
-
-    $user = User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => Hash::make('oldpassword'),
-    ]);
-
+    $operator = createOperator();
+    $user = createUser($operator, password: 'oldpassword');
     $token = Password::createToken($user);
 
-    $page = visit('/reset-password?token='.$token.'&email='.urlencode('test@example.com'));
-
-    $page->assertTitle('Reset Password - Laravel')
+    visit('/reset-password?token='.$token.'&email='.urlencode('test@example.com'))
+        ->assertTitle('Reset Password - Laravel')
         ->assertSee('Reset Password')
         ->assertSee('Enter your new password below')
         ->assertSee('Email')
@@ -35,47 +21,21 @@ it('displays the reset password page', function (): void {
 });
 
 it('shows validation errors for empty password fields', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
-
-    $user = User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => Hash::make('oldpassword'),
-    ]);
-
+    $operator = createOperator();
+    $user = createUser($operator, password: 'oldpassword');
     $token = Password::createToken($user);
 
-    $page = visit('/reset-password?token='.$token.'&email='.urlencode('test@example.com'));
-
-    $page->assertTitle('Reset Password - Laravel')
+    visit('/reset-password?token='.$token.'&email='.urlencode('test@example.com'))
         ->submit()
         ->assertSee('The password field is required.');
 });
 
 it('shows validation error for password too short', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
-
-    $user = User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => Hash::make('oldpassword'),
-    ]);
-
+    $operator = createOperator();
+    $user = createUser($operator, password: 'oldpassword');
     $token = Password::createToken($user);
 
-    $page = visit('/reset-password?token='.$token.'&email='.urlencode('test@example.com'));
-
-    $page->assertTitle('Reset Password - Laravel')
+    visit('/reset-password?token='.$token.'&email='.urlencode('test@example.com'))
         ->fill('password', 'short')
         ->fill('password_confirmation', 'short')
         ->submit()
@@ -83,24 +43,11 @@ it('shows validation error for password too short', function (): void {
 });
 
 it('shows validation error when passwords do not match', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
-
-    $user = User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => Hash::make('oldpassword'),
-    ]);
-
+    $operator = createOperator();
+    $user = createUser($operator, password: 'oldpassword');
     $token = Password::createToken($user);
 
-    $page = visit('/reset-password?token='.$token.'&email='.urlencode('test@example.com'));
-
-    $page->assertTitle('Reset Password - Laravel')
+    visit('/reset-password?token='.$token.'&email='.urlencode('test@example.com'))
         ->fill('password', 'newpassword123')
         ->fill('password_confirmation', 'differentpassword123')
         ->submit()
@@ -108,22 +55,10 @@ it('shows validation error when passwords do not match', function (): void {
 });
 
 it('shows error for invalid or expired token', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
+    $operator = createOperator();
+    createUser($operator, password: 'oldpassword');
 
-    User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => Hash::make('oldpassword'),
-    ]);
-
-    $page = visit('/reset-password?token=invalid-token&email='.urlencode('test@example.com'));
-
-    $page->assertTitle('Reset Password - Laravel')
+    visit('/reset-password?token=invalid-token&email='.urlencode('test@example.com'))
         ->fill('password', 'newpassword123')
         ->fill('password_confirmation', 'newpassword123')
         ->submit()
@@ -131,31 +66,17 @@ it('shows error for invalid or expired token', function (): void {
 });
 
 it('successfully resets password and redirects to login', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
-
-    $user = User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => Hash::make('oldpassword'),
-    ]);
-
+    $operator = createOperator();
+    $user = createUser($operator, password: 'oldpassword');
     $token = Password::createToken($user);
 
-    $page = visit('/reset-password?token='.$token.'&email='.urlencode('test@example.com'));
-
-    $page->assertTitle('Reset Password - Laravel')
+    visit('/reset-password?token='.$token.'&email='.urlencode('test@example.com'))
         ->fill('password', 'newpassword123')
         ->fill('password_confirmation', 'newpassword123')
         ->submit()
         ->assertPathIs('/login')
         ->assertNoJavascriptErrors();
 
-    // Verify the password was actually changed
     $user->refresh();
     expect(Hash::check('newpassword123', $user->password))->toBeTrue();
     expect(Hash::check('oldpassword', $user->password))->toBeFalse();

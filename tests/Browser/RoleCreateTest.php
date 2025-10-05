@@ -2,29 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Models\Operator;
 use App\Models\Role;
-use App\Models\Territory;
-use App\Models\User;
 
 it('can create a role through the browser', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
-
-    $territory = Territory::create([
-        'operator_id' => $operator->id,
-        'name' => 'Test Territory',
-    ]);
-
-    $user = User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => bcrypt('password'),
-    ]);
+    ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
     $page = $this->as($user, $territory)->visit('/roles/create');
 
@@ -33,21 +14,15 @@ it('can create a role through the browser', function (): void {
         ->assertSee('Name')
         ->assertSee('Description')
         ->assertSee('Hidden')
-        ->assertNoJavascriptErrors();
-
-    // Fill in the form
-    $page
+        ->assertNoJavascriptErrors()
         ->fill('name', 'Administrator')
         ->fill('description', 'Full system administrator role')
-        ->check('hidden');
-
-    // Submit the form
-    $page->submit()
+        ->check('hidden')
+        ->submit()
         ->assertSee('Roles')
         ->assertPathIs('/roles')
         ->assertNoJavascriptErrors();
 
-    // Verify the role was created in the database
     $role = Role::where('name', 'Administrator')->first();
 
     expect($role)->not->toBeNull();
@@ -57,71 +32,29 @@ it('can create a role through the browser', function (): void {
 });
 
 it('shows validation errors', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
-
-    $territory = Territory::create([
-        'operator_id' => $operator->id,
-        'name' => 'Test Territory',
-    ]);
-
-    $user = User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => bcrypt('password'),
-    ]);
+    ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
     $page = $this->as($user, $territory)->visit('/roles/create');
 
     $page->assertTitle('Create Role - Laravel')
-        ->assertNoJavascriptErrors();
-
-    // Try to submit without filling required fields
-    $page->submit()
-        ->assertSee('The name field is required');
-
-    // Fill in invalid data (name too long)
-    $page->fill('name', str_repeat('a', 256))
+        ->assertNoJavascriptErrors()
+        ->submit()
+        ->assertSee('The name field is required')
+        ->fill('name', str_repeat('a', 256))
         ->submit()
         ->assertSee('The name field must not be greater than 255 characters');
 });
 
-it('can cancel role creation with screenshots', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
+it('can cancel role creation', function (): void {
+    ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
-    $territory = Territory::create([
-        'operator_id' => $operator->id,
-        'name' => 'Test Territory',
-    ]);
-
-    $user = User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => bcrypt('password'),
-    ]);
-
-    $page = $this->as($user, $territory)->visit('/roles/create');
-
-    $page->assertTitle('Create Role - Laravel')
+    $this->as($user, $territory)->visit('/roles/create')
         ->fill('name', 'Test Role')
-        ->fill('description', 'This will be cancelled');
-
-    // Click cancel button
-    $page->press('Cancel')
+        ->fill('description', 'This will be cancelled')
+        ->press('Cancel')
         ->assertPathIs('/roles')
         ->assertSee('Roles')
         ->assertNoJavascriptErrors();
 
-    // Verify the role was NOT created
-    $role = Role::where('name', 'Test Role')->first();
-    expect($role)->toBeNull();
+    expect(Role::where('name', 'Test Role')->first())->toBeNull();
 });

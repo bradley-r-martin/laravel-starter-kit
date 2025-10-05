@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Models\Operator;
-use App\Models\User;
-
 it('displays the login page', function (): void {
     $page = visit('/login');
 
@@ -18,18 +15,8 @@ it('displays the login page', function (): void {
 });
 
 it('successfully logs in with valid credentials', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
-
-    $user = User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => bcrypt('password'),
-    ]);
+    $operator = createOperator();
+    $user = createUser($operator);
 
     $page = visit('/login');
 
@@ -40,23 +27,18 @@ it('successfully logs in with valid credentials', function (): void {
         ->assertPathIs('/territory')
         ->assertNoJavascriptErrors();
 
-    // Verify user is authenticated
     expect(auth()->check())->toBeTrue();
     expect(auth()->user()->id)->toBe($user->id);
 });
 
 it('shows validation errors for empty fields', function (): void {
-    $page = visit('/login');
-
-    $page->assertTitle('Login - Laravel')
+    visit('/login')
         ->press('Sign in')
         ->assertSee('The email field is required.');
 });
 
 it('shows validation errors for invalid email format', function (): void {
-    $page = visit('/login');
-
-    $page->assertTitle('Login - Laravel')
+    visit('/login')
         ->fill('email', 'not-an-email')
         ->fill('password', 'password')
         ->press('Sign in')
@@ -64,22 +46,10 @@ it('shows validation errors for invalid email format', function (): void {
 });
 
 it('shows authentication failed error for invalid credentials', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
+    $operator = createOperator();
+    createUser($operator, password: 'correct-password');
 
-    User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => bcrypt('correct-password'),
-    ]);
-
-    $page = visit('/login');
-
-    $page->assertTitle('Login - Laravel')
+    visit('/login')
         ->fill('email', 'test@example.com')
         ->fill('password', 'wrong-password')
         ->press('Sign in')
@@ -87,14 +57,11 @@ it('shows authentication failed error for invalid credentials', function (): voi
         ->assertSee('These credentials do not match our records.')
         ->assertNoJavascriptErrors();
 
-    // Verify user is not authenticated
     expect(auth()->check())->toBeFalse();
 });
 
 it('shows authentication failed error for non-existent user', function (): void {
-    $page = visit('/login');
-
-    $page->assertTitle('Login - Laravel')
+    visit('/login')
         ->fill('email', 'nonexistent@example.com')
         ->fill('password', 'password')
         ->press('Sign in')
@@ -102,34 +69,18 @@ it('shows authentication failed error for non-existent user', function (): void 
         ->assertSee('These credentials do not match our records.')
         ->assertNoJavascriptErrors();
 
-    // Verify user is not authenticated
     expect(auth()->check())->toBeFalse();
 });
 
 it('shows processing state while submitting', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
+    $operator = createOperator();
+    createUser($operator);
 
-    User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => bcrypt('password'),
-    ]);
-
-    $page = visit('/login');
-
-    $page->assertTitle('Login - Laravel')
+    visit('/login')
         ->fill('email', 'test@example.com')
         ->fill('password', 'password')
-        ->assertSee('Sign in');
-
-    // Note: In a real browser test, we'd verify the button changes to 'Signing in...'
-    // but this is hard to catch in Pest's browser tests due to timing
-    $page->press('Sign in')
+        ->assertSee('Sign in')
+        ->press('Sign in')
         ->assertPathIs('/territory')
         ->assertNoJavascriptErrors();
 });

@@ -53,7 +53,75 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/**
+ * Create a test operator
+ */
+function createOperator(string $name = 'Test Operator', string $email = 'operator@example.com'): App\Models\Operator
 {
-    // ..
+    return App\Models\Operator::create([
+        'name' => $name,
+        'email' => $email,
+    ]);
+}
+
+/**
+ * Create a test territory
+ */
+function createTerritory(App\Models\Operator $operator, string $name = 'Test Territory'): App\Models\Territory
+{
+    return App\Models\Territory::create([
+        'operator_id' => $operator->id,
+        'name' => $name,
+    ]);
+}
+
+/**
+ * Create a test user
+ */
+function createUser(
+    App\Models\Operator $operator,
+    string $firstName = 'Test',
+    string $lastName = 'User',
+    string $email = 'test@example.com',
+    string $password = 'password',
+    ?string $roleId = null
+): App\Models\User {
+    return App\Models\User::create([
+        'operator_id' => $operator->id,
+        'role_id' => $roleId,
+        'first_name' => $firstName,
+        'last_name' => $lastName,
+        'email' => $email,
+        'password' => bcrypt($password),
+    ]);
+}
+
+/**
+ * Create a test role via aggregate
+ */
+function createRole(
+    string $name = 'Manager',
+    string $description = 'Manager role',
+    bool $hidden = false,
+    ?string $id = null
+): string {
+    $roleId = $id ?? (string) Illuminate\Support\Str::ulid();
+
+    App\Aggregates\RoleAggregate::retrieve($roleId)
+        ->create($name, $description, $hidden)
+        ->persist();
+
+    return $roleId;
+}
+
+/**
+ * Create a complete test environment with operator, territory, and user
+ */
+function createTestEnvironment(): array
+{
+    $operator = createOperator();
+    $territory = createTerritory($operator);
+    $user = createUser($operator);
+
+    return compact('operator', 'territory', 'user');
 }

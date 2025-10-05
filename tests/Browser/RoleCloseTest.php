@@ -2,37 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Aggregates\RoleAggregate;
-use App\Models\Operator;
 use App\Models\Role;
-use App\Models\Territory;
-use App\Models\User;
 
 it('can close a role with no users through the browser', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
-
-    $territory = Territory::create([
-        'operator_id' => $operator->id,
-        'name' => 'Test Territory',
-    ]);
-
-    $user = User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => bcrypt('password'),
-    ]);
-
-    // Create a role via aggregate
-    $roleId = (string) Illuminate\Support\Str::ulid();
-    RoleAggregate::retrieve($roleId)
-        ->create('Manager', 'Manager role', false)
-        ->persist();
-
+    ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+    $roleId = createRole();
     $role = Role::findOrFail($roleId);
 
     $page = $this->as($user, $territory)->visit("/roles/{$roleId}/close");
@@ -40,119 +14,55 @@ it('can close a role with no users through the browser', function (): void {
     $page->assertTitle("Close Role: {$role->name} - Laravel")
         ->assertSee('Close Role')
         ->assertSee("You are about to close the role: {$role->name}")
-        ->assertNoJavascriptErrors();
-
-    // Should not show warning since there are no users
-    $page->assertDontSee('Cannot Close Role');
-    $page->assertDontSee('Please reassign all users');
-
-    // Fill in reason
-    $page->fill('reason', 'No longer needed');
-
-    // Submit the form
-    $page->submit()
+        ->assertNoJavascriptErrors()
+        ->assertDontSee('Cannot Close Role')
+        ->assertDontSee('Please reassign all users')
+        ->fill('reason', 'No longer needed')
+        ->submit()
         ->assertSee('Roles')
         ->assertPathIs('/roles')
         ->assertNoJavascriptErrors();
 
-    // Verify the role was closed
     $role->refresh();
     expect($role->closed_at)->not->toBeNull();
 });
 
 it('prevents closing a role with users', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
+    ['operator' => $operator, 'territory' => $territory] = createTestEnvironment();
 
-    $territory = Territory::create([
-        'operator_id' => $operator->id,
-        'name' => 'Test Territory',
-    ]);
+    $roleToCloseId = createRole();
 
-    // Create role
-    $roleToCloseId = (string) Illuminate\Support\Str::ulid();
-    RoleAggregate::retrieve($roleToCloseId)
-        ->create('Manager', 'Manager role', false)
-        ->persist();
+    createUser($operator, 'User', 'One', 'user1@example.com', roleId: $roleToCloseId);
+    createUser($operator, 'User', 'Two', 'user2@example.com', roleId: $roleToCloseId);
 
-    // Create users assigned to the role
-    $user1 = User::create([
-        'operator_id' => $operator->id,
-        'role_id' => $roleToCloseId,
-        'first_name' => 'User',
-        'last_name' => 'One',
-        'email' => 'user1@example.com',
-        'password' => bcrypt('password'),
-    ]);
-
-    $user2 = User::create([
-        'operator_id' => $operator->id,
-        'role_id' => $roleToCloseId,
-        'first_name' => 'User',
-        'last_name' => 'Two',
-        'email' => 'user2@example.com',
-        'password' => bcrypt('password'),
-    ]);
-
-    // Update the user count
     Role::where('id', $roleToCloseId)->update(['__users_count' => 2]);
-
     $roleToClose = Role::findOrFail($roleToCloseId);
 
-    $page = $this->as($user1, $territory)->visit("/roles/{$roleToCloseId}/close");
+    $authenticatedUser = createUser($operator, 'Auth', 'User', 'auth@example.com');
+
+    $page = $this->as($authenticatedUser, $territory)->visit("/roles/{$roleToCloseId}/close");
 
     $page->assertTitle("Close Role: {$roleToClose->name} - Laravel")
         ->assertSee('Close Role')
         ->assertSee('Cannot Close Role')
         ->assertSee('This role has 2 users assigned')
         ->assertSee('Please reassign all users before closing this role')
-        ->assertNoJavascriptErrors();
-
-    // The submit button should be disabled
-    $page->assertDisabled('button[type="submit"]');
+        ->assertNoJavascriptErrors()
+        ->assertDisabled('button[type="submit"]');
 });
 
 it('can cancel role closure', function (): void {
-    $operator = Operator::create([
-        'name' => 'Test Operator',
-        'email' => 'operator@example.com',
-    ]);
-
-    $territory = Territory::create([
-        'operator_id' => $operator->id,
-        'name' => 'Test Territory',
-    ]);
-
-    $user = User::create([
-        'operator_id' => $operator->id,
-        'first_name' => 'Test',
-        'last_name' => 'User',
-        'email' => 'test@example.com',
-        'password' => bcrypt('password'),
-    ]);
-
-    // Create a role
-    $roleId = (string) Illuminate\Support\Str::ulid();
-    RoleAggregate::retrieve($roleId)
-        ->create('Manager', 'Manager role', false)
-        ->persist();
-
+    ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+    $roleId = createRole();
     $role = Role::findOrFail($roleId);
 
-    $page = $this->as($user, $territory)->visit("/roles/{$roleId}/close");
-
-    $page->assertTitle("Close Role: {$role->name} - Laravel")
-        ->fill('reason', 'Changed my mind');
-
-    // Click cancel button
-    $page->press('Cancel')
+    $this->as($user, $territory)->visit("/roles/{$roleId}/close")
+        ->fill('reason', 'Changed my mind')
+        ->press('Cancel')
         ->assertPathIs('/roles')
         ->assertSee('Roles')
         ->assertNoJavascriptErrors();
 
-    // Verify the role was NOT closed
     $role->refresh();
     expect($role->closed_at)->toBeNull();
 });
