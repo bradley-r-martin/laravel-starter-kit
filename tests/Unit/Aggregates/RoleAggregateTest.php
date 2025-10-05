@@ -67,7 +67,7 @@ it('can close a role', function () {
     $aggregate->persist();
 
     $aggregate = RoleAggregate::retrieve('role-1');
-    $aggregate->closeRole('Role no longer needed');
+    $aggregate->close('Role no longer needed');
 
     expect($aggregate->getRecordedEvents())->toHaveCount(1);
 
@@ -110,7 +110,7 @@ it('applies events correctly', function () {
     expect($updatedEvent->hidden)->toBeTrue();
 
     // Test close
-    $aggregate->closeRole('Role deprecated');
+    $aggregate->close('Role deprecated');
 
     $events = $aggregate->getRecordedEvents();
     expect($events)->toHaveCount(3);

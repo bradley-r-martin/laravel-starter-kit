@@ -1,7 +1,21 @@
+import MainLayout from '@/Layouts/MainLayout';
 import { Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ModalLink } from '@inertiaui/modal-react';
-import { Badge, Button, Container, Group, Paper, Stack, Table, Text, Title } from '@mantine/core';
+import {
+    ActionIcon,
+    Badge,
+    Button,
+    Container,
+    Group,
+    Paper,
+    Stack,
+    Table,
+    Text,
+    Title,
+    Tooltip,
+} from '@mantine/core';
+import { XIcon } from 'lucide-react';
 
 interface Role {
     id: string;
@@ -19,7 +33,7 @@ interface Props {
 
 export default function List({ roles }: Props) {
     return (
-        <>
+        <MainLayout>
             <Head title="Roles" />
             <Container size="xl" py="xl">
                 <Stack gap="xl">
@@ -45,6 +59,7 @@ export default function List({ roles }: Props) {
                                             <Table.Th>Users</Table.Th>
                                             <Table.Th>Status</Table.Th>
                                             <Table.Th>Created</Table.Th>
+                                            <Table.Th style={{ width: '80px' }}>Actions</Table.Th>
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
@@ -89,6 +104,27 @@ export default function List({ roles }: Props) {
                                                         ).toLocaleDateString()}
                                                     </Text>
                                                 </Table.Td>
+                                                <Table.Td>
+                                                    {!role.closed_at && (
+                                                        <ModalLink
+                                                            href={route('roles.close', role.id)}
+                                                            navigate={true}
+                                                        >
+                                                            <Tooltip
+                                                                label="Close Role"
+                                                                position="left"
+                                                            >
+                                                                <ActionIcon
+                                                                    variant="subtle"
+                                                                    color="red"
+                                                                    size="sm"
+                                                                >
+                                                                    <XIcon className="size-4" />
+                                                                </ActionIcon>
+                                                            </Tooltip>
+                                                        </ModalLink>
+                                                    )}
+                                                </Table.Td>
                                             </Table.Tr>
                                         ))}
                                     </Table.Tbody>
@@ -98,6 +134,6 @@ export default function List({ roles }: Props) {
                     </Paper>
                 </Stack>
             </Container>
-        </>
+        </MainLayout>
     );
 }

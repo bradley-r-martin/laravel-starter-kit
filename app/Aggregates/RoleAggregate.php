@@ -63,7 +63,7 @@ final class RoleAggregate extends AggregateRoot
         return $this;
     }
 
-    public function closeRole(string $reason = 'No reason provided'): self
+    public function close(string $reason): self
     {
         $this->recordThat(new RoleClosed(reason: $reason));
 
