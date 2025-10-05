@@ -60,7 +60,7 @@ const TransferInputList: FunctionComponent<TransferInputListProps> = ({
     };
     return (
         <div className="flex flex-1 flex-col overflow-hidden">
-            <div className="px-4 pt-4 pb-2 !text-xs text-zinc-500">
+            <div className="px-4 pt-4 pb-2 !text-xs text-zinc-500 select-none">
                 <span>
                     {title} ({items.length})
                 </span>
@@ -70,12 +70,16 @@ const TransferInputList: FunctionComponent<TransferInputListProps> = ({
                     {items.map((item, index) => (
                         <div
                             key={item.value}
-                            className={`group flex-1 overflow-hidden py-1 transition-all duration-200 ${draggedIndex === index ? '' : ''} ${
-                                dragOverIndex === index && draggedIndex !== index
-                                    ? 'border-t-2 border-t-blue-500'
-                                    : ''
-                            }`}
+                            className={`group relative flex-1 overflow-hidden py-1`}
                         >
+                            <div
+                                className={`absolute top-0 right-0 left-0 h-1 -translate-y-1/2 ${draggedIndex === index ? '' : ''} ${
+                                    dragOverIndex === index && draggedIndex !== index
+                                        ? 'bg-blue-500/90'
+                                        : ''
+                                }`}
+                            />
+
                             <div
                                 draggable={orderable && variant === 'selected'}
                                 onDragStart={(e) => handleDragStart(e, index)}
@@ -90,6 +94,7 @@ const TransferInputList: FunctionComponent<TransferInputListProps> = ({
                                 }
                             >
                                 <TransferInputItem
+                                    index={index}
                                     item={item}
                                     onClick={() => onItemClick(item)}
                                     variant={variant}
