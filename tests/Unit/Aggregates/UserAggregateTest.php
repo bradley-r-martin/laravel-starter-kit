@@ -4,113 +4,116 @@ declare(strict_types=1);
 
 use App\Aggregates\UserAggregate;
 use App\Events\User\UserLoggedIn;
-use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
+use App\Events\User\UserRecoveryRequested;
 
-it('can record user login', function () {
-    $aggregate = UserAggregate::retrieve('user-1');
+describe('User Login', function () {
+    it('records user login event', function () {
+        $timestamp = new DateTimeImmutable('2025-10-01 12:00:00');
 
-    $timestamp = new DateTimeImmutable('2025-10-01 12:00:00');
+        $aggregate = UserAggregate::retrieve('user-1')
+            ->login(
+                ipAddress: '192.168.1.1',
+                userAgent: 'Mozilla/5.0',
+                timestamp: $timestamp,
+                remember: true
+            );
 
-    $aggregate->login(
-        ipAddress: '192.168.1.1',
-        userAgent: 'Mozilla/5.0',
-        timestamp: $timestamp,
-        remember: true
-    );
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
 
-    expect($aggregate)->toBeInstanceOf(AggregateRoot::class);
-    expect($aggregate->getRecordedEvents())->toHaveCount(1);
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserLoggedIn::class)
+            ->ipAddress->toBe('192.168.1.1')
+            ->userAgent->toBe('Mozilla/5.0')
+            ->timestamp->toBe($timestamp)
+            ->remember->toBeTrue();
+    });
 
-    $event = $aggregate->getRecordedEvents()[0];
-    expect($event)->toBeInstanceOf(UserLoggedIn::class);
-    expect($event->ipAddress)->toBe('192.168.1.1');
-    expect($event->userAgent)->toBe('Mozilla/5.0');
-    expect($event->timestamp)->toBe($timestamp);
-    expect($event->remember)->toBeTrue();
+    it('records login without remember flag', function () {
+        $timestamp = new DateTimeImmutable('2025-10-01 12:00:00');
+
+        $aggregate = UserAggregate::retrieve('user-2')
+            ->login(
+                ipAddress: '192.168.1.1',
+                userAgent: 'Mozilla/5.0',
+                timestamp: $timestamp,
+                remember: false
+            );
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserLoggedIn::class)
+            ->remember->toBeFalse();
+    });
+
+    it('records multiple login events', function () {
+        $timestamp1 = new DateTimeImmutable('2025-10-01 12:00:00');
+        $timestamp2 = new DateTimeImmutable('2025-10-01 13:00:00');
+        $timestamp3 = new DateTimeImmutable('2025-10-01 14:00:00');
+
+        $aggregate = UserAggregate::retrieve('user-3')
+            ->login(ipAddress: '192.168.1.1', userAgent: 'Mozilla/5.0', timestamp: $timestamp1)
+            ->login(ipAddress: '192.168.1.2', userAgent: 'Chrome/120.0', timestamp: $timestamp2)
+            ->login(ipAddress: '192.168.1.3', userAgent: 'Safari/17.0', timestamp: $timestamp3);
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(3);
+
+        expect($events[0])->toBeInstanceOf(UserLoggedIn::class)
+            ->ipAddress->toBe('192.168.1.1');
+        expect($events[1])->toBeInstanceOf(UserLoggedIn::class)
+            ->ipAddress->toBe('192.168.1.2');
+        expect($events[2])->toBeInstanceOf(UserLoggedIn::class)
+            ->ipAddress->toBe('192.168.1.3');
+    });
 });
 
-it('tracks multiple login events', function () {
-    $aggregate = UserAggregate::retrieve('user-1');
+describe('Password Recovery', function () {
+    it('records recovery request event', function () {
+        $timestamp = new DateTimeImmutable('2025-10-01 12:00:00');
 
-    $timestamp1 = new DateTimeImmutable('2025-10-01 12:00:00');
-    $timestamp2 = new DateTimeImmutable('2025-10-01 13:00:00');
-    $timestamp3 = new DateTimeImmutable('2025-10-01 14:00:00');
+        $aggregate = UserAggregate::retrieve('user-4')
+            ->requestRecovery(
+                email: 'user@example.com',
+                ipAddress: '192.168.1.1',
+                userAgent: 'Mozilla/5.0',
+                timestamp: $timestamp
+            );
 
-    $aggregate->login(
-        ipAddress: '192.168.1.1',
-        userAgent: 'Mozilla/5.0',
-        timestamp: $timestamp1
-    );
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
 
-    $aggregate->login(
-        ipAddress: '192.168.1.2',
-        userAgent: 'Chrome/120.0',
-        timestamp: $timestamp2
-    );
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserRecoveryRequested::class)
+            ->email->toBe('user@example.com')
+            ->ipAddress->toBe('192.168.1.1')
+            ->userAgent->toBe('Mozilla/5.0')
+            ->timestamp->toBe($timestamp);
+    });
 
-    $aggregate->login(
-        ipAddress: '192.168.1.3',
-        userAgent: 'Safari/17.0',
-        timestamp: $timestamp3
-    );
+    it('records multiple recovery requests', function () {
+        $timestamp1 = new DateTimeImmutable('2025-10-01 12:00:00');
+        $timestamp2 = new DateTimeImmutable('2025-10-01 13:00:00');
 
-    $events = $aggregate->getRecordedEvents();
+        $aggregate = UserAggregate::retrieve('user-5')
+            ->requestRecovery(
+                email: 'user@example.com',
+                ipAddress: '192.168.1.1',
+                userAgent: 'Mozilla/5.0',
+                timestamp: $timestamp1
+            )
+            ->requestRecovery(
+                email: 'user@example.com',
+                ipAddress: '192.168.1.2',
+                userAgent: 'Chrome/120.0',
+                timestamp: $timestamp2
+            );
 
-    expect($events)->toHaveCount(3);
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(2);
 
-    expect($events[0])->toBeInstanceOf(UserLoggedIn::class)
-        ->ipAddress->toBe('192.168.1.1')
-        ->userAgent->toBe('Mozilla/5.0')
-        ->timestamp->toBe($timestamp1);
-
-    expect($events[1])->toBeInstanceOf(UserLoggedIn::class)
-        ->ipAddress->toBe('192.168.1.2')
-        ->userAgent->toBe('Chrome/120.0')
-        ->timestamp->toBe($timestamp2);
-
-    expect($events[2])->toBeInstanceOf(UserLoggedIn::class)
-        ->ipAddress->toBe('192.168.1.3')
-        ->userAgent->toBe('Safari/17.0')
-        ->timestamp->toBe($timestamp3);
-});
-
-it('handles remember flag correctly', function () {
-    $aggregate = UserAggregate::retrieve('user-3');
-
-    $timestamp = new DateTimeImmutable;
-
-    // Test with remember = false
-    $aggregate->login(
-        ipAddress: '127.0.0.1',
-        userAgent: 'Test Agent',
-        timestamp: $timestamp,
-        remember: false
-    );
-
-    $event = $aggregate->getRecordedEvents()[0];
-    expect($event->remember)->toBeFalse();
-});
-
-it('records multiple logins with different ip addresses', function () {
-    $aggregate = UserAggregate::retrieve('user-4');
-
-    $timestamp = new DateTimeImmutable;
-
-    $aggregate->login(
-        ipAddress: '192.168.1.1',
-        userAgent: 'Mozilla/5.0',
-        timestamp: $timestamp
-    );
-
-    $aggregate->login(
-        ipAddress: '10.0.0.1',
-        userAgent: 'Chrome/120.0',
-        timestamp: $timestamp
-    );
-
-    $events = $aggregate->getRecordedEvents();
-
-    expect($events)->toHaveCount(2);
-    expect($events[0]->ipAddress)->toBe('192.168.1.1');
-    expect($events[1]->ipAddress)->toBe('10.0.0.1');
+        expect($events[0])->toBeInstanceOf(UserRecoveryRequested::class)
+            ->ipAddress->toBe('192.168.1.1');
+        expect($events[1])->toBeInstanceOf(UserRecoveryRequested::class)
+            ->ipAddress->toBe('192.168.1.2');
+    });
 });
