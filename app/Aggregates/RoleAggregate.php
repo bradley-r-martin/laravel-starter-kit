@@ -50,7 +50,7 @@ final class RoleAggregate extends AggregateRoot
         return $this;
     }
 
-    public function updateRole(
+    public function update(
         ?string $name = null,
         ?string $description = null,
         ?bool $hidden = null,

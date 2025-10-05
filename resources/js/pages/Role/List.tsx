@@ -15,7 +15,7 @@ import {
     Title,
     Tooltip,
 } from '@mantine/core';
-import { TrashIcon, XIcon } from 'lucide-react';
+import { PencilIcon, TrashIcon, XIcon } from 'lucide-react';
 
 interface Role {
     id: string;
@@ -107,23 +107,48 @@ export default function List({ roles }: Props) {
                                                 <Table.Td>
                                                     <Group gap="xs">
                                                         {!role.closed_at && (
-                                                            <ModalLink
-                                                                href={route('roles.close', role.id)}
-                                                                navigate={true}
-                                                            >
-                                                                <Tooltip
-                                                                    label="Close Role"
-                                                                    position="left"
+                                                            <>
+                                                                <ModalLink
+                                                                    href={route(
+                                                                        'roles.update',
+                                                                        role.id
+                                                                    )}
+                                                                    navigate={true}
                                                                 >
-                                                                    <ActionIcon
-                                                                        variant="subtle"
-                                                                        color="orange"
-                                                                        size="sm"
+                                                                    <Tooltip
+                                                                        label="Edit Role"
+                                                                        position="left"
                                                                     >
-                                                                        <XIcon className="size-4" />
-                                                                    </ActionIcon>
-                                                                </Tooltip>
-                                                            </ModalLink>
+                                                                        <ActionIcon
+                                                                            variant="subtle"
+                                                                            color="blue"
+                                                                            size="sm"
+                                                                        >
+                                                                            <PencilIcon className="size-4" />
+                                                                        </ActionIcon>
+                                                                    </Tooltip>
+                                                                </ModalLink>
+                                                                <ModalLink
+                                                                    href={route(
+                                                                        'roles.close',
+                                                                        role.id
+                                                                    )}
+                                                                    navigate={true}
+                                                                >
+                                                                    <Tooltip
+                                                                        label="Close Role"
+                                                                        position="left"
+                                                                    >
+                                                                        <ActionIcon
+                                                                            variant="subtle"
+                                                                            color="orange"
+                                                                            size="sm"
+                                                                        >
+                                                                            <XIcon className="size-4" />
+                                                                        </ActionIcon>
+                                                                    </Tooltip>
+                                                                </ModalLink>
+                                                            </>
                                                         )}
                                                         {role.closed_at && (
                                                             <ModalLink

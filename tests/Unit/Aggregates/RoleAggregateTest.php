@@ -41,7 +41,7 @@ it('can update a role', function () {
     $aggregate->persist();
 
     $aggregate = RoleAggregate::retrieve('role-1');
-    $aggregate->updateRole(
+    $aggregate->update(
         name: 'Super Admin',
         description: 'Super Administrator role',
         hidden: true
@@ -96,7 +96,7 @@ it('applies events correctly', function () {
     expect($createdEvent->hidden)->toBeFalse();
 
     // Test update
-    $aggregate->updateRole(
+    $aggregate->update(
         name: 'Super Admin',
         hidden: true
     );
