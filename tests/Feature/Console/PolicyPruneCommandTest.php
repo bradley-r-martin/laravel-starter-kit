@@ -12,7 +12,7 @@ beforeEach(function () {
     $this->roleId = '01JNTEST1234567890ABCDEF';
 
     RoleAggregate::retrieve($this->roleId)
-        ->createRole(
+        ->create(
             name: 'Admin',
             description: 'Administrator role',
             hidden: false
@@ -253,7 +253,7 @@ it('works with multiple roles and their policies', function () {
 
     // Create second role
     RoleAggregate::retrieve($secondRoleId)
-        ->createRole(
+        ->create(
             name: 'Editor',
             description: 'Editor role',
             hidden: false

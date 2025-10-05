@@ -41,7 +41,7 @@ final class RoleCreateProcessRequest extends FormRequest
         $roleId = (string) Str::ulid();
 
         RoleAggregate::retrieve($roleId)
-            ->createRole(
+            ->create(
                 (string) $data['name'],
                 (string) $data['description'],
                 (bool) $data['hidden']

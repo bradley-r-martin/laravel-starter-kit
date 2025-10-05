@@ -35,7 +35,7 @@ final class RoleAggregate extends AggregateRoot
      */
     public array $attachedPolicies = [];
 
-    public function createRole(
+    public function create(
         string $name,
         string $description,
         bool $hidden = false,

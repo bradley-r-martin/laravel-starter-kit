@@ -30,7 +30,7 @@ it('can close a role with no users through the browser', function (): void {
     // Create a role via aggregate
     $roleId = (string) Illuminate\Support\Str::ulid();
     RoleAggregate::retrieve($roleId)
-        ->createRole('Manager', 'Manager role', false)
+        ->create('Manager', 'Manager role', false)
         ->persist();
 
     $role = Role::findOrFail($roleId);
@@ -74,7 +74,7 @@ it('prevents closing a role with users', function (): void {
     // Create role
     $roleToCloseId = (string) Illuminate\Support\Str::ulid();
     RoleAggregate::retrieve($roleToCloseId)
-        ->createRole('Manager', 'Manager role', false)
+        ->create('Manager', 'Manager role', false)
         ->persist();
 
     // Create users assigned to the role
@@ -136,7 +136,7 @@ it('can cancel role closure', function (): void {
     // Create a role
     $roleId = (string) Illuminate\Support\Str::ulid();
     RoleAggregate::retrieve($roleId)
-        ->createRole('Manager', 'Manager role', false)
+        ->create('Manager', 'Manager role', false)
         ->persist();
 
     $role = Role::findOrFail($roleId);

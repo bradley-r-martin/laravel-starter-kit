@@ -13,7 +13,7 @@ use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 it('can create a role', function () {
     $aggregate = RoleAggregate::retrieve('role-1');
 
-    $aggregate->createRole(
+    $aggregate->create(
         name: 'Admin',
         description: 'Administrator role',
         hidden: false
@@ -32,7 +32,7 @@ it('can create a role', function () {
 it('can update a role', function () {
     $aggregate = RoleAggregate::retrieve('role-1');
 
-    $aggregate->createRole(
+    $aggregate->create(
         name: 'Admin',
         description: 'Administrator role',
         hidden: false
@@ -59,7 +59,7 @@ it('can update a role', function () {
 it('can close a role', function () {
     $aggregate = RoleAggregate::retrieve('role-1');
 
-    $aggregate->createRole(
+    $aggregate->create(
         name: 'Admin',
         description: 'Administrator role'
     );
@@ -79,7 +79,7 @@ it('can close a role', function () {
 it('applies events correctly', function () {
     $aggregate = RoleAggregate::retrieve('role-1');
 
-    $aggregate->createRole(
+    $aggregate->create(
         name: 'Admin',
         description: 'Administrator role',
         hidden: false
