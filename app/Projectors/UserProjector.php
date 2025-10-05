@@ -6,6 +6,7 @@ namespace App\Projectors;
 
 use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
+use App\Events\User\UserSuspended;
 use App\Events\User\UserUpdated;
 use App\Models\Operator;
 use App\Models\User;
@@ -62,6 +63,15 @@ final class UserProjector extends Projector
             'last_name' => $event->lastName,
             'email' => $event->email,
             '__operator_name' => $operator->name,
+        ]);
+    }
+
+    public function onUserSuspended(UserSuspended $event): void
+    {
+        $user = User::findOrFail($this->aggregateUuid);
+
+        $user->update([
+            'suspended_at' => now(),
         ]);
     }
 }

@@ -15,7 +15,7 @@ import {
     Title,
     Tooltip,
 } from '@mantine/core';
-import { PencilIcon } from 'lucide-react';
+import { BanIcon, PencilIcon } from 'lucide-react';
 
 interface User {
     id: string;
@@ -125,27 +125,49 @@ export default function List({ users }: Props) {
                                                 </Table.Td>
                                                 <Table.Td>
                                                     <Group gap="xs">
-                                                        {!user.closed_at && (
-                                                            <ModalLink
-                                                                href={route(
-                                                                    'users.update',
-                                                                    user.id
-                                                                )}
-                                                                navigate={true}
-                                                            >
-                                                                <Tooltip
-                                                                    label="Edit User"
-                                                                    position="left"
+                                                        {!user.closed_at && !user.suspended_at && (
+                                                            <>
+                                                                <ModalLink
+                                                                    href={route(
+                                                                        'users.update',
+                                                                        user.id
+                                                                    )}
+                                                                    navigate={true}
                                                                 >
-                                                                    <ActionIcon
-                                                                        variant="subtle"
-                                                                        color="blue"
-                                                                        size="sm"
+                                                                    <Tooltip
+                                                                        label="Edit User"
+                                                                        position="left"
                                                                     >
-                                                                        <PencilIcon className="size-4" />
-                                                                    </ActionIcon>
-                                                                </Tooltip>
-                                                            </ModalLink>
+                                                                        <ActionIcon
+                                                                            variant="subtle"
+                                                                            color="blue"
+                                                                            size="sm"
+                                                                        >
+                                                                            <PencilIcon className="size-4" />
+                                                                        </ActionIcon>
+                                                                    </Tooltip>
+                                                                </ModalLink>
+                                                                <ModalLink
+                                                                    href={route(
+                                                                        'users.suspend',
+                                                                        user.id
+                                                                    )}
+                                                                    navigate={true}
+                                                                >
+                                                                    <Tooltip
+                                                                        label="Suspend User"
+                                                                        position="left"
+                                                                    >
+                                                                        <ActionIcon
+                                                                            variant="subtle"
+                                                                            color="orange"
+                                                                            size="sm"
+                                                                        >
+                                                                            <BanIcon className="size-4" />
+                                                                        </ActionIcon>
+                                                                    </Tooltip>
+                                                                </ModalLink>
+                                                            </>
                                                         )}
                                                     </Group>
                                                 </Table.Td>

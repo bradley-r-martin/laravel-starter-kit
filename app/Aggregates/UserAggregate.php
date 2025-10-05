@@ -7,6 +7,7 @@ namespace App\Aggregates;
 use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
+use App\Events\User\UserSuspended;
 use App\Events\User\UserUpdated;
 use DateTimeImmutable;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
@@ -34,6 +35,10 @@ final class UserAggregate extends AggregateRoot
     public ?DateTimeImmutable $lastRecoveryRequestedAt = null;
 
     public int $recoveryRequestCount = 0;
+
+    public ?DateTimeImmutable $suspendedAt = null;
+
+    public ?string $suspendedReason = null;
 
     public function create(
         string $operatorId,
@@ -68,6 +73,18 @@ final class UserAggregate extends AggregateRoot
             firstName: $firstName,
             lastName: $lastName,
             email: $email,
+        ));
+
+        return $this;
+    }
+
+    public function suspend(
+        string $reason,
+        bool $notify = false,
+    ): self {
+        $this->recordThat(new UserSuspended(
+            reason: $reason,
+            notify: $notify,
         ));
 
         return $this;
@@ -147,5 +164,14 @@ final class UserAggregate extends AggregateRoot
         $this->firstName = $event->firstName;
         $this->lastName = $event->lastName;
         $this->email = $event->email;
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applyUserSuspended(UserSuspended $event): void
+    {
+        $this->suspendedAt = new DateTimeImmutable();
+        $this->suspendedReason = $event->reason;
     }
 }

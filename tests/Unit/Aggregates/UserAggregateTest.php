@@ -6,6 +6,7 @@ use App\Aggregates\UserAggregate;
 use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
+use App\Events\User\UserSuspended;
 use App\Events\User\UserUpdated;
 
 describe('User Creation', function () {
@@ -246,5 +247,75 @@ describe('User Update', function () {
             ->firstName->toBe('John');
         expect($events[1])->toBeInstanceOf(UserUpdated::class)
             ->firstName->toBe('Jane');
+    });
+});
+
+describe('User Suspension', function () {
+    it('records user suspension event', function () {
+        $aggregate = UserAggregate::retrieve('user-9')
+            ->suspend(
+                reason: 'Policy violation'
+            );
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserSuspended::class)
+            ->reason->toBe('Policy violation')
+            ->notify->toBeFalse();
+    });
+
+    it('records user suspension event with notification', function () {
+        $aggregate = UserAggregate::retrieve('user-9b')
+            ->suspend(
+                reason: 'Policy violation',
+                notify: true
+            );
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserSuspended::class)
+            ->reason->toBe('Policy violation')
+            ->notify->toBeTrue();
+    });
+
+    it('can suspend a user multiple times', function () {
+        $aggregate = UserAggregate::retrieve('user-10')
+            ->suspend(
+                reason: 'First suspension'
+            )
+            ->suspend(
+                reason: 'Second suspension'
+            );
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(2);
+
+        expect($events[0])->toBeInstanceOf(UserSuspended::class)
+            ->reason->toBe('First suspension');
+        expect($events[1])->toBeInstanceOf(UserSuspended::class)
+            ->reason->toBe('Second suspension');
+    });
+
+    it('can chain creation and suspension events', function () {
+        $aggregate = UserAggregate::retrieve('user-11')
+            ->create(
+                operatorId: 'operator-1',
+                roleId: 'role-1',
+                firstName: 'John',
+                lastName: 'Doe',
+                email: 'john@example.com',
+                password: '$2y$12$test'
+            )
+            ->suspend(
+                reason: 'Immediate suspension after creation'
+            );
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(2);
+        expect($events[0])->toBeInstanceOf(UserCreated::class);
+        expect($events[1])->toBeInstanceOf(UserSuspended::class)
+            ->reason->toBe('Immediate suspension after creation');
     });
 });

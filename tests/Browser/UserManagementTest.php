@@ -218,4 +218,90 @@ describe('User Management', function (): void {
             expect($unchangedUser->first_name)->not->toBe('Changed');
         })->skip();
     });
+
+    describe('User Suspension', function (): void {
+        it('can suspend a user', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/suspend");
+
+            $page->assertTitle('Suspend User: '.$user->first_name.' '.$user->last_name.' - Laravel')
+                ->assertSee('Suspend User')
+                ->assertSee($user->first_name)
+                ->assertSee($user->last_name)
+                ->assertSee($user->email)
+                ->assertSee('Reason for Suspension')
+                ->assertNoJavascriptErrors();
+
+            $page->fill('reason', 'Testing suspension workflow')
+                ->submit()
+                ->assertSee('Users')
+                ->assertPathIs('/users')
+                ->assertNoJavascriptErrors();
+
+            $suspendedUser = User::find($user->id);
+
+            expect($suspendedUser)->not->toBeNull();
+            expect($suspendedUser->suspended_at)->not->toBeNull();
+        });
+
+        it('can suspend a user with notification', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/suspend");
+
+            $page->assertTitle('Suspend User: '.$user->first_name.' '.$user->last_name.' - Laravel')
+                ->assertSee('Suspend User')
+                ->assertSee('Notify user via email about the suspension')
+                ->assertNoJavascriptErrors();
+
+            $page->fill('reason', 'Testing suspension with notification')
+                ->check('notify')
+                ->submit()
+                ->assertSee('Users')
+                ->assertPathIs('/users')
+                ->assertNoJavascriptErrors();
+
+            $suspendedUser = User::find($user->id);
+
+            expect($suspendedUser)->not->toBeNull();
+            expect($suspendedUser->suspended_at)->not->toBeNull();
+        });
+
+        it('shows validation errors when reason is missing', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/suspend");
+
+            $page->assertTitle('Suspend User: '.$user->first_name.' '.$user->last_name.' - Laravel')
+                ->assertNoJavascriptErrors()
+                ->submit()
+                ->assertSee('The reason field is required');
+        });
+
+        it('can cancel suspension', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            $this->as($user, $territory)->visit("/users/{$user->id}/suspend")
+                ->fill('reason', 'Should not be suspended')
+                ->press('Cancel')
+                ->assertPathIs('/users')
+                ->assertSee('Users')
+                ->assertNoJavascriptErrors();
+
+            $unchangedUser = User::find($user->id);
+            expect($unchangedUser->suspended_at)->toBeNull();
+        });
+
+        it('shows suspended badge for suspended users', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            User::query()->where('id', $user->id)->update(['suspended_at' => now()]);
+
+            $page = $this->as($user, $territory)->visit('/users');
+
+            $page->assertSee('Suspended')
+                ->assertNoJavascriptErrors();
+        });
+    });
 });

@@ -10,6 +10,7 @@ use App\Http\Controllers\Role\RoleListController;
 use App\Http\Controllers\Role\RoleUpdateController;
 use App\Http\Controllers\User\UserCreateController;
 use App\Http\Controllers\User\UserListController;
+use App\Http\Controllers\User\UserSuspendController;
 use App\Http\Controllers\User\UserUpdateController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,8 @@ Route::middleware('territory')->group(function () {
         Route::post('/create', [UserCreateController::class, 'process'])->name('store');
         Route::get('/{user}/update', [UserUpdateController::class, 'view'])->name('update');
         Route::put('/{user}/update', [UserUpdateController::class, 'process'])->name('update');
+        Route::get('/{user}/suspend', [UserSuspendController::class, 'view'])->name('suspend');
+        Route::post('/{user}/suspend', [UserSuspendController::class, 'process'])->name('suspend');
     });
 
     Route::get('/dashboard', function () {
