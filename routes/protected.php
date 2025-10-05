@@ -10,6 +10,7 @@ use App\Http\Controllers\Role\RoleListController;
 use App\Http\Controllers\Role\RoleUpdateController;
 use App\Http\Controllers\User\UserCreateController;
 use App\Http\Controllers\User\UserListController;
+use App\Http\Controllers\User\UserUpdateController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/territory', [AuthenticationTerritoryController::class, 'view'])->name('territory');
@@ -32,6 +33,8 @@ Route::middleware('territory')->group(function () {
         Route::get('/', [UserListController::class, 'view'])->name('index');
         Route::get('/create', [UserCreateController::class, 'view'])->name('create');
         Route::post('/create', [UserCreateController::class, 'process'])->name('store');
+        Route::get('/{user}/update', [UserUpdateController::class, 'view'])->name('update');
+        Route::put('/{user}/update', [UserUpdateController::class, 'process'])->name('update');
     });
 
     Route::get('/dashboard', function () {

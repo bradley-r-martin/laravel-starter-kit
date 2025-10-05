@@ -6,6 +6,7 @@ use App\Aggregates\UserAggregate;
 use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
+use App\Events\User\UserUpdated;
 
 describe('User Creation', function () {
     it('records user creation event', function () {
@@ -167,5 +168,83 @@ describe('Password Recovery', function () {
             ->ipAddress->toBe('192.168.1.1');
         expect($events[1])->toBeInstanceOf(UserRecoveryRequested::class)
             ->ipAddress->toBe('192.168.1.2');
+    });
+});
+
+describe('User Update', function () {
+    it('records user update event', function () {
+        $aggregate = UserAggregate::retrieve('user-6')
+            ->update(
+                operatorId: 'operator-2',
+                roleId: 'role-2',
+                firstName: 'Jane',
+                lastName: 'Smith',
+                email: 'jane.smith@example.com'
+            );
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserUpdated::class)
+            ->operatorId->toBe('operator-2')
+            ->roleId->toBe('role-2')
+            ->firstName->toBe('Jane')
+            ->lastName->toBe('Smith')
+            ->email->toBe('jane.smith@example.com');
+    });
+
+    it('can chain creation and update events', function () {
+        $aggregate = UserAggregate::retrieve('user-7')
+            ->create(
+                operatorId: 'operator-1',
+                roleId: 'role-1',
+                firstName: 'John',
+                lastName: 'Doe',
+                email: 'john.doe@example.com',
+                password: '$2y$12$test'
+            )
+            ->update(
+                operatorId: 'operator-2',
+                roleId: 'role-2',
+                firstName: 'Jane',
+                lastName: 'Smith',
+                email: 'jane.smith@example.com'
+            );
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(2);
+        expect($events[0])->toBeInstanceOf(UserCreated::class);
+        expect($events[1])->toBeInstanceOf(UserUpdated::class)
+            ->operatorId->toBe('operator-2')
+            ->roleId->toBe('role-2')
+            ->firstName->toBe('Jane')
+            ->lastName->toBe('Smith')
+            ->email->toBe('jane.smith@example.com');
+    });
+
+    it('records multiple update events', function () {
+        $aggregate = UserAggregate::retrieve('user-8')
+            ->update(
+                operatorId: 'operator-1',
+                roleId: 'role-1',
+                firstName: 'John',
+                lastName: 'Doe',
+                email: 'john.doe@example.com'
+            )
+            ->update(
+                operatorId: 'operator-2',
+                roleId: 'role-2',
+                firstName: 'Jane',
+                lastName: 'Smith',
+                email: 'jane.smith@example.com'
+            );
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(2);
+
+        expect($events[0])->toBeInstanceOf(UserUpdated::class)
+            ->firstName->toBe('John');
+        expect($events[1])->toBeInstanceOf(UserUpdated::class)
+            ->firstName->toBe('Jane');
     });
 });

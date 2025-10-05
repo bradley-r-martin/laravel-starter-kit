@@ -7,6 +7,7 @@ namespace App\Aggregates;
 use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
+use App\Events\User\UserUpdated;
 use DateTimeImmutable;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
@@ -49,6 +50,24 @@ final class UserAggregate extends AggregateRoot
             lastName: $lastName,
             email: $email,
             password: $password,
+        ));
+
+        return $this;
+    }
+
+    public function update(
+        string $operatorId,
+        string $roleId,
+        string $firstName,
+        string $lastName,
+        string $email,
+    ): self {
+        $this->recordThat(new UserUpdated(
+            operatorId: $operatorId,
+            roleId: $roleId,
+            firstName: $firstName,
+            lastName: $lastName,
+            email: $email,
         ));
 
         return $this;
@@ -110,6 +129,18 @@ final class UserAggregate extends AggregateRoot
      * @phpstan-ignore-next-line
      */
     private function applyUserCreated(UserCreated $event): void
+    {
+        $this->operatorId = $event->operatorId;
+        $this->roleId = $event->roleId;
+        $this->firstName = $event->firstName;
+        $this->lastName = $event->lastName;
+        $this->email = $event->email;
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applyUserUpdated(UserUpdated $event): void
     {
         $this->operatorId = $event->operatorId;
         $this->roleId = $event->roleId;

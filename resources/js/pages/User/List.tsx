@@ -2,7 +2,20 @@ import MainLayout from '@/Layouts/MainLayout';
 import { Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ModalLink } from '@inertiaui/modal-react';
-import { Badge, Button, Container, Group, Paper, Stack, Table, Text, Title } from '@mantine/core';
+import {
+    ActionIcon,
+    Badge,
+    Button,
+    Container,
+    Group,
+    Paper,
+    Stack,
+    Table,
+    Text,
+    Title,
+    Tooltip,
+} from '@mantine/core';
+import { PencilIcon } from 'lucide-react';
 
 interface User {
     id: string;
@@ -51,6 +64,7 @@ export default function List({ users }: Props) {
                                             <Table.Th>Last Login</Table.Th>
                                             <Table.Th>Status</Table.Th>
                                             <Table.Th>Created</Table.Th>
+                                            <Table.Th style={{ width: '80px' }}>Actions</Table.Th>
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
@@ -108,6 +122,32 @@ export default function List({ users }: Props) {
                                                             user.created_at
                                                         ).toLocaleDateString()}
                                                     </Text>
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Group gap="xs">
+                                                        {!user.closed_at && (
+                                                            <ModalLink
+                                                                href={route(
+                                                                    'users.update',
+                                                                    user.id
+                                                                )}
+                                                                navigate={true}
+                                                            >
+                                                                <Tooltip
+                                                                    label="Edit User"
+                                                                    position="left"
+                                                                >
+                                                                    <ActionIcon
+                                                                        variant="subtle"
+                                                                        color="blue"
+                                                                        size="sm"
+                                                                    >
+                                                                        <PencilIcon className="size-4" />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+                                                            </ModalLink>
+                                                        )}
+                                                    </Group>
                                                 </Table.Td>
                                             </Table.Tr>
                                         ))}
