@@ -7,6 +7,7 @@ use App\Http\Controllers\Role\RoleCloseController;
 use App\Http\Controllers\Role\RoleCreateController;
 use App\Http\Controllers\Role\RoleDestroyController;
 use App\Http\Controllers\Role\RoleListController;
+use App\Http\Controllers\Role\RoleReopenController;
 use App\Http\Controllers\Role\RoleUpdateController;
 use App\Http\Controllers\User\UserCloseController;
 use App\Http\Controllers\User\UserCreateController;
@@ -31,6 +32,8 @@ Route::middleware('territory')->group(function () {
         Route::put('/{role}/update', [RoleUpdateController::class, 'process'])->name('update');
         Route::get('/{role}/close', [RoleCloseController::class, 'view'])->name('close');
         Route::post('/{role}/close', [RoleCloseController::class, 'process'])->name('close');
+        Route::get('/{role}/reopen', [RoleReopenController::class, 'view'])->name('reopen');
+        Route::post('/{role}/reopen', [RoleReopenController::class, 'process'])->name('reopen');
         Route::get('/{role}/destroy', [RoleDestroyController::class, 'view'])->name('destroy');
         Route::delete('/{role}/destroy', [RoleDestroyController::class, 'process'])->name('destroy');
     });

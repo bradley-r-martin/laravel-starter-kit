@@ -18,7 +18,7 @@ import {
     Title,
     Tooltip,
 } from '@mantine/core';
-import { PencilIcon, TrashIcon, XIcon } from 'lucide-react';
+import { PencilIcon, RotateCcwIcon, TrashIcon, XIcon } from 'lucide-react';
 
 interface Role {
     id: string;
@@ -175,26 +175,49 @@ export default function List({ roles }: Props) {
                                                             </>
                                                         )}
                                                         {role.closed_at && (
-                                                            <Tooltip
-                                                                label="Destroy Role"
-                                                                position="left"
-                                                            >
-                                                                <ActionIcon
-                                                                    data-testid={`role-row-${role.id}-destroy`}
-                                                                    component={ModalLink}
-                                                                    href={route(
-                                                                        'roles.destroy',
-                                                                        role.id
-                                                                    )}
-                                                                    navigate={true}
-                                                                    variant="subtle"
-                                                                    color="red"
-                                                                    size="md"
-                                                                    radius="xl"
+                                                            <>
+                                                                <Tooltip
+                                                                    label="Reopen Role"
+                                                                    position="left"
                                                                 >
-                                                                    <TrashIcon className="size-4" />
-                                                                </ActionIcon>
-                                                            </Tooltip>
+                                                                    <ActionIcon
+                                                                        data-testid={`role-row-${role.id}-reopen`}
+                                                                        component={ModalLink}
+                                                                        href={route(
+                                                                            'roles.reopen',
+                                                                            role.id
+                                                                        )}
+                                                                        navigate={true}
+                                                                        variant="subtle"
+                                                                        color="green"
+                                                                        size="md"
+                                                                        radius="xl"
+                                                                    >
+                                                                        <RotateCcwIcon className="size-4" />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+
+                                                                <Tooltip
+                                                                    label="Destroy Role"
+                                                                    position="left"
+                                                                >
+                                                                    <ActionIcon
+                                                                        data-testid={`role-row-${role.id}-destroy`}
+                                                                        component={ModalLink}
+                                                                        href={route(
+                                                                            'roles.destroy',
+                                                                            role.id
+                                                                        )}
+                                                                        navigate={true}
+                                                                        variant="subtle"
+                                                                        color="red"
+                                                                        size="md"
+                                                                        radius="xl"
+                                                                    >
+                                                                        <TrashIcon className="size-4" />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+                                                            </>
                                                         )}
                                                     </Group>
                                                 </Table.Td>

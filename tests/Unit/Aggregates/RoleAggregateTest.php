@@ -9,6 +9,7 @@ use App\Events\Policy\PolicyDetached;
 use App\Events\Role\RoleClosed;
 use App\Events\Role\RoleCreated;
 use App\Events\Role\RoleDestroyed;
+use App\Events\Role\RoleReopened;
 use App\Events\Role\RoleUpdated;
 
 describe('Role Creation', function () {
@@ -64,12 +65,27 @@ describe('Role Updates', function () {
             ->reason->toBe('Role no longer needed');
     });
 
-    it('records role destroyed event', function () {
+    it('records role reopened event', function () {
         $aggregate = RoleAggregate::retrieve('role-3')
             ->create(name: 'Admin', description: 'Administrator role')
             ->persist();
 
         $aggregate = RoleAggregate::retrieve('role-3')
+            ->reopen('Role is needed again');
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(RoleReopened::class)
+            ->reason->toBe('Role is needed again');
+    });
+
+    it('records role destroyed event', function () {
+        $aggregate = RoleAggregate::retrieve('role-4')
+            ->create(name: 'Admin', description: 'Administrator role')
+            ->persist();
+
+        $aggregate = RoleAggregate::retrieve('role-4')
             ->destroy();
 
         expect($aggregate->getRecordedEvents())->toHaveCount(1);
@@ -79,7 +95,7 @@ describe('Role Updates', function () {
 
 describe('Policy Attachments', function () {
     it('records policy attached event', function () {
-        $aggregate = RoleAggregate::retrieve('role-4')
+        $aggregate = RoleAggregate::retrieve('role-5')
             ->attachPolicy('App\\Policies\\UserPolicy', 'view', 'View users', false);
 
         expect($aggregate->getRecordedEvents())->toHaveCount(1);
@@ -91,7 +107,7 @@ describe('Policy Attachments', function () {
     });
 
     it('records multiple policy attachments', function () {
-        $aggregate = RoleAggregate::retrieve('role-5')
+        $aggregate = RoleAggregate::retrieve('role-6')
             ->attachPolicy('App\\Policies\\UserPolicy', 'view')
             ->attachPolicy('App\\Policies\\OrderPolicy', 'create')
             ->attachPolicy('App\\Policies\\ReportPolicy', 'view');
@@ -106,7 +122,7 @@ describe('Policy Attachments', function () {
     });
 
     it('attaches same policy to different abilities', function () {
-        $aggregate = RoleAggregate::retrieve('role-6')
+        $aggregate = RoleAggregate::retrieve('role-7')
             ->attachPolicy('App\\Policies\\UserPolicy', 'view')
             ->attachPolicy('App\\Policies\\UserPolicy', 'create')
             ->attachPolicy('App\\Policies\\UserPolicy', 'update');
@@ -123,7 +139,7 @@ describe('Policy Attachments', function () {
 
 describe('Policy Detachments', function () {
     it('records policy detached event', function () {
-        $aggregate = RoleAggregate::retrieve('role-7');
+        $aggregate = RoleAggregate::retrieve('role-8');
 
         // Manually set the attached policies to simulate retrieved state
         $aggregate->attachedPolicies = [['App\\Policies\\UserPolicy', 'view']];
@@ -137,14 +153,14 @@ describe('Policy Detachments', function () {
     });
 
     it('prevents detaching non-attached policies', function () {
-        $aggregate = RoleAggregate::retrieve('role-8')
+        $aggregate = RoleAggregate::retrieve('role-9')
             ->detachPolicy('App\\Policies\\UserPolicy', 'view');
 
         expect($aggregate->getRecordedEvents())->toHaveCount(0);
     });
 
     it('records multiple detachments', function () {
-        $aggregate = RoleAggregate::retrieve('role-9');
+        $aggregate = RoleAggregate::retrieve('role-10');
 
         // Manually set the attached policies to simulate retrieved state
         $aggregate->attachedPolicies = [
@@ -168,7 +184,7 @@ describe('Policy Detachments', function () {
 
 describe('Policy Deprecation', function () {
     it('records policy deprecated event', function () {
-        $aggregate = RoleAggregate::retrieve('role-10')
+        $aggregate = RoleAggregate::retrieve('role-11')
             ->deprecatePolicy('App\\Policies\\UserPolicy', 'view');
 
         expect($aggregate->getRecordedEvents())->toHaveCount(1);
