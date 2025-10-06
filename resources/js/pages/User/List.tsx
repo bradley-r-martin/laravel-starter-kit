@@ -15,7 +15,14 @@ import {
     Title,
     Tooltip,
 } from '@mantine/core';
-import { BanIcon, CheckCircleIcon, PencilIcon, RotateCcwIcon, XIcon } from 'lucide-react';
+import {
+    BanIcon,
+    CheckCircleIcon,
+    PencilIcon,
+    RotateCcwIcon,
+    TrashIcon,
+    XIcon,
+} from 'lucide-react';
 
 interface User {
     id: string;
@@ -227,26 +234,49 @@ export default function List({ users }: Props) {
                                                             </Tooltip>
                                                         )}
                                                         {user.closed_at && (
-                                                            <Tooltip
-                                                                label="Reopen Account"
-                                                                position="left"
-                                                            >
-                                                                <ActionIcon
-                                                                    data-testid={`user-row-${user.id}-reopen`}
-                                                                    component={ModalLink}
-                                                                    href={route(
-                                                                        'users.reopen',
-                                                                        user.id
-                                                                    )}
-                                                                    navigate={true}
-                                                                    variant="subtle"
-                                                                    color="green"
-                                                                    size="md"
-                                                                    radius="xl"
+                                                            <>
+                                                                <Tooltip
+                                                                    label="Reopen Account"
+                                                                    position="left"
                                                                 >
-                                                                    <RotateCcwIcon className="size-4" />
-                                                                </ActionIcon>
-                                                            </Tooltip>
+                                                                    <ActionIcon
+                                                                        data-testid={`user-row-${user.id}-reopen`}
+                                                                        component={ModalLink}
+                                                                        href={route(
+                                                                            'users.reopen',
+                                                                            user.id
+                                                                        )}
+                                                                        navigate={true}
+                                                                        variant="subtle"
+                                                                        color="green"
+                                                                        size="md"
+                                                                        radius="xl"
+                                                                    >
+                                                                        <RotateCcwIcon className="size-4" />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+
+                                                                <Tooltip
+                                                                    label="Destroy Account"
+                                                                    position="left"
+                                                                >
+                                                                    <ActionIcon
+                                                                        data-testid={`user-row-${user.id}-destroy`}
+                                                                        component={ModalLink}
+                                                                        href={route(
+                                                                            'users.destroy',
+                                                                            user.id
+                                                                        )}
+                                                                        navigate={true}
+                                                                        variant="subtle"
+                                                                        color="red"
+                                                                        size="md"
+                                                                        radius="xl"
+                                                                    >
+                                                                        <TrashIcon className="size-4" />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+                                                            </>
                                                         )}
                                                     </Group>
                                                 </Table.Td>

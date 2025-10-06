@@ -10,6 +10,7 @@ use App\Http\Controllers\Role\RoleListController;
 use App\Http\Controllers\Role\RoleUpdateController;
 use App\Http\Controllers\User\UserCloseController;
 use App\Http\Controllers\User\UserCreateController;
+use App\Http\Controllers\User\UserDestroyController;
 use App\Http\Controllers\User\UserListController;
 use App\Http\Controllers\User\UserReopenController;
 use App\Http\Controllers\User\UserSuspendController;
@@ -47,6 +48,8 @@ Route::middleware('territory')->group(function () {
         Route::post('/{user}/close', [UserCloseController::class, 'process'])->name('close');
         Route::get('/{user}/reopen', [UserReopenController::class, 'view'])->name('reopen');
         Route::post('/{user}/reopen', [UserReopenController::class, 'process'])->name('reopen');
+        Route::get('/{user}/destroy', [UserDestroyController::class, 'view'])->name('destroy');
+        Route::delete('/{user}/destroy', [UserDestroyController::class, 'process'])->name('destroy');
     });
 
     Route::get('/dashboard', function () {

@@ -528,4 +528,77 @@ describe('User Management', function (): void {
                 ->assertNoJavascriptErrors();
         });
     });
+
+    describe('User Destruction', function (): void {
+        it('can destroy a closed user account', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            // First close the user
+            User::query()->where('id', $user->id)->update(['closed_at' => now()]);
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/destroy");
+
+            $page->assertTitle('Destroy User Account: '.$user->first_name.' '.$user->last_name.' - Laravel')
+                ->assertSee('Destroy User Account')
+                ->assertSee($user->first_name)
+                ->assertSee($user->last_name)
+                ->assertSee($user->email)
+                ->assertSee('Reason for Destruction')
+                ->assertSee('WARNING: This action is irreversible')
+                ->assertNoJavascriptErrors();
+
+            $page->fill('reason', 'Account no longer needed')
+                ->submit()
+                ->assertSee('Users')
+                ->assertPathIs('/users')
+                ->assertNoJavascriptErrors();
+
+            // User should be deleted from database
+            $destroyedUser = User::find($user->id);
+            expect($destroyedUser)->toBeNull();
+        });
+
+        it('shows validation errors when reason is missing', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            // First close the user
+            User::query()->where('id', $user->id)->update(['closed_at' => now()]);
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/destroy");
+
+            $page->assertTitle('Destroy User Account: '.$user->first_name.' '.$user->last_name.' - Laravel')
+                ->assertNoJavascriptErrors()
+                ->submit()
+                ->assertSee('The reason field is required');
+        });
+
+        it('can cancel account destruction', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            // First close the user
+            User::query()->where('id', $user->id)->update(['closed_at' => now()]);
+
+            $this->as($user, $territory)->visit("/users/{$user->id}/destroy")
+                ->fill('reason', 'Should not be destroyed')
+                ->press('Cancel')
+                ->assertPathIs('/users')
+                ->assertSee('Users')
+                ->assertNoJavascriptErrors();
+
+            // User should still exist in database
+            $stillExistsUser = User::find($user->id);
+            expect($stillExistsUser)->not->toBeNull();
+        });
+
+        it('shows destroy action for closed users', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            User::query()->where('id', $user->id)->update(['closed_at' => now()]);
+
+            $page = $this->as($user, $territory)->visit('/users');
+
+            $page->assertVisible('data-testid=user-row-'.$user->id.'-destroy')
+                ->assertNoJavascriptErrors();
+        });
+    });
 });

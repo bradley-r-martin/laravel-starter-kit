@@ -6,6 +6,7 @@ namespace App\Projectors;
 
 use App\Events\User\UserClosed;
 use App\Events\User\UserCreated;
+use App\Events\User\UserDestroyed;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserReopened;
 use App\Events\User\UserSuspended;
@@ -103,5 +104,12 @@ final class UserProjector extends Projector
         $user->update([
             'closed_at' => null,
         ]);
+    }
+
+    public function onUserDestroyed(UserDestroyed $event): void
+    {
+        $user = User::findOrFail($this->aggregateUuid);
+
+        $user->delete();
     }
 }

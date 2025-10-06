@@ -6,6 +6,7 @@ namespace App\Aggregates;
 
 use App\Events\User\UserClosed;
 use App\Events\User\UserCreated;
+use App\Events\User\UserDestroyed;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
 use App\Events\User\UserReopened;
@@ -46,6 +47,10 @@ final class UserAggregate extends AggregateRoot
     public ?DateTimeImmutable $closedAt = null;
 
     public ?string $closedReason = null;
+
+    public ?DateTimeImmutable $destroyedAt = null;
+
+    public ?string $destroyedReason = null;
 
     public function create(
         string $operatorId,
@@ -123,6 +128,16 @@ final class UserAggregate extends AggregateRoot
         string $reason,
     ): self {
         $this->recordThat(new UserReopened(
+            reason: $reason,
+        ));
+
+        return $this;
+    }
+
+    public function destroy(
+        string $reason,
+    ): self {
+        $this->recordThat(new UserDestroyed(
             reason: $reason,
         ));
 
@@ -239,5 +254,14 @@ final class UserAggregate extends AggregateRoot
     {
         $this->closedAt = null;
         $this->closedReason = null;
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applyUserDestroyed(UserDestroyed $event): void
+    {
+        $this->destroyedAt = new DateTimeImmutable();
+        $this->destroyedReason = $event->reason;
     }
 }

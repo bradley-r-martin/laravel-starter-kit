@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Aggregates\UserAggregate;
 use App\Events\User\UserClosed;
 use App\Events\User\UserCreated;
+use App\Events\User\UserDestroyed;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
 use App\Events\User\UserReopened;
@@ -480,5 +481,63 @@ describe('User Reopening', function () {
         expect($events[1])->toBeInstanceOf(UserClosed::class);
         expect($events[2])->toBeInstanceOf(UserReopened::class)
             ->reason->toBe('Account reactivated');
+    });
+});
+
+describe('User Destruction', function () {
+    it('records user destruction event', function () {
+        $aggregate = UserAggregate::retrieve('user-21')
+            ->destroy(
+                reason: 'Account no longer needed'
+            );
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserDestroyed::class)
+            ->reason->toBe('Account no longer needed');
+    });
+
+    it('can close and then destroy a user', function () {
+        $aggregate = UserAggregate::retrieve('user-22')
+            ->close(
+                reason: 'Employee left company'
+            )
+            ->destroy(
+                reason: 'Permanent removal requested'
+            );
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(2);
+
+        expect($events[0])->toBeInstanceOf(UserClosed::class)
+            ->reason->toBe('Employee left company');
+        expect($events[1])->toBeInstanceOf(UserDestroyed::class)
+            ->reason->toBe('Permanent removal requested');
+    });
+
+    it('can destroy a user after creation and closure', function () {
+        $aggregate = UserAggregate::retrieve('user-23')
+            ->create(
+                operatorId: 'operator-1',
+                roleId: 'role-1',
+                firstName: 'John',
+                lastName: 'Doe',
+                email: 'john@example.com',
+                password: '$2y$12$test'
+            )
+            ->close(
+                reason: 'Account closed for review'
+            )
+            ->destroy(
+                reason: 'Final removal approved'
+            );
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(3);
+        expect($events[0])->toBeInstanceOf(UserCreated::class);
+        expect($events[1])->toBeInstanceOf(UserClosed::class);
+        expect($events[2])->toBeInstanceOf(UserDestroyed::class)
+            ->reason->toBe('Final removal approved');
     });
 });
