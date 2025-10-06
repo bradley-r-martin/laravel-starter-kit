@@ -15,7 +15,7 @@ import {
     Title,
     Tooltip,
 } from '@mantine/core';
-import { BanIcon, PencilIcon } from 'lucide-react';
+import { BanIcon, CheckCircleIcon, PencilIcon } from 'lucide-react';
 
 interface User {
     id: string;
@@ -168,6 +168,28 @@ export default function List({ users }: Props) {
                                                                     </Tooltip>
                                                                 </ModalLink>
                                                             </>
+                                                        )}
+                                                        {!user.closed_at && user.suspended_at && (
+                                                            <ModalLink
+                                                                href={route(
+                                                                    'users.unsuspend',
+                                                                    user.id
+                                                                )}
+                                                                navigate={true}
+                                                            >
+                                                                <Tooltip
+                                                                    label="Unsuspend User"
+                                                                    position="left"
+                                                                >
+                                                                    <ActionIcon
+                                                                        variant="subtle"
+                                                                        color="green"
+                                                                        size="sm"
+                                                                    >
+                                                                        <CheckCircleIcon className="size-4" />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+                                                            </ModalLink>
                                                         )}
                                                     </Group>
                                                 </Table.Td>

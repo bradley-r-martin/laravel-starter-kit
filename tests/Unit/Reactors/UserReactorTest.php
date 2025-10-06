@@ -7,6 +7,7 @@ use App\Models\Operator;
 use App\Models\Role;
 use App\Models\User;
 use App\Notifications\UserSuspensionNotification;
+use App\Notifications\UserUnsuspensionNotification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
@@ -99,6 +100,93 @@ describe('User Reactor', function () {
         UserAggregate::retrieve($userId)
             ->suspend(
                 reason: 'Policy violation',
+                notify: false
+            )
+            ->persist();
+
+        // Assert no notification was sent
+        Notification::assertNothingSent();
+    });
+
+    it('sends unsuspension notification when notify is true', function () {
+        Notification::fake();
+
+        // Create an operator and role
+        $operator = Operator::create([
+            'id' => (string) Str::ulid(),
+            'name' => 'Test Operator',
+        ]);
+
+        $role = Role::create([
+            'id' => (string) Str::ulid(),
+            'name' => 'Test Role',
+        ]);
+
+        // Create and persist a user
+        $userId = (string) Str::ulid();
+        UserAggregate::retrieve($userId)
+            ->create(
+                operatorId: $operator->id,
+                roleId: $role->id,
+                firstName: 'Bob',
+                lastName: 'Johnson',
+                email: 'bob.johnson@example.com',
+                password: Hash::make('password')
+            )
+            ->persist();
+
+        // Unsuspend the user with notification
+        UserAggregate::retrieve($userId)
+            ->unsuspend(
+                reason: 'Suspension lifted',
+                notify: true
+            )
+            ->persist();
+
+        // Get the user
+        $user = User::find($userId);
+
+        // Assert notification was sent
+        Notification::assertSentTo(
+            $user,
+            UserUnsuspensionNotification::class,
+            function ($notification) {
+                return $notification->reason === 'Suspension lifted';
+            }
+        );
+    });
+
+    it('does not send unsuspension notification when notify is false', function () {
+        Notification::fake();
+
+        // Create an operator and role
+        $operator = Operator::create([
+            'id' => (string) Str::ulid(),
+            'name' => 'Test Operator',
+        ]);
+
+        $role = Role::create([
+            'id' => (string) Str::ulid(),
+            'name' => 'Test Role',
+        ]);
+
+        // Create and persist a user
+        $userId = (string) Str::ulid();
+        UserAggregate::retrieve($userId)
+            ->create(
+                operatorId: $operator->id,
+                roleId: $role->id,
+                firstName: 'Alice',
+                lastName: 'Brown',
+                email: 'alice.brown@example.com',
+                password: Hash::make('password')
+            )
+            ->persist();
+
+        // Unsuspend the user without notification
+        UserAggregate::retrieve($userId)
+            ->unsuspend(
+                reason: 'Suspension lifted',
                 notify: false
             )
             ->persist();

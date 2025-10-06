@@ -304,4 +304,91 @@ describe('User Management', function (): void {
                 ->assertNoJavascriptErrors();
         });
     });
+
+    describe('User Unsuspension', function (): void {
+        it('can unsuspend a user', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            // First suspend the user
+            User::query()->where('id', $user->id)->update(['suspended_at' => now()]);
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/unsuspend");
+
+            $page->assertTitle('Unsuspend User: '.$user->first_name.' '.$user->last_name.' - Laravel')
+                ->assertSee('Unsuspend User')
+                ->assertSee($user->first_name)
+                ->assertSee($user->last_name)
+                ->assertSee($user->email)
+                ->assertSee('Reason for Unsuspension')
+                ->assertNoJavascriptErrors();
+
+            $page->fill('reason', 'Testing unsuspension workflow')
+                ->submit()
+                ->assertSee('Users')
+                ->assertPathIs('/users')
+                ->assertNoJavascriptErrors();
+
+            $unsuspendedUser = User::find($user->id);
+
+            expect($unsuspendedUser)->not->toBeNull();
+            expect($unsuspendedUser->suspended_at)->toBeNull();
+        });
+
+        it('can unsuspend a user with notification', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            // First suspend the user
+            User::query()->where('id', $user->id)->update(['suspended_at' => now()]);
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/unsuspend");
+
+            $page->assertTitle('Unsuspend User: '.$user->first_name.' '.$user->last_name.' - Laravel')
+                ->assertSee('Unsuspend User')
+                ->assertSee('Notify user via email about the unsuspension')
+                ->assertNoJavascriptErrors();
+
+            $page->fill('reason', 'Testing unsuspension with notification')
+                ->check('notify')
+                ->submit()
+                ->assertSee('Users')
+                ->assertPathIs('/users')
+                ->assertNoJavascriptErrors();
+
+            $unsuspendedUser = User::find($user->id);
+
+            expect($unsuspendedUser)->not->toBeNull();
+            expect($unsuspendedUser->suspended_at)->toBeNull();
+        });
+
+        it('shows validation errors when reason is missing', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            // First suspend the user
+            User::query()->where('id', $user->id)->update(['suspended_at' => now()]);
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/unsuspend");
+
+            $page->assertTitle('Unsuspend User: '.$user->first_name.' '.$user->last_name.' - Laravel')
+                ->assertNoJavascriptErrors()
+                ->submit()
+                ->assertSee('The reason field is required');
+        });
+
+        it('can cancel unsuspension', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            // First suspend the user
+            User::query()->where('id', $user->id)->update(['suspended_at' => now()]);
+
+            $this->as($user, $territory)->visit("/users/{$user->id}/unsuspend")
+                ->fill('reason', 'Should not be unsuspended')
+                ->press('Cancel')
+                ->assertPathIs('/users')
+                ->assertSee('Users')
+                ->assertNoJavascriptErrors();
+
+            $stillSuspendedUser = User::find($user->id);
+            expect($stillSuspendedUser->suspended_at)->not->toBeNull();
+        });
+    });
 });

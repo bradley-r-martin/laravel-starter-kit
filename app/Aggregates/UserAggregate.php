@@ -8,6 +8,7 @@ use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
 use App\Events\User\UserSuspended;
+use App\Events\User\UserUnsuspended;
 use App\Events\User\UserUpdated;
 use DateTimeImmutable;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
@@ -83,6 +84,18 @@ final class UserAggregate extends AggregateRoot
         bool $notify = false,
     ): self {
         $this->recordThat(new UserSuspended(
+            reason: $reason,
+            notify: $notify,
+        ));
+
+        return $this;
+    }
+
+    public function unsuspend(
+        string $reason,
+        bool $notify = false,
+    ): self {
+        $this->recordThat(new UserUnsuspended(
             reason: $reason,
             notify: $notify,
         ));
@@ -173,5 +186,14 @@ final class UserAggregate extends AggregateRoot
     {
         $this->suspendedAt = new DateTimeImmutable();
         $this->suspendedReason = $event->reason;
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applyUserUnsuspended(): void
+    {
+        $this->suspendedAt = null;
+        $this->suspendedReason = null;
     }
 }

@@ -7,6 +7,7 @@ use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
 use App\Events\User\UserSuspended;
+use App\Events\User\UserUnsuspended;
 use App\Events\User\UserUpdated;
 
 describe('User Creation', function () {
@@ -317,5 +318,54 @@ describe('User Suspension', function () {
         expect($events[0])->toBeInstanceOf(UserCreated::class);
         expect($events[1])->toBeInstanceOf(UserSuspended::class)
             ->reason->toBe('Immediate suspension after creation');
+    });
+});
+
+describe('User Unsuspension', function () {
+    it('records user unsuspension event', function () {
+        $aggregate = UserAggregate::retrieve('user-12')
+            ->unsuspend(
+                reason: 'Suspension lifted'
+            );
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserUnsuspended::class)
+            ->reason->toBe('Suspension lifted')
+            ->notify->toBeFalse();
+    });
+
+    it('records user unsuspension event with notification', function () {
+        $aggregate = UserAggregate::retrieve('user-13')
+            ->unsuspend(
+                reason: 'Suspension lifted',
+                notify: true
+            );
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserUnsuspended::class)
+            ->reason->toBe('Suspension lifted')
+            ->notify->toBeTrue();
+    });
+
+    it('can suspend and then unsuspend a user', function () {
+        $aggregate = UserAggregate::retrieve('user-14')
+            ->suspend(
+                reason: 'Temporary suspension'
+            )
+            ->unsuspend(
+                reason: 'Issue resolved'
+            );
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(2);
+
+        expect($events[0])->toBeInstanceOf(UserSuspended::class)
+            ->reason->toBe('Temporary suspension');
+        expect($events[1])->toBeInstanceOf(UserUnsuspended::class)
+            ->reason->toBe('Issue resolved');
     });
 });
