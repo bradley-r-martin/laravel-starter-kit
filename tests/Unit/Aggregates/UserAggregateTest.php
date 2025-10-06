@@ -7,6 +7,7 @@ use App\Events\User\UserClosed;
 use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
+use App\Events\User\UserReopened;
 use App\Events\User\UserSuspended;
 use App\Events\User\UserUnsuspended;
 use App\Events\User\UserUpdated;
@@ -421,5 +422,63 @@ describe('User Closure', function () {
         expect($events[0])->toBeInstanceOf(UserSuspended::class);
         expect($events[1])->toBeInstanceOf(UserClosed::class)
             ->reason->toBe('Repeated violations');
+    });
+});
+
+describe('User Reopening', function () {
+    it('records user reopening event', function () {
+        $aggregate = UserAggregate::retrieve('user-18')
+            ->reopen(
+                reason: 'Employee returned to company'
+            );
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserReopened::class)
+            ->reason->toBe('Employee returned to company');
+    });
+
+    it('can close and then reopen a user', function () {
+        $aggregate = UserAggregate::retrieve('user-19')
+            ->close(
+                reason: 'Employee left company'
+            )
+            ->reopen(
+                reason: 'Employee returned to company'
+            );
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(2);
+
+        expect($events[0])->toBeInstanceOf(UserClosed::class)
+            ->reason->toBe('Employee left company');
+        expect($events[1])->toBeInstanceOf(UserReopened::class)
+            ->reason->toBe('Employee returned to company');
+    });
+
+    it('can reopen a user after creation and closure', function () {
+        $aggregate = UserAggregate::retrieve('user-20')
+            ->create(
+                operatorId: 'operator-1',
+                roleId: 'role-1',
+                firstName: 'John',
+                lastName: 'Doe',
+                email: 'john@example.com',
+                password: '$2y$12$test'
+            )
+            ->close(
+                reason: 'Account closed temporarily'
+            )
+            ->reopen(
+                reason: 'Account reactivated'
+            );
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(3);
+        expect($events[0])->toBeInstanceOf(UserCreated::class);
+        expect($events[1])->toBeInstanceOf(UserClosed::class);
+        expect($events[2])->toBeInstanceOf(UserReopened::class)
+            ->reason->toBe('Account reactivated');
     });
 });

@@ -1,0 +1,55 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Requests\User;
+
+use App\Aggregates\UserAggregate;
+use App\Models\User;
+use Illuminate\Foundation\Http\FormRequest;
+use Symfony\Component\HttpFoundation\Response;
+
+final class UserReopenProcessRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'reason' => 'required|string|max:500',
+        ];
+    }
+
+    public function respond(): Response
+    {
+        $userId = (string) $this->route('user');
+        $user = User::query()->select(['id'])->findOrFail($userId);
+
+        /** @var array{reason: string} $data */
+        $data = $this->validated();
+
+        UserAggregate::retrieve($user->id)
+            ->reopen(
+                reason: $data['reason'],
+            )
+            ->persist();
+
+        return redirect()
+            ->route('users.index')
+            ->with('toast', [
+                'message' => 'User account reopened successfully',
+                'type' => 'success',
+            ]);
+    }
+}

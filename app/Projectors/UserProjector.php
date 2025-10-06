@@ -7,6 +7,7 @@ namespace App\Projectors;
 use App\Events\User\UserClosed;
 use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
+use App\Events\User\UserReopened;
 use App\Events\User\UserSuspended;
 use App\Events\User\UserUnsuspended;
 use App\Events\User\UserUpdated;
@@ -92,6 +93,15 @@ final class UserProjector extends Projector
 
         $user->update([
             'closed_at' => now(),
+        ]);
+    }
+
+    public function onUserReopened(UserReopened $event): void
+    {
+        $user = User::findOrFail($this->aggregateUuid);
+
+        $user->update([
+            'closed_at' => null,
         ]);
     }
 }

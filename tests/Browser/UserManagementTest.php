@@ -455,4 +455,77 @@ describe('User Management', function (): void {
                 ->assertNoJavascriptErrors();
         });
     });
+
+    describe('User Reopening', function (): void {
+        it('can reopen a closed user account', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            // First close the user
+            User::query()->where('id', $user->id)->update(['closed_at' => now()]);
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/reopen");
+
+            $page->assertTitle('Reopen User Account: '.$user->first_name.' '.$user->last_name.' - Laravel')
+                ->assertSee('Reopen User Account')
+                ->assertSee($user->first_name)
+                ->assertSee($user->last_name)
+                ->assertSee($user->email)
+                ->assertSee('Reason for Reopening')
+                ->assertSee('This will restore access to the user account and allow them to log in again')
+                ->assertNoJavascriptErrors();
+
+            $page->fill('reason', 'Employee returned to company')
+                ->submit()
+                ->assertSee('Users')
+                ->assertPathIs('/users')
+                ->assertNoJavascriptErrors();
+
+            $reopenedUser = User::find($user->id);
+
+            expect($reopenedUser)->not->toBeNull();
+            expect($reopenedUser->closed_at)->toBeNull();
+        });
+
+        it('shows validation errors when reason is missing', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            // First close the user
+            User::query()->where('id', $user->id)->update(['closed_at' => now()]);
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/reopen");
+
+            $page->assertTitle('Reopen User Account: '.$user->first_name.' '.$user->last_name.' - Laravel')
+                ->assertNoJavascriptErrors()
+                ->submit()
+                ->assertSee('The reason field is required');
+        });
+
+        it('can cancel account reopening', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            // First close the user
+            User::query()->where('id', $user->id)->update(['closed_at' => now()]);
+
+            $this->as($user, $territory)->visit("/users/{$user->id}/reopen")
+                ->fill('reason', 'Should not be reopened')
+                ->press('Cancel')
+                ->assertPathIs('/users')
+                ->assertSee('Users')
+                ->assertNoJavascriptErrors();
+
+            $stillClosedUser = User::find($user->id);
+            expect($stillClosedUser->closed_at)->not->toBeNull();
+        });
+
+        it('shows reopen action for closed users', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            User::query()->where('id', $user->id)->update(['closed_at' => now()]);
+
+            $page = $this->as($user, $territory)->visit('/users');
+
+            $page->assertVisible('data-testid=user-row-'.$user->id.'-reopen')
+                ->assertNoJavascriptErrors();
+        });
+    });
 });

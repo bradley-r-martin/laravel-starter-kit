@@ -8,6 +8,7 @@ use App\Events\User\UserClosed;
 use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
+use App\Events\User\UserReopened;
 use App\Events\User\UserSuspended;
 use App\Events\User\UserUnsuspended;
 use App\Events\User\UserUpdated;
@@ -118,6 +119,16 @@ final class UserAggregate extends AggregateRoot
         return $this;
     }
 
+    public function reopen(
+        string $reason,
+    ): self {
+        $this->recordThat(new UserReopened(
+            reason: $reason,
+        ));
+
+        return $this;
+    }
+
     public function login(
         string $ipAddress,
         string $userAgent,
@@ -219,5 +230,14 @@ final class UserAggregate extends AggregateRoot
     {
         $this->closedAt = new DateTimeImmutable();
         $this->closedReason = $event->reason;
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applyUserReopened(): void
+    {
+        $this->closedAt = null;
+        $this->closedReason = null;
     }
 }

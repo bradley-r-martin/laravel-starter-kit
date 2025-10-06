@@ -15,7 +15,7 @@ import {
     Title,
     Tooltip,
 } from '@mantine/core';
-import { BanIcon, CheckCircleIcon, PencilIcon, XIcon } from 'lucide-react';
+import { BanIcon, CheckCircleIcon, PencilIcon, RotateCcwIcon, XIcon } from 'lucide-react';
 
 interface User {
     id: string;
@@ -223,6 +223,28 @@ export default function List({ users }: Props) {
                                                                     radius="xl"
                                                                 >
                                                                     <CheckCircleIcon className="size-4" />
+                                                                </ActionIcon>
+                                                            </Tooltip>
+                                                        )}
+                                                        {user.closed_at && (
+                                                            <Tooltip
+                                                                label="Reopen Account"
+                                                                position="left"
+                                                            >
+                                                                <ActionIcon
+                                                                    data-testid={`user-row-${user.id}-reopen`}
+                                                                    component={ModalLink}
+                                                                    href={route(
+                                                                        'users.reopen',
+                                                                        user.id
+                                                                    )}
+                                                                    navigate={true}
+                                                                    variant="subtle"
+                                                                    color="green"
+                                                                    size="md"
+                                                                    radius="xl"
+                                                                >
+                                                                    <RotateCcwIcon className="size-4" />
                                                                 </ActionIcon>
                                                             </Tooltip>
                                                         )}
