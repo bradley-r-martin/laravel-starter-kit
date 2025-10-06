@@ -8,6 +8,7 @@ use App\Events\User\UserClosed;
 use App\Events\User\UserCreated;
 use App\Events\User\UserDestroyed;
 use App\Events\User\UserLoggedIn;
+use App\Events\User\UserPasswordChanged;
 use App\Events\User\UserRecoveryRequested;
 use App\Events\User\UserReopened;
 use App\Events\User\UserSuspended;
@@ -18,6 +19,8 @@ use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 final class UserAggregate extends AggregateRoot
 {
+    public string $password;
+
     public ?string $operatorId = null;
 
     public ?string $roleId = null;
@@ -144,6 +147,16 @@ final class UserAggregate extends AggregateRoot
         return $this;
     }
 
+    public function changePassword(
+        string $hashedPassword,
+    ): self {
+        $this->recordThat(new UserPasswordChanged(
+            hashedPassword: $hashedPassword,
+        ));
+
+        return $this;
+    }
+
     public function login(
         string $ipAddress,
         string $userAgent,
@@ -263,5 +276,13 @@ final class UserAggregate extends AggregateRoot
     {
         $this->destroyedAt = new DateTimeImmutable();
         $this->destroyedReason = $event->reason;
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applyUserPasswordChanged(UserPasswordChanged $event): void
+    {
+        $this->password = $event->hashedPassword;
     }
 }

@@ -7,6 +7,7 @@ use App\Events\User\UserClosed;
 use App\Events\User\UserCreated;
 use App\Events\User\UserDestroyed;
 use App\Events\User\UserLoggedIn;
+use App\Events\User\UserPasswordChanged;
 use App\Events\User\UserRecoveryRequested;
 use App\Events\User\UserReopened;
 use App\Events\User\UserSuspended;
@@ -539,5 +540,65 @@ describe('User Destruction', function () {
         expect($events[1])->toBeInstanceOf(UserClosed::class);
         expect($events[2])->toBeInstanceOf(UserDestroyed::class)
             ->reason->toBe('Final removal approved');
+    });
+});
+
+describe('User Password Change', function () {
+    it('records user password change event', function () {
+        $newHashedPassword = '$2y$12$newhashedpassword123456789';
+
+        $aggregate = UserAggregate::retrieve('user-24')
+            ->changePassword(
+                hashedPassword: $newHashedPassword
+            );
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserPasswordChanged::class)
+            ->hashedPassword->toBe($newHashedPassword);
+    });
+
+    it('can change password after creation', function () {
+        $aggregate = UserAggregate::retrieve('user-25')
+            ->create(
+                operatorId: 'operator-1',
+                roleId: 'role-1',
+                firstName: 'John',
+                lastName: 'Doe',
+                email: 'john@example.com',
+                password: '$2y$12$initial'
+            )
+            ->changePassword(
+                hashedPassword: '$2y$12$newpassword'
+            );
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(2);
+        expect($events[0])->toBeInstanceOf(UserCreated::class);
+        expect($events[1])->toBeInstanceOf(UserPasswordChanged::class)
+            ->hashedPassword->toBe('$2y$12$newpassword');
+    });
+
+    it('can change password multiple times', function () {
+        $aggregate = UserAggregate::retrieve('user-26')
+            ->changePassword(
+                hashedPassword: '$2y$12$password1'
+            )
+            ->changePassword(
+                hashedPassword: '$2y$12$password2'
+            )
+            ->changePassword(
+                hashedPassword: '$2y$12$password3'
+            );
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(3);
+        expect($events[0])->toBeInstanceOf(UserPasswordChanged::class)
+            ->hashedPassword->toBe('$2y$12$password1');
+        expect($events[1])->toBeInstanceOf(UserPasswordChanged::class)
+            ->hashedPassword->toBe('$2y$12$password2');
+        expect($events[2])->toBeInstanceOf(UserPasswordChanged::class)
+            ->hashedPassword->toBe('$2y$12$password3');
     });
 });

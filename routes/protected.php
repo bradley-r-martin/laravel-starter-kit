@@ -12,6 +12,7 @@ use App\Http\Controllers\User\UserCloseController;
 use App\Http\Controllers\User\UserCreateController;
 use App\Http\Controllers\User\UserDestroyController;
 use App\Http\Controllers\User\UserListController;
+use App\Http\Controllers\User\UserPasswordController;
 use App\Http\Controllers\User\UserReopenController;
 use App\Http\Controllers\User\UserSuspendController;
 use App\Http\Controllers\User\UserUnsuspendController;
@@ -40,6 +41,8 @@ Route::middleware('territory')->group(function () {
         Route::post('/create', [UserCreateController::class, 'process'])->name('store');
         Route::get('/{user}/update', [UserUpdateController::class, 'view'])->name('update');
         Route::put('/{user}/update', [UserUpdateController::class, 'process'])->name('update');
+        Route::get('/{user}/password', [UserPasswordController::class, 'view'])->name('password');
+        Route::put('/{user}/password', [UserPasswordController::class, 'process'])->name('password');
         Route::get('/{user}/suspend', [UserSuspendController::class, 'view'])->name('suspend');
         Route::post('/{user}/suspend', [UserSuspendController::class, 'process'])->name('suspend');
         Route::get('/{user}/unsuspend', [UserUnsuspendController::class, 'view'])->name('unsuspend');

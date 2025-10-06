@@ -600,4 +600,118 @@ describe('User Management', function (): void {
                 ->assertNoJavascriptErrors();
         });
     });
+
+    describe('User Password Change', function (): void {
+        it('can change password for another user', function (): void {
+            ['territory' => $territory, 'user' => $adminUser, 'operator' => $operator] = createTestEnvironment();
+            $targetUser = createUser($operator, 'Target', 'User', 'target@example.com');
+
+            $page = $this->as($adminUser, $territory)->visit("/users/{$targetUser->id}/password");
+
+            $page->assertTitle('Change Password: '.$targetUser->first_name.' '.$targetUser->last_name.' - Laravel')
+                ->assertSee('Change Password')
+                ->assertSee($targetUser->first_name)
+                ->assertSee($targetUser->last_name)
+                ->assertSee($targetUser->email)
+                ->assertSee('New Password')
+                ->assertSee('Confirm New Password')
+                ->assertDontSee('Current Password') // Should not show for other users
+                ->assertNoJavascriptErrors();
+
+            $page->fill('password', 'NewSecurePassword123!')
+                ->fill('password_confirmation', 'NewSecurePassword123!')
+                ->submit()
+                ->assertSee('Users')
+                ->assertPathIs('/users')
+                ->assertNoJavascriptErrors();
+
+            // Verify password was changed
+            $targetUser->refresh();
+            expect(Hash::check('NewSecurePassword123!', $targetUser->password))->toBeTrue();
+        });
+
+        it('requires current password when changing own password', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/password");
+
+            $page->assertTitle('Change Password: '.$user->first_name.' '.$user->last_name.' - Laravel')
+                ->assertSee('Current Password') // Should show for own password change
+                ->assertSee('New Password')
+                ->assertSee('Confirm New Password')
+                ->assertNoJavascriptErrors();
+
+            $page->fill('current_password', 'wrongpassword')
+                ->fill('password', 'NewSecurePassword123!')
+                ->fill('password_confirmation', 'NewSecurePassword123!')
+                ->submit()
+                ->assertSee('The current password is incorrect')
+                ->assertNoJavascriptErrors();
+
+            // Password should not have changed
+            $user->refresh();
+            expect(Hash::check('NewSecurePassword123!', $user->password))->toBeFalse();
+        });
+
+        it('can change own password with correct current password', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+            $originalPassword = 'OriginalPassword123!';
+            $user->update(['password' => Hash::make($originalPassword)]);
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/password");
+
+            $page->fill('current_password', $originalPassword)
+                ->fill('password', 'NewSecurePassword123!')
+                ->fill('password_confirmation', 'NewSecurePassword123!')
+                ->submit()
+                ->assertSee('Users')
+                ->assertPathIs('/users')
+                ->assertNoJavascriptErrors();
+
+            // Verify password was changed
+            $user->refresh();
+            expect(Hash::check('NewSecurePassword123!', $user->password))->toBeTrue();
+            expect(Hash::check($originalPassword, $user->password))->toBeFalse();
+        });
+
+        it('shows validation errors for password requirements', function (): void {
+            ['territory' => $territory, 'user' => $user, 'operator' => $operator] = createTestEnvironment();
+            $targetUser = createUser($operator, 'Validation', 'User', 'validation@example.com');
+
+            $page = $this->as($user, $territory)->visit("/users/{$targetUser->id}/password");
+
+            $page->fill('password', 'short')
+                ->fill('password_confirmation', 'different')
+                ->submit()
+                ->assertSee('The password field must be at least 8 characters')
+                ->assertNoJavascriptErrors();
+        });
+
+        it('can cancel password change', function (): void {
+            ['territory' => $territory, 'user' => $user, 'operator' => $operator] = createTestEnvironment();
+            $targetUser = createUser($operator, 'Cancel', 'User', 'cancel@example.com');
+            $originalPassword = $targetUser->password;
+
+            $this->as($user, $territory)->visit("/users/{$targetUser->id}/password")
+                ->fill('password', 'NewPassword123!')
+                ->fill('password_confirmation', 'NewPassword123!')
+                ->press('Cancel')
+                ->assertPathIs('/users')
+                ->assertSee('Users')
+                ->assertNoJavascriptErrors();
+
+            // Password should not have changed
+            $targetUser->refresh();
+            expect($targetUser->password)->toBe($originalPassword);
+        });
+
+        it('shows password change action for active users', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            $page = $this->as($user, $territory)->visit('/users');
+
+            $page->assertVisible('data-testid=user-row-'.$user->id.'-password')
+                ->assertNoJavascriptErrors();
+        });
+    });
 });

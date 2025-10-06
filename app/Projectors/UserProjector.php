@@ -8,6 +8,7 @@ use App\Events\User\UserClosed;
 use App\Events\User\UserCreated;
 use App\Events\User\UserDestroyed;
 use App\Events\User\UserLoggedIn;
+use App\Events\User\UserPasswordChanged;
 use App\Events\User\UserReopened;
 use App\Events\User\UserSuspended;
 use App\Events\User\UserUnsuspended;
@@ -111,5 +112,14 @@ final class UserProjector extends Projector
         $user = User::findOrFail($this->aggregateUuid);
 
         $user->delete();
+    }
+
+    public function onUserPasswordChanged(UserPasswordChanged $event): void
+    {
+        $user = User::findOrFail($this->aggregateUuid);
+
+        $user->update([
+            'password' => $event->hashedPassword,
+        ]);
     }
 }

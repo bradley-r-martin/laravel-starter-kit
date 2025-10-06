@@ -18,6 +18,7 @@ import {
 import {
     BanIcon,
     CheckCircleIcon,
+    KeyIcon,
     PencilIcon,
     RotateCcwIcon,
     TrashIcon,
@@ -165,6 +166,27 @@ export default function List({ users }: Props) {
                                                                         radius="xl"
                                                                     >
                                                                         <PencilIcon className="size-4" />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+
+                                                                <Tooltip
+                                                                    label="Change Password"
+                                                                    position="left"
+                                                                >
+                                                                    <ActionIcon
+                                                                        data-testid={`user-row-${user.id}-password`}
+                                                                        component={ModalLink}
+                                                                        href={route(
+                                                                            'users.password',
+                                                                            user.id
+                                                                        )}
+                                                                        navigate={true}
+                                                                        variant="subtle"
+                                                                        color="yellow"
+                                                                        size="md"
+                                                                        radius="xl"
+                                                                    >
+                                                                        <KeyIcon className="size-4" />
                                                                     </ActionIcon>
                                                                 </Tooltip>
 
