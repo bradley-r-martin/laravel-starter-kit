@@ -76,15 +76,11 @@ final class UserAggregate extends AggregateRoot
     }
 
     public function update(
-        string $operatorId,
-        string $roleId,
         string $firstName,
         string $lastName,
         string $email,
     ): self {
         $this->recordThat(new UserUpdated(
-            operatorId: $operatorId,
-            roleId: $roleId,
             firstName: $firstName,
             lastName: $lastName,
             email: $email,
@@ -226,8 +222,6 @@ final class UserAggregate extends AggregateRoot
      */
     private function applyUserUpdated(UserUpdated $event): void
     {
-        $this->operatorId = $event->operatorId;
-        $this->roleId = $event->roleId;
         $this->firstName = $event->firstName;
         $this->lastName = $event->lastName;
         $this->email = $event->email;

@@ -31,8 +31,6 @@ final class UserUpdateProcessRequest extends FormRequest
         $user = User::findOrFail($this->route('user'));
 
         return [
-            'operator_id' => ['required', 'string', 'exists:operators,id'],
-            'role_id' => ['required', 'string', 'exists:roles,id'],
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
@@ -44,13 +42,11 @@ final class UserUpdateProcessRequest extends FormRequest
         /** @var User $user */
         $user = User::findOrFail($this->route('user'));
 
-        /** @var array{operator_id: string, role_id: string, first_name: string, last_name: string, email: string} $data */
+        /** @var array{first_name: string, last_name: string, email: string} $data */
         $data = $this->validated();
 
         UserAggregate::retrieve($user->id)
             ->update(
-                operatorId: $data['operator_id'],
-                roleId: $data['role_id'],
                 firstName: $data['first_name'],
                 lastName: $data['last_name'],
                 email: $data['email'],

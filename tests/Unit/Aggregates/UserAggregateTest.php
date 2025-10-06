@@ -181,8 +181,6 @@ describe('User Update', function () {
     it('records user update event', function () {
         $aggregate = UserAggregate::retrieve('user-6')
             ->update(
-                operatorId: 'operator-2',
-                roleId: 'role-2',
                 firstName: 'Jane',
                 lastName: 'Smith',
                 email: 'jane.smith@example.com'
@@ -192,8 +190,6 @@ describe('User Update', function () {
 
         $event = $aggregate->getRecordedEvents()[0];
         expect($event)->toBeInstanceOf(UserUpdated::class)
-            ->operatorId->toBe('operator-2')
-            ->roleId->toBe('role-2')
             ->firstName->toBe('Jane')
             ->lastName->toBe('Smith')
             ->email->toBe('jane.smith@example.com');
@@ -210,8 +206,6 @@ describe('User Update', function () {
                 password: '$2y$12$test'
             )
             ->update(
-                operatorId: 'operator-2',
-                roleId: 'role-2',
                 firstName: 'Jane',
                 lastName: 'Smith',
                 email: 'jane.smith@example.com'
@@ -221,8 +215,6 @@ describe('User Update', function () {
         expect($events)->toHaveCount(2);
         expect($events[0])->toBeInstanceOf(UserCreated::class);
         expect($events[1])->toBeInstanceOf(UserUpdated::class)
-            ->operatorId->toBe('operator-2')
-            ->roleId->toBe('role-2')
             ->firstName->toBe('Jane')
             ->lastName->toBe('Smith')
             ->email->toBe('jane.smith@example.com');
@@ -231,15 +223,11 @@ describe('User Update', function () {
     it('records multiple update events', function () {
         $aggregate = UserAggregate::retrieve('user-8')
             ->update(
-                operatorId: 'operator-1',
-                roleId: 'role-1',
                 firstName: 'John',
                 lastName: 'Doe',
                 email: 'john.doe@example.com'
             )
             ->update(
-                operatorId: 'operator-2',
-                roleId: 'role-2',
                 firstName: 'Jane',
                 lastName: 'Smith',
                 email: 'jane.smith@example.com'

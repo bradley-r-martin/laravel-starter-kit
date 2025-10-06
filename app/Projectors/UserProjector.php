@@ -59,15 +59,11 @@ final class UserProjector extends Projector
     public function onUserUpdated(UserUpdated $event): void
     {
         $user = User::findOrFail($this->aggregateUuid);
-        $operator = Operator::findOrFail($event->operatorId);
 
         $user->update([
-            'operator_id' => $event->operatorId,
-            'role_id' => $event->roleId,
             'first_name' => $event->firstName,
             'last_name' => $event->lastName,
             'email' => $event->email,
-            '__operator_name' => $operator->name,
         ]);
     }
 
