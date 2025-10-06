@@ -73,19 +73,19 @@ export default function Create({ roles, operators }: CreateProps) {
                             </Field>
 
                             <Field name="first_name">
-                                <TextInput label="First Name" name="first_name" required />
+                                <TextInput label="First Name" name="first_name" />
                             </Field>
 
                             <Field name="last_name">
-                                <TextInput label="Last Name" name="last_name" required />
+                                <TextInput label="Last Name" name="last_name" />
                             </Field>
 
                             <Field name="email">
-                                <TextInput label="Email" name="email" type="email" required />
+                                <TextInput label="Email" name="email" type="email" />
                             </Field>
 
                             <Field name="password">
-                                <PasswordInput label="Password" name="password" required />
+                                <PasswordInput label="Password" name="password" />
                             </Field>
 
                             <Group justify="flex-end" mt="md">
