@@ -73,15 +73,15 @@ export default function Update({ user, roles, operators }: UpdateProps) {
                             </Field>
 
                             <Field name="first_name">
-                                <TextInput label="First Name" name="first_name" required />
+                                <TextInput label="First Name" name="first_name" />
                             </Field>
 
                             <Field name="last_name">
-                                <TextInput label="Last Name" name="last_name" required />
+                                <TextInput label="Last Name" name="last_name" />
                             </Field>
 
                             <Field name="email">
-                                <TextInput label="Email" name="email" type="email" required />
+                                <TextInput label="Email" name="email" type="email" />
                             </Field>
 
                             <Group justify="flex-end" mt="md">

@@ -7,12 +7,11 @@ use App\Models\Role;
 
 describe('Role Management', function (): void {
     describe('Role Creation', function (): void {
-        it('can create a role', function (): void {
+        it('can create a role successfully', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
-            $page = $this->as($user, $territory)->visit('/roles/create');
-
-            $page->assertTitle('Create Role - Laravel')
+            $this->as($user, $territory)->visit('/roles/create')
+                ->assertTitle('Create Role - Laravel')
                 ->assertSee('Create Role')
                 ->assertSee('Name')
                 ->assertSee('Description')
@@ -34,21 +33,24 @@ describe('Role Management', function (): void {
             expect($role->hidden)->toBeTrue();
         });
 
-        it('shows validation errors', function (): void {
+        it('shows validation errors for invalid input', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
-            $page = $this->as($user, $territory)->visit('/roles/create');
-
-            $page->assertTitle('Create Role - Laravel')
+            // Test empty fields
+            $this->as($user, $territory)->visit('/roles/create')
+                ->assertTitle('Create Role - Laravel')
                 ->assertNoJavascriptErrors()
                 ->submit()
-                ->assertSee('The name field is required')
+                ->assertSee('The name field is required');
+
+            // Test name too long
+            $this->as($user, $territory)->visit('/roles/create')
                 ->fill('name', str_repeat('a', 256))
                 ->submit()
                 ->assertSee('The name field must not be greater than 255 characters');
         });
 
-        it('can cancel creation', function (): void {
+        it('can cancel role creation', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
             $this->as($user, $territory)->visit('/roles/create')
@@ -64,13 +66,12 @@ describe('Role Management', function (): void {
     });
 
     describe('Role Updates', function (): void {
-        it('can update a role', function (): void {
+        it('can update an active role', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
             $role = createRole('Manager', 'Manager role', false);
 
-            $page = $this->as($user, $territory)->visit("/roles/{$role->id}/update");
-
-            $page->assertTitle("Update Role: {$role->name} - Laravel")
+            $this->as($user, $territory)->visit("/roles/{$role->id}/update")
+                ->assertTitle("Update Role: {$role->name} - Laravel")
                 ->assertSee('Update Role')
                 ->assertNoJavascriptErrors()
                 ->assertDontSee('Cannot Update Role')
@@ -99,9 +100,8 @@ describe('Role Management', function (): void {
 
             $role = Role::findOrFail($roleId);
 
-            $page = $this->as($user, $territory)->visit("/roles/{$roleId}/update");
-
-            $page->assertTitle("Update Role: {$role->name} - Laravel")
+            $this->as($user, $territory)->visit("/roles/{$roleId}/update")
+                ->assertTitle("Update Role: {$role->name} - Laravel")
                 ->assertSee('Update Role')
                 ->assertSee('Cannot Update Role')
                 ->assertSee('This role is closed and cannot be updated')
@@ -112,7 +112,7 @@ describe('Role Management', function (): void {
                 ->assertDisabled('button[type="submit"]');
         });
 
-        it('shows validation errors with invalid data', function (): void {
+        it('shows validation errors for invalid input', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
             $role = createRole();
 
@@ -124,7 +124,7 @@ describe('Role Management', function (): void {
                 ->assertSee('The description field is required');
         });
 
-        it('can cancel update', function (): void {
+        it('can cancel role update', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
             $role = createRole();
             $originalName = $role->name;
@@ -146,9 +146,8 @@ describe('Role Management', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
             $role = createRole();
 
-            $page = $this->as($user, $territory)->visit("/roles/{$role->id}/close");
-
-            $page->assertTitle("Close Role: {$role->name} - Laravel")
+            $this->as($user, $territory)->visit("/roles/{$role->id}/close")
+                ->assertTitle("Close Role: {$role->name} - Laravel")
                 ->assertSee('Close Role')
                 ->assertSee("You are about to close the role: {$role->name}")
                 ->assertNoJavascriptErrors()
@@ -164,7 +163,7 @@ describe('Role Management', function (): void {
             expect($role->closed_at)->not->toBeNull();
         });
 
-        it('prevents closing a role with users', function (): void {
+        it('prevents closing a role with assigned users', function (): void {
             ['operator' => $operator, 'territory' => $territory] = createTestEnvironment();
 
             $roleToClose = createRole();
@@ -177,9 +176,8 @@ describe('Role Management', function (): void {
 
             $authenticatedUser = createUser($operator, 'Auth', 'User', 'auth@example.com');
 
-            $page = $this->as($authenticatedUser, $territory)->visit("/roles/{$roleToClose->id}/close");
-
-            $page->assertTitle("Close Role: {$roleToClose->name} - Laravel")
+            $this->as($authenticatedUser, $territory)->visit("/roles/{$roleToClose->id}/close")
+                ->assertTitle("Close Role: {$roleToClose->name} - Laravel")
                 ->assertSee('Close Role')
                 ->assertSee('Cannot Close Role')
                 ->assertSee('This role has 2 users assigned')
@@ -188,7 +186,7 @@ describe('Role Management', function (): void {
                 ->assertDisabled('button[type="submit"]');
         });
 
-        it('can cancel closure', function (): void {
+        it('can cancel role closure', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
             $role = createRole();
 
@@ -216,9 +214,8 @@ describe('Role Management', function (): void {
 
             $role = Role::findOrFail($roleId);
 
-            $page = $this->as($user, $territory)->visit("/roles/{$roleId}/destroy");
-
-            $page->assertTitle("Destroy Role: {$role->name} - Laravel")
+            $this->as($user, $territory)->visit("/roles/{$roleId}/destroy")
+                ->assertTitle("Destroy Role: {$role->name} - Laravel")
                 ->assertSee('Destroy Role')
                 ->assertSee("You are about to destroy the role: {$role->name}")
                 ->assertSee('This action is permanent and cannot be undone')
@@ -232,13 +229,12 @@ describe('Role Management', function (): void {
             expect(Role::find($roleId))->toBeNull();
         });
 
-        it('prevents destroying a role that is not closed', function (): void {
+        it('prevents destroying an active role', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
             $role = createRole('Active Manager', 'Active manager role', false);
 
-            $page = $this->as($user, $territory)->visit("/roles/{$role->id}/destroy");
-
-            $page->assertTitle("Destroy Role: {$role->name} - Laravel")
+            $this->as($user, $territory)->visit("/roles/{$role->id}/destroy")
+                ->assertTitle("Destroy Role: {$role->name} - Laravel")
                 ->assertSee('Destroy Role')
                 ->assertSee('Cannot Destroy Role')
                 ->assertSee('This role must be closed before it can be destroyed')
@@ -246,7 +242,7 @@ describe('Role Management', function (): void {
                 ->assertDisabled('button[type="submit"]');
         });
 
-        it('can cancel destruction', function (): void {
+        it('can cancel role destruction', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
             $roleId = (string) Illuminate\Support\Str::ulid();

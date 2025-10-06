@@ -9,10 +9,9 @@ use Illuminate\Support\Facades\Password;
 
 describe('Authentication', function (): void {
     describe('Login', function (): void {
-        it('displays the login page', function (): void {
-            $page = visit('/login');
-
-            $page->assertTitle('Login - Laravel')
+        it('displays the login page correctly', function (): void {
+            visit('/login')
+                ->assertTitle('Login - Laravel')
                 ->assertSee('Login')
                 ->assertSee('Sign in to your account to continue')
                 ->assertSee('Email')
@@ -25,9 +24,8 @@ describe('Authentication', function (): void {
             $operator = createOperator();
             $user = createUser($operator);
 
-            $page = visit('/login');
-
-            $page->assertTitle('Login - Laravel')
+            visit('/login')
+                ->assertTitle('Login - Laravel')
                 ->fill('email', 'test@example.com')
                 ->fill('password', 'password')
                 ->press('Sign in')
@@ -38,13 +36,13 @@ describe('Authentication', function (): void {
             expect(auth()->user()->id)->toBe($user->id);
         });
 
-        it('shows validation errors for empty fields', function (): void {
+        it('shows validation errors for invalid input', function (): void {
+            // Test empty fields
             visit('/login')
                 ->press('Sign in')
                 ->assertSee('The email field is required.');
-        });
 
-        it('shows validation errors for invalid email format', function (): void {
+            // Test invalid email format
             visit('/login')
                 ->fill('email', 'not-an-email')
                 ->fill('password', 'password')
@@ -78,23 +76,10 @@ describe('Authentication', function (): void {
 
             expect(auth()->check())->toBeFalse();
         });
-
-        it('shows processing state while submitting', function (): void {
-            $operator = createOperator();
-            createUser($operator);
-
-            visit('/login')
-                ->fill('email', 'test@example.com')
-                ->fill('password', 'password')
-                ->assertSee('Sign in')
-                ->press('Sign in')
-                ->assertPathIs('/territory')
-                ->assertNoJavascriptErrors();
-        });
     });
 
     describe('Password Recovery', function (): void {
-        it('displays the recovery page', function (): void {
+        it('displays the recovery page correctly', function (): void {
             visit('/recovery')
                 ->assertTitle('Account Recovery - Laravel')
                 ->assertSee('Account Recovery')
@@ -104,24 +89,24 @@ describe('Authentication', function (): void {
                 ->assertNoJavascriptErrors();
         });
 
-        it('shows validation errors for empty email field', function (): void {
+        it('shows validation errors for invalid input', function (): void {
+            // Test empty email field
             visit('/recovery')
                 ->press('Send Recovery Link')
                 ->assertSee('The email field is required.');
-        });
 
-        it('shows validation errors for invalid email format', function (): void {
+            // Test invalid email format
             visit('/recovery')
                 ->fill('email', 'not-an-email')
                 ->press('Send Recovery Link')
                 ->assertSee('The email field must be a valid email address.');
         });
 
-        it('accepts valid email format', function (): void {
+        it('handles recovery for non-existent users gracefully', function (): void {
             Notification::fake();
 
             visit('/recovery')
-                ->fill('email', 'test@example.com')
+                ->fill('email', 'nonexistent@example.com')
                 ->press('Send Recovery Link')
                 ->assertPathIs('/recovery')
                 ->assertNoJavascriptErrors();
@@ -129,7 +114,7 @@ describe('Authentication', function (): void {
             Notification::assertNothingSent();
         });
 
-        it('sends a recovery link to the user', function (): void {
+        it('sends recovery link to existing users', function (): void {
             Notification::fake();
 
             $operator = createOperator();
@@ -146,7 +131,7 @@ describe('Authentication', function (): void {
     });
 
     describe('Password Reset', function (): void {
-        it('displays the reset password page', function (): void {
+        it('displays the reset password page correctly', function (): void {
             $operator = createOperator();
             $user = createUser($operator, password: 'oldpassword');
             $token = Password::createToken($user);
@@ -161,33 +146,24 @@ describe('Authentication', function (): void {
                 ->assertNoJavascriptErrors();
         });
 
-        it('shows validation errors for empty password fields', function (): void {
+        it('shows validation errors for invalid input', function (): void {
             $operator = createOperator();
             $user = createUser($operator, password: 'oldpassword');
             $token = Password::createToken($user);
 
+            // Test empty password fields
             visit('/reset-password?token='.$token.'&email='.urlencode('test@example.com'))
                 ->submit()
                 ->assertSee('The password field is required.');
-        });
 
-        it('shows validation error for password too short', function (): void {
-            $operator = createOperator();
-            $user = createUser($operator, password: 'oldpassword');
-            $token = Password::createToken($user);
-
+            // Test password too short
             visit('/reset-password?token='.$token.'&email='.urlencode('test@example.com'))
                 ->fill('password', 'short')
                 ->fill('password_confirmation', 'short')
                 ->submit()
                 ->assertSee('The password field must be at least 8 characters.');
-        });
 
-        it('shows validation error when passwords do not match', function (): void {
-            $operator = createOperator();
-            $user = createUser($operator, password: 'oldpassword');
-            $token = Password::createToken($user);
-
+            // Test password confirmation mismatch
             visit('/reset-password?token='.$token.'&email='.urlencode('test@example.com'))
                 ->fill('password', 'newpassword123')
                 ->fill('password_confirmation', 'differentpassword123')
