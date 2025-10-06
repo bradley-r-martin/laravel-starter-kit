@@ -33,6 +33,7 @@
         "@mantine/hooks": "^8.3.2",
         "@mantine/notifications": "^8.3.3",
         "axios": "^1.12.2",
+        "dayjs": "^1.11.18",
         "lucide-react": "^0.544.0",
         "merge-props": "^6.0.0",
         "react": "^19.1.1",

@@ -1,3 +1,6 @@
+import Cast from '@/components/Cast';
+import Navatar from '@/components/Navatar';
+import { Pagination } from '@/components/Pagination';
 import MainLayout from '@/Layouts/MainLayout';
 import { Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -55,7 +58,7 @@ export default function List({ users }: Props) {
                         </ModalLink>
                     </Group>
 
-                    <Paper shadow="sm" radius="md" withBorder>
+                    <Paper shadow="sm" p="xl" radius="md" withBorder>
                         {users.data.length === 0 ? (
                             <Text c="dimmed" p="xl" ta="center">
                                 No users found.
@@ -72,7 +75,7 @@ export default function List({ users }: Props) {
                                             <Table.Th>Last Login</Table.Th>
                                             <Table.Th>Status</Table.Th>
                                             <Table.Th>Created</Table.Th>
-                                            <Table.Th style={{ width: '140px' }}>Actions</Table.Th>
+                                            <Table.Th style={{ width: '180px' }}>Actions</Table.Th>
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
@@ -82,9 +85,9 @@ export default function List({ users }: Props) {
                                                 data-testid={`user-row-${user.id}`}
                                             >
                                                 <Table.Td data-testid={`user-row-${user.id}-name`}>
-                                                    <Text fw={500}>
-                                                        {user.first_name} {user.last_name}
-                                                    </Text>
+                                                    <Navatar
+                                                        name={`${user.first_name} ${user.last_name}`}
+                                                    />
                                                 </Table.Td>
                                                 <Table.Td data-testid={`user-row-${user.id}-email`}>
                                                     <Text size="sm">{user.email}</Text>
@@ -105,11 +108,11 @@ export default function List({ users }: Props) {
                                                     data-testid={`user-row-${user.id}-last-login`}
                                                 >
                                                     <Text size="sm" c="dimmed">
-                                                        {user.last_login_at
-                                                            ? new Date(
-                                                                  user.last_login_at
-                                                              ).toLocaleDateString()
-                                                            : '—'}
+                                                        <Cast.Datetime
+                                                            format="DD/MM/YYYY HH:mm"
+                                                            children={user.last_login_at}
+                                                            fallback="—"
+                                                        />
                                                     </Text>
                                                 </Table.Td>
                                                 <Table.Td
@@ -137,9 +140,11 @@ export default function List({ users }: Props) {
                                                     data-testid={`user-row-${user.id}-created`}
                                                 >
                                                     <Text size="sm" c="dimmed">
-                                                        {new Date(
-                                                            user.created_at
-                                                        ).toLocaleDateString()}
+                                                        <Cast.Datetime
+                                                            format="DD/MM/YYYY"
+                                                            children={user.created_at}
+                                                            fallback="—"
+                                                        />
                                                     </Text>
                                                 </Table.Td>
                                                 <Table.Td
@@ -308,6 +313,7 @@ export default function List({ users }: Props) {
                                 </Table>
                             </Table.ScrollContainer>
                         )}
+                        <Pagination data={users} attribute="users" />
                     </Paper>
                 </Stack>
             </Container>

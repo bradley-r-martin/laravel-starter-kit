@@ -1,3 +1,6 @@
+import Cast from '@/components/Cast';
+import Navatar from '@/components/Navatar';
+import { Pagination } from '@/components/Pagination';
 import MainLayout from '@/Layouts/MainLayout';
 import { Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -44,7 +47,7 @@ export default function List({ roles }: Props) {
                         </ModalLink>
                     </Group>
 
-                    <Paper shadow="sm" radius="md" withBorder>
+                    <Paper shadow="sm" p="xl" radius="md" withBorder>
                         {roles.data.length === 0 ? (
                             <Text c="dimmed" p="xl" ta="center">
                                 No roles found. Create your first role to get started.
@@ -59,27 +62,41 @@ export default function List({ roles }: Props) {
                                             <Table.Th>Users</Table.Th>
                                             <Table.Th>Status</Table.Th>
                                             <Table.Th>Created</Table.Th>
-                                            <Table.Th style={{ width: '80px' }}>Actions</Table.Th>
+                                            <Table.Th style={{ width: '100px' }}>Actions</Table.Th>
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
                                         {roles.data.map((role) => (
-                                            <Table.Tr key={role.id}>
-                                                <Table.Td>
-                                                    <Text fw={500}>{role.name}</Text>
+                                            <Table.Tr
+                                                key={role.id}
+                                                data-testid={`role-row-${role.id}`}
+                                            >
+                                                <Table.Td data-testid={`role-row-${role.id}-name`}>
+                                                    <Navatar name={role.name} />
                                                 </Table.Td>
                                                 <Table.Td>
-                                                    <Text c="dimmed" size="sm">
+                                                    <Text
+                                                        c="dimmed"
+                                                        size="sm"
+                                                        data-testid={`role-row-${role.id}-description`}
+                                                    >
                                                         {role.description || '—'}
                                                     </Text>
                                                 </Table.Td>
                                                 <Table.Td>
-                                                    <Badge variant="light" color="blue">
+                                                    <Badge
+                                                        variant="light"
+                                                        color="blue"
+                                                        data-testid={`role-row-${role.id}-users-count`}
+                                                    >
                                                         {role.users_count}
                                                     </Badge>
                                                 </Table.Td>
                                                 <Table.Td>
-                                                    <Group gap="xs">
+                                                    <Group
+                                                        gap="xs"
+                                                        data-testid={`role-row-${role.id}-status`}
+                                                    >
                                                         {role.hidden && (
                                                             <Badge variant="light" color="gray">
                                                                 Hidden
@@ -97,80 +114,87 @@ export default function List({ roles }: Props) {
                                                         )}
                                                     </Group>
                                                 </Table.Td>
-                                                <Table.Td>
+                                                <Table.Td
+                                                    data-testid={`role-row-${role.id}-created`}
+                                                >
                                                     <Text size="sm" c="dimmed">
-                                                        {new Date(
-                                                            role.created_at
-                                                        ).toLocaleDateString()}
+                                                        <Cast.Datetime
+                                                            format="DD/MM/YYYY"
+                                                            children={role.created_at}
+                                                            fallback="—"
+                                                        />
                                                     </Text>
                                                 </Table.Td>
-                                                <Table.Td>
+                                                <Table.Td
+                                                    data-testid={`role-row-${role.id}-actions`}
+                                                >
                                                     <Group gap="xs">
                                                         {!role.closed_at && (
                                                             <>
-                                                                <ModalLink
-                                                                    href={route(
-                                                                        'roles.update',
-                                                                        role.id
-                                                                    )}
-                                                                    navigate={true}
-                                                                >
-                                                                    <Tooltip
-                                                                        label="Edit Role"
-                                                                        position="left"
-                                                                    >
-                                                                        <ActionIcon
-                                                                            variant="subtle"
-                                                                            color="blue"
-                                                                            size="sm"
-                                                                        >
-                                                                            <PencilIcon className="size-4" />
-                                                                        </ActionIcon>
-                                                                    </Tooltip>
-                                                                </ModalLink>
-                                                                <ModalLink
-                                                                    href={route(
-                                                                        'roles.close',
-                                                                        role.id
-                                                                    )}
-                                                                    navigate={true}
-                                                                >
-                                                                    <Tooltip
-                                                                        label="Close Role"
-                                                                        position="left"
-                                                                    >
-                                                                        <ActionIcon
-                                                                            variant="subtle"
-                                                                            color="orange"
-                                                                            size="sm"
-                                                                        >
-                                                                            <XIcon className="size-4" />
-                                                                        </ActionIcon>
-                                                                    </Tooltip>
-                                                                </ModalLink>
-                                                            </>
-                                                        )}
-                                                        {role.closed_at && (
-                                                            <ModalLink
-                                                                href={route(
-                                                                    'roles.destroy',
-                                                                    role.id
-                                                                )}
-                                                                navigate={true}
-                                                            >
                                                                 <Tooltip
-                                                                    label="Destroy Role"
+                                                                    label="Edit Role"
                                                                     position="left"
                                                                 >
                                                                     <ActionIcon
+                                                                        data-testid={`role-row-${role.id}-edit`}
+                                                                        component={ModalLink}
+                                                                        href={route(
+                                                                            'roles.update',
+                                                                            role.id
+                                                                        )}
+                                                                        navigate={true}
                                                                         variant="subtle"
-                                                                        color="red"
-                                                                        size="sm"
+                                                                        color="blue"
+                                                                        size="md"
+                                                                        radius="xl"
                                                                     >
-                                                                        <TrashIcon className="size-4" />
+                                                                        <PencilIcon className="size-4" />
                                                                     </ActionIcon>
                                                                 </Tooltip>
-                                                            </ModalLink>
+
+                                                                <Tooltip
+                                                                    label="Close Role"
+                                                                    position="left"
+                                                                >
+                                                                    <ActionIcon
+                                                                        data-testid={`role-row-${role.id}-close`}
+                                                                        component={ModalLink}
+                                                                        href={route(
+                                                                            'roles.close',
+                                                                            role.id
+                                                                        )}
+                                                                        navigate={true}
+                                                                        variant="subtle"
+                                                                        color="orange"
+                                                                        size="md"
+                                                                        radius="xl"
+                                                                    >
+                                                                        <XIcon className="size-4" />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+                                                            </>
+                                                        )}
+                                                        {role.closed_at && (
+                                                            <Tooltip
+                                                                label="Destroy Role"
+                                                                position="left"
+                                                            >
+                                                                <ActionIcon
+                                                                    data-testid={`role-row-${role.id}-destroy`}
+                                                                    component={ModalLink}
+                                                                    href={route(
+                                                                        'roles.destroy',
+                                                                        role.id
+                                                                    )}
+                                                                    navigate={true}
+                                                                    variant="subtle"
+                                                                    color="red"
+                                                                    size="md"
+                                                                    radius="xl"
+                                                                >
+                                                                    <TrashIcon className="size-4" />
+                                                                </ActionIcon>
+                                                            </Tooltip>
                                                         )}
                                                     </Group>
                                                 </Table.Td>
@@ -180,6 +204,7 @@ export default function List({ roles }: Props) {
                                 </Table>
                             </Table.ScrollContainer>
                         )}
+                        <Pagination data={roles} attribute="roles" />
                     </Paper>
                 </Stack>
             </Container>
