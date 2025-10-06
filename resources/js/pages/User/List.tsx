@@ -64,31 +64,38 @@ export default function List({ users }: Props) {
                                             <Table.Th>Last Login</Table.Th>
                                             <Table.Th>Status</Table.Th>
                                             <Table.Th>Created</Table.Th>
-                                            <Table.Th style={{ width: '80px' }}>Actions</Table.Th>
+                                            <Table.Th style={{ width: '100px' }}>Actions</Table.Th>
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
                                         {users.data.map((user) => (
-                                            <Table.Tr key={user.id}>
-                                                <Table.Td>
+                                            <Table.Tr
+                                                key={user.id}
+                                                data-testid={`user-row-${user.id}`}
+                                            >
+                                                <Table.Td data-testid={`user-row-${user.id}-name`}>
                                                     <Text fw={500}>
                                                         {user.first_name} {user.last_name}
                                                     </Text>
                                                 </Table.Td>
-                                                <Table.Td>
+                                                <Table.Td data-testid={`user-row-${user.id}-email`}>
                                                     <Text size="sm">{user.email}</Text>
                                                 </Table.Td>
-                                                <Table.Td>
+                                                <Table.Td data-testid={`user-row-${user.id}-role`}>
                                                     <Text c="dimmed" size="sm">
                                                         {user.role_name || '—'}
                                                     </Text>
                                                 </Table.Td>
-                                                <Table.Td>
+                                                <Table.Td
+                                                    data-testid={`user-row-${user.id}-operator`}
+                                                >
                                                     <Text c="dimmed" size="sm">
                                                         {user.operator_name || '—'}
                                                     </Text>
                                                 </Table.Td>
-                                                <Table.Td>
+                                                <Table.Td
+                                                    data-testid={`user-row-${user.id}-last-login`}
+                                                >
                                                     <Text size="sm" c="dimmed">
                                                         {user.last_login_at
                                                             ? new Date(
@@ -97,7 +104,9 @@ export default function List({ users }: Props) {
                                                             : '—'}
                                                     </Text>
                                                 </Table.Td>
-                                                <Table.Td>
+                                                <Table.Td
+                                                    data-testid={`user-row-${user.id}-status`}
+                                                >
                                                     <Group gap="xs">
                                                         {user.suspended_at && (
                                                             <Badge variant="light" color="orange">
@@ -116,80 +125,85 @@ export default function List({ users }: Props) {
                                                         )}
                                                     </Group>
                                                 </Table.Td>
-                                                <Table.Td>
+                                                <Table.Td
+                                                    data-testid={`user-row-${user.id}-created`}
+                                                >
                                                     <Text size="sm" c="dimmed">
                                                         {new Date(
                                                             user.created_at
                                                         ).toLocaleDateString()}
                                                     </Text>
                                                 </Table.Td>
-                                                <Table.Td>
+                                                <Table.Td
+                                                    data-testid={`user-row-${user.id}-actions`}
+                                                >
                                                     <Group gap="xs">
                                                         {!user.closed_at && !user.suspended_at && (
                                                             <>
-                                                                <ModalLink
-                                                                    href={route(
-                                                                        'users.update',
-                                                                        user.id
-                                                                    )}
-                                                                    navigate={true}
-                                                                >
-                                                                    <Tooltip
-                                                                        label="Edit User"
-                                                                        position="left"
-                                                                    >
-                                                                        <ActionIcon
-                                                                            variant="subtle"
-                                                                            color="blue"
-                                                                            size="sm"
-                                                                        >
-                                                                            <PencilIcon className="size-4" />
-                                                                        </ActionIcon>
-                                                                    </Tooltip>
-                                                                </ModalLink>
-                                                                <ModalLink
-                                                                    href={route(
-                                                                        'users.suspend',
-                                                                        user.id
-                                                                    )}
-                                                                    navigate={true}
-                                                                >
-                                                                    <Tooltip
-                                                                        label="Suspend User"
-                                                                        position="left"
-                                                                    >
-                                                                        <ActionIcon
-                                                                            variant="subtle"
-                                                                            color="orange"
-                                                                            size="sm"
-                                                                        >
-                                                                            <BanIcon className="size-4" />
-                                                                        </ActionIcon>
-                                                                    </Tooltip>
-                                                                </ModalLink>
-                                                            </>
-                                                        )}
-                                                        {!user.closed_at && user.suspended_at && (
-                                                            <ModalLink
-                                                                href={route(
-                                                                    'users.unsuspend',
-                                                                    user.id
-                                                                )}
-                                                                navigate={true}
-                                                            >
                                                                 <Tooltip
-                                                                    label="Unsuspend User"
+                                                                    label="Edit User"
                                                                     position="left"
                                                                 >
                                                                     <ActionIcon
+                                                                        data-testid={`user-row-${user.id}-edit`}
+                                                                        component={ModalLink}
+                                                                        href={route(
+                                                                            'users.update',
+                                                                            user.id
+                                                                        )}
+                                                                        navigate={true}
                                                                         variant="subtle"
-                                                                        color="green"
-                                                                        size="sm"
+                                                                        color="blue"
+                                                                        size="md"
+                                                                        radius="xl"
                                                                     >
-                                                                        <CheckCircleIcon className="size-4" />
+                                                                        <PencilIcon className="size-4" />
                                                                     </ActionIcon>
                                                                 </Tooltip>
-                                                            </ModalLink>
+
+                                                                <Tooltip
+                                                                    label="Suspend User"
+                                                                    position="left"
+                                                                >
+                                                                    <ActionIcon
+                                                                        data-testid={`user-row-${user.id}-suspend`}
+                                                                        component={ModalLink}
+                                                                        href={route(
+                                                                            'users.suspend',
+                                                                            user.id
+                                                                        )}
+                                                                        navigate={true}
+                                                                        variant="subtle"
+                                                                        color="orange"
+                                                                        size="md"
+                                                                        radius="xl"
+                                                                    >
+                                                                        <BanIcon className="size-4" />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+                                                            </>
+                                                        )}
+                                                        {!user.closed_at && user.suspended_at && (
+                                                            <Tooltip
+                                                                label="Unsuspend User"
+                                                                position="left"
+                                                            >
+                                                                <ActionIcon
+                                                                    data-testid={`user-row-${user.id}-unsuspend`}
+                                                                    component={ModalLink}
+                                                                    href={route(
+                                                                        'users.unsuspend',
+                                                                        user.id
+                                                                    )}
+                                                                    navigate={true}
+                                                                    variant="subtle"
+                                                                    color="green"
+                                                                    size="md"
+                                                                    radius="xl"
+                                                                >
+                                                                    <CheckCircleIcon className="size-4" />
+                                                                </ActionIcon>
+                                                            </Tooltip>
                                                         )}
                                                     </Group>
                                                 </Table.Td>
