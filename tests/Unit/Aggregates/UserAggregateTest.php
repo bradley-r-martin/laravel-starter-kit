@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Aggregates\UserAggregate;
+use App\Events\User\UserClosed;
 use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
@@ -367,5 +368,58 @@ describe('User Unsuspension', function () {
             ->reason->toBe('Temporary suspension');
         expect($events[1])->toBeInstanceOf(UserUnsuspended::class)
             ->reason->toBe('Issue resolved');
+    });
+});
+
+describe('User Closure', function () {
+    it('records user closure event', function () {
+        $aggregate = UserAggregate::retrieve('user-15')
+            ->close(
+                reason: 'Employee left company'
+            );
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserClosed::class)
+            ->reason->toBe('Employee left company');
+    });
+
+    it('can close a user after creation', function () {
+        $aggregate = UserAggregate::retrieve('user-16')
+            ->create(
+                operatorId: 'operator-1',
+                roleId: 'role-1',
+                firstName: 'John',
+                lastName: 'Doe',
+                email: 'john@example.com',
+                password: '$2y$12$test'
+            )
+            ->close(
+                reason: 'Account no longer needed'
+            );
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(2);
+        expect($events[0])->toBeInstanceOf(UserCreated::class);
+        expect($events[1])->toBeInstanceOf(UserClosed::class)
+            ->reason->toBe('Account no longer needed');
+    });
+
+    it('can close a suspended user', function () {
+        $aggregate = UserAggregate::retrieve('user-17')
+            ->suspend(
+                reason: 'Policy violation'
+            )
+            ->close(
+                reason: 'Repeated violations'
+            );
+
+        $events = $aggregate->getRecordedEvents();
+        expect($events)->toHaveCount(2);
+
+        expect($events[0])->toBeInstanceOf(UserSuspended::class);
+        expect($events[1])->toBeInstanceOf(UserClosed::class)
+            ->reason->toBe('Repeated violations');
     });
 });

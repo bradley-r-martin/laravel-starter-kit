@@ -8,6 +8,7 @@ use App\Http\Controllers\Role\RoleCreateController;
 use App\Http\Controllers\Role\RoleDestroyController;
 use App\Http\Controllers\Role\RoleListController;
 use App\Http\Controllers\Role\RoleUpdateController;
+use App\Http\Controllers\User\UserCloseController;
 use App\Http\Controllers\User\UserCreateController;
 use App\Http\Controllers\User\UserListController;
 use App\Http\Controllers\User\UserSuspendController;
@@ -41,6 +42,8 @@ Route::middleware('territory')->group(function () {
         Route::post('/{user}/suspend', [UserSuspendController::class, 'process'])->name('suspend');
         Route::get('/{user}/unsuspend', [UserUnsuspendController::class, 'view'])->name('unsuspend');
         Route::post('/{user}/unsuspend', [UserUnsuspendController::class, 'process'])->name('unsuspend');
+        Route::get('/{user}/close', [UserCloseController::class, 'view'])->name('close');
+        Route::post('/{user}/close', [UserCloseController::class, 'process'])->name('close');
     });
 
     Route::get('/dashboard', function () {

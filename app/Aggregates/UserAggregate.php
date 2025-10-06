@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregates;
 
+use App\Events\User\UserClosed;
 use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserRecoveryRequested;
@@ -40,6 +41,10 @@ final class UserAggregate extends AggregateRoot
     public ?DateTimeImmutable $suspendedAt = null;
 
     public ?string $suspendedReason = null;
+
+    public ?DateTimeImmutable $closedAt = null;
+
+    public ?string $closedReason = null;
 
     public function create(
         string $operatorId,
@@ -98,6 +103,16 @@ final class UserAggregate extends AggregateRoot
         $this->recordThat(new UserUnsuspended(
             reason: $reason,
             notify: $notify,
+        ));
+
+        return $this;
+    }
+
+    public function close(
+        string $reason,
+    ): self {
+        $this->recordThat(new UserClosed(
+            reason: $reason,
         ));
 
         return $this;
@@ -195,5 +210,14 @@ final class UserAggregate extends AggregateRoot
     {
         $this->suspendedAt = null;
         $this->suspendedReason = null;
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applyUserClosed(UserClosed $event): void
+    {
+        $this->closedAt = new DateTimeImmutable();
+        $this->closedReason = $event->reason;
     }
 }

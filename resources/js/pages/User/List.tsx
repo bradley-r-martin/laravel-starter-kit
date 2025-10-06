@@ -15,7 +15,7 @@ import {
     Title,
     Tooltip,
 } from '@mantine/core';
-import { BanIcon, CheckCircleIcon, PencilIcon } from 'lucide-react';
+import { BanIcon, CheckCircleIcon, PencilIcon, XIcon } from 'lucide-react';
 
 interface User {
     id: string;
@@ -64,7 +64,7 @@ export default function List({ users }: Props) {
                                             <Table.Th>Last Login</Table.Th>
                                             <Table.Th>Status</Table.Th>
                                             <Table.Th>Created</Table.Th>
-                                            <Table.Th style={{ width: '100px' }}>Actions</Table.Th>
+                                            <Table.Th style={{ width: '140px' }}>Actions</Table.Th>
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
@@ -179,6 +179,27 @@ export default function List({ users }: Props) {
                                                                         radius="xl"
                                                                     >
                                                                         <BanIcon className="size-4" />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+
+                                                                <Tooltip
+                                                                    label="Close Account"
+                                                                    position="left"
+                                                                >
+                                                                    <ActionIcon
+                                                                        data-testid={`user-row-${user.id}-close`}
+                                                                        component={ModalLink}
+                                                                        href={route(
+                                                                            'users.close',
+                                                                            user.id
+                                                                        )}
+                                                                        navigate={true}
+                                                                        variant="subtle"
+                                                                        color="red"
+                                                                        size="md"
+                                                                        radius="xl"
+                                                                    >
+                                                                        <XIcon className="size-4" />
                                                                     </ActionIcon>
                                                                 </Tooltip>
                                                             </>

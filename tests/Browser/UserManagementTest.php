@@ -391,4 +391,68 @@ describe('User Management', function (): void {
             expect($stillSuspendedUser->suspended_at)->not->toBeNull();
         });
     });
+
+    describe('User Closure', function (): void {
+        it('can close a user account', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/close");
+
+            $page->assertTitle('Close User Account: '.$user->first_name.' '.$user->last_name.' - Laravel')
+                ->assertSee('Close User Account')
+                ->assertSee($user->first_name)
+                ->assertSee($user->last_name)
+                ->assertSee($user->email)
+                ->assertSee('Reason for Closing')
+                ->assertSee('This is typically used when a user no longer works for the company')
+                ->assertNoJavascriptErrors();
+
+            $page->fill('reason', 'Employee left company')
+                ->submit()
+                ->assertSee('Users')
+                ->assertPathIs('/users')
+                ->assertNoJavascriptErrors();
+
+            $closedUser = User::find($user->id);
+
+            expect($closedUser)->not->toBeNull();
+            expect($closedUser->closed_at)->not->toBeNull();
+        });
+
+        it('shows validation errors when reason is missing', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            $page = $this->as($user, $territory)->visit("/users/{$user->id}/close");
+
+            $page->assertTitle('Close User Account: '.$user->first_name.' '.$user->last_name.' - Laravel')
+                ->assertNoJavascriptErrors()
+                ->submit()
+                ->assertSee('The reason field is required');
+        });
+
+        it('can cancel account closure', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            $this->as($user, $territory)->visit("/users/{$user->id}/close")
+                ->fill('reason', 'Should not be closed')
+                ->press('Cancel')
+                ->assertPathIs('/users')
+                ->assertSee('Users')
+                ->assertNoJavascriptErrors();
+
+            $notClosedUser = User::find($user->id);
+            expect($notClosedUser->closed_at)->toBeNull();
+        });
+
+        it('shows closed badge for closed users', function (): void {
+            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
+
+            User::query()->where('id', $user->id)->update(['closed_at' => now()]);
+
+            $page = $this->as($user, $territory)->visit('/users');
+
+            $page->assertSee('Closed')
+                ->assertNoJavascriptErrors();
+        });
+    });
 });
