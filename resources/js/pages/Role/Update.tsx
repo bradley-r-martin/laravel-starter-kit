@@ -1,3 +1,4 @@
+import { Actions } from '@/components/Actions';
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
@@ -5,17 +6,7 @@ import { Modal } from '@/components/Modal';
 import { TransferInput, TransferItem } from '@/components/TransferInput';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import {
-    Alert,
-    Anchor,
-    Button,
-    Checkbox,
-    Group,
-    Stack,
-    Textarea,
-    TextInput,
-    Title,
-} from '@mantine/core';
+import { Alert, Button, Checkbox, Stack, Textarea, TextInput, Title } from '@mantine/core';
 import { AlertCircleIcon } from 'lucide-react';
 
 interface Role {
@@ -98,14 +89,20 @@ export default function Update({ role, availablePolicies }: Props) {
                                 />
                             </Field>
 
-                            <Group justify="flex-end" mt="md">
-                                <Anchor onClick={() => modal?.close()} type="button" c="dimmed">
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                    data-testid="cancel-action"
+                                >
                                     Cancel
-                                </Anchor>
+                                </Button>
                                 <Button type="submit" loading={processing} disabled={isClosed}>
                                     {processing ? 'Updating...' : 'Update Role'}
                                 </Button>
-                            </Group>
+                            </Actions>
                         </Stack>
                     </Form>
                 </FormErrorSound>

@@ -1,3 +1,4 @@
+import { Actions } from '@/components/Actions';
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
@@ -5,7 +6,7 @@ import { Modal } from '@/components/Modal';
 import { TransferInput, TransferItem } from '@/components/TransferInput';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Anchor, Button, Checkbox, Group, Stack, Textarea, TextInput, Title } from '@mantine/core';
+import { Button, Checkbox, Stack, Textarea, TextInput, Title } from '@mantine/core';
 
 interface CreateProps {
     availablePolicies: TransferItem[];
@@ -56,14 +57,20 @@ export default function Create({ availablePolicies }: CreateProps) {
                                 />
                             </Field>
 
-                            <Group justify="flex-end" mt="md">
-                                <Anchor onClick={() => modal?.close()} type="button" c="dimmed">
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                    data-testid="cancel-action"
+                                >
                                     Cancel
-                                </Anchor>
+                                </Button>
                                 <Button type="submit" loading={processing}>
                                     {processing ? 'Creating...' : 'Create Role'}
                                 </Button>
-                            </Group>
+                            </Actions>
                         </Stack>
                     </Form>
                 </FormErrorSound>

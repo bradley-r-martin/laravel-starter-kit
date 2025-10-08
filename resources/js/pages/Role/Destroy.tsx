@@ -1,9 +1,10 @@
+import { Actions } from '@/components/Actions';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Alert, Anchor, Button, Group, Stack, Text, Title } from '@mantine/core';
+import { Alert, Button, Stack, Text, Title } from '@mantine/core';
 import { AlertCircleIcon } from 'lucide-react';
 
 interface Role {
@@ -66,10 +67,16 @@ export default function Destroy({ role }: Props) {
                         onSuccess={() => modal?.close()}
                     >
                         <Stack gap="md">
-                            <Group justify="flex-end" mt="md">
-                                <Anchor onClick={() => modal?.close()} type="button" c="dimmed">
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                    data-testid="cancel-action"
+                                >
                                     Cancel
-                                </Anchor>
+                                </Button>
                                 <Button
                                     type="submit"
                                     loading={processing}
@@ -78,7 +85,7 @@ export default function Destroy({ role }: Props) {
                                 >
                                     {processing ? 'Destroying...' : 'Destroy Role'}
                                 </Button>
-                            </Group>
+                            </Actions>
                         </Stack>
                     </Form>
                 </FormErrorSound>

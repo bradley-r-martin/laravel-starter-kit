@@ -1,10 +1,11 @@
+import { Actions } from '@/components/Actions';
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Anchor, Button, Group, Stack, TextInput, Title } from '@mantine/core';
+import { Button, Stack, TextInput, Title } from '@mantine/core';
 
 interface User {
     id: string;
@@ -53,14 +54,19 @@ export default function Update({ user }: UpdateProps) {
                                 <TextInput label="Email" name="email" type="email" />
                             </Field>
 
-                            <Group justify="flex-end" mt="md">
-                                <Anchor onClick={() => modal?.close()} type="button" c="dimmed">
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
                                     Cancel
-                                </Anchor>
+                                </Button>
                                 <Button type="submit" loading={processing}>
                                     {processing ? 'Updating...' : 'Update User'}
                                 </Button>
-                            </Group>
+                            </Actions>
                         </Stack>
                     </Form>
                 </FormErrorSound>

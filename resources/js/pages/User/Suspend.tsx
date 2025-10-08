@@ -1,10 +1,11 @@
+import { Actions } from '@/components/Actions';
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Anchor, Button, Checkbox, Group, Stack, Text, Textarea, Title } from '@mantine/core';
+import { Button, Checkbox, Stack, Text, Textarea, Title } from '@mantine/core';
 
 interface User {
     id: string;
@@ -67,14 +68,19 @@ export default function Suspend({ user }: Props) {
                                 />
                             </Field>
 
-                            <Group justify="flex-end" mt="md">
-                                <Anchor onClick={() => modal?.close()} type="button" c="dimmed">
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
                                     Cancel
-                                </Anchor>
+                                </Button>
                                 <Button type="submit" loading={processing} color="orange">
                                     {processing ? 'Suspending...' : 'Suspend User'}
                                 </Button>
-                            </Group>
+                            </Actions>
                         </Stack>
                     </Form>
                 </FormErrorSound>
