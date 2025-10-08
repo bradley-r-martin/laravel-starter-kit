@@ -57,32 +57,32 @@ export default function Update({ user }: UpdateProps) {
                     >
                         <ModalContent>
                             <Stack>
-                            <Field name="first_name">
-                                <TextInput label="First Name" name="first_name" />
-                            </Field>
+                                <Field name="first_name">
+                                    <TextInput label="First Name" name="first_name" />
+                                </Field>
 
-                            <Field name="last_name">
-                                <TextInput label="Last Name" name="last_name" />
-                            </Field>
+                                <Field name="last_name">
+                                    <TextInput label="Last Name" name="last_name" />
+                                </Field>
 
-                            <Field name="email">
-                                <TextInput label="Email" name="email" type="email" />
-                            </Field>
+                                <Field name="email">
+                                    <TextInput label="Email" name="email" type="email" />
+                                </Field>
                             </Stack>
                         </ModalContent>
 
                         <Actions>
-                                <Button
-                                    onClick={() => modal?.close()}
-                                    type="button"
-                                    variant="subtle"
-                                    color="zinc"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button type="submit" loading={processing}>
-                                    {processing ? 'Updating...' : 'Update User'}
-                                </Button>
+                            <Button
+                                onClick={() => modal?.close()}
+                                type="button"
+                                variant="subtle"
+                                color="zinc"
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" loading={processing}>
+                                {processing ? 'Updating...' : 'Update User'}
+                            </Button>
                         </Actions>
                     </Form>
                 </FormErrorSound>

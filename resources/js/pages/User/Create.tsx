@@ -52,57 +52,57 @@ export default function Create({ roles, operators }: CreateProps) {
                     >
                         <ModalContent>
                             <Stack>
-                            <Field name="operator_id">
-                                <Select
-                                    label="Operator"
-                                    name="operator_id"
-                                    placeholder="Select an operator"
-                                    data={operators}
-                                    searchable
-                                />
-                            </Field>
+                                <Field name="operator_id">
+                                    <Select
+                                        label="Operator"
+                                        name="operator_id"
+                                        placeholder="Select an operator"
+                                        data={operators}
+                                        searchable
+                                    />
+                                </Field>
 
-                            <Field name="role_id">
-                                <Select
-                                    label="Role"
-                                    name="role_id"
-                                    placeholder="Select a role"
-                                    data={roles}
-                                    searchable
-                                    clearable
-                                />
-                            </Field>
+                                <Field name="role_id">
+                                    <Select
+                                        label="Role"
+                                        name="role_id"
+                                        placeholder="Select a role"
+                                        data={roles}
+                                        searchable
+                                        clearable
+                                    />
+                                </Field>
 
-                            <Field name="first_name">
-                                <TextInput label="First Name" name="first_name" />
-                            </Field>
+                                <Field name="first_name">
+                                    <TextInput label="First Name" name="first_name" />
+                                </Field>
 
-                            <Field name="last_name">
-                                <TextInput label="Last Name" name="last_name" />
-                            </Field>
+                                <Field name="last_name">
+                                    <TextInput label="Last Name" name="last_name" />
+                                </Field>
 
-                            <Field name="email">
-                                <TextInput label="Email" name="email" type="email" />
-                            </Field>
+                                <Field name="email">
+                                    <TextInput label="Email" name="email" type="email" />
+                                </Field>
 
-                            <Field name="password">
-                                <PasswordInput label="Password" name="password" />
-                            </Field>
+                                <Field name="password">
+                                    <PasswordInput label="Password" name="password" />
+                                </Field>
                             </Stack>
                         </ModalContent>
 
                         <Actions>
-                                <Button
-                                    onClick={() => modal?.close()}
-                                    type="button"
-                                    variant="subtle"
-                                    color="zinc"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button type="submit" loading={processing}>
-                                    {processing ? 'Creating...' : 'Create User'}
-                                </Button>
+                            <Button
+                                onClick={() => modal?.close()}
+                                type="button"
+                                variant="subtle"
+                                color="zinc"
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" loading={processing}>
+                                {processing ? 'Creating...' : 'Create User'}
+                            </Button>
                         </Actions>
                     </Form>
                 </FormErrorSound>

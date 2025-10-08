@@ -64,18 +64,18 @@ export default function Reopen({ role }: Props) {
                         </ModalContent>
 
                         <Actions>
-                                <Button
-                                    onClick={() => modal?.close()}
-                                    type="button"
-                                    variant="subtle"
-                                    color="zinc"
-                                    data-testid="cancel-action"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button type="submit" loading={processing} color="green">
-                                    {processing ? 'Reopening...' : 'Reopen Role'}
-                                </Button>
+                            <Button
+                                onClick={() => modal?.close()}
+                                type="button"
+                                variant="subtle"
+                                color="zinc"
+                                data-testid="cancel-action"
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" loading={processing} color="green">
+                                {processing ? 'Reopening...' : 'Reopen Role'}
+                            </Button>
                         </Actions>
                     </Form>
                 </FormErrorSound>

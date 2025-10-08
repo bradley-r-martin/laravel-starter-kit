@@ -60,46 +60,46 @@ export default function Password({ user, is_current_user }: Props) {
                     >
                         <ModalContent>
                             <Stack>
-                            {is_current_user && (
-                                <Field name="current_password">
+                                {is_current_user && (
+                                    <Field name="current_password">
+                                        <PasswordInput
+                                            label="Current Password"
+                                            name="current_password"
+                                            placeholder="Enter your current password"
+                                        />
+                                    </Field>
+                                )}
+
+                                <Field name="password">
                                     <PasswordInput
-                                        label="Current Password"
-                                        name="current_password"
-                                        placeholder="Enter your current password"
+                                        label="New Password"
+                                        name="password"
+                                        placeholder="Enter new password"
                                     />
                                 </Field>
-                            )}
 
-                            <Field name="password">
-                                <PasswordInput
-                                    label="New Password"
-                                    name="password"
-                                    placeholder="Enter new password"
-                                />
-                            </Field>
-
-                            <Field name="password_confirmation">
-                                <PasswordInput
-                                    label="Confirm New Password"
-                                    name="password_confirmation"
-                                    placeholder="Confirm new password"
-                                />
-                            </Field>
+                                <Field name="password_confirmation">
+                                    <PasswordInput
+                                        label="Confirm New Password"
+                                        name="password_confirmation"
+                                        placeholder="Confirm new password"
+                                    />
+                                </Field>
                             </Stack>
                         </ModalContent>
 
                         <Actions>
-                                <Button
-                                    onClick={() => modal?.close()}
-                                    type="button"
-                                    variant="subtle"
-                                    color="zinc"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button type="submit" loading={processing}>
-                                    {processing ? 'Changing...' : 'Change Password'}
-                                </Button>
+                            <Button
+                                onClick={() => modal?.close()}
+                                type="button"
+                                variant="subtle"
+                                color="zinc"
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" loading={processing}>
+                                {processing ? 'Changing...' : 'Change Password'}
+                            </Button>
                         </Actions>
                     </Form>
                 </FormErrorSound>

@@ -78,17 +78,17 @@ export default function Destroy({ user }: Props) {
                         </ModalContent>
 
                         <Actions>
-                                <Button
-                                    onClick={() => modal?.close()}
-                                    type="button"
-                                    variant="subtle"
-                                    color="zinc"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button type="submit" loading={processing} color="red">
-                                    {processing ? 'Destroying...' : 'Destroy Account'}
-                                </Button>
+                            <Button
+                                onClick={() => modal?.close()}
+                                type="button"
+                                variant="subtle"
+                                color="zinc"
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" loading={processing} color="red">
+                                {processing ? 'Destroying...' : 'Destroy Account'}
+                            </Button>
                         </Actions>
                     </Form>
                 </FormErrorSound>

@@ -59,36 +59,36 @@ export default function Suspend({ user }: Props) {
                     >
                         <ModalContent>
                             <Stack>
-                            <Field name="reason">
-                                <Textarea
-                                    label="Reason for Suspension"
-                                    name="reason"
-                                    rows={4}
-                                    placeholder="Provide a reason for suspending this user..."
-                                />
-                            </Field>
+                                <Field name="reason">
+                                    <Textarea
+                                        label="Reason for Suspension"
+                                        name="reason"
+                                        rows={4}
+                                        placeholder="Provide a reason for suspending this user..."
+                                    />
+                                </Field>
 
-                            <Field name="notify" type="checkbox">
-                                <Checkbox
-                                    label="Notify user via email about the suspension"
-                                    name="notify"
-                                />
-                            </Field>
+                                <Field name="notify" type="checkbox">
+                                    <Checkbox
+                                        label="Notify user via email about the suspension"
+                                        name="notify"
+                                    />
+                                </Field>
                             </Stack>
                         </ModalContent>
 
                         <Actions>
-                                <Button
-                                    onClick={() => modal?.close()}
-                                    type="button"
-                                    variant="subtle"
-                                    color="zinc"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button type="submit" loading={processing} color="orange">
-                                    {processing ? 'Suspending...' : 'Suspend User'}
-                                </Button>
+                            <Button
+                                onClick={() => modal?.close()}
+                                type="button"
+                                variant="subtle"
+                                color="zinc"
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" loading={processing} color="orange">
+                                {processing ? 'Suspending...' : 'Suspend User'}
+                            </Button>
                         </Actions>
                     </Form>
                 </FormErrorSound>

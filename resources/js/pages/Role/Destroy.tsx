@@ -7,7 +7,7 @@ import ModalHeader from '@/components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button } from '@mantine/core';
-import { AlertCircleIcon, ShieldOffIcon, AlertTriangleIcon } from 'lucide-react';
+import { AlertCircleIcon, AlertTriangleIcon, ShieldOffIcon } from 'lucide-react';
 
 interface Role {
     id: string;
@@ -58,8 +58,8 @@ export default function Destroy({ role }: Props) {
                                     title="Cannot Destroy Role"
                                     mb="md"
                                 >
-                                    This role must be closed before it can be destroyed. Please close
-                                    the role first.
+                                    This role must be closed before it can be destroyed. Please
+                                    close the role first.
                                 </Alert>
                             )}
 
@@ -75,23 +75,23 @@ export default function Destroy({ role }: Props) {
                         </ModalContent>
 
                         <Actions>
-                                <Button
-                                    onClick={() => modal?.close()}
-                                    type="button"
-                                    variant="subtle"
-                                    color="zinc"
-                                    data-testid="cancel-action"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    loading={processing}
-                                    color="red"
-                                    disabled={isNotClosed}
-                                >
-                                    {processing ? 'Destroying...' : 'Destroy Role'}
-                                </Button>
+                            <Button
+                                onClick={() => modal?.close()}
+                                type="button"
+                                variant="subtle"
+                                color="zinc"
+                                data-testid="cancel-action"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                loading={processing}
+                                color="red"
+                                disabled={isNotClosed}
+                            >
+                                {processing ? 'Destroying...' : 'Destroy Role'}
+                            </Button>
                         </Actions>
                     </Form>
                 </FormErrorSound>

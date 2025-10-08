@@ -101,18 +101,18 @@ export default function Update({ role, availablePolicies }: Props) {
                         </ModalContent>
 
                         <Actions>
-                                <Button
-                                    onClick={() => modal?.close()}
-                                    type="button"
-                                    variant="subtle"
-                                    color="zinc"
-                                    data-testid="cancel-action"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button type="submit" loading={processing} disabled={isClosed}>
-                                    {processing ? 'Updating...' : 'Update Role'}
-                                </Button>
+                            <Button
+                                onClick={() => modal?.close()}
+                                type="button"
+                                variant="subtle"
+                                color="zinc"
+                                data-testid="cancel-action"
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" loading={processing} disabled={isClosed}>
+                                {processing ? 'Updating...' : 'Update Role'}
+                            </Button>
                         </Actions>
                     </Form>
                 </FormErrorSound>

@@ -80,23 +80,23 @@ export default function Close({ role }: Props) {
                         </ModalContent>
 
                         <Actions>
-                                <Button
-                                    onClick={() => modal?.close()}
-                                    type="button"
-                                    variant="subtle"
-                                    color="zinc"
-                                    data-testid="cancel-action"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    loading={processing}
-                                    color="red"
-                                    disabled={hasUsers}
-                                >
-                                    {processing ? 'Closing...' : 'Close Role'}
-                                </Button>
+                            <Button
+                                onClick={() => modal?.close()}
+                                type="button"
+                                variant="subtle"
+                                color="zinc"
+                                data-testid="cancel-action"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                loading={processing}
+                                color="red"
+                                disabled={hasUsers}
+                            >
+                                {processing ? 'Closing...' : 'Close Role'}
+                            </Button>
                         </Actions>
                     </Form>
                 </FormErrorSound>

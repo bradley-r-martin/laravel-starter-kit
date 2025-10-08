@@ -12,7 +12,7 @@ describe('Role Management', function (): void {
 
             $this->as($user, $territory)->visit('/roles/create')
                 ->assertTitle('Create Role - Laravel')
-                ->assertSee('Create Role')
+                ->assertSee('Create role')
                 ->assertSee('Name')
                 ->assertSee('Description')
                 ->assertSee('Hidden')
@@ -72,7 +72,7 @@ describe('Role Management', function (): void {
 
             $this->as($user, $territory)->visit("/roles/{$role->id}/update")
                 ->assertTitle("Update Role: {$role->name} - Laravel")
-                ->assertSee('Update Role')
+                ->assertSee('Update role')
                 ->assertNoJavascriptErrors()
                 ->assertDontSee('Cannot Update Role')
                 ->fill('name', 'Senior Manager')
@@ -102,7 +102,7 @@ describe('Role Management', function (): void {
 
             $this->as($user, $territory)->visit("/roles/{$roleId}/update")
                 ->assertTitle("Update Role: {$role->name} - Laravel")
-                ->assertSee('Update Role')
+                ->assertSee('Update role')
                 ->assertSee('Cannot Update Role')
                 ->assertSee('This role is closed and cannot be updated')
                 ->assertNoJavascriptErrors()
@@ -148,8 +148,9 @@ describe('Role Management', function (): void {
 
             $this->as($user, $territory)->visit("/roles/{$role->id}/close")
                 ->assertTitle("Close Role: {$role->name} - Laravel")
-                ->assertSee('Close Role')
-                ->assertSee("You are about to close the role: {$role->name}")
+                ->assertSee('Close role')
+                ->assertSee('Deactivate role:')
+                ->assertSee($role->name)
                 ->assertNoJavascriptErrors()
                 ->assertDontSee('Cannot Close Role')
                 ->assertDontSee('Please reassign all users')
@@ -178,7 +179,7 @@ describe('Role Management', function (): void {
 
             $this->as($authenticatedUser, $territory)->visit("/roles/{$roleToClose->id}/close")
                 ->assertTitle("Close Role: {$roleToClose->name} - Laravel")
-                ->assertSee('Close Role')
+                ->assertSee('Close role')
                 ->assertSee('Cannot Close Role')
                 ->assertSee('This role has 2 users assigned')
                 ->assertSee('Please reassign all users before closing this role')
@@ -216,9 +217,9 @@ describe('Role Management', function (): void {
 
             $this->as($user, $territory)->visit("/roles/{$roleId}/reopen")
                 ->assertTitle("Reopen Role: {$role->name} - Laravel")
-                ->assertSee('Reopen Role')
-                ->assertSee("You are about to reopen the role: {$role->name}")
-                ->assertSee('This will restore the role to its active state')
+                ->assertSee('Reopen role')
+                ->assertSee('Restore role:')
+                ->assertSee($role->name)
                 ->assertNoJavascriptErrors()
                 ->fill('reason', 'Role is needed again')
                 ->submit()
@@ -302,8 +303,9 @@ describe('Role Management', function (): void {
 
             $this->as($user, $territory)->visit("/roles/{$roleId}/destroy")
                 ->assertTitle("Destroy Role: {$role->name} - Laravel")
-                ->assertSee('Destroy Role')
-                ->assertSee("You are about to destroy the role: {$role->name}")
+                ->assertSee('Destroy role')
+                ->assertSee('Permanently delete role:')
+                ->assertSee($role->name)
                 ->assertSee('This action is permanent and cannot be undone')
                 ->assertNoJavascriptErrors()
                 ->assertDontSee('This role must be closed before it can be destroyed')
@@ -321,7 +323,7 @@ describe('Role Management', function (): void {
 
             $this->as($user, $territory)->visit("/roles/{$role->id}/destroy")
                 ->assertTitle("Destroy Role: {$role->name} - Laravel")
-                ->assertSee('Destroy Role')
+                ->assertSee('Destroy role')
                 ->assertSee('Cannot Destroy Role')
                 ->assertSee('This role must be closed before it can be destroyed')
                 ->assertNoJavascriptErrors()
