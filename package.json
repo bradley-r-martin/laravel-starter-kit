@@ -36,6 +36,7 @@
         "dayjs": "^1.11.18",
         "lucide-react": "^0.544.0",
         "merge-props": "^6.0.0",
+        "motion": "^12.23.22",
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
         "tailwind-merge": "^3.3.1"

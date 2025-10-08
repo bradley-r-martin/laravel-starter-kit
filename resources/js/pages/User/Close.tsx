@@ -1,9 +1,12 @@
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
+import Modal from '@/components/Modal';
+import ModalHeader from '@/components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
-import { Modal, useModal } from '@inertiaui/modal-react';
-import { Anchor, Button, Group, Stack, Text, Textarea, Title } from '@mantine/core';
+import { useModal } from '@inertiaui/modal-react';
+import { Button, Group, Stack, Textarea } from '@mantine/core';
+import { UserIcon } from 'lucide-react';
 
 interface User {
     id: string;
@@ -30,22 +33,20 @@ export default function Close({ user }: Props) {
         <>
             <Head title={`Close User Account: ${user.first_name} ${user.last_name}`} />
             <Modal>
-                <Title order={2} mb="lg">
-                    Close User Account
-                </Title>
-
-                <Text size="sm" c="dimmed" mb="md">
-                    You are about to close the account for:{' '}
-                    <strong>
-                        {user.first_name} {user.last_name}
-                    </strong>{' '}
-                    ({user.email})
-                </Text>
-
-                <Text size="sm" c="dimmed" mb="md">
-                    This is typically used when a user no longer works for the company. This action
-                    will permanently close their account.
-                </Text>
+                <ModalHeader
+                    hero
+                    title={`Close account`}
+                    description={
+                        <>
+                            You are about to close the account for:{' '}
+                            <strong>
+                                {user.first_name} {user.last_name}
+                            </strong>
+                        </>
+                    }
+                    icon={<UserIcon className="size-6" />}
+                    color="red"
+                />
 
                 <FormErrorSound>
                     <Form
@@ -64,9 +65,14 @@ export default function Close({ user }: Props) {
                             </Field>
 
                             <Group justify="flex-end" mt="md">
-                                <Anchor onClick={() => modal?.close()} type="button" c="dimmed">
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
                                     Cancel
-                                </Anchor>
+                                </Button>
                                 <Button type="submit" loading={processing} color="red">
                                     {processing ? 'Closing...' : 'Close Account'}
                                 </Button>

@@ -310,12 +310,11 @@ describe('User Management', function (): void {
 
             $this->as($user, $territory)->visit("/users/{$user->id}/close")
                 ->assertTitle('Close User Account: '.$user->first_name.' '.$user->last_name.' - Laravel')
-                ->assertSee('Close User Account')
+                ->assertSee('Close account')
                 ->assertSee($user->first_name)
                 ->assertSee($user->last_name)
                 ->assertSee($user->email)
                 ->assertSee('Reason for Closing')
-                ->assertSee('This is typically used when a user no longer works for the company')
                 ->assertNoJavascriptErrors()
                 ->fill('reason', 'Employee left company')
                 ->submit()
