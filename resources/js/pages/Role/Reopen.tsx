@@ -1,8 +1,9 @@
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
+import { Modal } from '@/components/Modal';
 import { Head, useForm } from '@inertiajs/react';
-import { Modal, useModal } from '@inertiaui/modal-react';
+import { useModal } from '@inertiaui/modal-react';
 import { Anchor, Button, Group, Stack, Text, Textarea, Title } from '@mantine/core';
 
 interface Role {
