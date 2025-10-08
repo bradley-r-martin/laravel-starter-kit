@@ -136,12 +136,17 @@ export const theme: MantineThemeOverride = createTheme({
                 tbody: '!text-zinc-950/80 !text-xs',
             },
         },
+        Button: {
+            defaultProps: {
+                radius: 'xl',
+            },
+        },
         Modal: {
             defaultProps: {
                 centered: true,
                 withCloseButton: false,
                 padding: 'xl',
-                radius: 'lg',
+                radius: 'xl',
                 overlayProps: {
                     backgroundOpacity: 0.24,
                 },

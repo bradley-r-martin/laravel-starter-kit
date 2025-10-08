@@ -1,3 +1,4 @@
+import { Actions } from '@/components/Actions';
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
@@ -5,7 +6,7 @@ import { Modal } from '@/components/Modal';
 import ModalHeader from '@/components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Button, Group, Stack, Textarea } from '@mantine/core';
+import { Button, Stack, Textarea } from '@mantine/core';
 import { UserIcon } from 'lucide-react';
 
 interface User {
@@ -64,19 +65,20 @@ export default function Close({ user }: Props) {
                                 />
                             </Field>
 
-                            <Group justify="flex-end" mt="md">
+                            <Actions>
                                 <Button
                                     onClick={() => modal?.close()}
                                     type="button"
                                     variant="subtle"
                                     color="zinc"
+                                    data-testid="cancel-action"
                                 >
                                     Cancel
                                 </Button>
                                 <Button type="submit" loading={processing} color="red">
                                     {processing ? 'Closing...' : 'Close Account'}
                                 </Button>
-                            </Group>
+                            </Actions>
                         </Stack>
                     </Form>
                 </FormErrorSound>
