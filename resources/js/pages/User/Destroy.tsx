@@ -3,9 +3,12 @@ import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
+import { ModalContent } from '@/components/ModalContent';
+import ModalHeader from '@/components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Button, Stack, Text, Textarea, Title } from '@mantine/core';
+import { Alert, Button, Textarea } from '@mantine/core';
+import { AlertTriangleIcon, UserXIcon } from 'lucide-react';
 
 interface User {
     id: string;
@@ -32,23 +35,20 @@ export default function Destroy({ user }: Props) {
         <>
             <Head title={`Destroy User Account: ${user.first_name} ${user.last_name}`} />
             <Modal>
-                <Title order={2} mb="lg">
-                    Destroy User Account
-                </Title>
-
-                <Text size="sm" c="dimmed" mb="md">
-                    You are about to permanently destroy the account for:{' '}
-                    <strong>
-                        {user.first_name} {user.last_name}
-                    </strong>{' '}
-                    ({user.email})
-                </Text>
-
-                <Text size="sm" c="red" mb="md">
-                    <strong>WARNING:</strong> This action is irreversible. The user account will be
-                    permanently deleted from the system. This should only be done when the user
-                    account is no longer needed and all data should be removed.
-                </Text>
+                <ModalHeader
+                    hero
+                    title="Destroy account"
+                    description={
+                        <>
+                            You are about to permanently destroy the account for:{' '}
+                            <strong>
+                                {user.first_name} {user.last_name}
+                            </strong>
+                        </>
+                    }
+                    icon={<UserXIcon className="size-6" />}
+                    color="red"
+                />
 
                 <FormErrorSound>
                     <Form
@@ -56,7 +56,17 @@ export default function Destroy({ user }: Props) {
                         action={{ url: route('users.destroy', user.id), method: 'delete' }}
                         onSuccess={() => modal?.close()}
                     >
-                        <Stack gap="md">
+                        <ModalContent>
+                            <Alert
+                                variant="light"
+                                color="red"
+                                icon={<AlertTriangleIcon className="size-5" />}
+                                mb="md"
+                            >
+                                <strong>WARNING:</strong> This action is irreversible. The user
+                                account will be permanently deleted from the system.
+                            </Alert>
+
                             <Field name="reason">
                                 <Textarea
                                     label="Reason for Destruction"
@@ -65,8 +75,9 @@ export default function Destroy({ user }: Props) {
                                     placeholder="Provide a reason for destroying this account..."
                                 />
                             </Field>
+                        </ModalContent>
 
-                            <Actions>
+                        <Actions>
                                 <Button
                                     onClick={() => modal?.close()}
                                     type="button"
@@ -78,8 +89,7 @@ export default function Destroy({ user }: Props) {
                                 <Button type="submit" loading={processing} color="red">
                                     {processing ? 'Destroying...' : 'Destroy Account'}
                                 </Button>
-                            </Actions>
-                        </Stack>
+                        </Actions>
                     </Form>
                 </FormErrorSound>
             </Modal>

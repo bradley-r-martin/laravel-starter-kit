@@ -3,9 +3,12 @@ import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
+import { ModalContent } from '@/components/ModalContent';
+import ModalHeader from '@/components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Button, PasswordInput, Stack, Text, Title } from '@mantine/core';
+import { Button, PasswordInput, Stack } from '@mantine/core';
+import { KeyRoundIcon } from 'lucide-react';
 
 interface User {
     id: string;
@@ -34,17 +37,20 @@ export default function Password({ user, is_current_user }: Props) {
         <>
             <Head title={`Change Password: ${user.first_name} ${user.last_name}`} />
             <Modal>
-                <Title order={2} mb="lg">
-                    Change Password
-                </Title>
-
-                <Text size="sm" c="dimmed" mb="md">
-                    Changing password for:{' '}
-                    <strong>
-                        {user.first_name} {user.last_name}
-                    </strong>{' '}
-                    ({user.email})
-                </Text>
+                <ModalHeader
+                    hero
+                    title="Change password"
+                    description={
+                        <>
+                            Update password for:{' '}
+                            <strong>
+                                {user.first_name} {user.last_name}
+                            </strong>
+                        </>
+                    }
+                    icon={<KeyRoundIcon className="size-6" />}
+                    color="blue"
+                />
 
                 <FormErrorSound>
                     <Form
@@ -52,7 +58,8 @@ export default function Password({ user, is_current_user }: Props) {
                         action={{ url: route('users.password', user.id), method: 'put' }}
                         onSuccess={() => modal?.close()}
                     >
-                        <Stack gap="md">
+                        <ModalContent>
+                            <Stack>
                             {is_current_user && (
                                 <Field name="current_password">
                                     <PasswordInput
@@ -78,8 +85,10 @@ export default function Password({ user, is_current_user }: Props) {
                                     placeholder="Confirm new password"
                                 />
                             </Field>
+                            </Stack>
+                        </ModalContent>
 
-                            <Actions>
+                        <Actions>
                                 <Button
                                     onClick={() => modal?.close()}
                                     type="button"
@@ -91,8 +100,7 @@ export default function Password({ user, is_current_user }: Props) {
                                 <Button type="submit" loading={processing}>
                                     {processing ? 'Changing...' : 'Change Password'}
                                 </Button>
-                            </Actions>
-                        </Stack>
+                        </Actions>
                     </Form>
                 </FormErrorSound>
             </Modal>

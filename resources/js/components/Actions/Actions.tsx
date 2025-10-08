@@ -31,7 +31,7 @@ const Actions: ActionsComponent = ({ children, className, delay = 0, duration = 
     const childStagger = 0.06; // seconds between children
 
     return (
-        <div className="pt-10">
+        <div className="h-18">
             <AnimatedActionsContainer
                 expanded={expanded}
                 size={targetSize}

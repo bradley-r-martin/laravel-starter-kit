@@ -3,9 +3,12 @@ import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
+import { ModalContent } from '@/components/ModalContent';
+import ModalHeader from '@/components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Button, Stack, Text, Textarea, Title } from '@mantine/core';
+import { Button, Textarea } from '@mantine/core';
+import { UserCheckIcon } from 'lucide-react';
 
 interface User {
     id: string;
@@ -32,22 +35,20 @@ export default function Reopen({ user }: Props) {
         <>
             <Head title={`Reopen User Account: ${user.first_name} ${user.last_name}`} />
             <Modal>
-                <Title order={2} mb="lg">
-                    Reopen User Account
-                </Title>
-
-                <Text size="sm" c="dimmed" mb="md">
-                    You are about to reopen the account for:{' '}
-                    <strong>
-                        {user.first_name} {user.last_name}
-                    </strong>{' '}
-                    ({user.email})
-                </Text>
-
-                <Text size="sm" c="dimmed" mb="md">
-                    This will restore access to the user account and allow them to log in again. The
-                    account will return to its active state.
-                </Text>
+                <ModalHeader
+                    hero
+                    title="Reopen account"
+                    description={
+                        <>
+                            Restore access for:{' '}
+                            <strong>
+                                {user.first_name} {user.last_name}
+                            </strong>
+                        </>
+                    }
+                    icon={<UserCheckIcon className="size-6" />}
+                    color="green"
+                />
 
                 <FormErrorSound>
                     <Form
@@ -55,7 +56,7 @@ export default function Reopen({ user }: Props) {
                         action={{ url: route('users.reopen', user.id), method: 'post' }}
                         onSuccess={() => modal?.close()}
                     >
-                        <Stack gap="md">
+                        <ModalContent>
                             <Field name="reason">
                                 <Textarea
                                     label="Reason for Reopening"
@@ -64,8 +65,9 @@ export default function Reopen({ user }: Props) {
                                     placeholder="Provide a reason for reopening this account..."
                                 />
                             </Field>
+                        </ModalContent>
 
-                            <Actions>
+                        <Actions>
                                 <Button
                                     onClick={() => modal?.close()}
                                     type="button"
@@ -77,8 +79,7 @@ export default function Reopen({ user }: Props) {
                                 <Button type="submit" loading={processing} color="green">
                                     {processing ? 'Reopening...' : 'Reopen Account'}
                                 </Button>
-                            </Actions>
-                        </Stack>
+                        </Actions>
                     </Form>
                 </FormErrorSound>
             </Modal>

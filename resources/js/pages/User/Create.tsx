@@ -3,9 +3,12 @@ import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
+import { ModalContent } from '@/components/ModalContent';
+import ModalHeader from '@/components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Button, PasswordInput, Select, Stack, TextInput, Title } from '@mantine/core';
+import { Button, PasswordInput, Select, Stack, TextInput } from '@mantine/core';
+import { UserPlusIcon } from 'lucide-react';
 
 interface SelectOption {
     value: string;
@@ -33,9 +36,13 @@ export default function Create({ roles, operators }: CreateProps) {
         <>
             <Head title="Create User" />
             <Modal>
-                <Title order={2} mb="lg">
-                    Create User
-                </Title>
+                <ModalHeader
+                    hero
+                    title="Create user"
+                    description="Add a new user to the system"
+                    icon={<UserPlusIcon className="size-6" />}
+                    color="blue"
+                />
 
                 <FormErrorSound>
                     <Form
@@ -43,7 +50,8 @@ export default function Create({ roles, operators }: CreateProps) {
                         action={{ url: route('users.store'), method: 'post' }}
                         onSuccess={() => modal?.close()}
                     >
-                        <Stack gap="md">
+                        <ModalContent>
+                            <Stack>
                             <Field name="operator_id">
                                 <Select
                                     label="Operator"
@@ -80,8 +88,10 @@ export default function Create({ roles, operators }: CreateProps) {
                             <Field name="password">
                                 <PasswordInput label="Password" name="password" />
                             </Field>
+                            </Stack>
+                        </ModalContent>
 
-                            <Actions>
+                        <Actions>
                                 <Button
                                     onClick={() => modal?.close()}
                                     type="button"
@@ -93,8 +103,7 @@ export default function Create({ roles, operators }: CreateProps) {
                                 <Button type="submit" loading={processing}>
                                     {processing ? 'Creating...' : 'Create User'}
                                 </Button>
-                            </Actions>
-                        </Stack>
+                        </Actions>
                     </Form>
                 </FormErrorSound>
             </Modal>

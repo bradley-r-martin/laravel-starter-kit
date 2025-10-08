@@ -2,10 +2,12 @@ import { Actions } from '@/components/Actions';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
+import { ModalContent } from '@/components/ModalContent';
+import ModalHeader from '@/components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Alert, Button, Stack, Text, Title } from '@mantine/core';
-import { AlertCircleIcon } from 'lucide-react';
+import { Alert, Button } from '@mantine/core';
+import { AlertCircleIcon, ShieldOffIcon, AlertTriangleIcon } from 'lucide-react';
 
 interface Role {
     id: string;
@@ -29,36 +31,17 @@ export default function Destroy({ role }: Props) {
         <>
             <Head title={`Destroy Role: ${role.name}`} />
             <Modal>
-                <Title order={2} mb="lg">
-                    Destroy Role
-                </Title>
-
-                {isNotClosed && (
-                    <Alert
-                        variant="light"
-                        color="red"
-                        icon={<AlertCircleIcon className="size-5" />}
-                        title="Cannot Destroy Role"
-                        mb="lg"
-                    >
-                        This role must be closed before it can be destroyed. Please close the role
-                        first.
-                    </Alert>
-                )}
-
-                <Alert
-                    variant="light"
+                <ModalHeader
+                    hero
+                    title="Destroy role"
+                    description={
+                        <>
+                            Permanently delete role: <strong>{role.name}</strong>
+                        </>
+                    }
+                    icon={<ShieldOffIcon className="size-6" />}
                     color="red"
-                    icon={<AlertCircleIcon className="size-5" />}
-                    mb="lg"
-                >
-                    <strong>Warning:</strong> This action is permanent and cannot be undone. The
-                    role will be completely removed from the system.
-                </Alert>
-
-                <Text size="sm" c="dimmed" mb="md">
-                    You are about to destroy the role: <strong>{role.name}</strong>
-                </Text>
+                />
 
                 <FormErrorSound>
                     <Form
@@ -66,8 +49,32 @@ export default function Destroy({ role }: Props) {
                         action={{ url: route('roles.destroy', role.id), method: 'delete' }}
                         onSuccess={() => modal?.close()}
                     >
-                        <Stack gap="md">
-                            <Actions>
+                        <ModalContent>
+                            {isNotClosed && (
+                                <Alert
+                                    variant="light"
+                                    color="red"
+                                    icon={<AlertCircleIcon className="size-5" />}
+                                    title="Cannot Destroy Role"
+                                    mb="md"
+                                >
+                                    This role must be closed before it can be destroyed. Please close
+                                    the role first.
+                                </Alert>
+                            )}
+
+                            <Alert
+                                variant="light"
+                                color="red"
+                                icon={<AlertTriangleIcon className="size-5" />}
+                                mb="md"
+                            >
+                                <strong>Warning:</strong> This action is permanent and cannot be
+                                undone. The role will be completely removed from the system.
+                            </Alert>
+                        </ModalContent>
+
+                        <Actions>
                                 <Button
                                     onClick={() => modal?.close()}
                                     type="button"
@@ -85,8 +92,7 @@ export default function Destroy({ role }: Props) {
                                 >
                                     {processing ? 'Destroying...' : 'Destroy Role'}
                                 </Button>
-                            </Actions>
-                        </Stack>
+                        </Actions>
                     </Form>
                 </FormErrorSound>
             </Modal>

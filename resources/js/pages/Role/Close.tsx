@@ -3,10 +3,12 @@ import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
+import { ModalContent } from '@/components/ModalContent';
+import ModalHeader from '@/components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Alert, Button, Stack, Text, Textarea, Title } from '@mantine/core';
-import { AlertCircleIcon } from 'lucide-react';
+import { Alert, Button, Textarea } from '@mantine/core';
+import { AlertCircleIcon, ShieldXIcon } from 'lucide-react';
 
 interface Role {
     id: string;
@@ -34,26 +36,17 @@ export default function Close({ role }: Props) {
         <>
             <Head title={`Close Role: ${role.name}`} />
             <Modal>
-                <Title order={2} mb="lg">
-                    Close Role
-                </Title>
-
-                {hasUsers && (
-                    <Alert
-                        variant="light"
-                        color="red"
-                        icon={<AlertCircleIcon className="size-5" />}
-                        title="Cannot Close Role"
-                        mb="lg"
-                    >
-                        This role has {role.users_count} user{role.users_count !== 1 ? 's' : ''}{' '}
-                        assigned. Please reassign all users before closing this role.
-                    </Alert>
-                )}
-
-                <Text size="sm" c="dimmed" mb="md">
-                    You are about to close the role: <strong>{role.name}</strong>
-                </Text>
+                <ModalHeader
+                    hero
+                    title="Close role"
+                    description={
+                        <>
+                            Deactivate role: <strong>{role.name}</strong>
+                        </>
+                    }
+                    icon={<ShieldXIcon className="size-6" />}
+                    color="red"
+                />
 
                 <FormErrorSound>
                     <Form
@@ -61,7 +54,21 @@ export default function Close({ role }: Props) {
                         action={{ url: route('roles.close', role.id), method: 'post' }}
                         onSuccess={() => modal?.close()}
                     >
-                        <Stack gap="md">
+                        <ModalContent>
+                            {hasUsers && (
+                                <Alert
+                                    variant="light"
+                                    color="red"
+                                    icon={<AlertCircleIcon className="size-5" />}
+                                    title="Cannot Close Role"
+                                    mb="md"
+                                >
+                                    This role has {role.users_count} user
+                                    {role.users_count !== 1 ? 's' : ''} assigned. Please reassign
+                                    all users before closing this role.
+                                </Alert>
+                            )}
+
                             <Field name="reason">
                                 <Textarea
                                     label="Reason for Closing"
@@ -70,8 +77,9 @@ export default function Close({ role }: Props) {
                                     placeholder="Provide a reason for closing this role..."
                                 />
                             </Field>
+                        </ModalContent>
 
-                            <Actions>
+                        <Actions>
                                 <Button
                                     onClick={() => modal?.close()}
                                     type="button"
@@ -89,8 +97,7 @@ export default function Close({ role }: Props) {
                                 >
                                     {processing ? 'Closing...' : 'Close Role'}
                                 </Button>
-                            </Actions>
-                        </Stack>
+                        </Actions>
                     </Form>
                 </FormErrorSound>
             </Modal>

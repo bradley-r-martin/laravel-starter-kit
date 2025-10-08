@@ -3,9 +3,12 @@ import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
+import { ModalContent } from '@/components/ModalContent';
+import ModalHeader from '@/components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Button, Checkbox, Stack, Text, Textarea, Title } from '@mantine/core';
+import { Button, Checkbox, Stack, Textarea } from '@mantine/core';
+import { UserMinusIcon } from 'lucide-react';
 
 interface User {
     id: string;
@@ -33,17 +36,20 @@ export default function Suspend({ user }: Props) {
         <>
             <Head title={`Suspend User: ${user.first_name} ${user.last_name}`} />
             <Modal>
-                <Title order={2} mb="lg">
-                    Suspend User
-                </Title>
-
-                <Text size="sm" c="dimmed" mb="md">
-                    You are about to suspend the user:{' '}
-                    <strong>
-                        {user.first_name} {user.last_name}
-                    </strong>{' '}
-                    ({user.email})
-                </Text>
+                <ModalHeader
+                    hero
+                    title="Suspend user"
+                    description={
+                        <>
+                            Temporarily restrict access for:{' '}
+                            <strong>
+                                {user.first_name} {user.last_name}
+                            </strong>
+                        </>
+                    }
+                    icon={<UserMinusIcon className="size-6" />}
+                    color="orange"
+                />
 
                 <FormErrorSound>
                     <Form
@@ -51,7 +57,8 @@ export default function Suspend({ user }: Props) {
                         action={{ url: route('users.suspend', user.id), method: 'post' }}
                         onSuccess={() => modal?.close()}
                     >
-                        <Stack gap="md">
+                        <ModalContent>
+                            <Stack>
                             <Field name="reason">
                                 <Textarea
                                     label="Reason for Suspension"
@@ -67,8 +74,10 @@ export default function Suspend({ user }: Props) {
                                     name="notify"
                                 />
                             </Field>
+                            </Stack>
+                        </ModalContent>
 
-                            <Actions>
+                        <Actions>
                                 <Button
                                     onClick={() => modal?.close()}
                                     type="button"
@@ -80,8 +89,7 @@ export default function Suspend({ user }: Props) {
                                 <Button type="submit" loading={processing} color="orange">
                                     {processing ? 'Suspending...' : 'Suspend User'}
                                 </Button>
-                            </Actions>
-                        </Stack>
+                        </Actions>
                     </Form>
                 </FormErrorSound>
             </Modal>

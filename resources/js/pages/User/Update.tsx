@@ -3,9 +3,12 @@ import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
+import { ModalContent } from '@/components/ModalContent';
+import ModalHeader from '@/components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Button, Stack, TextInput, Title } from '@mantine/core';
+import { Button, Stack, TextInput } from '@mantine/core';
+import { UserCogIcon } from 'lucide-react';
 
 interface User {
     id: string;
@@ -31,9 +34,20 @@ export default function Update({ user }: UpdateProps) {
         <>
             <Head title="Update User" />
             <Modal>
-                <Title order={2} mb="lg">
-                    Update User
-                </Title>
+                <ModalHeader
+                    hero
+                    title="Update user"
+                    description={
+                        <>
+                            Edit details for:{' '}
+                            <strong>
+                                {user.first_name} {user.last_name}
+                            </strong>
+                        </>
+                    }
+                    icon={<UserCogIcon className="size-6" />}
+                    color="blue"
+                />
 
                 <FormErrorSound>
                     <Form
@@ -41,7 +55,8 @@ export default function Update({ user }: UpdateProps) {
                         action={{ url: route('users.update', user.id), method: 'put' }}
                         onSuccess={() => modal?.close()}
                     >
-                        <Stack gap="md">
+                        <ModalContent>
+                            <Stack>
                             <Field name="first_name">
                                 <TextInput label="First Name" name="first_name" />
                             </Field>
@@ -53,8 +68,10 @@ export default function Update({ user }: UpdateProps) {
                             <Field name="email">
                                 <TextInput label="Email" name="email" type="email" />
                             </Field>
+                            </Stack>
+                        </ModalContent>
 
-                            <Actions>
+                        <Actions>
                                 <Button
                                     onClick={() => modal?.close()}
                                     type="button"
@@ -66,8 +83,7 @@ export default function Update({ user }: UpdateProps) {
                                 <Button type="submit" loading={processing}>
                                     {processing ? 'Updating...' : 'Update User'}
                                 </Button>
-                            </Actions>
-                        </Stack>
+                        </Actions>
                     </Form>
                 </FormErrorSound>
             </Modal>

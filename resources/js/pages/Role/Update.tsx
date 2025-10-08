@@ -3,11 +3,13 @@ import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
+import { ModalContent } from '@/components/ModalContent';
+import ModalHeader from '@/components/ModalHeader';
 import { TransferInput, TransferItem } from '@/components/TransferInput';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Alert, Button, Checkbox, Stack, Textarea, TextInput, Title } from '@mantine/core';
-import { AlertCircleIcon } from 'lucide-react';
+import { Alert, Button, Checkbox, Textarea, TextInput } from '@mantine/core';
+import { AlertCircleIcon, ShieldIcon } from 'lucide-react';
 
 interface Role {
     id: string;
@@ -40,21 +42,17 @@ export default function Update({ role, availablePolicies }: Props) {
         <>
             <Head title={`Update Role: ${role.name}`} />
             <Modal>
-                <Title order={2} mb="lg">
-                    Update Role
-                </Title>
-
-                {isClosed && (
-                    <Alert
-                        variant="light"
-                        color="red"
-                        icon={<AlertCircleIcon className="size-5" />}
-                        title="Cannot Update Role"
-                        mb="lg"
-                    >
-                        This role is closed and cannot be updated.
-                    </Alert>
-                )}
+                <ModalHeader
+                    hero
+                    title="Update role"
+                    description={
+                        <>
+                            Edit details for role: <strong>{role.name}</strong>
+                        </>
+                    }
+                    icon={<ShieldIcon className="size-6" />}
+                    color="blue"
+                />
 
                 <FormErrorSound>
                     <Form
@@ -62,7 +60,19 @@ export default function Update({ role, availablePolicies }: Props) {
                         action={{ url: route('roles.update', role.id), method: 'put' }}
                         onSuccess={() => modal?.close()}
                     >
-                        <Stack gap="md">
+                        <ModalContent>
+                            {isClosed && (
+                                <Alert
+                                    variant="light"
+                                    color="red"
+                                    icon={<AlertCircleIcon className="size-5" />}
+                                    title="Cannot Update Role"
+                                    mb="md"
+                                >
+                                    This role is closed and cannot be updated.
+                                </Alert>
+                            )}
+
                             <Field name="name">
                                 <TextInput label="Name" name="name" disabled={isClosed} />
                             </Field>
@@ -88,8 +98,9 @@ export default function Update({ role, availablePolicies }: Props) {
                                     disabled={isClosed}
                                 />
                             </Field>
+                        </ModalContent>
 
-                            <Actions>
+                        <Actions>
                                 <Button
                                     onClick={() => modal?.close()}
                                     type="button"
@@ -102,8 +113,7 @@ export default function Update({ role, availablePolicies }: Props) {
                                 <Button type="submit" loading={processing} disabled={isClosed}>
                                     {processing ? 'Updating...' : 'Update Role'}
                                 </Button>
-                            </Actions>
-                        </Stack>
+                        </Actions>
                     </Form>
                 </FormErrorSound>
             </Modal>

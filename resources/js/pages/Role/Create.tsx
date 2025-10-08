@@ -3,10 +3,13 @@ import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
+import { ModalContent } from '@/components/ModalContent';
+import ModalHeader from '@/components/ModalHeader';
 import { TransferInput, TransferItem } from '@/components/TransferInput';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Button, Checkbox, Stack, Textarea, TextInput, Title } from '@mantine/core';
+import { Button, Checkbox, Textarea, TextInput } from '@mantine/core';
+import { ShieldPlusIcon } from 'lucide-react';
 
 interface CreateProps {
     availablePolicies: TransferItem[];
@@ -26,9 +29,13 @@ export default function Create({ availablePolicies }: CreateProps) {
         <>
             <Head title="Create Role" />
             <Modal>
-                <Title order={2} mb="lg">
-                    Create Role
-                </Title>
+                <ModalHeader
+                    hero
+                    title="Create role"
+                    description="Add a new role to the system"
+                    icon={<ShieldPlusIcon className="size-6" />}
+                    color="blue"
+                />
 
                 <FormErrorSound>
                     <Form
@@ -36,7 +43,7 @@ export default function Create({ availablePolicies }: CreateProps) {
                         action={{ url: route('roles.store'), method: 'post' }}
                         onSuccess={() => modal?.close()}
                     >
-                        <Stack gap="md">
+                        <ModalContent>
                             <Field name="name">
                                 <TextInput label="Name" name="name" />
                             </Field>
@@ -56,8 +63,9 @@ export default function Create({ availablePolicies }: CreateProps) {
                                     className="max-h-[300px]"
                                 />
                             </Field>
+                        </ModalContent>
 
-                            <Actions>
+                        <Actions>
                                 <Button
                                     onClick={() => modal?.close()}
                                     type="button"
@@ -70,8 +78,7 @@ export default function Create({ availablePolicies }: CreateProps) {
                                 <Button type="submit" loading={processing}>
                                     {processing ? 'Creating...' : 'Create Role'}
                                 </Button>
-                            </Actions>
-                        </Stack>
+                        </Actions>
                     </Form>
                 </FormErrorSound>
             </Modal>

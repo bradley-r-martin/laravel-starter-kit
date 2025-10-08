@@ -3,9 +3,12 @@ import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
+import { ModalContent } from '@/components/ModalContent';
+import ModalHeader from '@/components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Button, Checkbox, Stack, Text, Textarea, Title } from '@mantine/core';
+import { Button, Checkbox, Textarea } from '@mantine/core';
+import { UserPlusIcon } from 'lucide-react';
 
 interface User {
     id: string;
@@ -33,17 +36,20 @@ export default function Unsuspend({ user }: Props) {
         <>
             <Head title={`Unsuspend User: ${user.first_name} ${user.last_name}`} />
             <Modal>
-                <Title order={2} mb="lg">
-                    Unsuspend User
-                </Title>
-
-                <Text size="sm" c="dimmed" mb="md">
-                    You are about to unsuspend the user:{' '}
-                    <strong>
-                        {user.first_name} {user.last_name}
-                    </strong>{' '}
-                    ({user.email})
-                </Text>
+                <ModalHeader
+                    hero
+                    title="Unsuspend user"
+                    description={
+                        <>
+                            Restore access for:{' '}
+                            <strong>
+                                {user.first_name} {user.last_name}
+                            </strong>
+                        </>
+                    }
+                    icon={<UserPlusIcon className="size-6" />}
+                    color="green"
+                />
 
                 <FormErrorSound>
                     <Form
@@ -51,7 +57,7 @@ export default function Unsuspend({ user }: Props) {
                         action={{ url: route('users.unsuspend', user.id), method: 'post' }}
                         onSuccess={() => modal?.close()}
                     >
-                        <Stack gap="md">
+                        <ModalContent>
                             <Field name="reason">
                                 <Textarea
                                     label="Reason for Unsuspension"
@@ -67,8 +73,9 @@ export default function Unsuspend({ user }: Props) {
                                     name="notify"
                                 />
                             </Field>
+                        </ModalContent>
 
-                            <Actions>
+                        <Actions>
                                 <Button
                                     onClick={() => modal?.close()}
                                     type="button"
@@ -80,8 +87,7 @@ export default function Unsuspend({ user }: Props) {
                                 <Button type="submit" loading={processing} color="green">
                                     {processing ? 'Unsuspending...' : 'Unsuspend User'}
                                 </Button>
-                            </Actions>
-                        </Stack>
+                        </Actions>
                     </Form>
                 </FormErrorSound>
             </Modal>
