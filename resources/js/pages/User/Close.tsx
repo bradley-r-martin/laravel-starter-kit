@@ -76,7 +76,7 @@ export default function Close({ user }: Props) {
                                     Cancel
                                 </Button>
                                 <Button type="submit" loading={processing} color="red">
-                                    {processing ? 'Closing...' : 'Close Account'}
+                                    Close account
                                 </Button>
                             </Actions>
                         </Stack>
