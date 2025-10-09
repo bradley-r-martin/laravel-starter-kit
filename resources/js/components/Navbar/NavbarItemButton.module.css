@@ -1,0 +1,9 @@
+.root {
+    &[data-loading] .inner {
+        transform: none;
+        opacity: 1;
+    }
+}
+*[data-expanded='true'] .root {
+    background-color: var(--mantine-color-zinc-light-hover);
+}

@@ -29,6 +29,17 @@ const Modal: FunctionComponent<ModalProps> = ({ children, ...props }) => {
         <HeadlessModal ref={modalRef}>
             {({ isOpen, close, afterLeave }: HeadlessModalRenderProps) => (
                 <MantineModal
+                    transitionProps={{
+                        transition: 'pop',
+                        duration: 250, // faster
+                        timingFunction: 'cubic-bezier(0.68, -0.55, 0.27, 1.55)', // more bounce
+                    }}
+                    classNames={{
+                        overlay: '!bg-zinc-400/30 !backdrop-blur-[1px]',
+                        inner: '!items-end lg:!items-center',
+                        content: 'modal-default',
+                    }}
+                    centered={false}
                     opened={isOpen}
                     onClose={close}
                     onExitTransitionEnd={afterLeave}
