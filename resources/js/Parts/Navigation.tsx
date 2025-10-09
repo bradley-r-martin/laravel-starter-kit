@@ -38,13 +38,20 @@ const Navigation: FunctionComponent<NavigationProps> = () => {
     return (
         <header className="relative">
             <Navbar>
-                <Navbar.Hamburger />
-                <Navbar.Item className="flex-1 md:flex-none">
-                    <Navbar.Item.Link href="/" px={4} variant="transparent">
-                        <Navbar.Brand />
-                    </Navbar.Item.Link>
-                </Navbar.Item>
-                <Navbar.Divider />
+                    <div className='flex items-center row-start-1 col-start-1 pointer-events-none z-10'>
+                        <Navbar.Hamburger className='pointer-events-auto' />
+                        
+                        <Navbar.Item data-brand className="flex items-center justify-center">
+                            <Navbar.Item.Link href="/" px={4} variant="transparent">
+                                <Navbar.Brand />
+                            </Navbar.Item.Link>
+                        </Navbar.Item>
+                    </div>
+                  
+                    
+                    
+                    <Navbar.Divider />
+           
                 <Navbar.Items>
                     <Navbar.Item>
                         <Navbar.Item.Indicator active={component.startsWith('Dashboard')} />
@@ -236,127 +243,129 @@ const Navigation: FunctionComponent<NavigationProps> = () => {
                         </Menu.Dropdown>
                     </Menu>
                 </Navbar.Items>
+               
+                <div className='hidden lg:flex items-center justify-end gap-3 col-start-1 row-start-1 '>
                 <div className="hidden flex-1 lg:block"></div>
-
-                <Menu
-                    withOverlay
-                    overlayProps={{
-                        opacity: 0,
-                    }}
-                    shadow="md"
-                    width={250}
-                    arrowSize={12}
-                    arrowOffset={18}
-                    withArrow
-                    offset={0}
-                    position="bottom"
-                >
-                    <Menu.Target>
-                        <Navbar.Item className="row-start-1">
-                            <Navbar.Item.Indicator />
-                            <Navbar.Item.Button px={8}>
-                                <Indicator
-                                    withBorder
-                                    position="top-center"
-                                    processing
-                                    offset={3}
-                                    color="red"
+                    <Menu
+                        withOverlay
+                        overlayProps={{
+                            opacity: 0,
+                        }}
+                        shadow="md"
+                        width={250}
+                        arrowSize={12}
+                        arrowOffset={18}
+                        withArrow
+                        offset={0}
+                        position="bottom"
+                    >
+                        <Menu.Target>
+                            <Navbar.Item className="row-start-1">
+                                <Navbar.Item.Indicator />
+                                <Navbar.Item.Button px={8}>
+                                    <Indicator
+                                        withBorder
+                                        position="top-center"
+                                        processing
+                                        offset={3}
+                                        color="red"
+                                    >
+                                        <InboxIcon className="size-6 lg:size-5" />
+                                    </Indicator>
+                                </Navbar.Item.Button>
+                            </Navbar.Item>
+                        </Menu.Target>
+                        <Menu.Dropdown>
+                            <Menu.Item leftSection={<MessageCircleQuestionIcon className="size-4" />}>
+                                Support Centre
+                            </Menu.Item>
+                        </Menu.Dropdown>
+                    </Menu>
+                    <Navbar.Divider />
+                    <Menu
+                        withOverlay
+                        overlayProps={{
+                            opacity: 0,
+                        }}
+                        shadow="md"
+                        width={250}
+                        arrowSize={12}
+                        arrowOffset={18}
+                        withArrow
+                        offset={0}
+                        position="bottom-end"
+                    >
+                        <Menu.Target>
+                            <Navbar.Item className="row-start-1">
+                                <Navbar.Item.Indicator />
+                                <Navbar.Item.Button
+                                    leftSection={
+                                        <Avatar
+                                            size="sm"
+                                            name={`${user?.first_name} ${user?.last_name}`}
+                                            color="initials"
+                                            className="border border-zinc-200 bg-zinc-100 shadow-2xl"
+                                        />
+                                    }
+                                    rightSection={
+                                        <ChevronDownIcon className="hidden size-3 lg:block" />
+                                    }
                                 >
-                                    <InboxIcon className="size-6 lg:size-5" />
-                                </Indicator>
-                            </Navbar.Item.Button>
-                        </Navbar.Item>
-                    </Menu.Target>
-                    <Menu.Dropdown>
-                        <Menu.Item leftSection={<MessageCircleQuestionIcon className="size-4" />}>
-                            Support Centre
-                        </Menu.Item>
-                    </Menu.Dropdown>
-                </Menu>
-                <Navbar.Divider />
-                <Menu
-                    withOverlay
-                    overlayProps={{
-                        opacity: 0,
-                    }}
-                    shadow="md"
-                    width={250}
-                    arrowSize={12}
-                    arrowOffset={18}
-                    withArrow
-                    offset={0}
-                    position="bottom-end"
-                >
-                    <Menu.Target>
-                        <Navbar.Item className="row-start-1">
-                            <Navbar.Item.Indicator />
-                            <Navbar.Item.Button
-                                leftSection={
-                                    <Avatar
-                                        size="sm"
-                                        name={`${user?.first_name} ${user?.last_name}`}
-                                        color="initials"
-                                        className="border border-zinc-200 bg-zinc-100 shadow-2xl"
-                                    />
-                                }
-                                rightSection={
-                                    <ChevronDownIcon className="hidden size-3 lg:block" />
-                                }
+                                    <span className="hidden flex-col items-start lg:flex">
+                                        {user?.first_name} {user?.last_name}
+                                    </span>
+                                </Navbar.Item.Button>
+                            </Navbar.Item>
+                        </Menu.Target>
+                        <Menu.Dropdown>
+                            <Menu.Item
+                                className="data-[active=true]:!bg-zinc-950/8"
+                                data-active={!!component.startsWith('Snackware')}
+                                component={Link}
+                                href={'/snackwares'}
+                                leftSection={<MessageCircleQuestionIcon className="size-4" />}
                             >
-                                <span className="hidden flex-col items-start lg:flex">
-                                    {user?.first_name} {user?.last_name}
-                                </span>
-                            </Navbar.Item.Button>
-                        </Navbar.Item>
-                    </Menu.Target>
-                    <Menu.Dropdown>
-                        <Menu.Item
-                            className="data-[active=true]:!bg-zinc-950/8"
-                            data-active={!!component.startsWith('Snackware')}
-                            component={Link}
-                            href={'/snackwares'}
-                            leftSection={<MessageCircleQuestionIcon className="size-4" />}
-                        >
-                            Support Centre
-                        </Menu.Item>
+                                Support Centre
+                            </Menu.Item>
 
-                        <Menu.Item
-                            className="data-[active=true]:!bg-zinc-950/8"
-                            leftSection={<KeyIcon className="size-4" />}
-                            component={Link}
-                            href={'/users/password/'}
-                        >
-                            Change password
-                        </Menu.Item>
-                        <Menu.Item
-                            className="data-[active=true]:!bg-zinc-950/8"
-                            leftSection={<UserCircleIcon className="size-4" />}
-                            component={Link}
-                            href={'/users/update/'}
-                        >
-                            Edit profile
-                        </Menu.Item>
-                        <Menu.Divider />
+                            <Menu.Item
+                                className="data-[active=true]:!bg-zinc-950/8"
+                                leftSection={<KeyIcon className="size-4" />}
+                                component={Link}
+                                href={'/users/password/'}
+                            >
+                                Change password
+                            </Menu.Item>
+                            <Menu.Item
+                                className="data-[active=true]:!bg-zinc-950/8"
+                                leftSection={<UserCircleIcon className="size-4" />}
+                                component={Link}
+                                href={'/users/update/'}
+                            >
+                                Edit profile
+                            </Menu.Item>
+                            <Menu.Divider />
 
-                        <Menu.Item
-                            component={Link}
-                            href={'/territories'}
-                            className="data-[active=true]:!bg-zinc-950/8"
-                            leftSection={<RefreshCcwIcon className="size-4" />}
-                        >
-                            Switch account
-                        </Menu.Item>
-                        <Menu.Divider />
-                        <Menu.Item
-                            className="data-[active=true]:!bg-zinc-950/8"
-                            leftSection={<LogOutIcon className="size-4" />}
-                            component={Link}
-                            href={'/logout'}
-                        >
-                            Logout
-                        </Menu.Item>
-                    </Menu.Dropdown>
-                </Menu>
+                            <Menu.Item
+                                component={Link}
+                                href={'/territories'}
+                                className="data-[active=true]:!bg-zinc-950/8"
+                                leftSection={<RefreshCcwIcon className="size-4" />}
+                            >
+                                Switch account
+                            </Menu.Item>
+                            <Menu.Divider />
+                            <Menu.Item
+                                className="data-[active=true]:!bg-zinc-950/8"
+                                leftSection={<LogOutIcon className="size-4" />}
+                                component={Link}
+                                href={'/logout'}
+                            >
+                                Logout
+                            </Menu.Item>
+                        </Menu.Dropdown>
+                    </Menu>
+                </div>
             </Navbar>
         </header>
     );

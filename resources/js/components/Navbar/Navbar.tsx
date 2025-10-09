@@ -26,17 +26,20 @@ const Navbar: FunctionComponent<NavbarProps> & NavbarComposition = (props) => {
     return (
         <NavbarContext.Provider value={control}>
             <nav
+
+                data-opened={control[0]}
                 style={{
                     paddingTop: 'calc(env(safe-area-inset-top) + 0.625rem)',
                 }}
                 className={twMerge(
-                    'flex flex-1 items-center justify-start gap-3 border-b border-zinc-950/20 px-2.5 py-2.5 lg:border-none lg:px-5',
+                    'bg-white data-[opened=true]:rounded-b-3xl lg:bg-transparent relative z-20 grid grid-cols-1 grid-rows-1 lg:flex flex-1 items-center justify-start pb-2 lg:gap-3 border-b border-zinc-950/20 px-2.5 lg:py-2.5 lg:border-none lg:px-5',
                     className
                 )}
                 {...restProps}
             >
                 {children}
             </nav>
+            <div data-opened={control[0]} className='data-[opened=true]:opacity-100 opacity-0 transition-opacity duration-300 ease-in-out data-[opened=false]:pointer-events-none  z-10 fixed inset-0 bg-zinc-400/30 backdrop-blur-[1px]'></div>
         </NavbarContext.Provider>
     );
 };

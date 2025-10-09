@@ -7,3 +7,16 @@
 *[data-expanded='true'] .root {
     background-color: var(--mantine-color-zinc-light-hover);
 }
+
+@media (max-width: 768px) {
+    .root {
+       width: 100%;
+       height: 50px;
+    }
+    .inner {
+        justify-content: flex-start;
+    }
+    *[data-brand] .root {
+        height: 40px;
+    }
+}

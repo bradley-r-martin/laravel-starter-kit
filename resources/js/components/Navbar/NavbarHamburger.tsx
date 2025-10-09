@@ -1,18 +1,15 @@
-// import useNavbar from '@/Hooks/useNavbar';
-import { useDisclosure } from '@mantine/hooks';
+import useNavbar from '@/hooks/useNavbar';
 import { FunctionComponent, HTMLAttributes } from 'react';
 import { twMerge } from 'tailwind-merge';
-// import TouchTarget from '../TouchTarget';
 
 const NavbarHamburger: FunctionComponent<HTMLAttributes<HTMLButtonElement>> = (props) => {
     const { className, ...restProps } = props;
-    // const [opened, { toggle }] = useNavbar();
-    const [opened, { toggle }] = useDisclosure();
+    const [opened, { toggle }] = useNavbar();
     return (
         <button
             aria-label="Open navigation"
             className={twMerge(
-                'relative flex min-w-0 shrink-0 cursor-default items-center gap-3 rounded-lg p-2 text-left text-base/6 font-medium text-zinc-950 hover:bg-zinc-950/5 active:bg-zinc-950/5 lg:hidden',
+                'relative flex min-w-0 shrink-0 cursor-default items-center gap-3 rounded-lg p-1 text-left text-base/6 font-medium text-zinc-950 hover:bg-zinc-950/5 active:bg-zinc-950/5 lg:hidden',
                 className
             )}
             type="button"

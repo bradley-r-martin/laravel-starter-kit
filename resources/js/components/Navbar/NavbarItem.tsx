@@ -12,7 +12,7 @@ interface NavbarItemComposition {
 
 const NavbarItemBase = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>((props, ref) => {
     const { className, ...restProps } = props;
-    return <div ref={ref} className={twMerge('relative', className)} {...restProps} />;
+    return <div ref={ref} className={twMerge('relative py-1 lg:py-0', className)} {...restProps} />;
 });
 
 const NavbarItem = NavbarItemBase as typeof NavbarItemBase & NavbarItemComposition;
