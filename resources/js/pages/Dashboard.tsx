@@ -11,9 +11,12 @@ const Dashboard: FunctionComponent<DashboardProps> = () => {
     return (
         <>
             <Head title="Dashboard" />
+          
             <div className="fixed inset-0 flex flex-col items-stretch bg-zinc-950/90">
                 <motion.div
-                    style={{ transformOrigin: 'center top' }}
+                    style={{ transformOrigin: 'center top',
+                        paddingTop: 'calc(env(safe-area-inset-top) + 0.625rem)',
+                     }}
                     transition={{ type: 'spring', stiffness: 200, damping: 25 }}
                     animate={
                         opened

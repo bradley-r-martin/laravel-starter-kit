@@ -49,10 +49,12 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                               backgroundColor: 'rgba(0,0,0,0)',
                           }
                 }
+              
                 data-opened={opened}
                 className="pointer-events-none fixed inset-0 flex h-full w-full flex-1 flex-col items-end justify-end data-[opened=true]:pointer-events-auto"
             >
                 <motion.div
+                
                     animate={
                         opened
                             ? {
@@ -69,15 +71,24 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                 />
 
                 <motion.div
+                    style={{
+                        paddingBottom: 'calc(env(safe-area-inset-bottom) - 20px)',
+                    }}
                     animate={{
                         borderTopLeftRadius: opened ? 20 : 0,
-                        borderTopRightRadius: opened ? 20 : 0,
+                        borderTopRightRadius: opened ? 20 : 0
+                    }}
+                    transition={transition}
+                    data-opened={opened}
+                    className=" overflow-hidden w-full shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
+                >
+                    <motion.div  animate={{
                         backgroundColor: opened ? 'rgba(244,244,245,1)' : 'rgba(255,255,255,1)',
                     }}
                     transition={transition}
                     data-opened={opened}
-                    className="pointer-events-auto grid w-full grid-cols-3 gap-px overflow-hidden shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
-                >
+                    className="pointer-events-auto grid w-full grid-cols-3 gap-px overflow-hidden"
+             >
                     <motion.div className={item_class} data-active={true}>
                         <Radar className="size-7" />
                         <motion.span animate={menu_item} transition={transition}>
@@ -207,6 +218,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                 </div>
                             </motion.div>
                         </div>
+                    </motion.div>
                     </motion.div>
                 </motion.div>
             </motion.div>
