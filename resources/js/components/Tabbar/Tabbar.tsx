@@ -51,7 +51,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                 }
               
                 data-opened={opened}
-                className="pointer-events-none fixed inset-0 flex h-full w-full flex-1 flex-col items-end justify-end data-[opened=true]:pointer-events-auto"
+                className="pointer-events-none absolute inset-0 flex h-full w-full flex-1 flex-col items-end justify-end data-[opened=true]:pointer-events-auto"
             >
                 <motion.div
                 
@@ -80,7 +80,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                     }}
                     transition={transition}
                     data-opened={opened}
-                    className=" overflow-hidden w-full shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
+                    className=" overflow-hidden bg-white w-full shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
                 >
                     <motion.div  animate={{
                         backgroundColor: opened ? 'rgba(244,244,245,1)' : 'rgba(255,255,255,1)',
