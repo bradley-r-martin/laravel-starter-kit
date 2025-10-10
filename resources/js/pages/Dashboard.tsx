@@ -3,20 +3,18 @@ import { Head } from '@inertiajs/react';
 import { useDisclosure } from '@mantine/hooks';
 import { motion } from 'motion/react';
 import { FunctionComponent } from 'react';
-import { useMobileScroll } from '@/hooks/useMobileScroll';
 
 interface DashboardProps {}
 
 const Dashboard: FunctionComponent<DashboardProps> = () => {
     const [opened, { toggle }] = useDisclosure(false);
-    const scrollRef = useMobileScroll<HTMLDivElement>();
     return (
         <>
             <Head title="Dashboard" />
           
             <div className="absolute inset-0 flex flex-col items-stretch bg-black">
                 <motion.div
-                    ref={scrollRef}
+           
                     data-testid="main-content"
                     style={{ 
                         transformOrigin: 'center bottom',
