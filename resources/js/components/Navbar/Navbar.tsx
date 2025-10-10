@@ -26,20 +26,22 @@ const Navbar: FunctionComponent<NavbarProps> & NavbarComposition = (props) => {
     return (
         <NavbarContext.Provider value={control}>
             <nav
-
                 data-opened={control[0]}
                 style={{
                     paddingTop: 'calc(env(safe-area-inset-top) + 0.625rem)',
                 }}
                 className={twMerge(
-                    'bg-white data-[opened=true]:rounded-b-3xl lg:bg-transparent relative z-20 grid grid-cols-1 grid-rows-1 lg:flex flex-1 items-center justify-start pb-2 lg:gap-3 border-b border-zinc-950/20 px-2.5 lg:py-2.5 lg:border-none lg:px-5',
+                    'relative z-20 grid flex-1 grid-cols-1 grid-rows-1 items-center justify-start border-b border-zinc-950/20 bg-white px-2.5 pb-2 data-[opened=true]:rounded-b-3xl lg:flex lg:gap-3 lg:border-none lg:bg-transparent lg:px-5 lg:py-2.5',
                     className
                 )}
                 {...restProps}
             >
                 {children}
             </nav>
-            <div data-opened={control[0]} className='data-[opened=true]:opacity-100 opacity-0 transition-opacity duration-300 ease-in-out data-[opened=false]:pointer-events-none  z-10 fixed inset-0 bg-zinc-400/30 backdrop-blur-[1px]'></div>
+            <div
+                data-opened={control[0]}
+                className="fixed inset-0 z-10 bg-zinc-400/30 opacity-0 backdrop-blur-[1px] transition-opacity duration-300 ease-in-out data-[opened=false]:pointer-events-none data-[opened=true]:opacity-100"
+            ></div>
         </NavbarContext.Provider>
     );
 };

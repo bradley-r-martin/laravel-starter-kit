@@ -8,20 +8,16 @@ const NavbarItems: FunctionComponent<MotionDivProps & HTMLAttributes<HTMLDivElem
     const { className, ...restProps } = props;
     const [opened] = useNavbar();
 
-
-
     return (
         <>
             <motion.div
-                
-                animate={{height: opened ? 'auto' : 0}}
+                animate={{ height: opened ? 'auto' : 0 }}
                 className={twMerge(
-                    'flex-1 divide-y divide-zinc-950/10 lg:divide-none overflow-hidden lg:overflow-visible items-center justify-start gap-3 lg:flex row-start-2 col-span-full',
+                    'col-span-full row-start-2 flex-1 items-center justify-start gap-3 divide-y divide-zinc-950/10 overflow-hidden lg:flex lg:divide-none lg:overflow-visible',
                     className
                 )}
                 {...restProps}
             />
-           
         </>
     );
 };

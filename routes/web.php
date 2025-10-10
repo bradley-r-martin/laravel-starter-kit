@@ -11,6 +11,10 @@ Route::get('/', function () {
     return inertia('Welcome');
 });
 
+Route::get('/mobile', function () {
+    return inertia('Dashboard');
+});
+
 Route::get('/login', [AuthenticationLoginController::class, 'view'])->name('login');
 Route::post('/login', [AuthenticationLoginController::class, 'process'])->middleware('throttle:login')->name('login.process');
 

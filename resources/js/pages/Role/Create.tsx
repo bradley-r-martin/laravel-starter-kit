@@ -76,7 +76,7 @@ export default function Create({ availablePolicies }: CreateProps) {
                                 Cancel
                             </Button>
                             <Button type="submit" loading={processing}>
-                                {processing ? 'Creating...' : 'Create Role'}
+                                Create Role
                             </Button>
                         </Actions>
                     </Form>

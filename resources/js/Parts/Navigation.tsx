@@ -38,20 +38,18 @@ const Navigation: FunctionComponent<NavigationProps> = () => {
     return (
         <header className="relative">
             <Navbar>
-                    <div className='flex items-center row-start-1 col-start-1 pointer-events-none z-10'>
-                        <Navbar.Hamburger className='pointer-events-auto' />
-                        
-                        <Navbar.Item data-brand className="flex items-center justify-center">
-                            <Navbar.Item.Link href="/" px={4} variant="transparent">
-                                <Navbar.Brand />
-                            </Navbar.Item.Link>
-                        </Navbar.Item>
-                    </div>
-                  
-                    
-                    
-                    <Navbar.Divider />
-           
+                <div className="pointer-events-none z-10 col-start-1 row-start-1 flex items-center">
+                    <Navbar.Hamburger className="pointer-events-auto" />
+
+                    <Navbar.Item data-brand className="flex items-center justify-center">
+                        <Navbar.Item.Link href="/" px={4} variant="transparent">
+                            <Navbar.Brand />
+                        </Navbar.Item.Link>
+                    </Navbar.Item>
+                </div>
+
+                <Navbar.Divider />
+
                 <Navbar.Items>
                     <Navbar.Item>
                         <Navbar.Item.Indicator active={component.startsWith('Dashboard')} />
@@ -243,9 +241,9 @@ const Navigation: FunctionComponent<NavigationProps> = () => {
                         </Menu.Dropdown>
                     </Menu>
                 </Navbar.Items>
-               
-                <div className='hidden lg:flex items-center justify-end gap-3 col-start-1 row-start-1 '>
-                <div className="hidden flex-1 lg:block"></div>
+
+                <div className="col-start-1 row-start-1 hidden items-center justify-end gap-3 lg:flex">
+                    <div className="hidden flex-1 lg:block"></div>
                     <Menu
                         withOverlay
                         overlayProps={{
@@ -276,7 +274,9 @@ const Navigation: FunctionComponent<NavigationProps> = () => {
                             </Navbar.Item>
                         </Menu.Target>
                         <Menu.Dropdown>
-                            <Menu.Item leftSection={<MessageCircleQuestionIcon className="size-4" />}>
+                            <Menu.Item
+                                leftSection={<MessageCircleQuestionIcon className="size-4" />}
+                            >
                                 Support Centre
                             </Menu.Item>
                         </Menu.Dropdown>

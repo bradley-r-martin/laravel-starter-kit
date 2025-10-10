@@ -56,7 +56,7 @@ describe('Role Management', function (): void {
             $this->as($user, $territory)->visit('/roles/create')
                 ->fill('name', 'Test Role')
                 ->fill('description', 'This will be cancelled')
-                ->press('Cancel')
+                ->press('data-testid=cancel-action')
                 ->assertPathIs('/roles')
                 ->assertSee('Roles')
                 ->assertNoJavascriptErrors();

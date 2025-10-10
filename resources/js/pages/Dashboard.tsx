@@ -1,27 +1,133 @@
+import Tabbar from '@/components/Tabbar/Tabbar';
 import { Head } from '@inertiajs/react';
-import { Container, Paper, Stack, Text, Title } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { motion } from 'motion/react';
 import { FunctionComponent } from 'react';
 
 interface DashboardProps {}
 
 const Dashboard: FunctionComponent<DashboardProps> = () => {
+    const [opened, { toggle }] = useDisclosure(false);
     return (
         <>
             <Head title="Dashboard" />
-            <Container size="xl" py="xl">
-                <Stack gap="xl">
-                    <Stack gap="xs">
-                        <Title order={1}>Dashboard</Title>
-                        <Text size="sm" c="dimmed">
-                            Welcome to your dashboard
-                        </Text>
-                    </Stack>
+            <div className="fixed inset-0 flex flex-col items-stretch bg-zinc-950/90">
+                <motion.div
+                    style={{ transformOrigin: 'center top' }}
+                    transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+                    animate={
+                        opened
+                            ? { scale: 0.9, rotateX: 5, y: -30, filter: 'brightness(0.9)' }
+                            : { scale: 1, rotateX: 0, y: 0, filter: 'brightness(1)' }
+                    }
+                    className="flex-1 overflow-auto bg-zinc-100 p-5 pb-20"
+                >
+                    <h1 className="text-2xl font-bold">Dashboard</h1>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                    <p className="text-zinc-500">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+                    </p>
+                    <br />
+                </motion.div>
 
-                    <Paper shadow="sm" p="xl" radius="md" withBorder>
-                        <Text>You are now logged in and viewing the dashboard.</Text>
-                    </Paper>
-                </Stack>
-            </Container>
+                <Tabbar opened={opened} toggle={toggle} />
+            </div>
         </>
     );
 };
