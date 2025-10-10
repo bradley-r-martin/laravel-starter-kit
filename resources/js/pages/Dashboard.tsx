@@ -12,10 +12,12 @@ const Dashboard: FunctionComponent<DashboardProps> = () => {
         <>
             <Head title="Dashboard" />
           
-            <div className="fixed inset-0 flex flex-col items-stretch bg-zinc-950/90">
+            <div className="fixed inset-0 flex flex-col items-stretch bg-black">
                 <motion.div
-                    style={{ transformOrigin: 'center top',
+                    style={{ 
+                        transformOrigin: 'center bottom',
                         paddingTop: 'calc(env(safe-area-inset-top) + 0.625rem)',
+                        borderRadius: '40px',
                      }}
                     transition={{ type: 'spring', stiffness: 200, damping: 25 }}
                     animate={
