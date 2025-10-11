@@ -18,6 +18,7 @@ import { AnimatePresence, motion, Transition, useDragControls } from 'motion/rea
 import { FunctionComponent } from 'react';
 import TabbarHandle from './TabbarHandle';
 import TabbarItem from './TabbarItem';
+import { usePage } from '@inertiajs/react';
 
 interface TabbarProps {
     opened: boolean;
@@ -26,6 +27,7 @@ interface TabbarProps {
 
 const Tabbar: FunctionComponent<TabbarProps> = (props) => {
     const { opened, toggle } = props;
+    const { component } = usePage<{ component: string }>();
     const dragControls = useDragControls();
 
     const transition: Transition = {
@@ -97,7 +99,8 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                 icon={<Radar className="size-7" />}
                                 label="Nearby"
                                 opened={opened}
-                                data-active={true}
+                                href="/nearby"
+                                data-active={component.startsWith('Nearby')}
                             />
                             <TabbarItem
                                 icon={
@@ -147,6 +150,8 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         icon={<GaugeIcon className="size-7 shrink-0" />}
                                         label="Dashboard"
                                         opened={opened}
+                                        href="/dashboard"
+                                        data-active={component.startsWith('Dashboard')}
                                     />
 
                                     <TabbarItem

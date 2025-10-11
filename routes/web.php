@@ -15,6 +15,10 @@ Route::get('/mobile', function () {
     return inertia('Dashboard');
 });
 
+Route::get('/nearby', function () {
+    return inertia('Nearby');
+});
+
 Route::get('/login', [AuthenticationLoginController::class, 'view'])->name('login');
 Route::post('/login', [AuthenticationLoginController::class, 'process'])->middleware('throttle:login')->name('login.process');
 
