@@ -14,6 +14,23 @@
         'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+
+@theme {
+   
+    --animate-scan: scan 5s linear infinite;
+    @keyframes scan {
+        0% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(100%);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+}
+
 /* MODAL SHADOW */
 @keyframes modalShadowDefault {
     0% {
