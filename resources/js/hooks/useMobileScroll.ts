@@ -3,10 +3,10 @@ import { useEffect, useRef } from 'react';
 /**
  * Custom hook that captures scroll and swipe gestures on the body
  * and transfers them to a specific scrollable element for smooth mobile scrolling.
- * 
+ *
  * This is particularly useful for iOS/Android where body scrolling can be janky
  * or where you want all scroll behavior contained within a specific element.
- * 
+ *
  * @returns A ref to attach to your scrollable element
  */
 export function useMobileScroll<T extends HTMLElement>() {
@@ -50,8 +50,8 @@ export function useMobileScroll<T extends HTMLElement>() {
                 // Check if we're at the boundaries
                 const isAtTop = scrollElement.scrollTop === 0 && deltaY < 0;
                 const isAtBottom =
-                    scrollElement.scrollHeight - scrollElement.scrollTop <= scrollElement.clientHeight + 1 &&
-                    deltaY > 0;
+                    scrollElement.scrollHeight - scrollElement.scrollTop <=
+                        scrollElement.clientHeight + 1 && deltaY > 0;
 
                 // Prevent default to stop body bounce, unless at boundaries and trying to scroll further
                 if (!isAtTop && !isAtBottom) {
@@ -75,8 +75,8 @@ export function useMobileScroll<T extends HTMLElement>() {
             // Check if we're at the boundaries
             const isAtTop = scrollElement.scrollTop === 0 && e.deltaY < 0;
             const isAtBottom =
-                scrollElement.scrollHeight - scrollElement.scrollTop <= scrollElement.clientHeight + 1 &&
-                e.deltaY > 0;
+                scrollElement.scrollHeight - scrollElement.scrollTop <=
+                    scrollElement.clientHeight + 1 && e.deltaY > 0;
 
             // Prevent default to stop body scroll, unless at boundaries
             if (!isAtTop && !isAtBottom) {
@@ -108,4 +108,3 @@ export function useMobileScroll<T extends HTMLElement>() {
 
     return scrollRef;
 }
-

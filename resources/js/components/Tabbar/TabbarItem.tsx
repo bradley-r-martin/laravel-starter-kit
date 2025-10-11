@@ -13,18 +13,16 @@ interface TabbarItemProps {
 }
 
 const TabbarItem = (props: TabbarItemProps) => {
-
-const {
-    icon,
-    label,
-    opened,
-    active = false,
-    onClick,
-    className = '',
-    children,
-    ...restProps
-} = props
-
+    const {
+        icon,
+        label,
+        opened,
+        active = false,
+        onClick,
+        className = '',
+        children,
+        ...restProps
+    } = props;
 
     const menu_item = opened
         ? { opacity: 1, y: 0, height: 'auto' }
@@ -45,7 +43,7 @@ const {
             {...restProps}
         >
             {icon}
-            <motion.span animate={menu_item} transition={transition} className='text-xs'>
+            <motion.span animate={menu_item} transition={transition} className="text-xs">
                 {label}
             </motion.span>
             {children}

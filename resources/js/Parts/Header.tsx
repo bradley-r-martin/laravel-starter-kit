@@ -1,33 +1,32 @@
-import { Button } from "@mantine/core";
-import { FunctionComponent, RefObject, useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { Button } from '@mantine/core';
+import { motion, useScroll, useTransform } from 'motion/react';
+import { FunctionComponent, RefObject, useRef } from 'react';
 
 interface HeaderProps {
     scrollContainerRef: RefObject<HTMLDivElement | null>;
 }
- 
+
 const Header: FunctionComponent<HeaderProps> = ({ scrollContainerRef }) => {
     const headerRef = useRef<HTMLDivElement>(null);
-    
+
     // Track scroll progress from the specific scroll container
     const { scrollY } = useScroll({
-        container: scrollContainerRef
+        container: scrollContainerRef,
     });
-    
+
     // Transform scroll values to CSS properties
     // Animate over the first 100px of scroll
-    const fontSize = useTransform(scrollY, [0, 100], ["24px", "16px"]);
-    
+    const fontSize = useTransform(scrollY, [0, 100], ['24px', '16px']);
+
     return (
-        <motion.div 
+        <motion.div
             ref={headerRef}
-            className='sticky top-0 mt-10 z-10 bg-gradient-to-b from-zinc-100 via-zinc-100 to-transparent'
-            
+            className="sticky top-0 z-10 mt-10 bg-gradient-to-b from-zinc-100 via-zinc-100 to-transparent"
         >
-            <div className='flex justify-between items-center p-2 px-5'>
+            <div className="flex items-center justify-between p-2 px-5">
                 <motion.h1
                     style={{
-                        fontSize
+                        fontSize,
                     }}
                     className="font-bold"
                 >
@@ -35,7 +34,9 @@ const Header: FunctionComponent<HeaderProps> = ({ scrollContainerRef }) => {
                 </motion.h1>
 
                 <div>
-                    <Button color="blue" size="xs">Create site</Button>
+                    <Button color="blue" size="xs">
+                        Create site
+                    </Button>
                 </div>
             </div>
 
@@ -44,6 +45,6 @@ const Header: FunctionComponent<HeaderProps> = ({ scrollContainerRef }) => {
             </div> */}
         </motion.div>
     );
-}
- 
+};
+
 export default Header;
