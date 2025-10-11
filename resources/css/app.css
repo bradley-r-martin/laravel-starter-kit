@@ -14,9 +14,7 @@
         'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-
 @theme {
-   
     --animate-scan: scan 5s linear infinite;
     @keyframes scan {
         0% {

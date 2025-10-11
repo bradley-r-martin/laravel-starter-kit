@@ -3,8 +3,7 @@ import { motion, Transition } from 'motion/react';
 import { ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-
-const MotionLink = motion.create(Link)
+const MotionLink = motion.create(Link);
 
 interface TabbarItemProps {
     icon: ReactNode;
@@ -12,6 +11,7 @@ interface TabbarItemProps {
     opened: boolean;
     active?: boolean;
     onClick?: () => void;
+    onClose?: () => void;
     href?: string;
     className?: string;
     children?: ReactNode;
@@ -23,7 +23,7 @@ const TabbarItem = (props: TabbarItemProps) => {
         label,
         opened,
         active = false,
-     
+        onClose,
         className = '',
         children,
         ...restProps
@@ -40,14 +40,21 @@ const TabbarItem = (props: TabbarItemProps) => {
     const item_class =
         'data-[active=true]:text-blue-600 bg-white active:bg-zinc-100 active:shadow-inner select-none active:*:scale-95 overflow-hidden text-zinc-600 gap-1 flex flex-col items-center justify-center p-3 py-5';
 
-const Component = props?.onClick ? motion.button : MotionLink
-        
+    const Component = props?.onClick ? motion.button : MotionLink;
+
+    const handleClick = () => {
+        if (props?.onClick) {
+            props.onClick();
+        } else if (onClose && props?.href) {
+            onClose();
+        }
+    };
+
     return (
         <Component
-           
             className={twMerge(item_class, className)}
-          
             data-opened={opened}
+            onClick={handleClick}
             {...restProps}
         >
             {icon}

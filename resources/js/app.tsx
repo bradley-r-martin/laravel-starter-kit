@@ -7,7 +7,6 @@ import MantineServiceProvider from './Providers/MantineServiceProvider';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-
 router.on('before', (event) => {
     // event.detail.visit.replace = true;
     event.detail.visit.preserveUrl = true;

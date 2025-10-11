@@ -1,3 +1,4 @@
+import { usePage } from '@inertiajs/react';
 import { Avatar } from '@mantine/core';
 import {
     BellIcon,
@@ -18,7 +19,6 @@ import { AnimatePresence, motion, Transition, useDragControls } from 'motion/rea
 import { FunctionComponent } from 'react';
 import TabbarHandle from './TabbarHandle';
 import TabbarItem from './TabbarItem';
-import { usePage } from '@inertiajs/react';
 
 interface TabbarProps {
     opened: boolean;
@@ -100,6 +100,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                 label="Nearby"
                                 opened={opened}
                                 href="/nearby"
+                                onClose={toggle}
                                 data-active={component.startsWith('Nearby')}
                             />
                             <TabbarItem
@@ -132,6 +133,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                 icon={<BellIcon className="size-7" />}
                                 label="Notifications"
                                 opened={opened}
+                                onClose={toggle}
                             />
 
                             <motion.div
@@ -151,6 +153,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         label="Dashboard"
                                         opened={opened}
                                         href="/mobile"
+                                        onClose={toggle}
                                         data-active={component.startsWith('Dashboard')}
                                     />
 
@@ -158,42 +161,49 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         icon={<BuildingIcon className="size-7 shrink-0" />}
                                         label="Sites"
                                         opened={opened}
+                                        onClose={toggle}
                                     />
 
                                     <TabbarItem
                                         icon={<TruckIcon className="size-7 shrink-0" />}
                                         label="Routes"
                                         opened={opened}
+                                        onClose={toggle}
                                     />
 
                                     <TabbarItem
                                         icon={<GitPullRequestIcon className="size-7 shrink-0" />}
                                         label="Runs"
                                         opened={opened}
+                                        onClose={toggle}
                                     />
 
                                     <TabbarItem
                                         icon={<ReceiptIcon className="size-7 shrink-0" />}
                                         label="Expenses"
                                         opened={opened}
+                                        onClose={toggle}
                                     />
 
                                     <TabbarItem
                                         icon={<QrCodeIcon className="size-7 shrink-0" />}
                                         label="QR Codes"
                                         opened={opened}
+                                        onClose={toggle}
                                     />
 
                                     <TabbarItem
                                         icon={<FilesIcon className="size-7 shrink-0" />}
                                         label="Reports"
                                         opened={opened}
+                                        onClose={toggle}
                                     />
 
                                     <TabbarItem
                                         icon={<SettingsIcon className="size-7 shrink-0" />}
                                         label="Manage"
                                         opened={opened}
+                                        onClose={toggle}
                                         className="relative"
                                     >
                                         <ChevronDownIcon className="absolute bottom-2 size-3" />
@@ -203,6 +213,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         icon={<LogOutIcon className="size-7 shrink-0" />}
                                         label="Logout"
                                         opened={opened}
+                                        onClose={toggle}
                                     />
 
                                     <motion.div className="col-span-full flex gap-1 overflow-hidden text-xs text-zinc-600">
