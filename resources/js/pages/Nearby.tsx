@@ -4,7 +4,6 @@ import { Button, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { FunctionComponent, useState } from 'react';
 import { IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
-import ScanSound from '../../audio/Scan.wav';
 
 interface NearbyProps {}
 
@@ -27,7 +26,7 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
         }
     }}>
         {/* Drawer content */}
-        {!data && <Scanner sound={new Audio(ScanSound).baseURI} onScan={(data) => {
+        {!data && <Scanner onScan={(data) => {
             setData(data);
 
         }} />}
