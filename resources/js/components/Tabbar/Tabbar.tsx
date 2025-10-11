@@ -14,8 +14,10 @@ import {
     SettingsIcon,
     TruckIcon,
 } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, Transition, useDragControls } from 'motion/react';
 import { FunctionComponent } from 'react';
+import TabbarItem from './TabbarItem';
+import TabbarHandle from './TabbarHandle';
 
 interface TabbarProps {
     opened: boolean;
@@ -24,17 +26,11 @@ interface TabbarProps {
 
 const Tabbar: FunctionComponent<TabbarProps> = (props) => {
     const { opened, toggle } = props;
+    const dragControls = useDragControls();
 
-    const menu_item = opened
-        ? { opacity: 1, y: 0, height: 'auto' }
-        : { opacity: 0, y: 10, height: 0 };
-
-    const transition = {
+    const transition: Transition = {
         ease: [0.785, 0.135, 0.15, 0.86],
     };
-
-    const item_class =
-        'data-[active=true]:text-blue-600 bg-white active:bg-zinc-100 active:shadow-inner select-none active:*:scale-95 overflow-hidden text-zinc-600 text-xs gap-1 flex flex-col items-center justify-center p-3 py-5';
 
     return (
         <AnimatePresence initial={false}>
@@ -49,39 +45,45 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                               backgroundColor: 'rgba(0,0,0,0)',
                           }
                 }
-              
                 data-opened={opened}
+                onPointerDown={(e) => {
+                    if (opened) {
+                        dragControls.start(e);
+                    }
+                }}
                 className="pointer-events-none absolute inset-0 flex h-full w-full flex-1 flex-col items-end justify-end data-[opened=true]:pointer-events-auto"
             >
-                <motion.div
                 
-                    animate={
-                        opened
-                            ? {
-                                  opacity: 100,
-                                  y: 0,
-                              }
-                            : {
-                                  opacity: 0,
-                                  y: 10,
-                              }
-                    }
-                    transition={transition}
-                    className="mx-auto mb-4 flex h-2 w-1/3 rounded-full bg-zinc-950/50"
-                />
 
-                <motion.div
-                    style={{
-                        paddingBottom: 'calc(env(safe-area-inset-bottom) - 20px)',
-                    }}
-                    animate={{
-                        borderTopLeftRadius: opened ? 20 : 0,
-                        borderTopRightRadius: opened ? 20 : 0
-                    }}
-                    transition={transition}
-                    data-opened={opened}
-                    className=" overflow-hidden bg-white w-full shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
-                >
+                <motion.div 
+                drag={opened ? 'y' : false}
+                        dragControls={dragControls}
+                        dragListener={false}
+                        dragConstraints={{ top: 0, bottom: 0 }}
+                        dragElastic={{ top: 0, bottom: 0.5 }}
+                        onDragEnd={(_, info) => {
+                            // Close if dragged down more than 100px or velocity is high enough
+                            if (info.offset.y > 100 || info.velocity.y > 500) {
+                                toggle();
+                            }
+                        }} className="relative flex flex-col items-center w-full pointer-events-none">
+                    <TabbarHandle opened={opened} />
+
+                    <motion.div
+                        id="menu"
+                       
+                        style={{
+                            paddingBottom: 'calc(env(safe-area-inset-bottom) - 20px)',
+                        }}
+                        animate={{
+                            borderTopLeftRadius: opened ? 20 : 0,
+                            borderTopRightRadius: opened ? 20 : 0,
+                            y: 0
+                        }}
+                        transition={transition}
+                        data-opened={opened}
+                        className=" overflow-hidden bg-white w-full shadow-[0_3px_10px_rgb(0,0,0,0.2)] pointer-events-auto"
+                    >
                     <motion.div  animate={{
                         backgroundColor: opened ? 'rgba(244,244,245,1)' : 'rgba(255,255,255,1)',
                     }}
@@ -89,48 +91,43 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                     data-opened={opened}
                     className="pointer-events-auto grid w-full grid-cols-3 gap-px overflow-hidden"
              >
-                    <motion.div className={item_class} data-active={true}>
-                        <Radar className="size-7" />
-                        <motion.span animate={menu_item} transition={transition}>
-                            Nearby
-                        </motion.span>
-                    </motion.div>
-                    <motion.div
+                    <TabbarItem
+                        icon={<Radar className="size-7" />}
+                        label="Nearby"
+                        opened={opened}
+                       data-active={true}
+                    />
+                    <TabbarItem
+                        icon={
+                            <div className="relative icon" data-active={opened}>
+                                <svg
+                                    viewBox="22 25 56 50"
+                                    className="ham size-7"
+                                    data-active={opened}
+                                >
+                                    <path
+                                        className="line top"
+                                        d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20"
+                                    />
+                                    <path className="line" d="m 70,50 h -40" />
+                                    <path
+                                        className="line bottom"
+                                        d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20"
+                                    />
+                                </svg>
+                            </div>
+                        }
+                        label="Close"
+                        opened={opened}
                         onClick={toggle}
-                        data-opened={opened}
-                        className={item_class + ' data-[opened=true]:text-rose-600'}
-                    >
-                        <div className="relative" onClick={toggle} data-active={opened}>
-                            {/* <TouchTarget /> */}
+                        className="data-[opened=true]:*:text-rose-600"
+                    />
 
-                            <svg
-                                viewBox="22 25 56 50"
-                                className={`ham size-7`}
-                                data-active={opened}
-                            >
-                                <path
-                                    className="line top"
-                                    d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20"
-                                />
-                                <path className="line" d="m 70,50 h -40" />
-                                <path
-                                    className="line bottom"
-                                    d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20"
-                                />
-                            </svg>
-                        </div>
-
-                        <motion.span animate={menu_item} transition={transition}>
-                            Close
-                        </motion.span>
-                    </motion.div>
-
-                    <motion.div className={item_class}>
-                        <BellIcon className="size-7" />
-                        <motion.span animate={menu_item} transition={transition}>
-                            Notifications
-                        </motion.span>
-                    </motion.div>
+                    <TabbarItem
+                        icon={<BellIcon className="size-7" />}
+                        label="Notifications"
+                        opened={opened}
+                    />
 
                     <motion.div
                         transition={transition}
@@ -144,68 +141,62 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                         className="col-span-3 overflow-hidden"
                     >
                         <div className="grid w-full flex-1 grid-cols-3 gap-px">
-                            <motion.div className={item_class}>
-                                <GaugeIcon className="size-7 shrink-0" />
-                                <motion.span animate={menu_item} transition={transition}>
-                                    Dashboard
-                                </motion.span>
-                            </motion.div>
+                            <TabbarItem
+                                icon={<GaugeIcon className="size-7 shrink-0" />}
+                                label="Dashboard"
+                                opened={opened}
+                            />
 
-                            <motion.div className={item_class}>
-                                <BuildingIcon className="size-7 shrink-0" />
-                                <motion.span animate={menu_item} transition={transition}>
-                                    Sites
-                                </motion.span>
-                            </motion.div>
-                            <motion.div className={item_class}>
-                                <TruckIcon className="size-7 shrink-0" />
-                                <motion.span animate={menu_item} transition={transition}>
-                                    Routes
-                                </motion.span>
-                            </motion.div>
+                            <TabbarItem
+                                icon={<BuildingIcon className="size-7 shrink-0" />}
+                                label="Sites"
+                                opened={opened}
+                            />
 
-                            <motion.div className={item_class}>
-                                <GitPullRequestIcon className="size-7 shrink-0" />
-                                <motion.span animate={menu_item} transition={transition}>
-                                    Runs
-                                </motion.span>
-                            </motion.div>
+                            <TabbarItem
+                                icon={<TruckIcon className="size-7 shrink-0" />}
+                                label="Routes"
+                                opened={opened}
+                            />
 
-                            <motion.div className={item_class}>
-                                <ReceiptIcon className="size-7 shrink-0" />
-                                <motion.span animate={menu_item} transition={transition}>
-                                    Expenses
-                                </motion.span>
-                            </motion.div>
+                            <TabbarItem
+                                icon={<GitPullRequestIcon className="size-7 shrink-0" />}
+                                label="Runs"
+                                opened={opened}
+                            />
 
-                            <motion.div className={item_class}>
-                                <QrCodeIcon className="size-7 shrink-0" />
-                                <motion.span animate={menu_item} transition={transition}>
-                                    QR Codes
-                                </motion.span>
-                            </motion.div>
+                            <TabbarItem
+                                icon={<ReceiptIcon className="size-7 shrink-0" />}
+                                label="Expenses"
+                                opened={opened}
+                            />
 
-                            <motion.div className={item_class}>
-                                <FilesIcon className="size-7 shrink-0" />
-                                <motion.span animate={menu_item} transition={transition}>
-                                    Reports
-                                </motion.span>
-                            </motion.div>
+                            <TabbarItem
+                                icon={<QrCodeIcon className="size-7 shrink-0" />}
+                                label="QR Codes"
+                                opened={opened}
+                            />
 
-                            <motion.div className={item_class + ' relative'}>
-                                <SettingsIcon className="size-7 shrink-0" />
-                                <motion.span animate={menu_item} transition={transition}>
-                                    Manage
-                                </motion.span>
+                            <TabbarItem
+                                icon={<FilesIcon className="size-7 shrink-0" />}
+                                label="Reports"
+                                opened={opened}
+                            />
+
+                            <TabbarItem
+                                icon={<SettingsIcon className="size-7 shrink-0" />}
+                                label="Manage"
+                                opened={opened}
+                                className="relative"
+                            >
                                 <ChevronDownIcon className="absolute bottom-2 size-3" />
-                            </motion.div>
+                            </TabbarItem>
 
-                            <motion.div className={item_class}>
-                                <LogOutIcon className="size-7 shrink-0" />
-                                <motion.span animate={menu_item} transition={transition}>
-                                    Logout
-                                </motion.span>
-                            </motion.div>
+                            <TabbarItem
+                                icon={<LogOutIcon className="size-7 shrink-0" />}
+                                label="Logout"
+                                opened={opened}
+                            />
 
                             <motion.div className="col-span-full flex gap-1 overflow-hidden text-xs text-zinc-600">
                                 <div className="flex flex-1 items-center gap-3 bg-white p-5 select-none active:bg-zinc-100 active:shadow-inner active:*:scale-95">
@@ -220,6 +211,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                         </div>
                     </motion.div>
                     </motion.div>
+                </motion.div>
                 </motion.div>
             </motion.div>
         </AnimatePresence>
