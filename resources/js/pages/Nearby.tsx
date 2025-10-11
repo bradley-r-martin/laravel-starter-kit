@@ -8,15 +8,22 @@ import { IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
 interface NearbyProps {}
 
 const Nearby: FunctionComponent<NearbyProps> = () => {
-    const [opened, { toggle }] = useDisclosure(false);
+    const [opened, { toggle, close }] = useDisclosure(false);
     const [data, setData] = useState<IDetectedBarcode[]| null>(null);
+
+    function onClose(){
+        setData(null);
+        close();
+    }
+
+
    return <div className='flex flex-col items-center justify-center h-full'>
 
 
     <div>No nearby placements detected</div>
 
     <Button onClick={toggle}>Scan QR Code</Button>
-    <Drawer radius="xl" opened={opened} onClose={toggle} withCloseButton={false} position='bottom' padding={0} styles={{
+    <Drawer radius="xl" opened={opened} onClose={onClose} withCloseButton={false} position='bottom' padding={0} styles={{
        
         content:{
             backgroundColor: 'black',
@@ -58,7 +65,7 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
             <div key={item.rawValue}>{item.rawValue}</div>
         ))}</div>}
             <div className='p-4 bg-black flex items-center justify-center'>
-                <Button onClick={toggle} variant='outline' color="white">Cancel</Button>
+                <Button onClick={onClose} variant='outline' color="white">Cancel</Button>
             </div>
       </Drawer>
 
