@@ -150,7 +150,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         icon={<GaugeIcon className="size-7 shrink-0" />}
                                         label="Dashboard"
                                         opened={opened}
-                                        href="/dashboard"
+                                        href="/mobile"
                                         data-active={component.startsWith('Dashboard')}
                                     />
 
