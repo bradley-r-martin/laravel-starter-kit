@@ -53,6 +53,7 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
                         />
            <Scanner 
         
+        paused={!opened || !!data}
         components={{
             torch:false,
             finder:false,
