@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Http\Controllers\Authentication\AuthenticationLoginController;
 use App\Http\Controllers\Authentication\AuthenticationRecoveryController;
 use App\Http\Controllers\Authentication\AuthenticationResetController;
+use App\Http\Controllers\Nearby\NearbyPlacementController;
+use App\Http\Controllers\Nearby\NearbyPlacementsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -15,13 +17,9 @@ Route::get('/mobile', function () {
     return inertia('Dashboard');
 });
 
-Route::get('/nearby', function () {
-    return inertia('Nearby');
-})->name('nearby.index');
+Route::get('/nearby', [NearbyPlacementsController::class, 'view'])->name('nearby.index');
 
-Route::get('/nearby/placement', function () {
-    return inertia()->modal('NearbyPlacement')->baseRoute('nearby.index');
-})->name('nearby.placement');
+Route::get('/nearby/placement', [NearbyPlacementController::class, 'view'])->name('nearby.placement');
 
 Route::get('/login', [AuthenticationLoginController::class, 'view'])->name('login');
 Route::post('/login', [AuthenticationLoginController::class, 'process'])->middleware('throttle:login')->name('login.process');
