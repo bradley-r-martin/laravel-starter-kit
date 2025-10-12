@@ -18,9 +18,10 @@ Route::get('/mobile', function () {
 Route::get('/nearby', function () {
     return inertia('Nearby');
 })->name('nearby.index');
+
 Route::get('/nearby/placement', function () {
     return inertia()->modal('NearbyPlacement')->baseRoute('nearby.index');
-});
+})->name('nearby.placement');
 
 Route::get('/login', [AuthenticationLoginController::class, 'view'])->name('login');
 Route::post('/login', [AuthenticationLoginController::class, 'process'])->middleware('throttle:login')->name('login.process');
