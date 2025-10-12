@@ -65,7 +65,7 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
                             onScan={(data) => {
                                 setData(data);
                                 scannerControls.close();
-                                router.visit(route('nearby.placement'));
+                                router.visit('/nearby/placement');
                             }}
                         />
                     </div>
