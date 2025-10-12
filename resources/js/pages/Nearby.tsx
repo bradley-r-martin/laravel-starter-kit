@@ -1,5 +1,6 @@
 import NearbyNoPlacementsFoundView from '@/Features/Nearby/Views/NearbyNoPlacementsFoundView';
 import MobileLayout from '@/Layouts/MobileLayout';
+import { router } from '@inertiajs/react';
 import { Button, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
@@ -9,21 +10,22 @@ import { FunctionComponent, useState } from 'react';
 interface NearbyProps {}
 
 const Nearby: FunctionComponent<NearbyProps> = () => {
-    const [opened, { toggle, close }] = useDisclosure(false);
+    const [scannerOpened, scannerControls] = useDisclosure(false);
+
+
     const [data, setData] = useState<IDetectedBarcode[] | null>(null);
 
-    function onClose() {
-        setData(null);
-        close();
-    }
 
     return (
         <div className="flex h-full flex-col items-center justify-center">
-            <NearbyNoPlacementsFoundView open={toggle} />
+            <NearbyNoPlacementsFoundView open={scannerControls.open} />
             <Drawer
                 radius="xl"
-                opened={opened}
-                onClose={onClose}
+                opened={scannerOpened}
+                onClose={()=>{
+                    scannerControls.close();
+                    setData(null);
+                }}
                 withCloseButton={false}
                 position="bottom"
                 padding={0}
@@ -55,30 +57,30 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
                             }}
                         />
                         <Scanner
-                            paused={!opened || !!data}
+                            paused={!scannerOpened || !!data}
                             components={{
                                 torch: false,
                                 finder: false,
                             }}
                             onScan={(data) => {
                                 setData(data);
+                                scannerControls.close();
+                                router.visit(route('nearby.placement'));
                             }}
                         />
                     </div>
                 )}
-                {data && (
-                    <div className="p-4">
-                        {data.map((item) => (
-                            <div key={item.rawValue}>{item.rawValue}</div>
-                        ))}
-                    </div>
-                )}
+            
                 <div className="flex items-center justify-center bg-black p-4">
-                    <Button onClick={onClose} variant="outline" color="white">
+                    <Button onClick={()=>{
+                        scannerControls.close();
+                        setData(null);
+                    }} variant="outline" color="white">
                         Cancel
                     </Button>
                 </div>
             </Drawer>
+        
         </div>
     );
 };

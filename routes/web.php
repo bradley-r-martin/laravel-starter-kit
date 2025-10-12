@@ -17,6 +17,9 @@ Route::get('/mobile', function () {
 
 Route::get('/nearby', function () {
     return inertia('Nearby');
+})->name('nearby.index');
+Route::get('/nearby/placement', function () {
+    return inertia()->modal('NearbyPlacement')->baseRoute('nearby.index');
 });
 
 Route::get('/login', [AuthenticationLoginController::class, 'view'])->name('login');
