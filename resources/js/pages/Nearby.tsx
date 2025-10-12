@@ -1,8 +1,9 @@
+import NearbyNoPlacementsFoundView from '@/Features/Nearby/Views/NearbyNoPlacementsFoundView';
 import MobileLayout from '@/Layouts/MobileLayout';
 import { Button, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
-import { MapPinnedIcon } from 'lucide-react';
+
 import { FunctionComponent, useState } from 'react';
 
 interface NearbyProps {}
@@ -18,18 +19,7 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
 
     return (
         <div className="flex h-full flex-col items-center justify-center">
-            <div className="flex flex-col items-center justify-center gap-8">
-                <div className="flex flex-col items-center justify-center gap-4">
-                    <MapPinnedIcon className="size-14 stroke-1 text-zinc-700" />
-                    <div className="text-sm font-bold text-zinc-700">
-                        No nearby placements found
-                    </div>
-                </div>
-
-                <Button onClick={toggle} variant="outline" color="zinc">
-                    Scan QR Code
-                </Button>
-            </div>
+            <NearbyNoPlacementsFoundView open={toggle} />
             <Drawer
                 radius="xl"
                 opened={opened}

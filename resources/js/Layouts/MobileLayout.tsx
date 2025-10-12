@@ -10,7 +10,7 @@ interface MobileLayoutProps {
 const MobileLayout: FunctionComponent<MobileLayoutProps> = (props) => {
     const { children } = props;
 
-    const [opened, { toggle }] = useDisclosure(false);
+    const [opened, { toggle, close }] = useDisclosure(false);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     return (

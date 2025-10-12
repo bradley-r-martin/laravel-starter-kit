@@ -106,11 +106,11 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                             />
                             <TabbarItem
                                 icon={
-                                    <div className="icon relative" data-active={opened}>
+                                    <div className="icon relative" data-opened={opened}>
                                         <svg
                                             viewBox="22 25 56 50"
                                             className="ham size-7"
-                                            data-active={opened}
+                                            data-opened={opened}
                                         >
                                             <path
                                                 className="line top"
@@ -127,6 +127,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                 label="Close"
                                 opened={opened}
                                 onClick={toggle}
+                                data-active={component.startsWith('Dashboard')}
                                 className="data-[opened=true]:*:text-rose-600"
                             />
 

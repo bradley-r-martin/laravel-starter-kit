@@ -72,13 +72,13 @@
     -ms-user-select: none;
     user-select: none;
 }
-*[data-active='true'] .ham {
+*[data-opened='true'] .ham {
     transform: rotate(45deg);
 }
-*[data-active='true'] .ham .top {
+*[data-opened='true'] .ham .top {
     stroke-dashoffset: -68px;
 }
-*[data-active='true'] .ham .bottom {
+*[data-opened='true'] .ham .bottom {
     stroke-dashoffset: -68px;
 }
 
