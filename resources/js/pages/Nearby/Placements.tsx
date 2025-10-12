@@ -1,9 +1,9 @@
 import NearbyNoPlacementsFoundView from '@/Features/Nearby/Views/NearbyNoPlacementsFoundView';
 import MobileLayout from '@/Layouts/MobileLayout';
-import { router } from '@inertiajs/react';
 import { Button, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
+import { useModalStack } from '@inertiaui/modal-react'
 
 import { FunctionComponent, useState } from 'react';
 
@@ -11,6 +11,7 @@ interface NearbyProps {}
 
 const Nearby: FunctionComponent<NearbyProps> = () => {
     const [scannerOpened, scannerControls] = useDisclosure(false);
+    const modalStack = useModalStack();
 
 
     const [data, setData] = useState<IDetectedBarcode[] | null>(null);
@@ -65,7 +66,7 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
                             onScan={(data) => {
                                 setData(data);
                                 scannerControls.close();
-                                router.visit('/nearby/placement');
+                                modalStack.visitModal('/nearby/placement');
                             }}
                         />
                     </div>

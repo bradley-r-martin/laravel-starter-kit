@@ -53,7 +53,7 @@ export default function List({ users }: Props) {
                 <Stack gap="xl">
                     <Group justify="space-between" align="center">
                         <Title order={1}>Users</Title>
-                        <ModalLink href={route('users.create')} navigate={true}>
+                        <ModalLink href={route('users.create')} navigate={false}>
                             <Button>Create User</Button>
                         </ModalLink>
                     </Group>
@@ -164,7 +164,7 @@ export default function List({ users }: Props) {
                                                                             'users.update',
                                                                             user.id
                                                                         )}
-                                                                        navigate={true}
+                                                                        navigate={false}
                                                                         variant="subtle"
                                                                         color="blue"
                                                                         size="md"
@@ -185,7 +185,7 @@ export default function List({ users }: Props) {
                                                                             'users.password',
                                                                             user.id
                                                                         )}
-                                                                        navigate={true}
+                                                                        navigate={false}
                                                                         variant="subtle"
                                                                         color="yellow"
                                                                         size="md"
@@ -206,7 +206,7 @@ export default function List({ users }: Props) {
                                                                             'users.suspend',
                                                                             user.id
                                                                         )}
-                                                                        navigate={true}
+                                                                        navigate={false}
                                                                         variant="subtle"
                                                                         color="orange"
                                                                         size="md"
@@ -227,7 +227,7 @@ export default function List({ users }: Props) {
                                                                             'users.close',
                                                                             user.id
                                                                         )}
-                                                                        navigate={true}
+                                                                        navigate={false}
                                                                         variant="subtle"
                                                                         color="red"
                                                                         size="md"
@@ -250,7 +250,7 @@ export default function List({ users }: Props) {
                                                                         'users.unsuspend',
                                                                         user.id
                                                                     )}
-                                                                    navigate={true}
+                                                                    navigate={false}
                                                                     variant="subtle"
                                                                     color="green"
                                                                     size="md"
@@ -273,7 +273,7 @@ export default function List({ users }: Props) {
                                                                             'users.reopen',
                                                                             user.id
                                                                         )}
-                                                                        navigate={true}
+                                                                        navigate={false}
                                                                         variant="subtle"
                                                                         color="green"
                                                                         size="md"
@@ -294,7 +294,7 @@ export default function List({ users }: Props) {
                                                                             'users.destroy',
                                                                             user.id
                                                                         )}
-                                                                        navigate={true}
+                                                                        navigate={false}
                                                                         variant="subtle"
                                                                         color="red"
                                                                         size="md"
