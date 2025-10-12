@@ -64,7 +64,7 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
                                 finder: false,
                             }}
                             onScan={(data) => {
-                                setData(data);
+                            //    setData(data);
                                 scannerControls.close();
                                 modalStack.visitModal('/nearby/placement');
                             }}
