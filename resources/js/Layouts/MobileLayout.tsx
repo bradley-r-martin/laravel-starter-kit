@@ -41,7 +41,7 @@ const MobileLayout: FunctionComponent<MobileLayoutProps> = (props) => {
                 {children}
             </motion.div>
 
-            <Tabbar opened={opened} toggle={toggle} />
+            <Tabbar opened={opened}  toggle={toggle} close={close} />
         </div>
     );
 };

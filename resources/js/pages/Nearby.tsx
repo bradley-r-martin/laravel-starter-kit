@@ -51,10 +51,10 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
                 {!data && (
                     <div className="relative">
                         <div className="absolute inset-14 z-20">
-                            <div className="absolute top-0 left-0 size-3 rounded-tl border-t-2 border-l-2 border-white" />
-                            <div className="absolute top-0 right-0 size-3 rotate-90 rounded-tl border-t-2 border-l-2 border-white" />
-                            <div className="absolute right-0 bottom-0 size-3 rotate-180 rounded-tl border-t-2 border-l-2 border-white" />
-                            <div className="absolute bottom-0 left-0 size-3 -rotate-90 rounded-tl border-t-2 border-l-2 border-white" />
+                            <div className="absolute top-0 left-0 size-8 rounded-tl-lg border-t-4 border-l-4 border-white" />
+                            <div className="absolute top-0 right-0 size-8 rotate-90 rounded-tl-lg border-t-4 border-l-4 border-white" />
+                            <div className="absolute right-0 bottom-0 size-8 rotate-180 rounded-tl border-t-4 border-l-4 border-white" />
+                            <div className="absolute bottom-0 left-0 size-8 -rotate-90 rounded-tl-lg border-t-4 border-l-4 border-white" />
                         </div>
 
                         <div
