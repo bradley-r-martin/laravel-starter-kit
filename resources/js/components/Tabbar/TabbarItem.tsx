@@ -38,12 +38,10 @@ const TabbarItem = (props: TabbarItemProps) => {
     const item_class =
         'data-[active=true]:text-blue-600 bg-white active:bg-zinc-100 active:shadow-inner select-none active:*:scale-95 overflow-hidden text-zinc-600 gap-1 flex flex-col items-center justify-center p-3 py-5';
 
-
     const handleClick = () => {
         if (props?.href) {
             router.visit(props?.href, { preserveUrl: true });
-           
-        }else{
+        } else {
             props?.onClick?.();
         }
         onClose?.();
@@ -57,7 +55,7 @@ const TabbarItem = (props: TabbarItemProps) => {
             {...restProps}
         >
             {icon}
-     
+
             <motion.span animate={menu_item} transition={transition} className="text-xs">
                 {label}
             </motion.span>

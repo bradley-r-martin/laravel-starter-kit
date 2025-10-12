@@ -1,15 +1,12 @@
 import { Actions } from '@/components/Actions';
 import { Modal } from '@/components/Modal';
 import ModalHeader from '@/components/ModalHeader';
-import { useModal } from '@inertiaui/modal-react';  
+import { useModal } from '@inertiaui/modal-react';
 import { Button } from '@mantine/core';
 import { ShieldPlusIcon } from 'lucide-react';
 
-
-
 export default function NearbyPlacement() {
     const modal = useModal();
-   
 
     return (
         <>
@@ -22,20 +19,17 @@ export default function NearbyPlacement() {
                     color="blue"
                 />
 
-                
-
-<Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                                data-testid="cancel-action"
-                            >
-                                Cancel
-                            </Button>
-                           
-                        </Actions>
+                <Actions>
+                    <Button
+                        onClick={() => modal?.close()}
+                        type="button"
+                        variant="subtle"
+                        color="zinc"
+                        data-testid="cancel-action"
+                    >
+                        Cancel
+                    </Button>
+                </Actions>
             </Modal>
         </>
     );

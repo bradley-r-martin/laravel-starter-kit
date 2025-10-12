@@ -103,7 +103,6 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                 href="/nearby"
                                 onClose={close}
                                 data-active={component.startsWith('Nearby')}
-                               
                             />
                             <TabbarItem
                                 icon={
@@ -137,7 +136,6 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                 label="Notifications"
                                 opened={opened}
                                 onClose={close}
-                                
                             />
 
                             <motion.div

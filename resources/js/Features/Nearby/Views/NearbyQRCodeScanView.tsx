@@ -1,15 +1,13 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent } from 'react';
 
-interface NearbyQRCodeScanViewProps {
-    
-}
- 
+interface NearbyQRCodeScanViewProps {}
+
 const NearbyQRCodeScanView: FunctionComponent<NearbyQRCodeScanViewProps> = () => {
-    return ( 
+    return (
         <div>
             <h1>Nearby QR Code Scan View</h1>
         </div>
     );
-}
- 
+};
+
 export default NearbyQRCodeScanView;

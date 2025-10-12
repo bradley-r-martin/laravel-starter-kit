@@ -1,9 +1,9 @@
 import NearbyNoPlacementsFoundView from '@/Features/Nearby/Views/NearbyNoPlacementsFoundView';
 import MobileLayout from '@/Layouts/MobileLayout';
+import { useModalStack } from '@inertiaui/modal-react';
 import { Button, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
-import { useModalStack } from '@inertiaui/modal-react'
 
 import { FunctionComponent, useState } from 'react';
 
@@ -13,9 +13,7 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
     const [scannerOpened, scannerControls] = useDisclosure(false);
     const modalStack = useModalStack();
 
-
     const [data, setData] = useState<IDetectedBarcode[] | null>(null);
-
 
     return (
         <div className="flex h-full flex-col items-center justify-center">
@@ -23,7 +21,7 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
             <Drawer
                 radius="xl"
                 opened={scannerOpened}
-                onClose={()=>{
+                onClose={() => {
                     scannerControls.close();
                     setData(null);
                 }}
@@ -64,24 +62,26 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
                                 finder: false,
                             }}
                             onScan={(data) => {
-                            //    setData(data);
                                 scannerControls.close();
                                 modalStack.visitModal('/nearby/placement');
                             }}
                         />
                     </div>
                 )}
-            
+
                 <div className="flex items-center justify-center bg-black p-4">
-                    <Button onClick={()=>{
-                        scannerControls.close();
-                        setData(null);
-                    }} variant="outline" color="white">
+                    <Button
+                        onClick={() => {
+                            scannerControls.close();
+                            setData(null);
+                        }}
+                        variant="outline"
+                        color="white"
+                    >
                         Cancel
                     </Button>
                 </div>
             </Drawer>
-        
         </div>
     );
 };

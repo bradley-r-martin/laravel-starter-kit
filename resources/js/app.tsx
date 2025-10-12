@@ -1,4 +1,4 @@
-import { createInertiaApp, router } from '@inertiajs/react';
+import { createInertiaApp } from '@inertiajs/react';
 import { initFromPageProps, ModalRoot, ModalStackProvider } from '@inertiaui/modal-react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createElement } from 'react';
@@ -6,10 +6,6 @@ import { createRoot } from 'react-dom/client';
 import MantineServiceProvider from './Providers/MantineServiceProvider';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-
-
-
-
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

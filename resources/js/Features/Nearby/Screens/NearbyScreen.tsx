@@ -1,15 +1,13 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent } from 'react';
 
-interface NearbyScreenProps {
-    
-}
- 
+interface NearbyScreenProps {}
+
 const NearbyScreen: FunctionComponent<NearbyScreenProps> = () => {
-    return ( 
+    return (
         <div>
             <h1>Nearby</h1>
         </div>
     );
-}
- 
+};
+
 export default NearbyScreen;
