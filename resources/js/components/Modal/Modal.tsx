@@ -64,7 +64,7 @@ const Modal: FunctionComponent<ModalProps> = ({ children, ...props }) => {
             
                   
                     classNames={{
-                        overlay: '!bg-zinc-400/30 !backdrop-blur-[1px]',
+                      
                         inner: '!items-end lg:!items-center',
                         content: 'modal-default',
                     }}

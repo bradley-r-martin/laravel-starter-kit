@@ -1,7 +1,9 @@
 import Tabbar from '@/components/Tabbar/Tabbar';
+import ContentContext from '@/contexts/ContentContext';
 import { useDisclosure } from '@mantine/hooks';
 import { motion } from 'motion/react';
-import { FunctionComponent, useRef } from 'react';
+import { FunctionComponent, useEffect, useRef } from 'react';
+import { useModalStack } from '@inertiaui/modal-react';
 
 interface MobileLayoutProps {
     children: React.ReactNode;
@@ -11,9 +13,29 @@ const MobileLayout: FunctionComponent<MobileLayoutProps> = (props) => {
     const { children } = props;
 
     const [opened, { toggle, close }] = useDisclosure(false);
+
+    const [scale, controls] = useDisclosure(false);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+    const modalStack = useModalStack();
+
+    useEffect(() => {
+        console.log(modalStack);
+       
+        if ( modalStack.stack.find(m => m.isOpen)) {
+            controls.open();
+        }else{
+            controls.close();
+        }
+    }, [modalStack]);
+
     return (
+        <ContentContext.Provider value={{ 
+            ref: scrollContainerRef as React.RefObject<HTMLDivElement>,
+            opened: scale,
+            open: controls.open,
+            close: controls.close
+        }}>
         <div className="absolute inset-0 flex flex-col items-stretch bg-black">
             <motion.div
                 ref={scrollContainerRef}
@@ -25,7 +47,7 @@ const MobileLayout: FunctionComponent<MobileLayoutProps> = (props) => {
                 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 25 }}
                 animate={
-                    opened
+                    scale
                         ? {
                               scale: 0.9,
                               rotateX: 5,
@@ -41,8 +63,15 @@ const MobileLayout: FunctionComponent<MobileLayoutProps> = (props) => {
                 {children}
             </motion.div>
 
-            <Tabbar opened={opened} toggle={toggle} close={close} />
+            <Tabbar opened={opened} toggle={()=>{
+                toggle();
+                controls.toggle();
+            }} close={()=>{
+                close();
+                controls.close();
+            }} />
         </div>
+        </ContentContext.Provider>
     );
 };
 
