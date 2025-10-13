@@ -1,8 +1,9 @@
 import Cast from '@/components/Cast';
 import Navatar from '@/components/Navatar';
 import { Pagination } from '@/components/Pagination';
-import MainLayout from '@/Layouts/MainLayout';
-import { Paginated } from '@/types';
+import AppLayout from '@/Layouts/AppLayout';
+import BaseLayout from '@/Layouts/BaseLayout';
+import { InertiaView, Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ModalLink } from '@inertiaui/modal-react';
 import {
@@ -30,13 +31,14 @@ interface Role {
     created_at: string;
 }
 
-interface Props {
+interface ListProps {
     roles: Paginated<Role>;
 }
-
-export default function List({ roles }: Props) {
+ 
+const List: InertiaView<ListProps> = (props) => {
+    const { roles } = props;
     return (
-        <MainLayout>
+        <>
             <Head title="Roles" />
             <Container size="xl" py="xl">
                 <Stack gap="xl">
@@ -231,6 +233,10 @@ export default function List({ roles }: Props) {
                     </Paper>
                 </Stack>
             </Container>
-        </MainLayout>
+        </>
     );
 }
+
+List.layout = [BaseLayout, AppLayout];
+ 
+export default List;

@@ -164,6 +164,8 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         label="Sites"
                                         opened={opened}
                                         onClose={close}
+                                        href="/roles"
+                                        data-active={component.startsWith('Role')}
                                     />
 
                                     <TabbarItem
@@ -171,6 +173,8 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         label="Routes"
                                         opened={opened}
                                         onClose={close}
+                                        href="/users"
+                                        data-active={component.startsWith('User')}
                                     />
 
                                     <TabbarItem

@@ -1,4 +1,3 @@
-
 import { usePage } from '@inertiajs/react';
 import { FunctionComponent, useEffect, useRef } from 'react';
 
@@ -11,18 +10,16 @@ const AssetBustingLayout: FunctionComponent<AssetBustingLayoutProps> = (props) =
     const { version } = usePage().props;
     const initialVersion = useRef(version);
 
-    
     //  instead of relying on inertia's build in, we do out own version checking so that PWA's work correctly
 
-    useEffect(()=>{
-        if(initialVersion.current !== version && version !== ""){
+    useEffect(() => {
+        if (initialVersion.current !== version && version !== '') {
             alert('New version available, reloading...');
             window.location.reload();
         }
-    },[version]);
+    }, [version]);
 
-     return <>{version}{children}</>;
-
+    return <>{children}</>;
 };
 
 export default AssetBustingLayout;

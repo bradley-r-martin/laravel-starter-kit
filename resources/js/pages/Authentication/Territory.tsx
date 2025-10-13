@@ -1,7 +1,7 @@
-import MainLayout from '@/Layouts/MainLayout';
+import BaseLayout from '@/Layouts/BaseLayout';
+import { InertiaView } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { Button, Container, Paper, Stack, Text, Title } from '@mantine/core';
-import { FunctionComponent } from 'react';
 
 interface TerritoryOption {
     id: string;
@@ -12,9 +12,9 @@ interface TerritoryProps {
     territories: TerritoryOption[];
 }
 
-const Territory: FunctionComponent<TerritoryProps> = ({ territories }) => {
+const Territory: InertiaView<TerritoryProps> = ({ territories }) => {
     return (
-        <MainLayout>
+        <>
             <Head title="Select Territory" />
             <Container size="xs" py="xl" h="100vh">
                 <Stack gap="xl">
@@ -49,8 +49,10 @@ const Territory: FunctionComponent<TerritoryProps> = ({ territories }) => {
                     </Paper>
                 </Stack>
             </Container>
-        </MainLayout>
+        </>
     );
 };
+
+Territory.layout = [BaseLayout];
 
 export default Territory;

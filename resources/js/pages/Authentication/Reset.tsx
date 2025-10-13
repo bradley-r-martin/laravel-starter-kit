@@ -1,7 +1,8 @@
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
-import MainLayout from '@/Layouts/MainLayout';
+import BaseLayout from '@/Layouts/BaseLayout';
+import { InertiaView } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import {
     Button,
@@ -13,14 +14,13 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
-import { FunctionComponent } from 'react';
 
 interface ResetProps {
     token: string;
     email: string;
 }
 
-const Reset: FunctionComponent<ResetProps> = ({ token, email }) => {
+const Reset: InertiaView<ResetProps> = ({ token, email }) => {
     const form = useForm({
         token,
         email,
@@ -31,7 +31,7 @@ const Reset: FunctionComponent<ResetProps> = ({ token, email }) => {
     const { processing } = form;
 
     return (
-        <MainLayout>
+        <>
             <Head title="Reset Password" />
             <Container size="xs" py="xl" h="100vh">
                 <Stack gap="xl">
@@ -88,8 +88,10 @@ const Reset: FunctionComponent<ResetProps> = ({ token, email }) => {
                     </Paper>
                 </Stack>
             </Container>
-        </MainLayout>
+        </>
     );
 };
+
+Reset.layout = [BaseLayout];
 
 export default Reset;

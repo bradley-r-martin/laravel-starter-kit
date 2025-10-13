@@ -1,17 +1,17 @@
 import NearbyNoPlacementsFoundView from '@/Features/Nearby/Views/NearbyNoPlacementsFoundView';
-import AssetBustingLayout from '@/Layouts/AssetBustingLayout';
-import MobileLayout from '@/Layouts/MobileLayout';
-import RequiresInstallationLayout from '@/Layouts/RequiresInstallationLayout';
+import AppLayout from '@/Layouts/AppLayout';
+import BaseLayout from '@/Layouts/BaseLayout';
+import { InertiaView } from '@/types';
 import { useModalStack } from '@inertiaui/modal-react';
 import { Button, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
 
-import { FunctionComponent, useState } from 'react';
+import { useState } from 'react';
 
 interface NearbyProps {}
 
-const Nearby: FunctionComponent<NearbyProps> = () => {
+const Nearby: InertiaView<NearbyProps> = () => {
     const [scannerOpened, scannerControls] = useDisclosure(false);
     const modalStack = useModalStack();
 
@@ -63,7 +63,7 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
                                 torch: false,
                                 finder: false,
                             }}
-                            onScan={(data) => {
+                            onScan={() => {
                                 scannerControls.close();
                                 modalStack.visitModal('/nearby/placement');
                             }}
@@ -88,14 +88,6 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
     );
 };
 
-Nearby.layout = (component: React.ReactNode) => {
-    return (
-        <AssetBustingLayout>
-        <RequiresInstallationLayout>
-            <MobileLayout children={component} />
-        </RequiresInstallationLayout>
-        </AssetBustingLayout>
-    );
-};
+Nearby.layout = [BaseLayout, AppLayout];
 
 export default Nearby;

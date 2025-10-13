@@ -1,7 +1,8 @@
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
-import MainLayout from '@/Layouts/MainLayout';
+import BaseLayout from '@/Layouts/BaseLayout';
+import { InertiaView } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import {
     Button,
@@ -15,11 +16,10 @@ import {
     Title,
 } from '@mantine/core';
 import { KeyRoundIcon } from 'lucide-react';
-import { FunctionComponent } from 'react';
 
 interface LoginProps {}
 
-const Login: FunctionComponent<LoginProps> = () => {
+const Login: InertiaView<LoginProps> = () => {
     const form = useForm({
         email: '',
         password: '',
@@ -28,7 +28,7 @@ const Login: FunctionComponent<LoginProps> = () => {
     const { processing } = form;
 
     return (
-        <MainLayout>
+        <>
             <Head title="Login" />
             <Container size="xs" py="xl" h="100vh">
                 <Stack gap="xl">
@@ -83,8 +83,10 @@ const Login: FunctionComponent<LoginProps> = () => {
                     </Paper>
                 </Stack>
             </Container>
-        </MainLayout>
+        </>
     );
 };
+
+Login.layout = [BaseLayout];
 
 export default Login;

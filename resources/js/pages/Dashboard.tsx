@@ -1,12 +1,11 @@
-import AssetBustingLayout from '@/Layouts/AssetBustingLayout';
-import MobileLayout from '@/Layouts/MobileLayout';
-import RequiresInstallationLayout from '@/Layouts/RequiresInstallationLayout';
+import AppLayout from '@/Layouts/AppLayout';
+import BaseLayout from '@/Layouts/BaseLayout';
+import { InertiaView } from '@/types';
 import { Head } from '@inertiajs/react';
-import { FunctionComponent } from 'react';
 
 interface DashboardProps {}
 
-const Dashboard: FunctionComponent<DashboardProps> = () => {
+const Dashboard: InertiaView<DashboardProps> = () => {
     return (
         <>
             <Head title="Dashboard" />
@@ -120,14 +119,6 @@ const Dashboard: FunctionComponent<DashboardProps> = () => {
     );
 };
 
-Dashboard.layout = (component: React.ReactNode) => {
-    return (
-        <AssetBustingLayout>
-        <RequiresInstallationLayout>
-            <MobileLayout children={component} />
-        </RequiresInstallationLayout>
-        </AssetBustingLayout>
-    );
-};
+Dashboard.layout = [BaseLayout, AppLayout];
 
 export default Dashboard;

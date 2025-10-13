@@ -16,3 +16,7 @@ export function isStandalone() {
         (window.navigator as Navigator & { standalone?: boolean })?.standalone === true
     );
 }
+
+export function isMobile() {
+    return isIOS() || isAndroid();
+}

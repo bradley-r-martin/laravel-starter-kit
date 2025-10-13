@@ -1,5 +1,5 @@
 import InstallationNotice from '@/components/InstallationNotice/InstallationNotice';
-import { isIOS, isStandalone } from '@/components/Utilities/Environment';
+import { isIOS, isStandalone } from '@/Utilities/Environment';
 import { FunctionComponent } from 'react';
 
 interface RequiresInstallationLayoutProps {

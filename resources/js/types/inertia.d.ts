@@ -1,3 +1,5 @@
+import { FunctionComponent } from 'react';
+
 export interface User {
     id: string;
     first_name: string;
@@ -10,4 +12,8 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
     auth: {
         user: User;
     };
+};
+
+declare type InertiaView<Props> = FunctionComponent<Props> & {
+    layout?: any[];
 };
