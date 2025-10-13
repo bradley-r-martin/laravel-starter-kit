@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('stored_events', function (Blueprint $table): void {
             $table->id();
-            $table->uuid('aggregate_uuid')->nullable();
+            $table->ulid('aggregate_uuid')->nullable();
             $table->unsignedBigInteger('aggregate_version')->nullable();
             $table->unsignedTinyInteger('event_version')->default(1);
             $table->string('event_class');

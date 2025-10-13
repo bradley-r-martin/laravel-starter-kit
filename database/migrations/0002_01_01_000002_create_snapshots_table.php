@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('snapshots', function (Blueprint $table): void {
             $table->id();
-            $table->uuid('aggregate_uuid');
+            $table->ulid('aggregate_uuid');
             $table->unsignedBigInteger('aggregate_version');
             $table->jsonb('state');
 
