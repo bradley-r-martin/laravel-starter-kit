@@ -25,7 +25,7 @@ final class HandleInertiaRequests extends Middleware
      */
     public function version(Request $request): ?string
     {
-        return parent::version($request);
+        return null;
     }
 
     /**
@@ -39,6 +39,7 @@ final class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
+            'version' => parent::version($request),
             'user' => $request->user(),
             'toast' => $request->session()->get('toast'),
         ];

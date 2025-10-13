@@ -1,3 +1,4 @@
+import AssetBustingLayout from '@/Layouts/AssetBustingLayout';
 import MobileLayout from '@/Layouts/MobileLayout';
 import RequiresInstallationLayout from '@/Layouts/RequiresInstallationLayout';
 import { Head } from '@inertiajs/react';
@@ -121,9 +122,11 @@ const Dashboard: FunctionComponent<DashboardProps> = () => {
 
 Dashboard.layout = (component: React.ReactNode) => {
     return (
+        <AssetBustingLayout>
         <RequiresInstallationLayout>
             <MobileLayout children={component} />
         </RequiresInstallationLayout>
+        </AssetBustingLayout>
     );
 };
 
