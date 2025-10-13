@@ -15,6 +15,7 @@ const AssetBustingLayout: FunctionComponent<AssetBustingLayoutProps> = (props) =
 
     useEffect(()=>{
         if(initialVersion.current !== version && version !== ""){
+            alert('New version available, reloading...');
             window.location.reload();
         }
     },[version]);
