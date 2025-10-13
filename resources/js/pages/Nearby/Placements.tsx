@@ -1,5 +1,6 @@
 import NearbyNoPlacementsFoundView from '@/Features/Nearby/Views/NearbyNoPlacementsFoundView';
 import MobileLayout from '@/Layouts/MobileLayout';
+import RequiresInstallationLayout from '@/Layouts/RequiresInstallationLayout';
 import { useModalStack } from '@inertiaui/modal-react';
 import { Button, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -87,7 +88,9 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
 };
 
 Nearby.layout = (component: React.ReactNode) => {
-    return <MobileLayout children={component} />;
+    return <RequiresInstallationLayout>
+        <MobileLayout children={component} />
+    </RequiresInstallationLayout>;
 };
 
 export default Nearby;

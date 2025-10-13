@@ -1,4 +1,5 @@
 import MobileLayout from '@/Layouts/MobileLayout';
+import RequiresInstallationLayout from '@/Layouts/RequiresInstallationLayout';
 import { Head } from '@inertiajs/react';
 import { FunctionComponent } from 'react';
 
@@ -11,6 +12,7 @@ const Dashboard: FunctionComponent<DashboardProps> = () => {
 
             {/* <Header scrollContainerRef={scrollContainerRef} /> */}
             <div className="p-5">
+                <div>Dashboard</div>
                 <br />
                 <p className="text-zinc-500">
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
@@ -118,7 +120,9 @@ const Dashboard: FunctionComponent<DashboardProps> = () => {
 };
 
 Dashboard.layout = (component: React.ReactNode) => {
-    return <MobileLayout children={component} />;
+    return <RequiresInstallationLayout>
+        <MobileLayout children={component} />
+    </RequiresInstallationLayout>;
 };
 
 export default Dashboard;

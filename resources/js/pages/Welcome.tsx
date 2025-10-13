@@ -1,9 +1,10 @@
+import RequiresInstallationLayout from '@/Layouts/RequiresInstallationLayout';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
 
 export default function Welcome({ auth }: PageProps) {
     return (
-        <>
+        <RequiresInstallationLayout>
             <Head title="Welcome" />
             <div className="flex min-h-screen items-center justify-center bg-gray-100">
                 <div className="text-center">
@@ -15,6 +16,6 @@ export default function Welcome({ auth }: PageProps) {
                     </p>
                 </div>
             </div>
-        </>
+        </RequiresInstallationLayout>
     );
 }
