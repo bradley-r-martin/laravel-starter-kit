@@ -11,6 +11,7 @@ const AssetBustingLayout: FunctionComponent<AssetBustingLayoutProps> = (props) =
     const { version } = usePage().props;
     const initialVersion = useRef(version);
 
+    
     //  instead of relying on inertia's build in, we do out own version checking so that PWA's work correctly
 
     useEffect(()=>{
