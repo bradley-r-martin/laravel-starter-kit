@@ -120,9 +120,11 @@ const Dashboard: FunctionComponent<DashboardProps> = () => {
 };
 
 Dashboard.layout = (component: React.ReactNode) => {
-    return <RequiresInstallationLayout>
-        <MobileLayout children={component} />
-    </RequiresInstallationLayout>;
+    return (
+        <RequiresInstallationLayout>
+            <MobileLayout children={component} />
+        </RequiresInstallationLayout>
+    );
 };
 
 export default Dashboard;

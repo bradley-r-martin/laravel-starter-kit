@@ -4,7 +4,7 @@ import { FunctionComponent } from 'react';
 import ModalHeaderRings from './ModalHeaderRings';
 
 interface ModalHeaderProps {
-    title: string;
+    title: React.ReactNode;
     description?: React.ReactNode;
     icon?: React.ReactNode;
     color?: ColorInputProps['color'];

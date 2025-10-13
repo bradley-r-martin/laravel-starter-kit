@@ -88,9 +88,11 @@ const Nearby: FunctionComponent<NearbyProps> = () => {
 };
 
 Nearby.layout = (component: React.ReactNode) => {
-    return <RequiresInstallationLayout>
-        <MobileLayout children={component} />
-    </RequiresInstallationLayout>;
+    return (
+        <RequiresInstallationLayout>
+            <MobileLayout children={component} />
+        </RequiresInstallationLayout>
+    );
 };
 
 export default Nearby;
