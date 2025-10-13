@@ -21,7 +21,8 @@ return new class extends Migration
             $table->foreign('operator_id')->references('id')->on('operators')->cascadeOnDelete();
 
             $table->ulid('placement_id')->nullable();
-            $table->foreign('placement_id')->references('id')->on('placements')->cascadeOnDelete();
+            // $table->foreign('placement_id')->references('id')->on('placements')->cascadeOnDelete();
+            // cannot be linked yet.
 
             $table->timestamp('last_printed_at')->nullable();
             $table->timestamp('closed_at')->nullable();
