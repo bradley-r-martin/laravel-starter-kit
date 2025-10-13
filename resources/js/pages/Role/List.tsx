@@ -44,7 +44,7 @@ const List: InertiaView<ListProps> = (props) => {
                 <Stack gap="xl">
                     <Group justify="space-between" align="center">
                         <Title order={1}>Roles</Title>
-                        <ModalLink href={route('roles.create')} navigate={true}>
+                        <ModalLink href={route('roles.create')}  navigate={false}>
                             <Button>Create Role</Button>
                         </ModalLink>
                     </Group>
@@ -144,7 +144,7 @@ const List: InertiaView<ListProps> = (props) => {
                                                                             'roles.update',
                                                                             role.id
                                                                         )}
-                                                                        navigate={true}
+                                                                         navigate={false}
                                                                         variant="subtle"
                                                                         color="blue"
                                                                         size="md"
@@ -165,7 +165,7 @@ const List: InertiaView<ListProps> = (props) => {
                                                                             'roles.close',
                                                                             role.id
                                                                         )}
-                                                                        navigate={true}
+                                                                         navigate={false}
                                                                         variant="subtle"
                                                                         color="orange"
                                                                         size="md"
@@ -189,7 +189,7 @@ const List: InertiaView<ListProps> = (props) => {
                                                                             'roles.reopen',
                                                                             role.id
                                                                         )}
-                                                                        navigate={true}
+                                                                         navigate={false}
                                                                         variant="subtle"
                                                                         color="green"
                                                                         size="md"
@@ -210,7 +210,7 @@ const List: InertiaView<ListProps> = (props) => {
                                                                             'roles.destroy',
                                                                             role.id
                                                                         )}
-                                                                        navigate={true}
+                                                                        navigate={false}
                                                                         variant="subtle"
                                                                         color="red"
                                                                         size="md"
