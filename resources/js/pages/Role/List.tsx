@@ -1,8 +1,10 @@
 import Cast from '@/components/Cast';
 import Navatar from '@/components/Navatar';
 import { Pagination } from '@/components/Pagination';
+import useContentContext from '@/hooks/useContentContext';
 import AppLayout from '@/Layouts/AppLayout';
 import BaseLayout from '@/Layouts/BaseLayout';
+import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ModalLink } from '@inertiaui/modal-react';
@@ -37,19 +39,19 @@ interface ListProps {
  
 const List: InertiaView<ListProps> = (props) => {
     const { roles } = props;
+    const { ref } = useContentContext();
     return (
         <>
             <Head title="Roles" />
+            <div className='px-5 translate-y-3 relative z-20'>
+                <div className="text-xs text-zinc-500">{roles.data.length} roles</div>
+            </div>
+            <Header scrollContainerRef={ref} title="Roles" action={<Button size="xs" component={ModalLink} href={route('roles.create')}  navigate={false}>Create Role</Button>} />
             <Container size="xl" py="xl">
                 <Stack gap="xl">
-                    <Group justify="space-between" align="center">
-                        <Title order={1}>Roles</Title>
-                        <ModalLink href={route('roles.create')}  navigate={false}>
-                            <Button>Create Role</Button>
-                        </ModalLink>
-                    </Group>
+                    
 
-                    <Paper shadow="sm" p="xl" radius="md" withBorder>
+                    <Paper shadow="sm" p="xl" mb={800} radius="md" withBorder>
                         {roles.data.length === 0 ? (
                             <Text c="dimmed" p="xl" ta="center">
                                 No roles found. Create your first role to get started.
