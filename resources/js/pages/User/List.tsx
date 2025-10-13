@@ -1,6 +1,8 @@
 import Cast from '@/components/Cast';
 import Navatar from '@/components/Navatar';
 import { Pagination } from '@/components/Pagination';
+import AppLayout from '@/Layouts/AppLayout';
+import BaseLayout from '@/Layouts/BaseLayout';
 import MainLayout from '@/Layouts/MainLayout';
 import { InertiaView, Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -324,5 +326,7 @@ const List: InertiaView<ListProps> = (props) => {
         </>
     );
 }
+
+List.layout = [BaseLayout, AppLayout];
  
 export default List;

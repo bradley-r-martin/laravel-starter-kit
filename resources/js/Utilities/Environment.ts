@@ -11,6 +11,7 @@ export function isDesktop() {
 }
 
 export function isStandalone() {
+    return true;
     return (
         window.matchMedia('(display-mode: standalone)').matches ||
         (window.navigator as Navigator & { standalone?: boolean })?.standalone === true
