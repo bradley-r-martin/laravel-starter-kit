@@ -15,7 +15,6 @@ const Dashboard: InertiaView<DashboardProps> = () => {
 
             <Header scrollContainerRef={ref} title="Dashboard" />
             <div className="p-5">
-        
                 <br />
                 <p className="text-zinc-500">
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.

@@ -13,10 +13,12 @@ function asTableTbodyTr<TProps extends object>(WrappedComponent: React.Component
 
     const Component = forwardRef<HTMLTableRowElement, EnhancedProps>((props, ref) => {
         const { disabled, className, ...restProps } = props as EnhancedProps;
-        const additionalProps: Partial<TableTrProps & MotionProps & { component: typeof motion.tr }> = {
+        const additionalProps: Partial<
+            TableTrProps & MotionProps & { component: typeof motion.tr }
+        > = {
             className: twMerge(
                 `grid grid-cols-2 gap-px md:table-row text-xs ${disabled ? 'disabled-bg text-slate-400' : 'text-slate-600'}`,
-                className,
+                className
             ),
             animate: { opacity: 1 },
             initial: { opacity: 0 },
@@ -25,7 +27,10 @@ function asTableTbodyTr<TProps extends object>(WrappedComponent: React.Component
         };
 
         return <WrappedComponent {...additionalProps} {...(restProps as TProps)} ref={ref} />;
-    }) as React.ForwardRefExoticComponent<React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLTableRowElement>> & Composition;
+    }) as React.ForwardRefExoticComponent<
+        React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLTableRowElement>
+    > &
+        Composition;
 
     Component.displayName = `asTableTbodyTr(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
 

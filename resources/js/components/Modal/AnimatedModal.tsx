@@ -1,5 +1,4 @@
-import { isMobile } from '@/Utilities/Environment';
-import { Drawer, Modal, ModalProps } from '@mantine/core';
+import { Modal, ModalProps } from '@mantine/core';
 import { useEffect, useState } from 'react';
 
 export interface AnimatedModalProps extends ModalProps {
@@ -7,9 +6,17 @@ export interface AnimatedModalProps extends ModalProps {
     onExitTransitionEnd?: () => void;
 }
 
-export function AnimatedModal({ animateOnMount = true, opened, onExitTransitionEnd, transitionProps, ...props }: AnimatedModalProps) {
+export function AnimatedModal({
+    animateOnMount = true,
+    opened,
+    onExitTransitionEnd,
+    transitionProps,
+    ...props
+}: AnimatedModalProps) {
     // Internal open state starts as false if we want to animate on mount and opened is true
-    const [internalOpened, setInternalOpened] = useState(() => (animateOnMount && opened ? false : opened));
+    const [internalOpened, setInternalOpened] = useState(() =>
+        animateOnMount && opened ? false : opened
+    );
 
     useEffect(() => {
         if (animateOnMount && opened) {
@@ -34,7 +41,5 @@ export function AnimatedModal({ animateOnMount = true, opened, onExitTransitionE
         },
     } as typeof transitionProps;
 
-
-
-    return <Modal opened={internalOpened}  transitionProps={mergedTransitionProps} {...props} />;
+    return <Modal opened={internalOpened} transitionProps={mergedTransitionProps} {...props} />;
 }

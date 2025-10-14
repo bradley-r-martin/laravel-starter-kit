@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
 type ContentContextType = {
     ref: React.RefObject<HTMLDivElement>;
@@ -6,7 +6,6 @@ type ContentContextType = {
     open: () => void;
     close: () => void;
 };
-
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
 

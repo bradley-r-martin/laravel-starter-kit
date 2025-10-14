@@ -6,7 +6,8 @@ function asTableWrapper<TProps extends object>(WrappedComponent: React.Component
 
     const Component = forwardRef<HTMLDivElement, EnhancedProps>((props, ref) => {
         const additionalProps: Partial<StackProps> = {
-            className: 'overflow-hidden rounded border border-slate-300 bg-white shadow shadow-slate-200',
+            className:
+                'overflow-hidden rounded border border-slate-300 bg-white shadow shadow-slate-200',
         };
 
         return <WrappedComponent gap={0} {...additionalProps} {...(props as TProps)} ref={ref} />;

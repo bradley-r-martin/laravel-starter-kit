@@ -7,11 +7,10 @@
         content: attr(data-title);
         padding-bottom: 3px;
     }
-    td[data-span="hidden"] {
+    td[data-span='hidden'] {
         display: none;
     }
-    td[data-span="2"] {
+    td[data-span='2'] {
         grid-column: span 2 / span 2;
     }
-
 }

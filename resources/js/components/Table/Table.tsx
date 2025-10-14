@@ -23,7 +23,10 @@ function asTable<TProps extends object>(WrappedComponent: React.ComponentType<TP
         };
 
         return <WrappedComponent {...additionalProps} {...(props as TProps)} ref={ref} />;
-    }) as React.ForwardRefExoticComponent<React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLTableElement>> & Composition;
+    }) as React.ForwardRefExoticComponent<
+        React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLTableElement>
+    > &
+        Composition;
 
     Component.displayName = `asTable(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
 

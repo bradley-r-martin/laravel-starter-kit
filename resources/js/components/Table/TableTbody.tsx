@@ -13,7 +13,9 @@ function asTableTbody<TProps extends object>(WrappedComponent: React.ComponentTy
 
     const Component = forwardRef<HTMLTableSectionElement, EnhancedProps>((props, ref) => {
         const { children, ...restProps } = props as TProps & { children: ReactNode };
-        const additionalProps: Partial<TableTbodyProps & MotionProps & { component: typeof motion.tbody }> = {
+        const additionalProps: Partial<
+            TableTbodyProps & MotionProps & { component: typeof motion.tbody }
+        > = {
             animate: { opacity: 1, height: 'auto' },
             initial: { opacity: 0, height: 0 },
             exit: { opacity: 0, height: 0 },
@@ -27,7 +29,10 @@ function asTableTbody<TProps extends object>(WrappedComponent: React.ComponentTy
                 </AnimatePresence>
             </WrappedComponent>
         );
-    }) as React.ForwardRefExoticComponent<React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLTableSectionElement>> & Composition;
+    }) as React.ForwardRefExoticComponent<
+        React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLTableSectionElement>
+    > &
+        Composition;
 
     Component.displayName = `asTableTbody(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
     Component.Tr = TableTBodyTr;

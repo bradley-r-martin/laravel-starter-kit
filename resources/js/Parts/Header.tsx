@@ -22,20 +22,21 @@ const Header: FunctionComponent<HeaderProps> = ({ scrollContainerRef, title, act
 
     const scale = useTransform(scrollY, [0, margin], [1, 0.8]);
 
-    const borderColor = useTransform(scrollY, [0, margin], [ 'transparent','#e0e0e0']);
+    const borderColor = useTransform(scrollY, [0, margin], ['transparent', '#e0e0e0']);
 
     return (
-    
         <motion.div
             ref={headerRef}
-            className="container mx-auto sticky top-0 z-10 bg-gradient-to-b from-zinc-100 via-zinc-100 to-zinc-100/50 lg:from-white lg:via-white lg:to-white/50"
+            className="sticky top-0 z-10 container mx-auto bg-gradient-to-b from-zinc-100 via-zinc-100 to-zinc-100/50 lg:from-white lg:via-white lg:to-white/50"
         >
-            <motion.div style={{
-                borderBottomWidth: '1px',
-                borderBottomStyle: 'solid',
-                borderBottomColor: borderColor
-
-            }} className="flex items-center justify-between p-2 px-5">
+            <motion.div
+                style={{
+                    borderBottomWidth: '1px',
+                    borderBottomStyle: 'solid',
+                    borderBottomColor: borderColor,
+                }}
+                className="flex items-center justify-between p-2 px-5"
+            >
                 <motion.h1
                     style={{
                         fontSize,
@@ -45,16 +46,13 @@ const Header: FunctionComponent<HeaderProps> = ({ scrollContainerRef, title, act
                     {title}
                 </motion.h1>
 
-                <motion.div style={{ scale, transformOrigin: 'right' }}>
-                    {action}
-                </motion.div>
+                <motion.div style={{ scale, transformOrigin: 'right' }}>{action}</motion.div>
             </motion.div>
 
             {/* <div className='border-b border-zinc-950/20 py-2 px-5'>
                 <input type="text" placeholder='Search' className='p-2 w-full bg-zinc-200 rounded' />
             </div> */}
         </motion.div>
-       
     );
 };
 

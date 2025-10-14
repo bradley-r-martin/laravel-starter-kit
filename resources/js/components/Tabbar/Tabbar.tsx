@@ -136,6 +136,8 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                 label="Notifications"
                                 opened={opened}
                                 onClose={close}
+                                href="/notifications"
+                                data-active={component.startsWith('Notification')}
                             />
 
                             <motion.div

@@ -16,7 +16,10 @@ function asTableThead<TProps extends object>(WrappedComponent: React.ComponentTy
         };
 
         return <WrappedComponent {...additionalProps} {...(restProps as TProps)} ref={ref} />;
-    }) as React.ForwardRefExoticComponent<React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLTableSectionElement>> & Composition;
+    }) as React.ForwardRefExoticComponent<
+        React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLTableSectionElement>
+    > &
+        Composition;
 
     Component.displayName = `asTableThead(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
     Component.Tr = TableTheadTr;

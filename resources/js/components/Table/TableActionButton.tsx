@@ -32,11 +32,19 @@ function asTableActionButton<TProps extends object>(WrappedComponent: React.Comp
         };
 
         return (
-            <Tooltip label={<Text size="xs">{children}</Text>} withArrow className="uppercase" openDelay={isDesktop ? 0 : 300000}>
+            <Tooltip
+                label={<Text size="xs">{children}</Text>}
+                withArrow
+                className="uppercase"
+                openDelay={isDesktop ? 0 : 300000}
+            >
                 <WrappedComponent {...additionalProps} {...(restProps as TProps)} ref={ref} />
             </Tooltip>
         );
-    }) as React.ForwardRefExoticComponent<React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLButtonElement>> & Composition;
+    }) as React.ForwardRefExoticComponent<
+        React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLButtonElement>
+    > &
+        Composition;
 
     Component.displayName = `asTableActionButton(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
 

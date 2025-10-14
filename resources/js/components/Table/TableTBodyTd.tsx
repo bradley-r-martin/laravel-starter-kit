@@ -12,7 +12,10 @@ function asTableTbodyTd<TProps extends object>(WrappedComponent: React.Component
         const additionalProps: Partial<TableTdProps> = {};
 
         return <WrappedComponent {...additionalProps} {...(restProps as TProps)} ref={ref} />;
-    }) as React.ForwardRefExoticComponent<React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLTableCellElement>> & Composition;
+    }) as React.ForwardRefExoticComponent<
+        React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLTableCellElement>
+    > &
+        Composition;
 
     Component.displayName = `asTableTbodyTd(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
 

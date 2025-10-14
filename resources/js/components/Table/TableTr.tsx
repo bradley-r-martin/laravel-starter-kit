@@ -9,7 +9,10 @@ function asTableTr<TProps extends object>(WrappedComponent: React.ComponentType<
         const additionalProps: Partial<TableTrProps> = {};
 
         return <WrappedComponent {...additionalProps} {...(props as TProps)} ref={ref} />;
-    }) as React.ForwardRefExoticComponent<React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLTableRowElement>> & Composition;
+    }) as React.ForwardRefExoticComponent<
+        React.PropsWithoutRef<EnhancedProps> & React.RefAttributes<HTMLTableRowElement>
+    > &
+        Composition;
 
     Component.displayName = `asTableTr(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
 

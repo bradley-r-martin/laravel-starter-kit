@@ -3,7 +3,6 @@ import Navatar from '@/components/Navatar';
 import { Pagination } from '@/components/Pagination';
 import AppLayout from '@/Layouts/AppLayout';
 import BaseLayout from '@/Layouts/BaseLayout';
-import MainLayout from '@/Layouts/MainLayout';
 import { InertiaView, Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ModalLink } from '@inertiaui/modal-react';
@@ -29,7 +28,6 @@ import {
     TrashIcon,
     XIcon,
 } from 'lucide-react';
-import { FunctionComponent } from 'react';
 
 interface User {
     id: string;
@@ -44,12 +42,10 @@ interface User {
     created_at: string;
 }
 
-
-
 interface ListProps {
     users: Paginated<User>;
 }
- 
+
 const List: InertiaView<ListProps> = (props) => {
     const { users } = props;
     return (
@@ -325,8 +321,8 @@ const List: InertiaView<ListProps> = (props) => {
             </Container>
         </>
     );
-}
+};
 
 List.layout = [BaseLayout, AppLayout];
- 
+
 export default List;

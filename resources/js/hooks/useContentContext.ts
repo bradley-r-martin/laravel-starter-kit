@@ -1,5 +1,5 @@
-import ContentContext from "@/contexts/ContentContext";
-import { useContext } from "react";
+import ContentContext from '@/contexts/ContentContext';
+import { useContext } from 'react';
 
 export default function useContentContext() {
     const context = useContext(ContentContext);
