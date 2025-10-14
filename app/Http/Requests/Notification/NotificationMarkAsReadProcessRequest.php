@@ -42,8 +42,7 @@ final class NotificationMarkAsReadProcessRequest extends FormRequest
 
         $notification->markAsRead();
 
-        return redirect()
-            ->back()
+        return redirect()->route('notifications.index')
             ->with('toast', [
                 'message' => 'Notification marked as read',
                 'type' => 'success',

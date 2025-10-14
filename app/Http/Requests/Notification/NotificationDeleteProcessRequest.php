@@ -42,8 +42,7 @@ final class NotificationDeleteProcessRequest extends FormRequest
 
         $notification->delete();
 
-        return redirect()
-            ->back()
+        return redirect()->route('notifications.index')
             ->with('toast', [
                 'message' => 'Notification deleted successfully',
                 'type' => 'success',

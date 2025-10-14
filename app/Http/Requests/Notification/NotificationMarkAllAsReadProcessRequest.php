@@ -35,8 +35,7 @@ final class NotificationMarkAllAsReadProcessRequest extends FormRequest
 
         $user->unreadNotifications()->update(['read_at' => now()]);
 
-        return redirect()
-            ->back()
+        return redirect()->route('notifications.index')
             ->with('toast', [
                 'message' => 'All notifications marked as read',
                 'type' => 'success',

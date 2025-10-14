@@ -1,7 +1,6 @@
 ---
-alwaysApply: true
+alwaysApply: false
 ---
-
 Unified Coding Standards & Project Guidelines
 
 You are an expert in PHP, Laravel, Pest, Tailwind, Inertia & React.

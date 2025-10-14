@@ -6,7 +6,7 @@ import AppLayout from '@/Layouts/AppLayout';
 import BaseLayout from '@/Layouts/BaseLayout';
 import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Stack, Text, Tooltip } from '@mantine/core';
 import { CheckCheckIcon, CheckIcon, TrashIcon } from 'lucide-react';
 
@@ -25,42 +25,6 @@ interface ListProps {
 
 const List: InertiaView<ListProps> = (props) => {
     const { notifications, unread_count } = props;
-
-    const handleMarkAsRead = (notificationId: string) => {
-        router.post(
-            route('notifications.mark-as-read', notificationId),
-            {},
-            {
-                preserveScroll: true,
-            }
-        );
-    };
-
-    const handleMarkAllAsRead = () => {
-        router.post(
-            route('notifications.mark-all-as-read'),
-            {},
-            {
-                preserveScroll: true,
-            }
-        );
-    };
-
-    const handleDelete = (notificationId: string) => {
-        router.delete(route('notifications.delete', notificationId), {
-            preserveScroll: true,
-        });
-    };
-
-    const handleSendSample = () => {
-        router.post(
-            route('notifications.send-sample'),
-            {},
-            {
-                preserveScroll: true,
-            }
-        );
-    };
 
     const getNotificationTitle = (notification: Notification): string => {
         // Extract title from data if available
@@ -99,8 +63,11 @@ const List: InertiaView<ListProps> = (props) => {
                     <Group gap="xs">
                         {unread_count > 0 && (
                             <Button
+                                component={Link}
+                                href={route('notifications.mark-all-as-read')}
+                                method="post"
+                                navigate={false}
                                 leftSection={<CheckCheckIcon className="size-4" />}
-                                onClick={handleMarkAllAsRead}
                                 variant="light"
                                 size="xs"
                             >
@@ -168,9 +135,13 @@ const List: InertiaView<ListProps> = (props) => {
                                                 {!notification.read_at && (
                                                     <Tooltip label="Mark as read" position="left">
                                                         <ActionIcon
-                                                            onClick={() =>
-                                                                handleMarkAsRead(notification.id)
-                                                            }
+                                                            component={Link}
+                                                            href={route(
+                                                                'notifications.mark-as-read',
+                                                                notification.id
+                                                            )}
+                                                            method="post"
+                                                            navigate={false}
                                                             variant="subtle"
                                                             color="green"
                                                             size="md"
@@ -183,9 +154,13 @@ const List: InertiaView<ListProps> = (props) => {
                                                 )}
                                                 <Tooltip label="Delete" position="left">
                                                     <ActionIcon
-                                                        onClick={() =>
-                                                            handleDelete(notification.id)
-                                                        }
+                                                        component={Link}
+                                                        href={route(
+                                                            'notifications.delete',
+                                                            notification.id
+                                                        )}
+                                                        method="delete"
+                                                        navigate={false}
                                                         variant="subtle"
                                                         color="red"
                                                         size="md"
@@ -204,8 +179,11 @@ const List: InertiaView<ListProps> = (props) => {
                     )}
                     <PushNotificationToggle />
                     <Button
+                        component={Link}
+                        href={route('notifications.send-sample')}
+                        method="post"
+                        navigate={false}
                         radius="xl"
-                        onClick={handleSendSample}
                         variant="light"
                         color="gray"
                         size="xs"
