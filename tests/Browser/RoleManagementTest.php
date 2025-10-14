@@ -284,7 +284,7 @@ describe('Role Management', function (): void {
                 ->assertSee('Roles')
                 ->assertSee('Closed Manager')
                 ->assertSee('Closed')
-                ->assertVisible("data-testid=role-row-${roleId}-reopen")
+                ->assertVisible("data-testid=role-row-{$roleId}-reopen")
                 ->assertNoJavascriptErrors();
         });
     });

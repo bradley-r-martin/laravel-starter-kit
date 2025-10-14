@@ -13,6 +13,7 @@ arch('models')
         'App',
         'Spatie',
         'Carbon',
+        'NotificationChannels\WebPush',
     ]);
 
 arch('controllers')

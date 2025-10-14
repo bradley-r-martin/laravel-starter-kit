@@ -38,10 +38,10 @@ final class CreatePushSubscriptionRequest extends FormRequest
         $user = auth()->user();
 
         $user->updatePushSubscription(
-            endpoint: $this->input('endpoint'),
-            key: $this->input('keys.p256dh'),
-            token: $this->input('keys.auth'),
-            contentEncoding: $this->input('contentEncoding', 'aesgcm')
+            endpoint: $this->string('endpoint')->toString(),
+            key: $this->string('keys.p256dh')->toString(),
+            token: $this->string('keys.auth')->toString(),
+            contentEncoding: $this->string('contentEncoding', 'aesgcm')->toString()
         );
 
         return redirect()->route('notifications.index')

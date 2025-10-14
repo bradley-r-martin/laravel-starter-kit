@@ -36,7 +36,7 @@ final class DeletePushSubscriptionRequest extends FormRequest
         $user = auth()->user();
 
         $user->deletePushSubscription(
-            endpoint: $this->input('endpoint')
+            endpoint: $this->string('endpoint')->toString()
         );
 
         return redirect()->route('notifications.index')

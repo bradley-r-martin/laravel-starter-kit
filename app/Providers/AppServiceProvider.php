@@ -16,11 +16,6 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Configure OpenSSL to use our custom config file
-        $opensslConf = env('OPENSSL_CONF');
-        if ($opensslConf && file_exists($opensslConf)) {
-            putenv("OPENSSL_CONF={$opensslConf}");
-        }
 
         // if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
         //     $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
