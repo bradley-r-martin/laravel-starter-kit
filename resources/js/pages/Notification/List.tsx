@@ -1,5 +1,6 @@
 import Cast from '@/components/Cast';
 import { Pagination } from '@/components/Pagination';
+import PushNotificationToggle from '@/components/push-notification-toggle';
 import Table from '@/components/Table/Table';
 import AppLayout from '@/Layouts/AppLayout';
 import BaseLayout from '@/Layouts/BaseLayout';
@@ -201,6 +202,7 @@ const List: InertiaView<ListProps> = (props) => {
                             </Table.Tbody>
                         </Table>
                     )}
+                    <PushNotificationToggle />
                     <Button
                         radius="xl"
                         onClick={handleSendSample}

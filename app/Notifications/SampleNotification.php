@@ -6,6 +6,8 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\WebPush\WebPushChannel;
+use NotificationChannels\WebPush\WebPushMessage;
 
 final class SampleNotification extends Notification
 {
@@ -26,7 +28,19 @@ final class SampleNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', WebPushChannel::class];
+    }
+
+    /**
+     * Get the web push representation of the notification.
+     */
+    public function toWebPush(object $notifiable, self $notification): WebPushMessage
+    {
+        return (new WebPushMessage)
+            ->title($this->title)
+            ->body($this->message)
+            ->icon('/favicon.ico')
+            ->options(['TTL' => 1000]);
     }
 
     /**

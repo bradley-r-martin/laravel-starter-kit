@@ -8,6 +8,7 @@
     <meta name="apple-mobile-web-app-title" content="Stacks of Snacks" />
     
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="vapid-public-key" content="{{ config('webpush.vapid.public_key') }}">
 
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
 

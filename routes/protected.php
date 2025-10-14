@@ -8,6 +8,9 @@ use App\Http\Controllers\Notification\NotificationListController;
 use App\Http\Controllers\Notification\NotificationMarkAllAsReadController;
 use App\Http\Controllers\Notification\NotificationMarkAsReadController;
 use App\Http\Controllers\Notification\NotificationSendSampleController;
+use App\Http\Controllers\PushSubscription\PushSubscriptionCheckController;
+use App\Http\Controllers\PushSubscription\PushSubscriptionCreateController;
+use App\Http\Controllers\PushSubscription\PushSubscriptionDeleteController;
 use App\Http\Controllers\Role\RoleCloseController;
 use App\Http\Controllers\Role\RoleCreateController;
 use App\Http\Controllers\Role\RoleDestroyController;
@@ -69,6 +72,12 @@ Route::middleware('territory')->group(function () {
         Route::post('/mark-all-as-read', [NotificationMarkAllAsReadController::class, 'process'])->name('mark-all-as-read');
         Route::post('/send-sample', [NotificationSendSampleController::class, 'process'])->name('send-sample');
         Route::delete('/{notification}', [NotificationDeleteController::class, 'process'])->name('delete');
+    });
+
+    Route::prefix('push-subscriptions')->name('push-subscriptions.')->group(function () {
+        Route::post('/', [PushSubscriptionCreateController::class, 'process'])->name('create');
+        Route::post('/check', [PushSubscriptionCheckController::class, 'process'])->name('check');
+        Route::delete('/', [PushSubscriptionDeleteController::class, 'process'])->name('delete');
     });
 
     Route::get('/dashboard', function () {
