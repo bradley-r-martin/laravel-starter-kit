@@ -14,7 +14,6 @@ function asTableTbody<TProps extends object>(WrappedComponent: React.ComponentTy
     const Component = forwardRef<HTMLTableSectionElement, EnhancedProps>((props, ref) => {
         const { children, ...restProps } = props as TProps & { children: ReactNode };
         const additionalProps: Partial<TableTbodyProps & MotionProps & { component: typeof motion.tbody }> = {
-            layout: true,
             animate: { opacity: 1, height: 'auto' },
             initial: { opacity: 0, height: 0 },
             exit: { opacity: 0, height: 0 },

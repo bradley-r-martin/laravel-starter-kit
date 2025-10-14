@@ -18,7 +18,6 @@ function asTableTbodyTr<TProps extends object>(WrappedComponent: React.Component
                 `grid grid-cols-2 gap-px md:table-row text-xs ${disabled ? 'disabled-bg text-slate-400' : 'text-slate-600'}`,
                 className,
             ),
-            layout: true,
             animate: { opacity: 1 },
             initial: { opacity: 0 },
             exit: { opacity: 0 },
