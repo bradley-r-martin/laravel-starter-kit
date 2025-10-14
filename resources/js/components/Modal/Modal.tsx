@@ -1,4 +1,3 @@
-import { isMobile } from '@/Utilities/Environment';
 import { HeadlessModal } from '@inertiaui/modal-react';
 import { ActionIcon, ModalProps as MantineModalProps } from '@mantine/core';
 import { XIcon } from 'lucide-react';
@@ -28,19 +27,15 @@ interface HeadlessModalRenderProps {
 const Modal: FunctionComponent<ModalProps> = ({ children, ...props }) => {
     const modalRef = useRef<any>(null);
 
-  
-
     return (
         <HeadlessModal ref={modalRef}>
             {({ isOpen, close, afterLeave }: HeadlessModalRenderProps) => (
                 <AnimatedModal
                     animateOnMount
-                 
                     centered={false}
                     opened={isOpen}
                     onClose={close}
                     onExitTransitionEnd={afterLeave}
-                    
                     {...props}
                 >
                     <div className="group absolute top-5 right-5 flex items-center justify-center">

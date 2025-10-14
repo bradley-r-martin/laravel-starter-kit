@@ -6,10 +6,9 @@ import usePushNotifications from '@/hooks/usePushNotifications';
 import AppLayout from '@/Layouts/AppLayout';
 import BaseLayout from '@/Layouts/BaseLayout';
 import Header from '@/Parts/Header';
-import Prompt from '@/Parts/Prompt';
 import { InertiaView, Paginated } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ActionIcon, Badge, Button, Drawer, Group, Stack, Text, Tooltip } from '@mantine/core';
+import { ActionIcon, Badge, Button, Group, Stack, Text, Tooltip } from '@mantine/core';
 import { CheckCheckIcon, CheckIcon, TrashIcon } from 'lucide-react';
 
 interface Notification {
@@ -28,7 +27,6 @@ interface ListProps {
 const List: InertiaView<ListProps> = (props) => {
     const { notifications, unread_count } = props;
     const { isSubscribed, unsubscribe } = usePushNotifications();
-
 
     const getNotificationTitle = (notification: Notification): string => {
         // Extract title from data if available
@@ -84,14 +82,19 @@ const List: InertiaView<ListProps> = (props) => {
 
             <div className="container mx-auto mt-5 px-3 lg:px-5">
                 <Stack gap="xl" mb={800}>
-                <PushNotificationToggle />
-                {isSubscribed && (
-                    <Button variant="outline" size="xs" color="zinc" onClick={() => {
-                        unsubscribe();
-                    }}>
-                        Disable Notifications
-                    </Button>
-                )}
+                    <PushNotificationToggle />
+                    {isSubscribed && (
+                        <Button
+                            variant="outline"
+                            size="xs"
+                            color="zinc"
+                            onClick={() => {
+                                unsubscribe();
+                            }}
+                        >
+                            Disable Notifications
+                        </Button>
+                    )}
                     {notifications.data.length === 0 ? (
                         <Text c="dimmed" p="xl" ta="center">
                             No notifications found.
@@ -189,7 +192,7 @@ const List: InertiaView<ListProps> = (props) => {
                             </Table.Tbody>
                         </Table>
                     )}
-                   
+
                     <Button
                         component={Link}
                         href={route('notifications.send-sample')}

@@ -49,7 +49,7 @@ final class AppServiceProvider extends ServiceProvider
             /** @var Redirector $redirector */
             $redirector = app('redirect');
 
-            $makeResponse = function (RedirectResponse $response) use ($status, $headers) {
+            $makeResponse = function (RedirectResponse $response) use ($status, $headers): \Illuminate\Http\RedirectResponse {
                 // Override status
                 $response->setStatusCode($status);
 
