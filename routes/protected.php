@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Authentication\AuthenticationTerritoryController;
+use App\Http\Controllers\Notification\NotificationDeleteController;
+use App\Http\Controllers\Notification\NotificationListController;
+use App\Http\Controllers\Notification\NotificationMarkAllAsReadController;
+use App\Http\Controllers\Notification\NotificationMarkAsReadController;
 use App\Http\Controllers\Role\RoleCloseController;
 use App\Http\Controllers\Role\RoleCreateController;
 use App\Http\Controllers\Role\RoleDestroyController;
@@ -56,6 +60,13 @@ Route::middleware('territory')->group(function () {
         Route::post('/{user}/reopen', [UserReopenController::class, 'process'])->name('reopen');
         Route::get('/{user}/destroy', [UserDestroyController::class, 'view'])->name('destroy');
         Route::delete('/{user}/destroy', [UserDestroyController::class, 'process'])->name('destroy');
+    });
+
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [NotificationListController::class, 'view'])->name('index');
+        Route::post('/{notification}/mark-as-read', [NotificationMarkAsReadController::class, 'process'])->name('mark-as-read');
+        Route::post('/mark-all-as-read', [NotificationMarkAllAsReadController::class, 'process'])->name('mark-all-as-read');
+        Route::delete('/{notification}', [NotificationDeleteController::class, 'process'])->name('delete');
     });
 
     Route::get('/dashboard', function () {
