@@ -1,23 +1,13 @@
 import Cast from '@/components/Cast';
 import { Pagination } from '@/components/Pagination';
+import Table from '@/components/Table/Table';
 import AppLayout from '@/Layouts/AppLayout';
 import BaseLayout from '@/Layouts/BaseLayout';
 import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import {
-    ActionIcon,
-    Badge,
-    Button,
-    Container,
-    Group,
-    Paper,
-    Stack,
-    Text,
-    Title,
-    Tooltip,
-} from '@mantine/core';
-import { CheckCheckIcon, CheckIcon, SendIcon, TrashIcon } from 'lucide-react';
+import { ActionIcon, Badge, Button, Group, Stack, Text, Tooltip } from '@mantine/core';
+import { CheckCheckIcon, CheckIcon, TrashIcon } from 'lucide-react';
 
 interface Notification {
     id: string;
@@ -96,48 +86,48 @@ const List: InertiaView<ListProps> = (props) => {
     return (
         <>
             <Head title="Notifications" />
-      
+
             <div className="relative z-20 container mx-auto translate-y-3 px-5 lg:pt-10">
-                <div className="text-xs text-zinc-500">{notifications.data.length} notifications</div>
+                <div className="text-xs text-zinc-500">
+                    {notifications.data.length} notifications
+                </div>
             </div>
             <Header
-           
                 title="Notifications"
                 action={
                     <Group gap="xs">
-             
-                            <ActionIcon radius="xl" onClick={handleSendSample} variant="light" color="gray" size="md">
-                                <SendIcon className="size-4" />
-                            </ActionIcon>
-                            {unread_count > 0 && (
-                                <Button
-                                    leftSection={<CheckCheckIcon className="size-4" />}
-                                    onClick={handleMarkAllAsRead}
-                                    variant="light"
-                                    size="xs"
-                                >
-                                    Mark all as read
-                                </Button>
-                            )}
+                        {unread_count > 0 && (
+                            <Button
+                                leftSection={<CheckCheckIcon className="size-4" />}
+                                onClick={handleMarkAllAsRead}
+                                variant="light"
+                                size="xs"
+                            >
+                                Mark all as read
+                            </Button>
+                        )}
                     </Group>
                 }
             />
 
             <div className="container mx-auto mt-5 px-3 lg:px-5">
                 <Stack gap="xl" mb={800}>
-                
-
-                    <Paper shadow="sm" radius="md" withBorder>
-                        {notifications.data.length === 0 ? (
-                            <Text c="dimmed" p="xl" ta="center">
-                                No notifications found.
-                            </Text>
-                        ) : (
-                            <Stack gap={0}>
+                    {notifications.data.length === 0 ? (
+                        <Text c="dimmed" p="xl" ta="center">
+                            No notifications found.
+                        </Text>
+                    ) : (
+                        <Table striped highlightOnHover>
+                            <Table.Thead>
+                                <Table.Thead.Tr>
+                                    <Table.Th>Title</Table.Th>
+                                    <Table.Th>Actions</Table.Th>
+                                </Table.Thead.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
                                 {notifications.data.map((notification, index) => (
-                                    <Paper
+                                    <Table.Tbody.Tr
                                         key={notification.id}
-                                        p="md"
                                         data-notification-id={notification.id}
                                         style={{
                                             borderBottom:
@@ -149,35 +139,31 @@ const List: InertiaView<ListProps> = (props) => {
                                                 : 'var(--mantine-color-blue-0)',
                                         }}
                                     >
-                                        <Group justify="space-between" align="flex-start">
-                                            <Stack gap="xs" style={{ flex: 1 }}>
-                                                <Group gap="sm">
-                                                    <Text size="sm" fw={500}>
-                                                        {getNotificationTitle(notification)}
-                                                    </Text>
-                                                    {!notification.read_at && (
-                                                        <Badge
-                                                            variant="filled"
-                                                            color="blue"
-                                                            size="sm"
-                                                        >
-                                                            New
-                                                        </Badge>
-                                                    )}
-                                                </Group>
-                                                {getNotificationMessage(notification) && (
-                                                    <Text size="xs" c="dimmed">
-                                                        {getNotificationMessage(notification)}
-                                                    </Text>
-                                                )}
-                                                <Text size="xs" c="dimmed">
-                                                    <Cast.Datetime
-                                                        format="DD/MM/YYYY HH:mm"
-                                                        children={notification.created_at}
-                                                    />
+                                        <Table.Tbody.Td data-span="2">
+                                            <Group gap="sm">
+                                                <Text size="sm" fw={500}>
+                                                    {getNotificationTitle(notification)}
                                                 </Text>
-                                            </Stack>
-                                            <Group gap="xs">
+                                                {!notification.read_at && (
+                                                    <Badge variant="filled" color="blue" size="sm">
+                                                        New
+                                                    </Badge>
+                                                )}
+                                            </Group>
+                                            {getNotificationMessage(notification) && (
+                                                <Text size="xs" c="dimmed">
+                                                    {getNotificationMessage(notification)}
+                                                </Text>
+                                            )}
+                                            <Text size="xs" c="dimmed">
+                                                <Cast.Datetime
+                                                    format="DD/MM/YYYY HH:mm"
+                                                    children={notification.created_at}
+                                                />
+                                            </Text>
+                                        </Table.Tbody.Td>
+                                        <Table.Tbody.Td data-span="2">
+                                            <Group gap="xs" justify="end">
                                                 {!notification.read_at && (
                                                     <Tooltip label="Mark as read" position="left">
                                                         <ActionIcon
@@ -209,13 +195,22 @@ const List: InertiaView<ListProps> = (props) => {
                                                     </ActionIcon>
                                                 </Tooltip>
                                             </Group>
-                                        </Group>
-                                    </Paper>
+                                        </Table.Tbody.Td>
+                                    </Table.Tbody.Tr>
                                 ))}
-                            </Stack>
-                        )}
-                        <Pagination data={notifications} attribute="notifications" />
-                    </Paper>
+                            </Table.Tbody>
+                        </Table>
+                    )}
+                    <Button
+                        radius="xl"
+                        onClick={handleSendSample}
+                        variant="light"
+                        color="gray"
+                        size="xs"
+                    >
+                        Send test notification
+                    </Button>
+                    <Pagination data={notifications} attribute="notifications" />
                 </Stack>
             </div>
         </>

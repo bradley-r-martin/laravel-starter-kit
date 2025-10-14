@@ -45,7 +45,6 @@ describe('Notifications', function (): void {
                 ->waitForText('Notifications', 3)
                 ->assertSee('Test notification message')
                 ->assertSee('New')
-                ->assertSee('1 unread')
                 ->assertNoJavascriptErrors();
         });
 
@@ -68,7 +67,6 @@ describe('Notifications', function (): void {
 
             $page = $this->as($user, $territory)->visit('/notifications')
                 ->waitForText('Notifications', 3)
-                ->assertSee('3 unread')
                 ->assertNoJavascriptErrors();
 
             // Verify all notifications are displayed
@@ -107,7 +105,6 @@ describe('Notifications', function (): void {
             $this->as($user, $territory)->visit('/notifications')
                 ->waitForText('Unread notification', 3)
                 ->assertSee('Read notification')
-                ->assertSee('1 unread')
                 ->assertSee('New') // Badge for unread notification
                 ->assertNoJavascriptErrors();
         });
@@ -159,7 +156,6 @@ describe('Notifications', function (): void {
             $this->as($user, $territory)->visit('/notifications')
                 ->waitForText('Test notification', 3)
                 ->assertSee('New')
-                ->assertSee('1 unread')
                 ->assertNoJavascriptErrors()
                 ->click('[data-notification-id="'.$notification->id.'"] [aria-label="Mark as read"]')
                 ->assertDontSee('New')
@@ -220,11 +216,10 @@ describe('Notifications', function (): void {
             }
 
             $this->as($user, $territory)->visit('/notifications')
-                ->waitForText('3 unread', 3)
+                ->waitForText('Notifications', 3)
                 ->assertSee('Mark all as read')
                 ->assertNoJavascriptErrors()
                 ->click('button:has-text("Mark all as read")')
-                ->assertDontSee('unread')
                 ->assertDontSee('Mark all as read')
                 ->assertDontSee('New')
                 ->assertNoJavascriptErrors();
@@ -376,10 +371,11 @@ describe('Notifications', function (): void {
             ]);
 
             $this->as($user, $territory)->visit('/notifications')
-                ->waitForText('2 unread', 3)
+                ->waitForText('Unread notification 1', 3)
                 ->assertNoJavascriptErrors()
                 ->click('[data-notification-id="'.$notification1->id.'"] [aria-label="Delete"]')
-                ->assertSee('1 unread')
+                ->assertDontSee('Unread notification 1')
+                ->assertSee('Unread notification 2')
                 ->assertNoJavascriptErrors();
         });
     });
@@ -457,7 +453,7 @@ describe('Notifications', function (): void {
             $this->as($user, $territory)->visit('/notifications')
                 ->waitForText('My notification', 3)
                 ->assertDontSee('Other user notification')
-                ->assertSee('1 unread')
+                ->assertSee('New')
                 ->assertNoJavascriptErrors();
         });
     });

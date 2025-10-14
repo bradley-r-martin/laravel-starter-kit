@@ -7,9 +7,9 @@ interface HeaderProps {
     action?: React.ReactNode;
 }
 
-const Header: FunctionComponent<HeaderProps> = ({  title, action }) => {
+const Header: FunctionComponent<HeaderProps> = ({ title, action }) => {
     const headerRef = useRef<HTMLDivElement>(null);
-    const { ref: scrollContainerRef} = useContentContext();
+    const { ref: scrollContainerRef } = useContentContext();
 
     // Track scroll progress from the specific scroll container
     const { scrollY } = useScroll({
@@ -23,7 +23,11 @@ const Header: FunctionComponent<HeaderProps> = ({  title, action }) => {
 
     const scale = useTransform(scrollY, [0, margin], [1, 0.8]);
 
-    const borderColor = useTransform(scrollY, [0, margin], ['transparent', '#e0e0e0']);
+    const borderColor = useTransform(
+        scrollY,
+        [0, margin],
+        ['rgba(224,224,224,0)', 'rgba(224,224,224,1)']
+    );
 
     return (
         <motion.div

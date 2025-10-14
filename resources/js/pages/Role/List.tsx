@@ -35,7 +35,6 @@ const List: InertiaView<ListProps> = (props) => {
                 <div className="text-xs text-zinc-500">{roles.data.length} roles</div>
             </div>
             <Header
-             
                 title="Roles"
                 action={
                     <Group gap="xs">
@@ -61,17 +60,7 @@ const List: InertiaView<ListProps> = (props) => {
                             No roles found. Create your first role to get started.
                         </Text>
                     ) : (
-                        <Table
-                            striped
-                            highlightOnHover
-                            styles={{
-                                table: {
-                                    borderTopLeftRadius: '20px',
-                                    borderTopRightRadius: '20px',
-                                    // overflow: 'hidden',
-                                },
-                            }}
-                        >
+                        <Table striped highlightOnHover>
                             <Table.Thead>
                                 <Table.Tr>
                                     <Table.Th>Name</Table.Th>
