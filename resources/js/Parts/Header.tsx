@@ -25,9 +25,10 @@ const Header: FunctionComponent<HeaderProps> = ({ scrollContainerRef, title, act
     const borderColor = useTransform(scrollY, [0, margin], [ 'transparent','#e0e0e0']);
 
     return (
+    
         <motion.div
             ref={headerRef}
-            className="sticky  top-0 z-10  bg-gradient-to-b from-zinc-100 via-zinc-100 to-zinc-100/50"
+            className="container mx-auto sticky top-0 z-10 bg-gradient-to-b from-zinc-100 via-zinc-100 to-zinc-100/50 lg:from-white lg:via-white lg:to-white/50"
         >
             <motion.div style={{
                 borderBottomWidth: '1px',
@@ -53,6 +54,7 @@ const Header: FunctionComponent<HeaderProps> = ({ scrollContainerRef, title, act
                 <input type="text" placeholder='Search' className='p-2 w-full bg-zinc-200 rounded' />
             </div> */}
         </motion.div>
+       
     );
 };
 

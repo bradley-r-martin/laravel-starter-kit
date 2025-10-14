@@ -1,6 +1,7 @@
 import Cast from '@/components/Cast';
 import Navatar from '@/components/Navatar';
 import { Pagination } from '@/components/Pagination';
+import Table from '@/components/Table/Table';
 import useContentContext from '@/hooks/useContentContext';
 import AppLayout from '@/Layouts/AppLayout';
 import BaseLayout from '@/Layouts/BaseLayout';
@@ -16,12 +17,10 @@ import {
     Group,
     Paper,
     Stack,
-    Table,
     Text,
-    Title,
     Tooltip,
 } from '@mantine/core';
-import { PencilIcon, RotateCcwIcon, TrashIcon, XIcon } from 'lucide-react';
+import { PencilIcon, RotateCcwIcon, SearchIcon, TrashIcon, XIcon } from 'lucide-react';
 
 interface Role {
     id: string;
@@ -43,22 +42,36 @@ const List: InertiaView<ListProps> = (props) => {
     return (
         <>
             <Head title="Roles" />
-            <div className='px-5 translate-y-3 relative z-20'>
+     
+            <div className='px-5 lg:pt-10 container mx-auto translate-y-3 relative z-20'>
                 <div className="text-xs text-zinc-500">{roles.data.length} roles</div>
             </div>
-            <Header scrollContainerRef={ref} title="Roles" action={<Button size="xs" component={ModalLink} href={route('roles.create')}  navigate={false}>Create Role</Button>} />
-            <Container size="xl" py="xl">
-                <Stack gap="xl">
+            <Header scrollContainerRef={ref} title="Roles" action={<Group gap="xs">
+                <ActionIcon variant="transparent" color="zinc" radius="xl" size="lg">
+                    <SearchIcon className="size-4" />
+                </ActionIcon>
+                <Button size="xs"  component={ModalLink} href={route('roles.create')}  navigate={false}>Create Role</Button>
+
+            </Group>} />
+         
+            <div className='container mx-auto px-3 lg:px-5 mt-5'>
+                <Stack gap="xl" mb={800}>
                     
 
-                    <Paper shadow="sm" p="xl" mb={800} radius="md" withBorder>
+                  
                         {roles.data.length === 0 ? (
                             <Text c="dimmed" p="xl" ta="center">
                                 No roles found. Create your first role to get started.
                             </Text>
                         ) : (
-                            <Table.ScrollContainer minWidth={500}>
-                                <Table striped highlightOnHover>
+                           
+                                <Table striped highlightOnHover styles={{
+                                    table:{
+                                        borderTopLeftRadius: '20px',
+                                        borderTopRightRadius: '20px',
+                                        // overflow: 'hidden',
+                                    }
+                                }}>
                                     <Table.Thead>
                                         <Table.Tr>
                                             <Table.Th>Name</Table.Th>
@@ -71,14 +84,14 @@ const List: InertiaView<ListProps> = (props) => {
                                     </Table.Thead>
                                     <Table.Tbody>
                                         {roles.data.map((role) => (
-                                            <Table.Tr
+                                            <Table.Tbody.Tr
                                                 key={role.id}
                                                 data-testid={`role-row-${role.id}`}
                                             >
-                                                <Table.Td data-testid={`role-row-${role.id}-name`}>
+                                                <Table.Tbody.Td data-span="1" data-testid={`role-row-${role.id}-name`}>
                                                     <Navatar name={role.name} />
-                                                </Table.Td>
-                                                <Table.Td>
+                                                </Table.Tbody.Td>
+                                                <Table.Tbody.Td data-span="hidden">
                                                     <Text
                                                         c="dimmed"
                                                         size="sm"
@@ -86,8 +99,8 @@ const List: InertiaView<ListProps> = (props) => {
                                                     >
                                                         {role.description || '—'}
                                                     </Text>
-                                                </Table.Td>
-                                                <Table.Td>
+                                                </Table.Tbody.Td>
+                                                <Table.Tbody.Td data-span="hidden">
                                                     <Badge
                                                         variant="light"
                                                         color="blue"
@@ -95,8 +108,8 @@ const List: InertiaView<ListProps> = (props) => {
                                                     >
                                                         {role.users_count}
                                                     </Badge>
-                                                </Table.Td>
-                                                <Table.Td>
+                                                </Table.Tbody.Td>
+                                                <Table.Tbody.Td data-span="hidden">
                                                     <Group
                                                         gap="xs"
                                                         data-testid={`role-row-${role.id}-status`}
@@ -117,9 +130,10 @@ const List: InertiaView<ListProps> = (props) => {
                                                             </Badge>
                                                         )}
                                                     </Group>
-                                                </Table.Td>
-                                                <Table.Td
+                                                </Table.Tbody.Td>
+                                                <Table.Tbody.Td
                                                     data-testid={`role-row-${role.id}-created`}
+                                                    data-span="hidden"
                                                 >
                                                     <Text size="sm" c="dimmed">
                                                         <Cast.Datetime
@@ -128,11 +142,11 @@ const List: InertiaView<ListProps> = (props) => {
                                                             fallback="—"
                                                         />
                                                     </Text>
-                                                </Table.Td>
-                                                <Table.Td
+                                                </Table.Tbody.Td>
+                                                <Table.Tbody.Td
                                                     data-testid={`role-row-${role.id}-actions`}
                                                 >
-                                                    <Group gap="xs">
+                                                    <Group gap="xs" justify='end'>
                                                         {!role.closed_at && (
                                                             <>
                                                                 <Tooltip
@@ -224,17 +238,16 @@ const List: InertiaView<ListProps> = (props) => {
                                                             </>
                                                         )}
                                                     </Group>
-                                                </Table.Td>
-                                            </Table.Tr>
+                                                </Table.Tbody.Td>
+                                            </Table.Tbody.Tr>
                                         ))}
                                     </Table.Tbody>
                                 </Table>
-                            </Table.ScrollContainer>
                         )}
                         <Pagination data={roles} attribute="roles" />
-                    </Paper>
+                    
                 </Stack>
-            </Container>
+            </div>
         </>
     );
 }

@@ -1,0 +1,17 @@
+@media only screen and (max-width: 800px) {
+    td[data-title]:before {
+        display: block;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+        content: attr(data-title);
+        padding-bottom: 3px;
+    }
+    td[data-span="hidden"] {
+        display: none;
+    }
+    td[data-span="2"] {
+        grid-column: span 2 / span 2;
+    }
+
+}

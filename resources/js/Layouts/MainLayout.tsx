@@ -18,7 +18,7 @@ const MainLayout: FunctionComponent<MainLayoutProps> = (props) => {
             <main
                 ref={ref}
                 scroll-region=""
-                className="relative flex flex-1 flex-col overflow-auto bg-zinc-50 lg:m-3 lg:mt-px lg:rounded-lg lg:bg-white lg:shadow-xs lg:ring-1 lg:ring-zinc-950/10"
+                className="relative flex-1  overflow-auto bg-zinc-50 lg:m-3 lg:mt-px lg:rounded-lg lg:bg-white lg:shadow-xs lg:ring-1 lg:ring-zinc-950/10"
             >
                 {children}
             </main>
