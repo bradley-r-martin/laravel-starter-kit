@@ -60,16 +60,36 @@ const List: InertiaView<ListProps> = (props) => {
         });
     };
 
+    const handleSendSample = () => {
+        router.post(
+            route('notifications.send-sample'),
+            {},
+            {
+                preserveScroll: true,
+            }
+        );
+    };
+
+    const getNotificationTitle = (notification: Notification): string => {
+        // Extract title from data if available
+        if (notification.data.title) {
+            return String(notification.data.title);
+        }
+
+        // Fallback to a generic title based on type
+        const typeParts = notification.type.split('\\');
+        const className = typeParts[typeParts.length - 1];
+        return className.replace(/([A-Z])/g, ' $1').trim();
+    };
+
     const getNotificationMessage = (notification: Notification): string => {
         // Extract message from data if available
         if (notification.data.message) {
             return String(notification.data.message);
         }
 
-        // Fallback to a generic message based on type
-        const typeParts = notification.type.split('\\');
-        const className = typeParts[typeParts.length - 1];
-        return className.replace(/([A-Z])/g, ' $1').trim();
+        // Return empty string if no message
+        return '';
     };
 
     return (
@@ -86,15 +106,20 @@ const List: InertiaView<ListProps> = (props) => {
                                 </Badge>
                             )}
                         </Group>
-                        {unread_count > 0 && (
-                            <Button
-                                leftSection={<CheckCheckIcon className="size-4" />}
-                                onClick={handleMarkAllAsRead}
-                                variant="light"
-                            >
-                                Mark all as read
+                        <Group gap="sm">
+                            <Button onClick={handleSendSample} variant="light" color="gray">
+                                Send Sample
                             </Button>
-                        )}
+                            {unread_count > 0 && (
+                                <Button
+                                    leftSection={<CheckCheckIcon className="size-4" />}
+                                    onClick={handleMarkAllAsRead}
+                                    variant="light"
+                                >
+                                    Mark all as read
+                                </Button>
+                            )}
+                        </Group>
                     </Group>
 
                     <Paper shadow="sm" radius="md" withBorder>
@@ -123,7 +148,7 @@ const List: InertiaView<ListProps> = (props) => {
                                             <Stack gap="xs" style={{ flex: 1 }}>
                                                 <Group gap="sm">
                                                     <Text size="sm" fw={500}>
-                                                        {getNotificationMessage(notification)}
+                                                        {getNotificationTitle(notification)}
                                                     </Text>
                                                     {!notification.read_at && (
                                                         <Badge
@@ -135,6 +160,11 @@ const List: InertiaView<ListProps> = (props) => {
                                                         </Badge>
                                                     )}
                                                 </Group>
+                                                {getNotificationMessage(notification) && (
+                                                    <Text size="xs" c="dimmed">
+                                                        {getNotificationMessage(notification)}
+                                                    </Text>
+                                                )}
                                                 <Text size="xs" c="dimmed">
                                                     <Cast.Datetime
                                                         format="DD/MM/YYYY HH:mm"

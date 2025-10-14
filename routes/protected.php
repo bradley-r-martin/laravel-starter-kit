@@ -7,6 +7,7 @@ use App\Http\Controllers\Notification\NotificationDeleteController;
 use App\Http\Controllers\Notification\NotificationListController;
 use App\Http\Controllers\Notification\NotificationMarkAllAsReadController;
 use App\Http\Controllers\Notification\NotificationMarkAsReadController;
+use App\Http\Controllers\Notification\NotificationSendSampleController;
 use App\Http\Controllers\Role\RoleCloseController;
 use App\Http\Controllers\Role\RoleCreateController;
 use App\Http\Controllers\Role\RoleDestroyController;
@@ -66,6 +67,7 @@ Route::middleware('territory')->group(function () {
         Route::get('/', [NotificationListController::class, 'view'])->name('index');
         Route::post('/{notification}/mark-as-read', [NotificationMarkAsReadController::class, 'process'])->name('mark-as-read');
         Route::post('/mark-all-as-read', [NotificationMarkAllAsReadController::class, 'process'])->name('mark-all-as-read');
+        Route::post('/send-sample', [NotificationSendSampleController::class, 'process'])->name('send-sample');
         Route::delete('/{notification}', [NotificationDeleteController::class, 'process'])->name('delete');
     });
 
