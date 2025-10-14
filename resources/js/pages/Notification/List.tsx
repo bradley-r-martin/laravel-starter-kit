@@ -108,6 +108,7 @@ const List: InertiaView<ListProps> = (props) => {
                                     <Paper
                                         key={notification.id}
                                         p="md"
+                                        data-notification-id={notification.id}
                                         style={{
                                             borderBottom:
                                                 index < notifications.data.length - 1
@@ -152,6 +153,7 @@ const List: InertiaView<ListProps> = (props) => {
                                                             color="green"
                                                             size="md"
                                                             radius="xl"
+                                                            aria-label="Mark as read"
                                                         >
                                                             <CheckIcon className="size-4" />
                                                         </ActionIcon>
@@ -166,6 +168,7 @@ const List: InertiaView<ListProps> = (props) => {
                                                         color="red"
                                                         size="md"
                                                         radius="xl"
+                                                        aria-label="Delete"
                                                     >
                                                         <TrashIcon className="size-4" />
                                                     </ActionIcon>
