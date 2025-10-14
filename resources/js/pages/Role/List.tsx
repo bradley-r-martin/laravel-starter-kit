@@ -2,7 +2,6 @@ import Cast from '@/components/Cast';
 import Navatar from '@/components/Navatar';
 import { Pagination } from '@/components/Pagination';
 import Table from '@/components/Table/Table';
-import useContentContext from '@/hooks/useContentContext';
 import AppLayout from '@/Layouts/AppLayout';
 import BaseLayout from '@/Layouts/BaseLayout';
 import Header from '@/Parts/Header';
@@ -28,7 +27,6 @@ interface ListProps {
 
 const List: InertiaView<ListProps> = (props) => {
     const { roles } = props;
-    const { ref } = useContentContext();
     return (
         <>
             <Head title="Roles" />
@@ -37,7 +35,7 @@ const List: InertiaView<ListProps> = (props) => {
                 <div className="text-xs text-zinc-500">{roles.data.length} roles</div>
             </div>
             <Header
-                scrollContainerRef={ref}
+             
                 title="Roles"
                 action={
                     <Group gap="xs">

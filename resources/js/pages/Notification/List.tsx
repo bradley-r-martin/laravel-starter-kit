@@ -2,6 +2,7 @@ import Cast from '@/components/Cast';
 import { Pagination } from '@/components/Pagination';
 import AppLayout from '@/Layouts/AppLayout';
 import BaseLayout from '@/Layouts/BaseLayout';
+import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import {
@@ -16,7 +17,7 @@ import {
     Title,
     Tooltip,
 } from '@mantine/core';
-import { CheckCheckIcon, CheckIcon, TrashIcon } from 'lucide-react';
+import { CheckCheckIcon, CheckIcon, SendIcon, TrashIcon } from 'lucide-react';
 
 interface Notification {
     id: string;
@@ -95,32 +96,36 @@ const List: InertiaView<ListProps> = (props) => {
     return (
         <>
             <Head title="Notifications" />
-            <Container size="xl" py="xl">
-                <Stack gap="xl">
-                    <Group justify="space-between" align="center">
-                        <Group gap="md">
-                            <Title order={1}>Notifications</Title>
-                            {unread_count > 0 && (
-                                <Badge variant="filled" color="blue" size="lg">
-                                    {unread_count} unread
-                                </Badge>
-                            )}
-                        </Group>
-                        <Group gap="sm">
-                            <Button onClick={handleSendSample} variant="light" color="gray">
-                                Send Sample
-                            </Button>
+      
+            <div className="relative z-20 container mx-auto translate-y-3 px-5 lg:pt-10">
+                <div className="text-xs text-zinc-500">{notifications.data.length} notifications</div>
+            </div>
+            <Header
+           
+                title="Notifications"
+                action={
+                    <Group gap="xs">
+             
+                            <ActionIcon radius="xl" onClick={handleSendSample} variant="light" color="gray" size="md">
+                                <SendIcon className="size-4" />
+                            </ActionIcon>
                             {unread_count > 0 && (
                                 <Button
                                     leftSection={<CheckCheckIcon className="size-4" />}
                                     onClick={handleMarkAllAsRead}
                                     variant="light"
+                                    size="xs"
                                 >
                                     Mark all as read
                                 </Button>
                             )}
-                        </Group>
                     </Group>
+                }
+            />
+
+            <div className="container mx-auto mt-5 px-3 lg:px-5">
+                <Stack gap="xl" mb={800}>
+                
 
                     <Paper shadow="sm" radius="md" withBorder>
                         {notifications.data.length === 0 ? (
@@ -212,7 +217,7 @@ const List: InertiaView<ListProps> = (props) => {
                         <Pagination data={notifications} attribute="notifications" />
                     </Paper>
                 </Stack>
-            </Container>
+            </div>
         </>
     );
 };

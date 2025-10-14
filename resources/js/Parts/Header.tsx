@@ -1,14 +1,15 @@
+import useContentContext from '@/hooks/useContentContext';
 import { motion, useScroll, useTransform } from 'motion/react';
-import { FunctionComponent, RefObject, useRef } from 'react';
+import { FunctionComponent, useRef } from 'react';
 
 interface HeaderProps {
     title?: React.ReactNode;
     action?: React.ReactNode;
-    scrollContainerRef: RefObject<HTMLDivElement | null>;
 }
 
-const Header: FunctionComponent<HeaderProps> = ({ scrollContainerRef, title, action }) => {
+const Header: FunctionComponent<HeaderProps> = ({  title, action }) => {
     const headerRef = useRef<HTMLDivElement>(null);
+    const { ref: scrollContainerRef} = useContentContext();
 
     // Track scroll progress from the specific scroll container
     const { scrollY } = useScroll({
