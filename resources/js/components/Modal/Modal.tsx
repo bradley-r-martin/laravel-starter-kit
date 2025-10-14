@@ -28,50 +28,19 @@ interface HeadlessModalRenderProps {
 const Modal: FunctionComponent<ModalProps> = ({ children, ...props }) => {
     const modalRef = useRef<any>(null);
 
-    const modalProps = isMobile()
-        ? {
-              xOffset: 0,
-              yOffset: 0,
-              styles: {
-                  content: {
-                      maxHeight: '90%',
-                      borderBottomLeftRadius: 0,
-                      borderBottomRightRadius: 0,
-                  },
-              },
-
-              transitionProps: {
-                  duration: 250, // faster
-                  transition: {
-                      in: { transform: 'translateY(0%)' },
-                      out: { transform: 'translateY(150%)' },
-                      common: { transformOrigin: 'bottom' },
-                      transitionProperty: 'transform, opacity',
-                  },
-              },
-          }
-        : {
-              transitionProps: {
-                  transition: 'pop' as const,
-                  duration: 250, // faster
-                  timingFunction: 'cubic-bezier(0.68, -0.55, 0.27, 1.55)', // more bounce
-              },
-          };
+  
 
     return (
         <HeadlessModal ref={modalRef}>
             {({ isOpen, close, afterLeave }: HeadlessModalRenderProps) => (
                 <AnimatedModal
                     animateOnMount
-                    classNames={{
-                        inner: '!items-end lg:!items-center',
-                        content: 'modal-default',
-                    }}
+                 
                     centered={false}
                     opened={isOpen}
                     onClose={close}
                     onExitTransitionEnd={afterLeave}
-                    {...modalProps}
+                    
                     {...props}
                 >
                     <div className="group absolute top-5 right-5 flex items-center justify-center">

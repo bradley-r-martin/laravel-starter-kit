@@ -30,7 +30,7 @@ interface UsePushNotificationsReturn {
 export default function usePushNotifications(): UsePushNotificationsReturn {
     const [isSupported, setIsSupported] = useState(false);
     const [isSubscribed, setIsSubscribed] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Check if browser supports push notifications
     useEffect(() => {
@@ -45,11 +45,14 @@ export default function usePushNotifications(): UsePushNotificationsReturn {
     useEffect(() => {
         if (!isSupported) return;
 
+        
+
         const checkSubscription = async () => {
             try {
                 const registration = await navigator.serviceWorker.getRegistration();
                 if (!registration) {
                     setIsSubscribed(false);
+                    setIsLoading(false);
                     return;
                 }
 
@@ -57,6 +60,7 @@ export default function usePushNotifications(): UsePushNotificationsReturn {
 
                 if (!subscription) {
                     setIsSubscribed(false);
+                    setIsLoading(false);
                     return;
                 }
 
@@ -77,9 +81,11 @@ export default function usePushNotifications(): UsePushNotificationsReturn {
 
                 const data = await response.json();
                 setIsSubscribed(data.exists);
+                setIsLoading(false);
             } catch (error) {
                 console.error('Error checking subscription:', error);
                 setIsSubscribed(false);
+                setIsLoading(false);
             }
         };
 

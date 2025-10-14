@@ -7,6 +7,23 @@ import MantineServiceProvider from './Providers/MantineServiceProvider';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+
+
+router.on('success', (event) => {
+   // const { detail } = event
+    console.log(event);
+    // if (visit && visit.response?.headers?.get('X-Inertia-Redirection')) {
+    
+    //     alert('redirected');
+    // }
+    
+});
+
+router.on('invalid', (event) => {
+    console.log(`An invalid Inertia response was received.`)
+    console.log(event.detail.response)
+  })
+
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) =>
