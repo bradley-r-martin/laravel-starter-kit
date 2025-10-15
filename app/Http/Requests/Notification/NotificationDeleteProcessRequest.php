@@ -35,12 +35,6 @@ final class NotificationDeleteProcessRequest extends FormRequest
         /** @var User $user */
         $user = auth()->user();
 
-        // return inertia()->redirect()->route('notifications.index')
-        //     ->with('toast', [
-        //         'message' => 'Notification deleted successfully',
-        //         'type' => 'success',
-        //     ]);
-
         $notification = $user
             ->notifications()
             ->where('id', $notificationId)

@@ -58,17 +58,17 @@ final class AppServiceProvider extends ServiceProvider
                 $response->setStatusCode($status);
 
                 // remove the standard redirect header
-                $response->headers->remove('Location');
-                $response->headers->remove('X-Inertia-Redirect');
-                // $response->headers->set('X-Inertia', 'true');
+                //  $response->headers->remove('Location');
+                //  $response->headers->remove('X-Inertia-Redirect');
+                //  $response->headers->set('X-Inertia', 'true');
 
                 /** @var array<string, string|array<string>|null> $headers */
                 foreach ($headers as $key => $value) {
                     $response->headers->set($key, $value);
                 }
 
-                // Optional: mark as a “manual redirect”
-                $response->headers->set('X-Inertia-Redirection', 'true');
+                // $response->setStatusCode(303);
+                // $response->headers->set('X-Inertia-Redirection', 'true');
 
                 // set response json
                 // $response->headers->set('X-Inertia-Partial-Component', 'test');
