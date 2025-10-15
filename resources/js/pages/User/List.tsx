@@ -53,10 +53,8 @@ const List: InertiaView<ListProps> = (props) => {
                             <SearchIcon className="size-4" />
                         </ActionIcon>
                         <Navigate type="modal" href={route('users.create')}>
-                            <Button size="xs">
-                                Create User
-                            </Button>
-                        </Navigate>   
+                            <Button size="xs">Create User</Button>
+                        </Navigate>
                     </Group>
                 }
             />
@@ -141,17 +139,19 @@ const List: InertiaView<ListProps> = (props) => {
                                             {!user.closed_at && !user.suspended_at && (
                                                 <>
                                                     <Tooltip label="Edit User" position="left">
-                                                        <Navigate type="modal" href={route('users.update', user.id)}>
-                                                        <ActionIcon
-                                                            data-testid={`user-row-${user.id}-edit`}
-                                                           
-                                                            variant="subtle"
-                                                            color="blue"
-                                                            size="md"
-                                                            radius="xl"
+                                                        <Navigate
+                                                            type="modal"
+                                                            href={route('users.update', user.id)}
                                                         >
-                                                            <PencilIcon className="size-4" />
-                                                        </ActionIcon>
+                                                            <ActionIcon
+                                                                data-testid={`user-row-${user.id}-edit`}
+                                                                variant="subtle"
+                                                                color="blue"
+                                                                size="md"
+                                                                radius="xl"
+                                                            >
+                                                                <PencilIcon className="size-4" />
+                                                            </ActionIcon>
                                                         </Navigate>
                                                     </Tooltip>
 
@@ -159,83 +159,91 @@ const List: InertiaView<ListProps> = (props) => {
                                                         label="Change Password"
                                                         position="left"
                                                     >
-                                                        <Navigate type="modal" href={route('users.password', user.id)}>
-                                                        <ActionIcon
-                                                            data-testid={`user-row-${user.id}-password`}
-                                                           
-                                                            variant="subtle"
-                                                            color="yellow"
-                                                            size="md"
-                                                            radius="xl"
+                                                        <Navigate
+                                                            type="modal"
+                                                            href={route('users.password', user.id)}
                                                         >
-                                                            <KeyIcon className="size-4" />
-                                                        </ActionIcon>
+                                                            <ActionIcon
+                                                                data-testid={`user-row-${user.id}-password`}
+                                                                variant="subtle"
+                                                                color="yellow"
+                                                                size="md"
+                                                                radius="xl"
+                                                            >
+                                                                <KeyIcon className="size-4" />
+                                                            </ActionIcon>
                                                         </Navigate>
                                                     </Tooltip>
 
                                                     <Tooltip label="Suspend User" position="left">
-                                                        <Navigate type="modal" href={route('users.suspend', user.id)}>
-                                                        <ActionIcon
-                                                            data-testid={`user-row-${user.id}-suspend`}
-                                                           
-                                                            variant="subtle"
-                                                            color="orange"
-                                                            size="md"
-                                                            radius="xl"
+                                                        <Navigate
+                                                            type="modal"
+                                                            href={route('users.suspend', user.id)}
                                                         >
-                                                            <BanIcon className="size-4" />
-                                                        </ActionIcon>
+                                                            <ActionIcon
+                                                                data-testid={`user-row-${user.id}-suspend`}
+                                                                variant="subtle"
+                                                                color="orange"
+                                                                size="md"
+                                                                radius="xl"
+                                                            >
+                                                                <BanIcon className="size-4" />
+                                                            </ActionIcon>
                                                         </Navigate>
                                                     </Tooltip>
 
                                                     <Tooltip label="Close Account" position="left">
-                                                        <Navigate type="modal" href={route('users.close', user.id)}>
-                                                        <ActionIcon
-                                                            data-testid={`user-row-${user.id}-close`}
-                                                            variant="subtle"
-                                                            color="red"
-                                                            size="md"
-                                                            radius="xl"
+                                                        <Navigate
+                                                            type="modal"
+                                                            href={route('users.close', user.id)}
                                                         >
-                                                            <XIcon className="size-4" />
-                                                        </ActionIcon>
+                                                            <ActionIcon
+                                                                data-testid={`user-row-${user.id}-close`}
+                                                                variant="subtle"
+                                                                color="red"
+                                                                size="md"
+                                                                radius="xl"
+                                                            >
+                                                                <XIcon className="size-4" />
+                                                            </ActionIcon>
                                                         </Navigate>
                                                     </Tooltip>
                                                 </>
                                             )}
                                             {!user.closed_at && user.suspended_at && (
                                                 <Tooltip label="Unsuspend User" position="left">
-                                                    <Navigate type="modal" href={route('users.unsuspend', user.id)}>
-                                                    <ActionIcon
-                                                        data-testid={`user-row-${user.id}-unsuspend`}
-                                                          component={Navigate}
-                                                            type="modal"
+                                                    <Navigate
+                                                        type="modal"
                                                         href={route('users.unsuspend', user.id)}
-                                                     
-                                                        variant="subtle"
-                                                        color="green"
-                                                        size="md"
-                                                        radius="xl"
                                                     >
-                                                        <CheckCircleIcon className="size-4" />
-                                                    </ActionIcon>
+                                                        <ActionIcon
+                                                            data-testid={`user-row-${user.id}-unsuspend`}
+                                                            variant="subtle"
+                                                            color="green"
+                                                            size="md"
+                                                            radius="xl"
+                                                        >
+                                                            <CheckCircleIcon className="size-4" />
+                                                        </ActionIcon>
                                                     </Navigate>
                                                 </Tooltip>
                                             )}
                                             {user.closed_at && (
                                                 <>
                                                     <Tooltip label="Reopen Account" position="left">
-                                                        <Navigate type="modal" href={route('users.reopen', user.id)}>
-                                                        <ActionIcon
-                                                            data-testid={`user-row-${user.id}-reopen`}
-                                                           
-                                                            variant="subtle"
-                                                            color="green"
-                                                            size="md"
-                                                            radius="xl"
+                                                        <Navigate
+                                                            type="modal"
+                                                            href={route('users.reopen', user.id)}
                                                         >
-                                                            <RotateCcwIcon className="size-4" />
-                                                        </ActionIcon>
+                                                            <ActionIcon
+                                                                data-testid={`user-row-${user.id}-reopen`}
+                                                                variant="subtle"
+                                                                color="green"
+                                                                size="md"
+                                                                radius="xl"
+                                                            >
+                                                                <RotateCcwIcon className="size-4" />
+                                                            </ActionIcon>
                                                         </Navigate>
                                                     </Tooltip>
 
@@ -243,10 +251,12 @@ const List: InertiaView<ListProps> = (props) => {
                                                         label="Destroy Account"
                                                         position="left"
                                                     >
-                                                        <Navigate type="modal" href={route('users.destroy', user.id)}>
+                                                        <Navigate
+                                                            type="modal"
+                                                            href={route('users.destroy', user.id)}
+                                                        >
                                                             <ActionIcon
                                                                 data-testid={`user-row-${user.id}-destroy`}
-                                                            
                                                                 variant="subtle"
                                                                 color="red"
                                                                 size="md"

@@ -42,10 +42,7 @@ const List: InertiaView<ListProps> = (props) => {
                             <SearchIcon className="size-4" />
                         </ActionIcon>
                         <Navigate type="modal" href={route('roles.create')}>
-                            <Button
-                                size="xs">
-                                Create Role
-                            </Button>
+                            <Button size="xs">Create Role</Button>
                         </Navigate>
                     </Group>
                 }
@@ -138,10 +135,15 @@ const List: InertiaView<ListProps> = (props) => {
                                                 {!role.closed_at && (
                                                     <>
                                                         <Tooltip label="Edit Role" position="left">
-                                                            <Navigate type="modal" href={route('roles.update', role.id)}>
+                                                            <Navigate
+                                                                type="modal"
+                                                                href={route(
+                                                                    'roles.update',
+                                                                    role.id
+                                                                )}
+                                                            >
                                                                 <ActionIcon
                                                                     data-testid={`role-row-${role.id}-edit`}
-                                                                
                                                                     variant="subtle"
                                                                     color="blue"
                                                                     size="md"
@@ -153,9 +155,12 @@ const List: InertiaView<ListProps> = (props) => {
                                                         </Tooltip>
 
                                                         <Tooltip label="Close Role" position="left">
-                                                            <Navigate type="modal" href={route('roles.close', role.id)}>
-                                                            <ActionIcon
-                                                                data-testid={`role-row-${role.id}-close`}
+                                                            <Navigate
+                                                                type="modal"
+                                                                href={route('roles.close', role.id)}
+                                                            >
+                                                                <ActionIcon
+                                                                    data-testid={`role-row-${role.id}-close`}
                                                                     variant="subtle"
                                                                     color="orange"
                                                                     size="md"
@@ -173,17 +178,22 @@ const List: InertiaView<ListProps> = (props) => {
                                                             label="Reopen Role"
                                                             position="left"
                                                         >
-                                                            <Navigate type="modal" href={route('roles.reopen', role.id)}>
-                                                            <ActionIcon
-                                                                data-testid={`role-row-${role.id}-reopen`}
-                                                                
-                                                                variant="subtle"
-                                                                color="green"
-                                                                size="md"
-                                                                radius="xl"
+                                                            <Navigate
+                                                                type="modal"
+                                                                href={route(
+                                                                    'roles.reopen',
+                                                                    role.id
+                                                                )}
                                                             >
-                                                                <RotateCcwIcon className="size-4" />
-                                                            </ActionIcon>
+                                                                <ActionIcon
+                                                                    data-testid={`role-row-${role.id}-reopen`}
+                                                                    variant="subtle"
+                                                                    color="green"
+                                                                    size="md"
+                                                                    radius="xl"
+                                                                >
+                                                                    <RotateCcwIcon className="size-4" />
+                                                                </ActionIcon>
                                                             </Navigate>
                                                         </Tooltip>
 
@@ -191,17 +201,22 @@ const List: InertiaView<ListProps> = (props) => {
                                                             label="Destroy Role"
                                                             position="left"
                                                         >
-                                                            <Navigate type="modal" href={route('roles.destroy', role.id)}>
-                                                            <ActionIcon
-                                                                data-testid={`role-row-${role.id}-destroy`}
-                                                               
-                                                                variant="subtle"
-                                                                color="red"
-                                                                size="md"
-                                                                radius="xl"
+                                                            <Navigate
+                                                                type="modal"
+                                                                href={route(
+                                                                    'roles.destroy',
+                                                                    role.id
+                                                                )}
                                                             >
-                                                                <TrashIcon className="size-4" />
-                                                            </ActionIcon>
+                                                                <ActionIcon
+                                                                    data-testid={`role-row-${role.id}-destroy`}
+                                                                    variant="subtle"
+                                                                    color="red"
+                                                                    size="md"
+                                                                    radius="xl"
+                                                                >
+                                                                    <TrashIcon className="size-4" />
+                                                                </ActionIcon>
                                                             </Navigate>
                                                         </Tooltip>
                                                     </>

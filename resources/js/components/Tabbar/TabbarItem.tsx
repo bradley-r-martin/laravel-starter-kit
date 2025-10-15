@@ -43,7 +43,11 @@ const TabbarItem = (props: TabbarItemProps) => {
 
     const handleClick = () => {
         if (props?.href) {
-            router.visit(props?.href, { preserveUrl: true, onStart: () => setLoading(true), onSuccess: () => setLoading(false) });
+            router.visit(props?.href, {
+                preserveUrl: true,
+                onStart: () => setLoading(true),
+                onSuccess: () => setLoading(false),
+            });
         } else {
             props?.onClick?.();
         }
@@ -57,7 +61,7 @@ const TabbarItem = (props: TabbarItemProps) => {
             onClick={handleClick}
             {...restProps}
         >
-            {loading ? <Loader className="size-4" /> : icon}
+            {loading ? <Loader size="xs" color="zinc" /> : icon}
 
             <motion.span animate={menu_item} transition={transition} className="text-xs">
                 {label}
