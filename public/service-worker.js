@@ -35,16 +35,16 @@ self.addEventListener('notificationclick', function (event) {
         clients
             .matchAll({ type: 'window', includeUncontrolled: true })
             .then(function (clientList) {
-                // If a window is already open, focus it
+                // If a window is already open, focus it and navigate to notifications
                 for (let i = 0; i < clientList.length; i++) {
                     const client = clientList[i];
                     if ('focus' in client) {
-                        return client.focus();
+                        return client.focus().then(() => client.navigate('/notifications'));
                     }
                 }
-                // Otherwise, open a new window
+                // Otherwise, open a new window to notifications
                 if (clients.openWindow) {
-                    return clients.openWindow('/');
+                    return clients.openWindow('/notifications');
                 }
             }),
     );
