@@ -1,4 +1,5 @@
 import Cast from '@/components/Cast';
+import { Empty } from '@/components/Empty';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
@@ -50,9 +51,7 @@ const List: InertiaView<ListProps> = (props) => {
             <div className="container mx-auto mt-5 px-3 lg:px-5">
                 <Stack gap="xl" mb={800}>
                     {roles.data.length === 0 ? (
-                        <Text c="dimmed" p="xl" ta="center">
-                            No roles found. Create your first role to get started.
-                        </Text>
+                        <Empty title="No roles found" />
                     ) : (
                         <Table striped highlightOnHover>
                             <Table.Thead>
