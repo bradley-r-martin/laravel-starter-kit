@@ -18,61 +18,7 @@
 
 
     <script type="text/javascript">
-        // Prevent navigation and URL changes in iOS PWA standalone mode
-
-        const noop = (...args) => {
-    console.warn('[PWA] Navigation blocked to preserve standalone mode.', args);
-    return null;
-  };
-
-  // --- 1. Patch history methods safely ---
-  try {
-    history.pushState = noop;
-    history.replaceState = noop;
-  } catch (err) {
-    console.warn('[PWA] Could not override history methods:', err);
-  }
-
-  // --- 2. Patch window.location changes (assignment) ---
-  const originalLocation = window.location;
-  try {
-    // Intercept `window.location = "something"`
-    Object.defineProperty(window, 'location', {
-      configurable: false,
-      enumerable: true,
-      get: () => originalLocation,
-      set: (val) => {
-        console.warn('[PWA] Direct location assignment blocked:', val);
-      },
-    });
-  } catch (err) {
-    console.warn('[PWA] Could not redefine window.location:', err);
-  }
-
-  // --- 3. Prevent popstate & hash navigation ---
-  window.addEventListener('popstate', (e) => {
-    console.warn('[PWA] popstate navigation blocked:', e);
-    e.preventDefault();
-    history.pushState(null, '', window.location.href);
-  });
-
-  window.addEventListener('hashchange', (e) => {
-    console.warn('[PWA] hashchange blocked:', e);
-    e.preventDefault();
-    history.pushState(null, '', window.location.href.split('#')[0]);
-  });
-
-  // --- 4. Defensive overrides for assign/replace/reload if possible ---
-  try {
-    window.location.assign = noop;
-    window.location.replace = noop;
-    window.location.reload = noop;
-  } catch {
-    // On Safari, these are non-writable — just ignore
-  }
-
-  console.log('[PWA] Navigation locking active.');
-    
+      
      
 
 
