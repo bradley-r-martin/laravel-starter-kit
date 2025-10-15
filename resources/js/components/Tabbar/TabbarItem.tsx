@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react';
+import { Loader } from '@mantine/core';
 import { motion, Transition } from 'motion/react';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 interface TabbarItemProps {
@@ -27,6 +28,8 @@ const TabbarItem = (props: TabbarItemProps) => {
         ...restProps
     } = props;
 
+    const [loading, setLoading] = useState(false);
+
     const menu_item = opened
         ? { opacity: 1, y: 0, height: 'auto' }
         : { opacity: 0, y: 10, height: 0 };
@@ -40,7 +43,7 @@ const TabbarItem = (props: TabbarItemProps) => {
 
     const handleClick = () => {
         if (props?.href) {
-            router.visit(props?.href, { preserveUrl: true });
+            router.visit(props?.href, { preserveUrl: true, onStart: () => setLoading(true), onSuccess: () => setLoading(false) });
         } else {
             props?.onClick?.();
         }
@@ -54,7 +57,7 @@ const TabbarItem = (props: TabbarItemProps) => {
             onClick={handleClick}
             {...restProps}
         >
-            {icon}
+            {loading ? <Loader className="size-4" /> : icon}
 
             <motion.span animate={menu_item} transition={transition} className="text-xs">
                 {label}
