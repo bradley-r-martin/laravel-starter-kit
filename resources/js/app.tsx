@@ -10,11 +10,6 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 
 
-router.on('before', (event) => {
-
-    console.log('before',event);
- 
-})
 
 
 
