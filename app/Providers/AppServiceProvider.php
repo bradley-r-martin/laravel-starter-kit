@@ -60,7 +60,7 @@ final class AppServiceProvider extends ServiceProvider
                 // remove the standard redirect header
                 $response->headers->remove('Location');
                 $response->headers->remove('X-Inertia-Redirect');
-                $response->headers->set('X-Inertia', 'true');
+                // $response->headers->set('X-Inertia', 'true');
 
                 /** @var array<string, string|array<string>|null> $headers */
                 foreach ($headers as $key => $value) {
@@ -69,6 +69,10 @@ final class AppServiceProvider extends ServiceProvider
 
                 // Optional: mark as a “manual redirect”
                 $response->headers->set('X-Inertia-Redirection', 'true');
+
+                // set response json
+                // $response->headers->set('X-Inertia-Partial-Component', 'test');
+                // $response->headers->set('X-Inertia-Partial-Data', 'test');
 
                 return $response;
             };

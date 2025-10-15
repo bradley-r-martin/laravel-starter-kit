@@ -68,7 +68,7 @@ const List: InertiaView<ListProps> = (props) => {
                                 component={Link}
                                 href={route('notifications.mark-all-as-read')}
                                 method="post"
-                                navigate={false}
+                                replace
                                 leftSection={<CheckCheckIcon className="size-4" />}
                                 variant="light"
                                 size="xs"
@@ -156,7 +156,7 @@ const List: InertiaView<ListProps> = (props) => {
                                                                 notification.id
                                                             )}
                                                             method="post"
-                                                            navigate={false}
+                                                            replace
                                                             variant="subtle"
                                                             color="green"
                                                             size="md"
@@ -175,7 +175,7 @@ const List: InertiaView<ListProps> = (props) => {
                                                             notification.id
                                                         )}
                                                         method="delete"
-                                                        navigate={false}
+                                                        replace
                                                         variant="subtle"
                                                         color="red"
                                                         size="md"
@@ -197,7 +197,7 @@ const List: InertiaView<ListProps> = (props) => {
                         component={Link}
                         href={route('notifications.send-sample')}
                         method="post"
-                        navigate={false}
+                        replace
                         radius="xl"
                         variant="light"
                         color="gray"
