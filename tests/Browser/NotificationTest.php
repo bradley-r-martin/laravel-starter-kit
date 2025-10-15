@@ -157,6 +157,7 @@ describe('Notifications', function (): void {
                 ->waitForText('Test notification', 3)
                 ->assertSee('New')
                 ->assertNoJavascriptErrors()
+                ->click('button:has-text("Skip")')
                 ->click('[data-notification-id="'.$notification->id.'"] [aria-label="Mark as read"]')
                 ->assertDontSee('New')
                 ->assertNoJavascriptErrors();
@@ -183,7 +184,8 @@ describe('Notifications', function (): void {
 
             $page = $this->as($user, $territory)->visit('/notifications')
                 ->waitForText('Test notification', 3)
-                ->assertNoJavascriptErrors();
+                ->assertNoJavascriptErrors()
+                ->click('button:has-text("Skip")');
 
             // Verify mark as read button exists
             $page->assertVisible('[data-notification-id="'.$notification->id.'"] [aria-label="Mark as read"]');
@@ -219,6 +221,7 @@ describe('Notifications', function (): void {
                 ->waitForText('Notifications', 3)
                 ->assertSee('Mark all as read')
                 ->assertNoJavascriptErrors()
+                ->click('button:has-text("Skip")')
                 ->click('button:has-text("Mark all as read")')
                 ->assertDontSee('Mark all as read')
                 ->assertDontSee('New')
@@ -261,6 +264,7 @@ describe('Notifications', function (): void {
 
             $this->as($user, $territory)->visit('/notifications')
                 ->waitForText('Mark all as read', 3)
+                ->click('button:has-text("Skip")')
                 ->click('button:has-text("Mark all as read")')
                 ->assertDontSee('Mark all as read')
                 ->assertNoJavascriptErrors();
@@ -286,6 +290,7 @@ describe('Notifications', function (): void {
             $this->as($user, $territory)->visit('/notifications')
                 ->waitForText('Test notification to delete', 3)
                 ->assertNoJavascriptErrors()
+                ->click('button:has-text("Skip")')
                 ->click('[data-notification-id="'.$notification->id.'"] [aria-label="Delete"]')
                 ->assertDontSee('Test notification to delete')
                 ->assertNoJavascriptErrors();
@@ -319,6 +324,8 @@ describe('Notifications', function (): void {
                 ->assertSee('Test notification 2')
                 ->assertSee('Test notification 3')
                 ->assertNoJavascriptErrors();
+
+            $page->click('button:has-text("Skip")');
 
             // Delete first notification
             $page->click('[data-notification-id="'.$notificationIds[0].'"] [aria-label="Delete"]')
@@ -373,6 +380,7 @@ describe('Notifications', function (): void {
             $this->as($user, $territory)->visit('/notifications')
                 ->waitForText('Unread notification 1', 3)
                 ->assertNoJavascriptErrors()
+                ->click('button:has-text("Skip")')
                 ->click('[data-notification-id="'.$notification1->id.'"] [aria-label="Delete"]')
                 ->assertDontSee('Unread notification 1')
                 ->assertSee('Unread notification 2')

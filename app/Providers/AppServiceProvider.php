@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use Closure;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,6 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
         // if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
         //     $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
         //     $this->app->register(TelescopeServiceProvider::class);
@@ -49,7 +49,11 @@ final class AppServiceProvider extends ServiceProvider
             /** @var Redirector $redirector */
             $redirector = app('redirect');
 
-            $makeResponse = function (RedirectResponse $response) use ($status, $headers): \Illuminate\Http\RedirectResponse {
+            /**
+             * @param  RedirectResponse  $response
+             * @return RedirectResponse
+             */
+            $makeResponse = function (RedirectResponse $response) use ($status, $headers): RedirectResponse {
                 // Override status
                 $response->setStatusCode($status);
 
@@ -58,7 +62,7 @@ final class AppServiceProvider extends ServiceProvider
                 $response->headers->remove('X-Inertia-Redirect');
                 $response->headers->set('X-Inertia', 'true');
 
-                // Merge custom headers
+                /** @var array<string, string|array<string>|null> $headers */
                 foreach ($headers as $key => $value) {
                     $response->headers->set($key, $value);
                 }
@@ -78,17 +82,21 @@ final class AppServiceProvider extends ServiceProvider
             {
                 public function __construct(
                     protected Redirector $redirector,
-                    protected $makeResponse
+                    protected Closure $makeResponse
                 ) {}
 
-                public function __call($method, $args)
+                /**
+                 * @param  array<int, mixed>  $args
+                 */
+                public function __call(string $method, array $args): RedirectResponse
                 {
+                    /** @var RedirectResponse $response */
                     $response = $this->redirector->{$method}(...$args);
 
+                    /** @var RedirectResponse */
                     return ($this->makeResponse)($response);
                 }
             };
         });
-
     }
 }

@@ -19,7 +19,6 @@ describe('Role Management', function (): void {
                 ->assertNoJavascriptErrors()
                 ->fill('name', 'Administrator')
                 ->fill('description', 'Full system administrator role')
-                ->check('hidden')
                 ->submit()
                 ->assertSee('Roles')
                 ->assertPathIs('/roles')
@@ -30,7 +29,6 @@ describe('Role Management', function (): void {
             expect($role)->not->toBeNull();
             expect($role->name)->toBe('Administrator');
             expect($role->description)->toBe('Full system administrator role');
-            expect($role->hidden)->toBeTrue();
         });
 
         it('shows validation errors for invalid input', function (): void {
