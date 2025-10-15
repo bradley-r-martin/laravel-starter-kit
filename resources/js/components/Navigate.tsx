@@ -1,3 +1,4 @@
+import { isStandalone } from '@/Utilities/Environment';
 import { InertiaLinkProps, Link } from '@inertiajs/react';
 import { ModalLink } from '@inertiaui/modal-react';
 import { forwardRef } from 'react';
@@ -17,6 +18,7 @@ const Navigate = forwardRef<HTMLAnchorElement, NavigateProps>((props, ref) => {
         return (
             <ModalLink
                 ref={ref}
+                navigate={!isStandalone()} // Disable navigation in standalone mode
                 {...(restProps as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
             />
         );

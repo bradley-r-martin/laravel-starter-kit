@@ -1,5 +1,6 @@
 import Cast from '@/components/Cast';
 import Navatar from '@/components/Navatar';
+import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
 import Table from '@/components/Table/Table';
 import AppLayout from '@/Layouts/AppLayout';
@@ -7,7 +8,6 @@ import BaseLayout from '@/Layouts/BaseLayout';
 import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
-import { ModalLink } from '@inertiaui/modal-react';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import {
     BanIcon,
@@ -52,7 +52,8 @@ const List: InertiaView<ListProps> = (props) => {
                         <ActionIcon variant="transparent" color="zinc" radius="xl" size="lg">
                             <SearchIcon className="size-4" />
                         </ActionIcon>
-                        <Button size="xs" component={ModalLink} href={route('users.create')}>
+                        <Button size="xs"   component={Navigate}
+                                                            type="modal" href={route('users.create')}>
                             Create User
                         </Button>
                     </Group>
@@ -141,9 +142,10 @@ const List: InertiaView<ListProps> = (props) => {
                                                     <Tooltip label="Edit User" position="left">
                                                         <ActionIcon
                                                             data-testid={`user-row-${user.id}-edit`}
-                                                            component={ModalLink}
+                                                             component={Navigate}
+                                                            type="modal"
                                                             href={route('users.update', user.id)}
-                                                            navigate={true}
+                                                           
                                                             variant="subtle"
                                                             color="blue"
                                                             size="md"
@@ -159,9 +161,9 @@ const List: InertiaView<ListProps> = (props) => {
                                                     >
                                                         <ActionIcon
                                                             data-testid={`user-row-${user.id}-password`}
-                                                            component={ModalLink}
+                                                            component={Navigate}
+                                                            type="modal"
                                                             href={route('users.password', user.id)}
-                                                            navigate={true}
                                                             variant="subtle"
                                                             color="yellow"
                                                             size="md"
@@ -174,9 +176,10 @@ const List: InertiaView<ListProps> = (props) => {
                                                     <Tooltip label="Suspend User" position="left">
                                                         <ActionIcon
                                                             data-testid={`user-row-${user.id}-suspend`}
-                                                            component={ModalLink}
+                                                            component={Navigate}
+                                                            type="modal"
                                                             href={route('users.suspend', user.id)}
-                                                            navigate={true}
+                                                           
                                                             variant="subtle"
                                                             color="orange"
                                                             size="md"
@@ -189,9 +192,9 @@ const List: InertiaView<ListProps> = (props) => {
                                                     <Tooltip label="Close Account" position="left">
                                                         <ActionIcon
                                                             data-testid={`user-row-${user.id}-close`}
-                                                            component={ModalLink}
+                                                            component={Navigate}
+                                                            type="modal"
                                                             href={route('users.close', user.id)}
-                                                            navigate={true}
                                                             variant="subtle"
                                                             color="red"
                                                             size="md"
@@ -206,9 +209,10 @@ const List: InertiaView<ListProps> = (props) => {
                                                 <Tooltip label="Unsuspend User" position="left">
                                                     <ActionIcon
                                                         data-testid={`user-row-${user.id}-unsuspend`}
-                                                        component={ModalLink}
+                                                          component={Navigate}
+                                                            type="modal"
                                                         href={route('users.unsuspend', user.id)}
-                                                        navigate={true}
+                                                     
                                                         variant="subtle"
                                                         color="green"
                                                         size="md"
@@ -223,9 +227,10 @@ const List: InertiaView<ListProps> = (props) => {
                                                     <Tooltip label="Reopen Account" position="left">
                                                         <ActionIcon
                                                             data-testid={`user-row-${user.id}-reopen`}
-                                                            component={ModalLink}
+                                                             component={Navigate}
+                                                            type="modal"
                                                             href={route('users.reopen', user.id)}
-                                                            navigate={true}
+                                                       
                                                             variant="subtle"
                                                             color="green"
                                                             size="md"
@@ -241,9 +246,10 @@ const List: InertiaView<ListProps> = (props) => {
                                                     >
                                                         <ActionIcon
                                                             data-testid={`user-row-${user.id}-destroy`}
-                                                            component={ModalLink}
+                                                              component={Navigate}
+                                                            type="modal"
                                                             href={route('users.destroy', user.id)}
-                                                            navigate={true}
+                                                         
                                                             variant="subtle"
                                                             color="red"
                                                             size="md"
