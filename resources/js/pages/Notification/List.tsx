@@ -4,7 +4,6 @@ import PushNotificationToggle from '@/components/push-notification-toggle';
 import Table from '@/components/Table/Table';
 import usePushNotifications from '@/hooks/usePushNotifications';
 import AppLayout from '@/Layouts/AppLayout';
-import BaseLayout from '@/Layouts/BaseLayout';
 import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
 import { Head, Link } from '@inertiajs/react';
@@ -212,6 +211,6 @@ const List: InertiaView<ListProps> = (props) => {
     );
 };
 
-List.layout = [BaseLayout, AppLayout];
+List.layout = [AppLayout];
 
 export default List;

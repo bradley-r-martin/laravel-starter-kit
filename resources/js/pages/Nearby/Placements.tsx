@@ -1,6 +1,5 @@
 import NearbyNoPlacementsFoundView from '@/Features/Nearby/Views/NearbyNoPlacementsFoundView';
 import AppLayout from '@/Layouts/AppLayout';
-import BaseLayout from '@/Layouts/BaseLayout';
 import { InertiaView } from '@/types';
 import { useModalStack } from '@inertiaui/modal-react';
 import { Button, Drawer } from '@mantine/core';
@@ -88,6 +87,6 @@ const Nearby: InertiaView<NearbyProps> = () => {
     );
 };
 
-Nearby.layout = [BaseLayout, AppLayout];
+Nearby.layout = [AppLayout];
 
 export default Nearby;
