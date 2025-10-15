@@ -1,5 +1,6 @@
 import Cast from '@/components/Cast';
 import Navatar from '@/components/Navatar';
+import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
 import Table from '@/components/Table/Table';
 import AppLayout from '@/Layouts/AppLayout';
@@ -7,7 +8,6 @@ import BaseLayout from '@/Layouts/BaseLayout';
 import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
-import { ModalLink } from '@inertiaui/modal-react';
 import { ActionIcon, Badge, Button, Group, Stack, Text, Tooltip } from '@mantine/core';
 import { PencilIcon, RotateCcwIcon, SearchIcon, TrashIcon, XIcon } from 'lucide-react';
 
@@ -41,14 +41,12 @@ const List: InertiaView<ListProps> = (props) => {
                         <ActionIcon variant="transparent" color="zinc" radius="xl" size="lg">
                             <SearchIcon className="size-4" />
                         </ActionIcon>
-                        <Button
-                            size="xs"
-                            component={ModalLink}
-                            href={route('roles.create')}
-                            navigate={false}
-                        >
-                            Create Role
-                        </Button>
+                        <Navigate type="modal" href={route('roles.create')}>
+                            <Button
+                                size="xs">
+                                Create Role
+                            </Button>
+                        </Navigate>
                     </Group>
                 }
             />
@@ -140,36 +138,32 @@ const List: InertiaView<ListProps> = (props) => {
                                                 {!role.closed_at && (
                                                     <>
                                                         <Tooltip label="Edit Role" position="left">
-                                                            <ActionIcon
-                                                                data-testid={`role-row-${role.id}-edit`}
-                                                                component={ModalLink}
-                                                                href={route(
-                                                                    'roles.update',
-                                                                    role.id
-                                                                )}
-                                                                navigate={false}
-                                                                variant="subtle"
-                                                                color="blue"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <PencilIcon className="size-4" />
-                                                            </ActionIcon>
+                                                            <Navigate type="modal" href={route('roles.update', role.id)}>
+                                                                <ActionIcon
+                                                                    data-testid={`role-row-${role.id}-edit`}
+                                                                
+                                                                    variant="subtle"
+                                                                    color="blue"
+                                                                    size="md"
+                                                                    radius="xl"
+                                                                >
+                                                                    <PencilIcon className="size-4" />
+                                                                </ActionIcon>
+                                                            </Navigate>
                                                         </Tooltip>
 
                                                         <Tooltip label="Close Role" position="left">
+                                                            <Navigate type="modal" href={route('roles.close', role.id)}>
                                                             <ActionIcon
                                                                 data-testid={`role-row-${role.id}-close`}
-                                                                component={ModalLink}
-                                                                href={route('roles.close', role.id)}
-                                                                navigate={false}
-                                                                variant="subtle"
-                                                                color="orange"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <XIcon className="size-4" />
-                                                            </ActionIcon>
+                                                                    variant="subtle"
+                                                                    color="orange"
+                                                                    size="md"
+                                                                    radius="xl"
+                                                                >
+                                                                    <XIcon className="size-4" />
+                                                                </ActionIcon>
+                                                            </Navigate>
                                                         </Tooltip>
                                                     </>
                                                 )}
@@ -179,14 +173,10 @@ const List: InertiaView<ListProps> = (props) => {
                                                             label="Reopen Role"
                                                             position="left"
                                                         >
+                                                            <Navigate type="modal" href={route('roles.reopen', role.id)}>
                                                             <ActionIcon
                                                                 data-testid={`role-row-${role.id}-reopen`}
-                                                                component={ModalLink}
-                                                                href={route(
-                                                                    'roles.reopen',
-                                                                    role.id
-                                                                )}
-                                                                navigate={false}
+                                                                
                                                                 variant="subtle"
                                                                 color="green"
                                                                 size="md"
@@ -194,20 +184,17 @@ const List: InertiaView<ListProps> = (props) => {
                                                             >
                                                                 <RotateCcwIcon className="size-4" />
                                                             </ActionIcon>
+                                                            </Navigate>
                                                         </Tooltip>
 
                                                         <Tooltip
                                                             label="Destroy Role"
                                                             position="left"
                                                         >
+                                                            <Navigate type="modal" href={route('roles.destroy', role.id)}>
                                                             <ActionIcon
                                                                 data-testid={`role-row-${role.id}-destroy`}
-                                                                component={ModalLink}
-                                                                href={route(
-                                                                    'roles.destroy',
-                                                                    role.id
-                                                                )}
-                                                                navigate={false}
+                                                               
                                                                 variant="subtle"
                                                                 color="red"
                                                                 size="md"
@@ -215,6 +202,7 @@ const List: InertiaView<ListProps> = (props) => {
                                                             >
                                                                 <TrashIcon className="size-4" />
                                                             </ActionIcon>
+                                                            </Navigate>
                                                         </Tooltip>
                                                     </>
                                                 )}

@@ -52,10 +52,11 @@ const List: InertiaView<ListProps> = (props) => {
                         <ActionIcon variant="transparent" color="zinc" radius="xl" size="lg">
                             <SearchIcon className="size-4" />
                         </ActionIcon>
-                        <Button size="xs"   component={Navigate}
-                                                            type="modal" href={route('users.create')}>
-                            Create User
-                        </Button>
+                        <Navigate type="modal" href={route('users.create')}>
+                            <Button size="xs">
+                                Create User
+                            </Button>
+                        </Navigate>   
                     </Group>
                 }
             />
@@ -140,11 +141,9 @@ const List: InertiaView<ListProps> = (props) => {
                                             {!user.closed_at && !user.suspended_at && (
                                                 <>
                                                     <Tooltip label="Edit User" position="left">
+                                                        <Navigate type="modal" href={route('users.update', user.id)}>
                                                         <ActionIcon
                                                             data-testid={`user-row-${user.id}-edit`}
-                                                             component={Navigate}
-                                                            type="modal"
-                                                            href={route('users.update', user.id)}
                                                            
                                                             variant="subtle"
                                                             color="blue"
@@ -153,17 +152,17 @@ const List: InertiaView<ListProps> = (props) => {
                                                         >
                                                             <PencilIcon className="size-4" />
                                                         </ActionIcon>
+                                                        </Navigate>
                                                     </Tooltip>
 
                                                     <Tooltip
                                                         label="Change Password"
                                                         position="left"
                                                     >
+                                                        <Navigate type="modal" href={route('users.password', user.id)}>
                                                         <ActionIcon
                                                             data-testid={`user-row-${user.id}-password`}
-                                                            component={Navigate}
-                                                            type="modal"
-                                                            href={route('users.password', user.id)}
+                                                           
                                                             variant="subtle"
                                                             color="yellow"
                                                             size="md"
@@ -171,14 +170,13 @@ const List: InertiaView<ListProps> = (props) => {
                                                         >
                                                             <KeyIcon className="size-4" />
                                                         </ActionIcon>
+                                                        </Navigate>
                                                     </Tooltip>
 
                                                     <Tooltip label="Suspend User" position="left">
+                                                        <Navigate type="modal" href={route('users.suspend', user.id)}>
                                                         <ActionIcon
                                                             data-testid={`user-row-${user.id}-suspend`}
-                                                            component={Navigate}
-                                                            type="modal"
-                                                            href={route('users.suspend', user.id)}
                                                            
                                                             variant="subtle"
                                                             color="orange"
@@ -187,14 +185,13 @@ const List: InertiaView<ListProps> = (props) => {
                                                         >
                                                             <BanIcon className="size-4" />
                                                         </ActionIcon>
+                                                        </Navigate>
                                                     </Tooltip>
 
                                                     <Tooltip label="Close Account" position="left">
+                                                        <Navigate type="modal" href={route('users.close', user.id)}>
                                                         <ActionIcon
                                                             data-testid={`user-row-${user.id}-close`}
-                                                            component={Navigate}
-                                                            type="modal"
-                                                            href={route('users.close', user.id)}
                                                             variant="subtle"
                                                             color="red"
                                                             size="md"
@@ -202,11 +199,13 @@ const List: InertiaView<ListProps> = (props) => {
                                                         >
                                                             <XIcon className="size-4" />
                                                         </ActionIcon>
+                                                        </Navigate>
                                                     </Tooltip>
                                                 </>
                                             )}
                                             {!user.closed_at && user.suspended_at && (
                                                 <Tooltip label="Unsuspend User" position="left">
+                                                    <Navigate type="modal" href={route('users.unsuspend', user.id)}>
                                                     <ActionIcon
                                                         data-testid={`user-row-${user.id}-unsuspend`}
                                                           component={Navigate}
@@ -220,17 +219,16 @@ const List: InertiaView<ListProps> = (props) => {
                                                     >
                                                         <CheckCircleIcon className="size-4" />
                                                     </ActionIcon>
+                                                    </Navigate>
                                                 </Tooltip>
                                             )}
                                             {user.closed_at && (
                                                 <>
                                                     <Tooltip label="Reopen Account" position="left">
+                                                        <Navigate type="modal" href={route('users.reopen', user.id)}>
                                                         <ActionIcon
                                                             data-testid={`user-row-${user.id}-reopen`}
-                                                             component={Navigate}
-                                                            type="modal"
-                                                            href={route('users.reopen', user.id)}
-                                                       
+                                                           
                                                             variant="subtle"
                                                             color="green"
                                                             size="md"
@@ -238,25 +236,25 @@ const List: InertiaView<ListProps> = (props) => {
                                                         >
                                                             <RotateCcwIcon className="size-4" />
                                                         </ActionIcon>
+                                                        </Navigate>
                                                     </Tooltip>
 
                                                     <Tooltip
                                                         label="Destroy Account"
                                                         position="left"
                                                     >
-                                                        <ActionIcon
-                                                            data-testid={`user-row-${user.id}-destroy`}
-                                                              component={Navigate}
-                                                            type="modal"
-                                                            href={route('users.destroy', user.id)}
-                                                         
-                                                            variant="subtle"
-                                                            color="red"
-                                                            size="md"
-                                                            radius="xl"
-                                                        >
-                                                            <TrashIcon className="size-4" />
-                                                        </ActionIcon>
+                                                        <Navigate type="modal" href={route('users.destroy', user.id)}>
+                                                            <ActionIcon
+                                                                data-testid={`user-row-${user.id}-destroy`}
+                                                            
+                                                                variant="subtle"
+                                                                color="red"
+                                                                size="md"
+                                                                radius="xl"
+                                                            >
+                                                                <TrashIcon className="size-4" />
+                                                            </ActionIcon>
+                                                        </Navigate>
                                                     </Tooltip>
                                                 </>
                                             )}

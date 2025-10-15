@@ -1,30 +1,34 @@
-import { isStandalone } from '@/Utilities/Environment';
-import { InertiaLinkProps, Link } from '@inertiajs/react';
+import { Slot } from '@radix-ui/react-slot';
+import { forwardRef, useState } from 'react';
 import { ModalLink } from '@inertiaui/modal-react';
-import { forwardRef } from 'react';
+import { isStandalone } from '@/Utilities/Environment';
+import { Link } from '@inertiajs/react';
 
-type NavigateProps =
-    | ({
-          type: 'modal';
-      } & React.AnchorHTMLAttributes<HTMLAnchorElement>)
-    | ({
-          type: 'page';
-      } & InertiaLinkProps);
+type NavigateProps = {
+    type: 'modal' | 'page';
+    children?: React.ReactNode;
+    href?: string;
+}
 
 const Navigate = forwardRef<HTMLAnchorElement, NavigateProps>((props, ref) => {
     const { type, ...restProps } = props;
 
-    if (type === 'modal') {
-        return (
-            <ModalLink
-                ref={ref}
-                navigate={!isStandalone()} // Disable navigation in standalone mode
-                {...(restProps as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-            />
-        );
-    } else if (type === 'page') {
-        return <Link ref={ref} {...(restProps as InertiaLinkProps)} />;
+    const [loading, setLoading] = useState(false)
+
+    const componentProps = type === 'modal' ? {
+        component: ModalLink,
+         navigate: !isStandalone(),
+         loading:loading,
+         onStart:() => setLoading(true),
+         onSuccess:() => setLoading(false),
+    } : {
+        component: Link,
+        loading:loading,
+        onStart:() => setLoading(true),
+        onSuccess:() => setLoading(false),
     }
+
+    return (<Slot ref={ref} {...restProps} {...componentProps} />)
 });
 
 Navigate.displayName = 'Navigate';
