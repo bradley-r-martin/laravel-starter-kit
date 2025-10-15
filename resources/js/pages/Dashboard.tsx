@@ -1,6 +1,5 @@
 import useContentContext from '@/hooks/useContentContext';
 import AppLayout from '@/Layouts/AppLayout';
-import BaseLayout from '@/Layouts/BaseLayout';
 import Header from '@/Parts/Header';
 import { InertiaView } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -121,6 +120,6 @@ const Dashboard: InertiaView<DashboardProps> = () => {
     );
 };
 
-Dashboard.layout = [BaseLayout, AppLayout];
+Dashboard.layout = [ AppLayout];
 
 export default Dashboard;

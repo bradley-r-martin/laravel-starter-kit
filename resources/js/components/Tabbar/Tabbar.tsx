@@ -220,6 +220,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                     <TabbarItem
                                         icon={<LogOutIcon className="size-7 shrink-0" />}
                                         label="Logout"
+                                        href={'/login'}
                                         opened={opened}
                                         onClose={close}
                                     />

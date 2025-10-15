@@ -1,4 +1,6 @@
+
 import BaseLayout from '@/Layouts/BaseLayout';
+import EntryLayout from '@/Layouts/EntryLayout';
 import { InertiaView } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { Button, Container, Paper, Stack, Text, Title } from '@mantine/core';
@@ -16,16 +18,14 @@ const Territory: InertiaView<TerritoryProps> = ({ territories }) => {
     return (
         <>
             <Head title="Select Territory" />
-            <Container size="xs" py="xl" h="100vh">
-                <Stack gap="xl">
-                    <Stack gap="xs">
-                        <Title order={1}>Select Territory</Title>
-                        <Text size="sm" c="dimmed">
-                            Choose which territory you want to access
-                        </Text>
-                    </Stack>
+         
+                <Stack gap="xl" p="xl">
+                    <div className="select-none">
+                        <h1 className="text-2xl font-bold text-zinc-950/70">Select Territory</h1>
+                        <p className="text-sm text-zinc-950/70">Choose which territory you want to access</p>
+                    </div>
 
-                    <Paper shadow="sm" p="xl" radius="md" withBorder>
+               
                         <Stack gap="md">
                             <Stack gap="xs" mt="xs">
                                 {territories.map((territory) => (
@@ -36,23 +36,24 @@ const Territory: InertiaView<TerritoryProps> = ({ territories }) => {
                                         href={route('territory.process')}
                                         data={{ territory_id: territory.id }}
                                         method="post"
+                                        variant='outline'
+                                        color='zinc'
                                     >
                                         {territory.name}
                                     </Button>
                                 ))}
                             </Stack>
 
-                            <Button component={Link} href={route('dashboard')}>
+                            <Button component={Link} href={route('dashboard')} variant="subtle" color="red">
                                 Logout
                             </Button>
                         </Stack>
-                    </Paper>
+                  
                 </Stack>
-            </Container>
         </>
     );
 };
 
-Territory.layout = [BaseLayout];
+Territory.layout = [BaseLayout, EntryLayout];
 
 export default Territory;

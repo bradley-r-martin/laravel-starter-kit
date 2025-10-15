@@ -4,7 +4,6 @@ import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
 import Table from '@/components/Table/Table';
 import AppLayout from '@/Layouts/AppLayout';
-import BaseLayout from '@/Layouts/BaseLayout';
 import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -235,6 +234,6 @@ const List: InertiaView<ListProps> = (props) => {
     );
 };
 
-List.layout = [BaseLayout, AppLayout];
+List.layout = [AppLayout];
 
 export default List;
