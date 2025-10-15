@@ -54,7 +54,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                         dragControls.start(e);
                     }
                 }}
-                className="pointer-events-none absolute min-h-screen inset-0 flex  flex-1 flex-col items-end justify-end data-[opened=true]:pointer-events-auto"
+                className="pointer-events-none absolute min-h-screen inset-0 flex flex-1 flex-col items-end justify-end data-[opened=true]:pointer-events-auto"
             >
                 <motion.div
                     drag={opened ? 'y' : false}
