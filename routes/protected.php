@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Authentication\AuthenticationTerritoryController;
+use App\Http\Controllers\Manufacturer\ManufacturerCloseController;
+use App\Http\Controllers\Manufacturer\ManufacturerCreateController;
+use App\Http\Controllers\Manufacturer\ManufacturerDestroyController;
+use App\Http\Controllers\Manufacturer\ManufacturerListController;
+use App\Http\Controllers\Manufacturer\ManufacturerReopenController;
+use App\Http\Controllers\Manufacturer\ManufacturerUpdateController;
 use App\Http\Controllers\Notification\NotificationDeleteController;
 use App\Http\Controllers\Notification\NotificationListController;
 use App\Http\Controllers\Notification\NotificationMarkAllAsReadController;
@@ -84,6 +90,20 @@ Route::middleware('territory')->group(function () {
         Route::post('/{wholesaler}/reopen', [WholesalerReopenController::class, 'process'])->name('reopen');
         Route::get('/{wholesaler}/destroy', [WholesalerDestroyController::class, 'view'])->name('destroy');
         Route::delete('/{wholesaler}/destroy', [WholesalerDestroyController::class, 'process'])->name('destroy');
+    });
+
+    Route::prefix('manufacturers')->name('manufacturers.')->group(function () {
+        Route::get('/', [ManufacturerListController::class, 'view'])->name('index');
+        Route::get('/create', [ManufacturerCreateController::class, 'view'])->name('create');
+        Route::post('/create', [ManufacturerCreateController::class, 'process'])->name('store');
+        Route::get('/{manufacturer}/update', [ManufacturerUpdateController::class, 'view'])->name('update');
+        Route::post('/{manufacturer}/update', [ManufacturerUpdateController::class, 'process'])->name('update');
+        Route::get('/{manufacturer}/close', [ManufacturerCloseController::class, 'view'])->name('close');
+        Route::post('/{manufacturer}/close', [ManufacturerCloseController::class, 'process'])->name('close');
+        Route::get('/{manufacturer}/reopen', [ManufacturerReopenController::class, 'view'])->name('reopen');
+        Route::post('/{manufacturer}/reopen', [ManufacturerReopenController::class, 'process'])->name('reopen');
+        Route::get('/{manufacturer}/destroy', [ManufacturerDestroyController::class, 'view'])->name('destroy');
+        Route::delete('/{manufacturer}/destroy', [ManufacturerDestroyController::class, 'process'])->name('destroy');
     });
 
     Route::prefix('notifications')->name('notifications.')->group(function () {

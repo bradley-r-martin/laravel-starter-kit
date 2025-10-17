@@ -1,4 +1,5 @@
 import Cast from '@/components/Cast';
+import { Empty } from '@/components/Empty';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
@@ -60,9 +61,7 @@ const List: InertiaView<ListProps> = (props) => {
 
             <div className="container mx-auto mt-5 px-3 pb-[800px] lg:px-5">
                 {users.data.length === 0 ? (
-                    <Text c="dimmed" p="xl" ta="center">
-                        No users found.
-                    </Text>
+                    <Empty title="No users found" subtitle="Create a new user to get started." />
                 ) : (
                     <Table striped highlightOnHover>
                         <Table.Thead>

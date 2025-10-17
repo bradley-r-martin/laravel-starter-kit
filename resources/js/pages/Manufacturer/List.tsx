@@ -11,7 +11,7 @@ import { Head } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import { PencilIcon, RotateCcwIcon, SearchIcon, TrashIcon, XIcon } from 'lucide-react';
 
-interface Wholesaler {
+interface Manufacturer {
     id: string;
     name: string;
     closed_at: string | null;
@@ -19,36 +19,38 @@ interface Wholesaler {
 }
 
 interface ListProps {
-    wholesalers: Paginated<Wholesaler>;
+    manufacturers: Paginated<Manufacturer>;
 }
 
 const List: InertiaView<ListProps> = (props) => {
-    const { wholesalers } = props;
+    const { manufacturers } = props;
     return (
         <>
-            <Head title="Wholesalers" />
+            <Head title="Manufacturers" />
             <div className="relative z-20 container mx-auto translate-y-3 px-5 lg:pt-10">
-                <div className="text-xs text-zinc-500">{wholesalers.data.length} wholesalers</div>
+                <div className="text-xs text-zinc-500">
+                    {manufacturers.data.length} manufacturers
+                </div>
             </div>
             <Header
-                title="Wholesalers"
+                title="Manufacturers"
                 action={
                     <Group gap="xs">
                         <ActionIcon variant="transparent" color="zinc" radius="xl" size="lg">
                             <SearchIcon className="size-4" />
                         </ActionIcon>
-                        <Navigate type="modal" href={route('wholesalers.create')}>
-                            <Button size="xs">Create Wholesaler</Button>
+                        <Navigate type="modal" href={route('manufacturers.create')}>
+                            <Button size="xs">Create Manufacturer</Button>
                         </Navigate>
                     </Group>
                 }
             />
 
             <div className="container mx-auto mt-5 px-3 pb-[800px] lg:px-5">
-                {wholesalers.data.length === 0 ? (
+                {manufacturers.data.length === 0 ? (
                     <Empty
-                        title="No wholesalers found"
-                        subtitle="Create a new wholesaler to get started."
+                        title="No manufacturers found"
+                        subtitle="Create a new manufacturer to get started."
                     />
                 ) : (
                     <Table striped highlightOnHover>
@@ -61,27 +63,27 @@ const List: InertiaView<ListProps> = (props) => {
                             </Table.Thead.Tr>
                         </Table.Thead>
                         <Table.Tbody>
-                            {wholesalers.data.map((wholesaler) => (
+                            {manufacturers.data.map((manufacturer) => (
                                 <Table.Tbody.Tr
-                                    key={wholesaler.id}
-                                    data-testid={`wholesaler-row-${wholesaler.id}`}
+                                    key={manufacturer.id}
+                                    data-testid={`manufacturer-row-${manufacturer.id}`}
                                 >
                                     <Table.Tbody.Td
-                                        data-testid={`wholesaler-row-${wholesaler.id}-name`}
+                                        data-testid={`manufacturer-row-${manufacturer.id}-name`}
                                     >
-                                        <Navatar name={wholesaler.name} />
+                                        <Navatar name={manufacturer.name} />
                                     </Table.Tbody.Td>
                                     <Table.Tbody.Td
                                         data-span="hidden"
-                                        data-testid={`wholesaler-row-${wholesaler.id}-status`}
+                                        data-testid={`manufacturer-row-${manufacturer.id}-status`}
                                     >
                                         <Group gap="xs">
-                                            {wholesaler.closed_at && (
+                                            {manufacturer.closed_at && (
                                                 <Badge variant="light" color="red">
                                                     Closed
                                                 </Badge>
                                             )}
-                                            {!wholesaler.closed_at && (
+                                            {!manufacturer.closed_at && (
                                                 <Badge variant="light" color="green">
                                                     Active
                                                 </Badge>
@@ -90,35 +92,35 @@ const List: InertiaView<ListProps> = (props) => {
                                     </Table.Tbody.Td>
                                     <Table.Tbody.Td
                                         data-span="hidden"
-                                        data-testid={`wholesaler-row-${wholesaler.id}-created`}
+                                        data-testid={`manufacturer-row-${manufacturer.id}-created`}
                                     >
                                         <Text size="sm" c="dimmed">
                                             <Cast.Datetime
                                                 format="DD/MM/YYYY"
-                                                children={wholesaler.created_at}
+                                                children={manufacturer.created_at}
                                                 fallback="—"
                                             />
                                         </Text>
                                     </Table.Tbody.Td>
                                     <Table.Tbody.Td
-                                        data-testid={`wholesaler-row-${wholesaler.id}-actions`}
+                                        data-testid={`manufacturer-row-${manufacturer.id}-actions`}
                                     >
                                         <Group gap="xs" justify="end">
-                                            {!wholesaler.closed_at && (
+                                            {!manufacturer.closed_at && (
                                                 <>
                                                     <Tooltip
-                                                        label="Edit Wholesaler"
+                                                        label="Edit Manufacturer"
                                                         position="left"
                                                     >
                                                         <Navigate
                                                             type="modal"
                                                             href={route(
-                                                                'wholesalers.update',
-                                                                wholesaler.id
+                                                                'manufacturers.update',
+                                                                manufacturer.id
                                                             )}
                                                         >
                                                             <ActionIcon
-                                                                data-testid={`wholesaler-row-${wholesaler.id}-edit`}
+                                                                data-testid={`manufacturer-row-${manufacturer.id}-edit`}
                                                                 variant="subtle"
                                                                 color="blue"
                                                                 size="md"
@@ -130,18 +132,18 @@ const List: InertiaView<ListProps> = (props) => {
                                                     </Tooltip>
 
                                                     <Tooltip
-                                                        label="Close Wholesaler"
+                                                        label="Close Manufacturer"
                                                         position="left"
                                                     >
                                                         <Navigate
                                                             type="modal"
                                                             href={route(
-                                                                'wholesalers.close',
-                                                                wholesaler.id
+                                                                'manufacturers.close',
+                                                                manufacturer.id
                                                             )}
                                                         >
                                                             <ActionIcon
-                                                                data-testid={`wholesaler-row-${wholesaler.id}-close`}
+                                                                data-testid={`manufacturer-row-${manufacturer.id}-close`}
                                                                 variant="subtle"
                                                                 color="red"
                                                                 size="md"
@@ -153,21 +155,21 @@ const List: InertiaView<ListProps> = (props) => {
                                                     </Tooltip>
                                                 </>
                                             )}
-                                            {wholesaler.closed_at && (
+                                            {manufacturer.closed_at && (
                                                 <>
                                                     <Tooltip
-                                                        label="Reopen Wholesaler"
+                                                        label="Reopen Manufacturer"
                                                         position="left"
                                                     >
                                                         <Navigate
                                                             type="modal"
                                                             href={route(
-                                                                'wholesalers.reopen',
-                                                                wholesaler.id
+                                                                'manufacturers.reopen',
+                                                                manufacturer.id
                                                             )}
                                                         >
                                                             <ActionIcon
-                                                                data-testid={`wholesaler-row-${wholesaler.id}-reopen`}
+                                                                data-testid={`manufacturer-row-${manufacturer.id}-reopen`}
                                                                 variant="subtle"
                                                                 color="green"
                                                                 size="md"
@@ -179,18 +181,18 @@ const List: InertiaView<ListProps> = (props) => {
                                                     </Tooltip>
 
                                                     <Tooltip
-                                                        label="Destroy Wholesaler"
+                                                        label="Destroy Manufacturer"
                                                         position="left"
                                                     >
                                                         <Navigate
                                                             type="modal"
                                                             href={route(
-                                                                'wholesalers.destroy',
-                                                                wholesaler.id
+                                                                'manufacturers.destroy',
+                                                                manufacturer.id
                                                             )}
                                                         >
                                                             <ActionIcon
-                                                                data-testid={`wholesaler-row-${wholesaler.id}-destroy`}
+                                                                data-testid={`manufacturer-row-${manufacturer.id}-destroy`}
                                                                 variant="subtle"
                                                                 color="red"
                                                                 size="md"
@@ -209,7 +211,7 @@ const List: InertiaView<ListProps> = (props) => {
                         </Table.Tbody>
                     </Table>
                 )}
-                <Pagination data={wholesalers} attribute="wholesalers" />
+                <Pagination data={manufacturers} attribute="manufacturers" />
             </div>
         </>
     );

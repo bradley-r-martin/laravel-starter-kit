@@ -51,7 +51,10 @@ const List: InertiaView<ListProps> = (props) => {
             <div className="container mx-auto mt-5 px-3 lg:px-5">
                 <Stack gap="xl" mb={800}>
                     {roles.data.length === 0 ? (
-                        <Empty title="No roles found" />
+                        <Empty
+                            title="No roles found"
+                            subtitle="Create a new role to get started."
+                        />
                     ) : (
                         <Table striped highlightOnHover>
                             <Table.Thead>
