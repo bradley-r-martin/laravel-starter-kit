@@ -1,10 +1,12 @@
 import { usePage } from '@inertiajs/react';
 import { Avatar } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import {
     BellIcon,
     BuildingIcon,
     ChevronDownIcon,
     ChevronRightIcon,
+    FactoryIcon,
     FilesIcon,
     GaugeIcon,
     GitPullRequestIcon,
@@ -13,12 +15,15 @@ import {
     Radar,
     ReceiptIcon,
     SettingsIcon,
+    ShieldIcon,
     TruckIcon,
+    UsersIcon,
 } from 'lucide-react';
-import { AnimatePresence, motion, Transition, useDragControls } from 'motion/react';
+import { AnimatePresence, m, motion, Transition, useDragControls } from 'motion/react';
 import { FunctionComponent } from 'react';
 import TabbarHandle from './TabbarHandle';
 import TabbarItem from './TabbarItem';
+import MenuGroup from './MenuGroup';
 
 interface TabbarProps {
     opened: boolean;
@@ -30,6 +35,13 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
     const { opened, toggle, close } = props;
     const { component } = usePage<{ component: string }>();
     const dragControls = useDragControls();
+
+    function onClose() {
+        close();
+        manageControls.close();
+    }
+
+    const [manageOpened, manageControls] = useDisclosure(false);
 
     const transition: Transition = {
         ease: [0.785, 0.135, 0.15, 0.86],
@@ -101,7 +113,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                 label="Nearby"
                                 opened={opened}
                                 href="/nearby"
-                                onClose={close}
+                                onClose={onClose}
                                 data-active={component.startsWith('Nearby')}
                             />
                             <TabbarItem
@@ -135,7 +147,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                 icon={<BellIcon className="size-7" />}
                                 label="Notifications"
                                 opened={opened}
-                                onClose={close}
+                                onClose={onClose}
                                 href="/notifications"
                                 data-active={component.startsWith('Notification')}
                             />
@@ -151,93 +163,133 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                 }
                                 className="col-span-3 overflow-hidden"
                             >
-                                <div className="grid w-full flex-1 grid-cols-3 gap-px">
-                                    <TabbarItem
-                                        icon={<GaugeIcon className="size-7 shrink-0" />}
-                                        label="Dashboard"
-                                        opened={opened}
-                                        href="/mobile"
-                                        onClose={close}
-                                        data-active={component.startsWith('Dashboard')}
-                                    />
+                                <MenuGroup opened={!manageOpened}>
+                                  
+                                        <TabbarItem
+                                            icon={<GaugeIcon className="size-7 shrink-0" />}
+                                            label="Dashboard"
+                                            opened={opened}
+                                            href="/mobile"
+                                            onClose={onClose}
+                                            data-active={component.startsWith('Dashboard')}
+                                        />
 
-                                    <TabbarItem
-                                        icon={<BuildingIcon className="size-7 shrink-0" />}
-                                        label="Sites"
-                                        opened={opened}
-                                        onClose={close}
-                                        href="/roles"
-                                        data-active={component.startsWith('Role')}
-                                    />
+                                        <TabbarItem
+                                            icon={<BuildingIcon className="size-7 shrink-0" />}
+                                            label="Sites"
+                                            opened={opened}
+                                            onClose={onClose}
+                                            href="/roles"
+                                            data-active={component.startsWith('Role')}
+                                        />
 
-                                    <TabbarItem
-                                        icon={<TruckIcon className="size-7 shrink-0" />}
-                                        label="Routes"
-                                        opened={opened}
-                                        onClose={close}
-                                        href="/users"
-                                        data-active={component.startsWith('User')}
-                                    />
+                                        <TabbarItem
+                                            icon={<TruckIcon className="size-7 shrink-0" />}
+                                            label="Routes"
+                                            opened={opened}
+                                            onClose={onClose}
+                                            href="/users"
+                                            data-active={component.startsWith('User')}
+                                        />
 
-                                    <TabbarItem
-                                        icon={<GitPullRequestIcon className="size-7 shrink-0" />}
-                                        label="Runs"
-                                        opened={opened}
-                                        onClose={close}
-                                    />
+                                        <TabbarItem
+                                            icon={
+                                                <GitPullRequestIcon className="size-7 shrink-0" />
+                                            }
+                                            label="Runs"
+                                            opened={opened}
+                                            onClose={onClose}
+                                        />
 
-                                    <TabbarItem
-                                        icon={<ReceiptIcon className="size-7 shrink-0" />}
-                                        label="Expenses"
-                                        opened={opened}
-                                        onClose={close}
-                                    />
+                                        <TabbarItem
+                                            icon={<ReceiptIcon className="size-7 shrink-0" />}
+                                            label="Expenses"
+                                            opened={opened}
+                                            onClose={onClose}
+                                        />
 
-                                    <TabbarItem
-                                        icon={<QrCodeIcon className="size-7 shrink-0" />}
-                                        label="QR Codes"
-                                        opened={opened}
-                                        onClose={close}
-                                    />
+                                        <TabbarItem
+                                            icon={<QrCodeIcon className="size-7 shrink-0" />}
+                                            label="QR Codes"
+                                            opened={opened}
+                                            onClose={onClose}
+                                        />
 
-                                    <TabbarItem
-                                        icon={<FilesIcon className="size-7 shrink-0" />}
-                                        label="Reports"
-                                        opened={opened}
-                                        onClose={close}
-                                    />
+                                        <TabbarItem
+                                            icon={<FilesIcon className="size-7 shrink-0" />}
+                                            label="Reports"
+                                            opened={opened}
+                                            onClose={onClose}
+                                        />
 
-                                    <TabbarItem
-                                        icon={<SettingsIcon className="size-7 shrink-0" />}
-                                        label="Manage"
-                                        opened={opened}
-                                        onClose={close}
-                                        className="relative"
-                                    >
-                                        <ChevronDownIcon className="absolute bottom-2 size-3" />
-                                    </TabbarItem>
+                                        <TabbarItem
+                                            icon={<SettingsIcon className="size-7 shrink-0" />}
+                                            label="Manage"
+                                            opened={opened}
+                                            onClose={() => {}}
+                                            className="relative"
+                                            onClick={() => manageControls.toggle()}
+                                        >
+                                            <ChevronDownIcon className="absolute bottom-2 size-3" />
+                                        </TabbarItem>
 
-                                    <TabbarItem
-                                        icon={<LogOutIcon className="size-7 shrink-0" />}
-                                        label="Logout"
-                                        href={'/login'}
-                                        opened={opened}
-                                        onClose={close}
-                                    />
+                                        <TabbarItem
+                                            icon={<LogOutIcon className="size-7 shrink-0" />}
+                                            label="Logout"
+                                            href={'/login'}
+                                            opened={opened}
+                                            onClose={onClose}
+                                        />
 
-                                    <motion.div className="col-span-full flex gap-1 overflow-hidden text-xs text-zinc-600">
-                                        <div className="flex flex-1 items-center gap-3 bg-white p-5 select-none active:bg-zinc-100 active:shadow-inner active:*:scale-95">
-                                            <Avatar color="initials" name="John Doe" />
-                                            <div className="flex flex-1 flex-col">
-                                                <span className="font-medium">John Doe</span>
-                                                <span className="text-zinc-500">
-                                                    john.doe@example.com
-                                                </span>
+                                    
+                              
+                                </MenuGroup>
+
+                                <MenuGroup opened={manageOpened}>
+                                    <TabbarItem
+                                            icon={<TruckIcon className="size-7 shrink-0" />}
+                                            label="Wholesalers"
+                                            href={'/wholesalers'}
+                                            opened={opened}
+                                            onClose={onClose}
+                                        />
+                                        <TabbarItem
+                                            icon={<FactoryIcon className="size-7 shrink-0" />}
+                                            label="Manufacturers"
+                                            href={'/manufacturers'}
+                                            opened={opened}
+                                            onClose={onClose}
+                                        />
+                                        <TabbarItem
+                                            icon={<ShieldIcon className="size-7 shrink-0" />}
+                                            label="Roles"
+                                            href={'/roles'}
+                                            opened={opened}
+                                            onClose={onClose}
+                                        />
+                                        <TabbarItem
+                                            icon={<UsersIcon className="size-7 shrink-0" />}
+                                            label="Users"
+                                            href={'/users'}
+                                            opened={opened}
+                                            onClose={onClose}
+                                        />
+                                </MenuGroup>
+
+                                <motion.div className="col-span-full flex gap-1 overflow-hidden text-xs text-zinc-600">
+                                            <div className="flex flex-1 items-center gap-3 bg-white p-5 select-none active:bg-zinc-100 active:shadow-inner active:*:scale-95">
+                                                <Avatar color="initials" name="John Doe" />
+                                                <div className="flex flex-1 flex-col">
+                                                    <span className="font-medium">John Doe</span>
+                                                    <span className="text-zinc-500">
+                                                        john.doe@example.com
+                                                    </span>
+                                                </div>
+                                                <ChevronRightIcon className="size-5" />
                                             </div>
-                                            <ChevronRightIcon className="size-5" />
-                                        </div>
-                                    </motion.div>
-                                </div>
+                                        </motion.div>
+
+
                             </motion.div>
                         </motion.div>
                     </motion.div>
