@@ -26,6 +26,12 @@ use App\Http\Controllers\User\UserReopenController;
 use App\Http\Controllers\User\UserSuspendController;
 use App\Http\Controllers\User\UserUnsuspendController;
 use App\Http\Controllers\User\UserUpdateController;
+use App\Http\Controllers\Wholesaler\WholesalerCloseController;
+use App\Http\Controllers\Wholesaler\WholesalerCreateController;
+use App\Http\Controllers\Wholesaler\WholesalerDestroyController;
+use App\Http\Controllers\Wholesaler\WholesalerListController;
+use App\Http\Controllers\Wholesaler\WholesalerReopenController;
+use App\Http\Controllers\Wholesaler\WholesalerUpdateController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/territory', [AuthenticationTerritoryController::class, 'view'])->name('territory');
@@ -64,6 +70,20 @@ Route::middleware('territory')->group(function () {
         Route::post('/{user}/reopen', [UserReopenController::class, 'process'])->name('reopen');
         Route::get('/{user}/destroy', [UserDestroyController::class, 'view'])->name('destroy');
         Route::delete('/{user}/destroy', [UserDestroyController::class, 'process'])->name('destroy');
+    });
+
+    Route::prefix('wholesalers')->name('wholesalers.')->group(function () {
+        Route::get('/', [WholesalerListController::class, 'view'])->name('index');
+        Route::get('/create', [WholesalerCreateController::class, 'view'])->name('create');
+        Route::post('/create', [WholesalerCreateController::class, 'process'])->name('store');
+        Route::get('/{wholesaler}/update', [WholesalerUpdateController::class, 'view'])->name('update');
+        Route::post('/{wholesaler}/update', [WholesalerUpdateController::class, 'process'])->name('update');
+        Route::get('/{wholesaler}/close', [WholesalerCloseController::class, 'view'])->name('close');
+        Route::post('/{wholesaler}/close', [WholesalerCloseController::class, 'process'])->name('close');
+        Route::get('/{wholesaler}/reopen', [WholesalerReopenController::class, 'view'])->name('reopen');
+        Route::post('/{wholesaler}/reopen', [WholesalerReopenController::class, 'process'])->name('reopen');
+        Route::get('/{wholesaler}/destroy', [WholesalerDestroyController::class, 'view'])->name('destroy');
+        Route::delete('/{wholesaler}/destroy', [WholesalerDestroyController::class, 'process'])->name('destroy');
     });
 
     Route::prefix('notifications')->name('notifications.')->group(function () {

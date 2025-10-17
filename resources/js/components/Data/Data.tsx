@@ -1,7 +1,7 @@
-import { FunctionComponent } from "react";
-import Slot from "../Slot";
-import merge from "merge-props";
-import { useModal } from "@inertiaui/modal-react";
+import { useModal } from '@inertiaui/modal-react';
+import merge from 'merge-props';
+import { FunctionComponent } from 'react';
+import Slot from '../Slot';
 
 interface DataProps {
     children: React.ReactNode;
@@ -10,21 +10,15 @@ interface DataProps {
     map?: (value: any) => any;
     fallback?: any;
 }
- 
+
 const Data: FunctionComponent<DataProps> = (props) => {
     const { children, parameter, fallback, map, property = 'data', ...restProps } = props;
     const data = useModal()?.props?.[parameter] as any[];
     const mergedProps = merge(restProps, {
-        [property]: data
-            ? data.map(map ?? ((value: any) => value))
-            : fallback,
+        [property]: data ? data.map(map ?? ((value: any) => value)) : fallback,
     });
 
     return <Slot {...mergedProps}>{children}</Slot>;
-}
- 
+};
+
 export default Data;
-
-
-
-

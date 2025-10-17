@@ -91,11 +91,8 @@ export default function Update({ role }: Props) {
                             </Field>
 
                             <Field name="policies" type="transfer">
-                                <Data parameter="availablePolicies" property='items'>
-                                    <TransferInput
-                                        label="Policies"
-                                        className="max-h-[300px]"
-                                    />
+                                <Data parameter="availablePolicies" property="items">
+                                    <TransferInput label="Policies" className="max-h-[300px]" />
                                 </Data>
                             </Field>
                         </ModalContent>

@@ -58,7 +58,7 @@ const List: InertiaView<ListProps> = (props) => {
                 }
             />
 
-            <div className="container mx-auto mt-5 px-3 lg:px-5 pb-[800px]">
+            <div className="container mx-auto mt-5 px-3 pb-[800px] lg:px-5">
                 {users.data.length === 0 ? (
                     <Text c="dimmed" p="xl" ta="center">
                         No users found.
@@ -83,20 +83,32 @@ const List: InertiaView<ListProps> = (props) => {
                                     <Table.Tbody.Td data-testid={`user-row-${user.id}-name`}>
                                         <Navatar name={`${user.first_name} ${user.last_name}`} />
                                     </Table.Tbody.Td>
-                                    <Table.Tbody.Td data-span="hidden" data-testid={`user-row-${user.id}-email`}>
+                                    <Table.Tbody.Td
+                                        data-span="hidden"
+                                        data-testid={`user-row-${user.id}-email`}
+                                    >
                                         <Text size="sm">{user.email}</Text>
                                     </Table.Tbody.Td>
-                                    <Table.Tbody.Td data-span="hidden" data-testid={`user-row-${user.id}-role`}>
+                                    <Table.Tbody.Td
+                                        data-span="hidden"
+                                        data-testid={`user-row-${user.id}-role`}
+                                    >
                                         <Text c="dimmed" size="sm">
                                             {user.role_name || '—'}
                                         </Text>
                                     </Table.Tbody.Td>
-                                    <Table.Tbody.Td data-span="hidden" data-testid={`user-row-${user.id}-operator`}>
+                                    <Table.Tbody.Td
+                                        data-span="hidden"
+                                        data-testid={`user-row-${user.id}-operator`}
+                                    >
                                         <Text c="dimmed" size="sm">
                                             {user.operator_name || '—'}
                                         </Text>
                                     </Table.Tbody.Td>
-                                    <Table.Tbody.Td data-span="hidden" data-testid={`user-row-${user.id}-last-login`}>
+                                    <Table.Tbody.Td
+                                        data-span="hidden"
+                                        data-testid={`user-row-${user.id}-last-login`}
+                                    >
                                         <Text size="sm" c="dimmed">
                                             <Cast.Datetime
                                                 format="DD/MM/YYYY HH:mm"
@@ -105,7 +117,10 @@ const List: InertiaView<ListProps> = (props) => {
                                             />
                                         </Text>
                                     </Table.Tbody.Td>
-                                    <Table.Tbody.Td data-span="hidden" data-testid={`user-row-${user.id}-status`}>
+                                    <Table.Tbody.Td
+                                        data-span="hidden"
+                                        data-testid={`user-row-${user.id}-status`}
+                                    >
                                         <Group gap="xs">
                                             {user.suspended_at && (
                                                 <Badge variant="light" color="orange">
@@ -124,7 +139,10 @@ const List: InertiaView<ListProps> = (props) => {
                                             )}
                                         </Group>
                                     </Table.Tbody.Td>
-                                    <Table.Tbody.Td data-span="hidden" data-testid={`user-row-${user.id}-created`}>
+                                    <Table.Tbody.Td
+                                        data-span="hidden"
+                                        data-testid={`user-row-${user.id}-created`}
+                                    >
                                         <Text size="sm" c="dimmed">
                                             <Cast.Datetime
                                                 format="DD/MM/YYYY"
