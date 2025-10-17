@@ -10,7 +10,7 @@ export function useMantineInertiaForm(
     initialValues: Record<string, FormDataConvertible>
 ) {
     const form = useForm({ initialValues });
-    const inertiaForm = useInertiaForm(initialValues);
+    const inertiaForm = useInertiaForm<Record<string, any>>(initialValues);
 
     const handleSubmit = (values: typeof form.values) => {
         form.setSubmitting(true);

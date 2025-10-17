@@ -36,7 +36,7 @@ const Field: FunctionComponent<FieldProps> = (props) => {
                             inertiaFormInstance.setData(name, e.target.checked);
                             break;
                         case 'select':
-                            inertiaFormInstance.setData(name, e.target.value);
+                            inertiaFormInstance.setData(name, e);
                             break;
                         case 'text':
                         case 'email':

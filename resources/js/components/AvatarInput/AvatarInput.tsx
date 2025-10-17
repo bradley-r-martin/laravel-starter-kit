@@ -27,7 +27,10 @@ export const AvatarInput = forwardRef<HTMLButtonElement, AvatarInputProps>((prop
     return (
         <>
             <Input.Wrapper {...restProps}>
-                <FileButton onChange={(file) => onChange?.(file)}>
+                <FileButton
+                    onChange={(file) => onChange?.(file)}
+                    accept="image/jpeg, image/png, image/jpg"
+                >
                     {(p) => (
                         <div className="flex items-center gap-x-3">
                             <div

@@ -75,7 +75,7 @@ final class UserProjector extends Projector
         }
 
         if ($event->avatar instanceof \App\Domain\File) {
-            $updates['avatar'] = $event->avatar;
+            $updates['avatar'] = $event->avatar->isValid() ? $event->avatar : null;
         }
 
         if ($updates !== []) {

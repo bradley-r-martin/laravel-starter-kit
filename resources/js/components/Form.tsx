@@ -1,6 +1,6 @@
 import FormContext from '@/contexts/FormContext';
 import { InertiaFormProps, usePage } from '@inertiajs/react';
-import { FunctionComponent, HTMLAttributes } from 'react';
+import { FunctionComponent, HTMLAttributes, useState } from 'react';
 
 interface FormProps
     extends Omit<HTMLAttributes<HTMLFormElement>, 'action' | 'onSubmit' | 'onError'> {
@@ -15,6 +15,7 @@ interface FormProps
 
 const Form: FunctionComponent<FormProps> = (props) => {
     const { form, children, action, onError, onSuccess, ...restProps } = props;
+    const [original] = useState(form.data);
     const page = usePage();
     const inertiaUiModal = (page.props as Record<string, unknown>)?._inertiaui_modal as
         | undefined
@@ -26,10 +27,14 @@ const Form: FunctionComponent<FormProps> = (props) => {
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // const dirtyFields = form.
-        // const dirtyValues = Object.fromEntries(Object.entries(values).filter(([key]) => dirtyFields[key]));
-
-        // inertiaForm.transform(() => dirtyValues);
+        const dirtyFieldNames = Object.keys(original).filter(
+            (key) => form.data[key] !== original[key]
+        );
+        form.transform(() =>
+            Object.fromEntries(
+                Object.entries(form.data).filter(([key]) => dirtyFieldNames.includes(key))
+            )
+        );
 
         if (action) {
             form.submit(

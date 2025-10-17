@@ -80,4 +80,9 @@ final class File
     {
         return $this->path !== null && Storage::disk($this->disk)->exists($this->path);
     }
+
+    public function isValid(): bool
+    {
+        return $this->path !== null;
+    }
 }

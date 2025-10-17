@@ -13,10 +13,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 final class FileCast implements CastsAttributes
 {
-    public function get(Model $model, string $key, mixed $value, array $attributes): File
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?File
     {
         // @phpstan-ignore-next-line: $value is mixed from DB, may be null or string
-        return $value ? File::fromArray(json_decode((string) $value, true)) : new File();
+        return $value ? File::fromArray(json_decode((string) $value, true)) : null;
     }
 
     public function set(Model $model, string $key, mixed $value, array $attributes): ?string

@@ -32,10 +32,10 @@ final class UserUpdateProcessRequest extends FormRequest
         $user = User::findOrFail($this->route('user'));
 
         return [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'first_name' => ['sometimes', 'string', 'max:255'],
+            'last_name' => ['sometimes', 'string', 'max:255'],
+            'email' => ['sometimes', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'avatar' => ['sometimes', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
 
@@ -51,9 +51,6 @@ final class UserUpdateProcessRequest extends FormRequest
         if ($this->hasFile('avatar')) {
             $file = File::fromUploadedFile($this->file('avatar'), 'public');
             $data['avatar'] = $file;
-        } else {
-            // Remove avatar from data if not provided to avoid passing null
-            unset($data['avatar']);
         }
 
         UserAggregate::retrieve($user->id)
@@ -61,7 +58,7 @@ final class UserUpdateProcessRequest extends FormRequest
                 firstName: $data['first_name'] ?? null,
                 lastName: $data['last_name'] ?? null,
                 email: $data['email'] ?? null,
-                avatar: $data['avatar'] ?? null,
+                avatar: $data['avatar'] ?? ($this->has('avatar') ? new File() : null),
             )
             ->persist();
 

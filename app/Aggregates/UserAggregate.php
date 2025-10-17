@@ -84,6 +84,7 @@ final class UserAggregate extends AggregateRoot
         ?string $email = null,
         ?File $avatar = null,
     ): self {
+
         $this->recordThat(new UserUpdated(
             firstName: $firstName,
             lastName: $lastName,

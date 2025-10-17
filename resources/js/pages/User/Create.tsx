@@ -52,7 +52,7 @@ export default function Create({ roles, operators }: CreateProps) {
                     >
                         <ModalContent>
                             <Stack>
-                                <Field name="operator_id">
+                                <Field name="operator_id" type="select">
                                     <Select
                                         label="Operator"
                                         name="operator_id"
@@ -62,7 +62,7 @@ export default function Create({ roles, operators }: CreateProps) {
                                     />
                                 </Field>
 
-                                <Field name="role_id">
+                                <Field name="role_id" type="select">
                                     <Select
                                         label="Role"
                                         name="role_id"
