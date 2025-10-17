@@ -38,13 +38,13 @@ const Field: FunctionComponent<FieldProps> = (props) => {
                             break;
                         case 'select':
                         case 'transfer':
+                        case 'number':
                             inertiaFormInstance.setData(name, e);
                             break;
                         case 'text':
                         case 'email':
                         case 'password':
                         case 'textarea':
-                        case 'number':
                             inertiaFormInstance.setData(name, e.target.value);
                             break;
                         default:

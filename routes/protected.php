@@ -14,6 +14,12 @@ use App\Http\Controllers\Notification\NotificationListController;
 use App\Http\Controllers\Notification\NotificationMarkAllAsReadController;
 use App\Http\Controllers\Notification\NotificationMarkAsReadController;
 use App\Http\Controllers\Notification\NotificationSendSampleController;
+use App\Http\Controllers\Product\ProductCloseController;
+use App\Http\Controllers\Product\ProductCreateController;
+use App\Http\Controllers\Product\ProductDestroyController;
+use App\Http\Controllers\Product\ProductListController;
+use App\Http\Controllers\Product\ProductReinstateController;
+use App\Http\Controllers\Product\ProductUpdateController;
 use App\Http\Controllers\ProductType\ProductTypeCloseController;
 use App\Http\Controllers\ProductType\ProductTypeCreateController;
 use App\Http\Controllers\ProductType\ProductTypeDestroyController;
@@ -124,6 +130,20 @@ Route::middleware('territory')->group(function () {
         Route::post('/{product_type}/reopen', [ProductTypeReopenController::class, 'process'])->name('reopen');
         Route::get('/{product_type}/destroy', [ProductTypeDestroyController::class, 'view'])->name('destroy');
         Route::delete('/{product_type}/destroy', [ProductTypeDestroyController::class, 'process'])->name('destroy');
+    });
+
+    Route::prefix('products')->name('products.')->group(function () {
+        Route::get('/', [ProductListController::class, 'view'])->name('index');
+        Route::get('/create', [ProductCreateController::class, 'view'])->name('create');
+        Route::post('/create', [ProductCreateController::class, 'process'])->name('store');
+        Route::get('/{product}/update', [ProductUpdateController::class, 'view'])->name('update');
+        Route::post('/{product}/update', [ProductUpdateController::class, 'process'])->name('update');
+        Route::get('/{product}/close', [ProductCloseController::class, 'view'])->name('close');
+        Route::post('/{product}/close', [ProductCloseController::class, 'process'])->name('close');
+        Route::get('/{product}/reinstate', [ProductReinstateController::class, 'view'])->name('reinstate');
+        Route::post('/{product}/reinstate', [ProductReinstateController::class, 'process'])->name('reinstate');
+        Route::get('/{product}/destroy', [ProductDestroyController::class, 'view'])->name('destroy');
+        Route::delete('/{product}/destroy', [ProductDestroyController::class, 'process'])->name('destroy');
     });
 
     Route::prefix('notifications')->name('notifications.')->group(function () {
