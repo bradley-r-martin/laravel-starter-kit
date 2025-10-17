@@ -120,6 +120,6 @@ const Dashboard: InertiaView<DashboardProps> = () => {
     );
 };
 
-Dashboard.layout = [ AppLayout];
+Dashboard.layout = [AppLayout];
 
 export default Dashboard;

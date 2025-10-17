@@ -51,7 +51,7 @@ Route::middleware('territory')->group(function () {
         Route::get('/create', [UserCreateController::class, 'view'])->name('create');
         Route::post('/create', [UserCreateController::class, 'process'])->name('store');
         Route::get('/{user}/update', [UserUpdateController::class, 'view'])->name('update');
-        Route::put('/{user}/update', [UserUpdateController::class, 'process'])->name('update');
+        Route::post('/{user}/update', [UserUpdateController::class, 'process'])->name('update');
         Route::get('/{user}/password', [UserPasswordController::class, 'view'])->name('password');
         Route::put('/{user}/password', [UserPasswordController::class, 'process'])->name('password');
         Route::get('/{user}/suspend', [UserSuspendController::class, 'view'])->name('suspend');

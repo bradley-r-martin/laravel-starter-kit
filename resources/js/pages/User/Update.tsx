@@ -1,4 +1,5 @@
 import { Actions } from '@/components/Actions';
+import { AvatarInput } from '@/components/AvatarInput/AvatarInput';
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
@@ -15,6 +16,13 @@ interface User {
     first_name: string;
     last_name: string;
     email: string;
+    avatar: {
+        path: string;
+        disk: string;
+        mime_type: string;
+        size: number;
+        filename: string;
+    } | null;
 }
 
 interface UpdateProps {
@@ -27,6 +35,7 @@ export default function Update({ user }: UpdateProps) {
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
+        avatar: user?.avatar,
     });
     const { processing } = form;
 
@@ -52,11 +61,14 @@ export default function Update({ user }: UpdateProps) {
                 <FormErrorSound>
                     <Form
                         form={form}
-                        action={{ url: route('users.update', user.id), method: 'put' }}
+                        action={{ url: route('users.update', user.id), method: 'post' }}
                         onSuccess={() => modal?.close()}
                     >
                         <ModalContent>
                             <Stack>
+                                <Field name="avatar" type="file">
+                                    <AvatarInput label="Avatar" name="avatar" />
+                                </Field>
                                 <Field name="first_name">
                                     <TextInput label="First Name" name="first_name" />
                                 </Field>

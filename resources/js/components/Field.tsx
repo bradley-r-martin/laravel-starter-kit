@@ -4,13 +4,22 @@ import React, { FunctionComponent } from 'react';
 import Slot from './Slot';
 
 interface FieldProps {
-    type?: 'text' | 'number' | 'password' | 'email' | 'checkbox' | 'radio' | 'select' | 'textarea';
+    type?:
+        | 'text'
+        | 'number'
+        | 'password'
+        | 'email'
+        | 'checkbox'
+        | 'radio'
+        | 'select'
+        | 'textarea'
+        | 'file';
     name: string;
     children: React.ReactNode;
 }
 
 const Field: FunctionComponent<FieldProps> = (props) => {
-    const { name, children, type, ...restProps } = props;
+    const { name, children, type = 'text', ...restProps } = props;
     const { inertiaFormInstance } = useFormContext();
     return (
         <Slot
@@ -18,14 +27,27 @@ const Field: FunctionComponent<FieldProps> = (props) => {
             {...merge(restProps, {
                 value: inertiaFormInstance.data[name],
                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                    if (typeof e === 'object' && 'target' in e) {
-                        if (type === 'checkbox') {
+                    switch (type) {
+                        case 'file':
+                            inertiaFormInstance.setData(name, e);
+                            break;
+                        case 'checkbox':
+                        case 'radio':
                             inertiaFormInstance.setData(name, e.target.checked);
-                        } else {
+                            break;
+                        case 'select':
                             inertiaFormInstance.setData(name, e.target.value);
-                        }
-                    } else {
-                        inertiaFormInstance.setData(name, e);
+                            break;
+                        case 'text':
+                        case 'email':
+                        case 'password':
+                        case 'textarea':
+                        case 'number':
+                            inertiaFormInstance.setData(name, e.target.value);
+                            break;
+                        default:
+                            inertiaFormInstance.setData(name, e);
+                            break;
                     }
                 },
                 error: inertiaFormInstance.errors[name],

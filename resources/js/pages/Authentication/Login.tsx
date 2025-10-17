@@ -25,7 +25,7 @@ const Login: InertiaView<LoginProps> = () => {
 
             <Stack gap="xl" p="xl">
                 <div className="select-none">
-                    <h1 className="text-2xl font-bold text-zinc-950/70">Signin</h1>
+                    <h1 className="text-2xl font-bold text-zinc-950/70">Login</h1>
                     <p className="text-sm text-zinc-950/70">Sign in to your account to continue</p>
                 </div>
 

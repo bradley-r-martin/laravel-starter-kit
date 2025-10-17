@@ -60,11 +60,27 @@ final class UserProjector extends Projector
     {
         $user = User::findOrFail($this->aggregateUuid);
 
-        $user->update([
-            'first_name' => $event->firstName,
-            'last_name' => $event->lastName,
-            'email' => $event->email,
-        ]);
+        $updates = [];
+
+        if ($event->firstName !== null) {
+            $updates['first_name'] = $event->firstName;
+        }
+
+        if ($event->lastName !== null) {
+            $updates['last_name'] = $event->lastName;
+        }
+
+        if ($event->email !== null) {
+            $updates['email'] = $event->email;
+        }
+
+        if ($event->avatar instanceof \App\Domain\File) {
+            $updates['avatar'] = $event->avatar;
+        }
+
+        if ($updates !== []) {
+            $user->update($updates);
+        }
     }
 
     public function onUserSuspended(UserSuspended $event): void

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Aggregates\UserAggregate;
+use App\Domain\File;
 use App\Events\User\UserClosed;
 use App\Events\User\UserCreated;
 use App\Events\User\UserDestroyed;
@@ -240,6 +241,93 @@ describe('User Update', function () {
             ->firstName->toBe('John');
         expect($events[1])->toBeInstanceOf(UserUpdated::class)
             ->firstName->toBe('Jane');
+    });
+
+    it('can update only first name', function () {
+        $aggregate = UserAggregate::retrieve('user-8a')
+            ->update(firstName: 'Jane');
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserUpdated::class)
+            ->firstName->toBe('Jane')
+            ->lastName->toBeNull()
+            ->email->toBeNull()
+            ->avatar->toBeNull();
+    });
+
+    it('can update only last name', function () {
+        $aggregate = UserAggregate::retrieve('user-8b')
+            ->update(lastName: 'Smith');
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserUpdated::class)
+            ->firstName->toBeNull()
+            ->lastName->toBe('Smith')
+            ->email->toBeNull()
+            ->avatar->toBeNull();
+    });
+
+    it('can update only email', function () {
+        $aggregate = UserAggregate::retrieve('user-8c')
+            ->update(email: 'new.email@example.com');
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserUpdated::class)
+            ->firstName->toBeNull()
+            ->lastName->toBeNull()
+            ->email->toBe('new.email@example.com')
+            ->avatar->toBeNull();
+    });
+
+    it('can update only avatar', function () {
+        $avatar = new File(
+            path: 'users/avatar.jpg',
+            disk: 'public',
+            mime_type: 'image/jpeg',
+            size: 12345,
+            filename: 'avatar.jpg'
+        );
+
+        $aggregate = UserAggregate::retrieve('user-8d')
+            ->update(avatar: $avatar);
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserUpdated::class)
+            ->firstName->toBeNull()
+            ->lastName->toBeNull()
+            ->email->toBeNull();
+
+        expect($event->avatar)->toBeInstanceOf(File::class)
+            ->path->toBe('users/avatar.jpg')
+            ->disk->toBe('public')
+            ->mime_type->toBe('image/jpeg')
+            ->size->toBe(12345)
+            ->filename->toBe('avatar.jpg');
+    });
+
+    it('can update first name and email only', function () {
+        $aggregate = UserAggregate::retrieve('user-8e')
+            ->update(
+                firstName: 'Jane',
+                email: 'jane@example.com'
+            );
+
+        expect($aggregate->getRecordedEvents())->toHaveCount(1);
+
+        $event = $aggregate->getRecordedEvents()[0];
+        expect($event)->toBeInstanceOf(UserUpdated::class)
+            ->firstName->toBe('Jane')
+            ->lastName->toBeNull()
+            ->email->toBe('jane@example.com')
+            ->avatar->toBeNull();
     });
 });
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregates;
 
+use App\Domain\File;
 use App\Events\User\UserClosed;
 use App\Events\User\UserCreated;
 use App\Events\User\UserDestroyed;
@@ -30,6 +31,8 @@ final class UserAggregate extends AggregateRoot
     public ?string $lastName = null;
 
     public ?string $email = null;
+
+    public ?File $avatar = null;
 
     public ?DateTimeImmutable $lastLoginAt = null;
 
@@ -76,14 +79,16 @@ final class UserAggregate extends AggregateRoot
     }
 
     public function update(
-        string $firstName,
-        string $lastName,
-        string $email,
+        ?string $firstName = null,
+        ?string $lastName = null,
+        ?string $email = null,
+        ?File $avatar = null,
     ): self {
         $this->recordThat(new UserUpdated(
             firstName: $firstName,
             lastName: $lastName,
             email: $email,
+            avatar: $avatar,
         ));
 
         return $this;
@@ -222,9 +227,21 @@ final class UserAggregate extends AggregateRoot
      */
     private function applyUserUpdated(UserUpdated $event): void
     {
-        $this->firstName = $event->firstName;
-        $this->lastName = $event->lastName;
-        $this->email = $event->email;
+        if ($event->firstName !== null) {
+            $this->firstName = $event->firstName;
+        }
+
+        if ($event->lastName !== null) {
+            $this->lastName = $event->lastName;
+        }
+
+        if ($event->email !== null) {
+            $this->email = $event->email;
+        }
+
+        if ($event->avatar instanceof File) {
+            $this->avatar = $event->avatar;
+        }
     }
 
     /**

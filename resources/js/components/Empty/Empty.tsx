@@ -9,11 +9,17 @@ interface EmptyProps {
 const Empty: FunctionComponent<EmptyProps> = (props) => {
     const { children, title, subtitle } = props;
     return (
-        <div className="relative flex flex-col items-center gap-4 py-10 ">
+        <div className="relative flex flex-col items-center gap-4 py-10">
             {(title || subtitle) && (
-                <div className="flex select-none flex-col items-center gap-1">
-                    {title && <div className="text-xs font-bold uppercase tracking-tight text-zinc-950/70">{title}</div>}
-                    {subtitle && <div className="text-xs tracking-tight text-zinc-950/60">{subtitle}</div>}
+                <div className="flex flex-col items-center gap-1 select-none">
+                    {title && (
+                        <div className="text-xs font-bold tracking-tight text-zinc-950/70 uppercase">
+                            {title}
+                        </div>
+                    )}
+                    {subtitle && (
+                        <div className="text-xs tracking-tight text-zinc-950/60">{subtitle}</div>
+                    )}
                 </div>
             )}
             <div className="w-full max-w-xs">

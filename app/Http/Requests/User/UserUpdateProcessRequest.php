@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\User;
 
 use App\Aggregates\UserAggregate;
+use App\Domain\File;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -34,6 +35,7 @@ final class UserUpdateProcessRequest extends FormRequest
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
 
@@ -42,14 +44,24 @@ final class UserUpdateProcessRequest extends FormRequest
         /** @var User $user */
         $user = User::findOrFail($this->route('user'));
 
-        /** @var array{first_name: string, last_name: string, email: string} $data */
+        /** @var array{first_name?: string|null, last_name?: string|null, email?: string|null, avatar?: string|null} $data */
         $data = $this->validated();
+
+        // Handle avatar file upload
+        if ($this->hasFile('avatar')) {
+            $file = File::fromUploadedFile($this->file('avatar'), 'public');
+            $data['avatar'] = $file;
+        } else {
+            // Remove avatar from data if not provided to avoid passing null
+            unset($data['avatar']);
+        }
 
         UserAggregate::retrieve($user->id)
             ->update(
-                firstName: $data['first_name'],
-                lastName: $data['last_name'],
-                email: $data['email'],
+                firstName: $data['first_name'] ?? null,
+                lastName: $data['last_name'] ?? null,
+                email: $data['email'] ?? null,
+                avatar: $data['avatar'] ?? null,
             )
             ->persist();
 
