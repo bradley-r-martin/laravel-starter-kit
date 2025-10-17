@@ -37,13 +37,13 @@ final class UserSuspendProcessRequest extends FormRequest
         $userId = (string) $this->route('user');
         $user = User::query()->select(['id'])->findOrFail($userId);
 
-        /** @var array{reason: string, notify: bool} $data */
+        /** @var array{reason: string, notify?: bool} $data */
         $data = $this->validated();
 
         UserAggregate::retrieve($user->id)
             ->suspend(
                 reason: $data['reason'],
-                notify: $data['notify'],
+                notify: $data['notify'] ?? false,
             )
             ->persist();
 

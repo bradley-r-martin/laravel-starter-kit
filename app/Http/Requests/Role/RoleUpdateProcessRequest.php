@@ -28,10 +28,10 @@ final class RoleUpdateProcessRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-            'hidden' => 'boolean',
-            'policies' => 'array',
+            'name' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|required|string|max:255',
+            'hidden' => 'sometimes|boolean',
+            'policies' => 'sometimes|array',
             'policies.*' => 'string',
         ];
     }
@@ -51,14 +51,14 @@ final class RoleUpdateProcessRequest extends FormRequest
             abort(403, 'Closed roles cannot be updated.');
         }
 
-        /** @var array{name: string, description: string, hidden: bool, policies?: array<int, string>} $data */
+        /** @var array{name?: string, description?: string, hidden?: bool, policies?: array<int, string>} $data */
         $data = $this->validated();
 
         $aggregate = RoleAggregate::retrieve($roleId)
             ->update(
-                name: $data['name'],
-                description: $data['description'],
-                hidden: $data['hidden']
+                name: $data['name'] ?? null,
+                description: $data['description'] ?? null,
+                hidden: $data['hidden'] ?? null
             );
 
         // Handle policy changes

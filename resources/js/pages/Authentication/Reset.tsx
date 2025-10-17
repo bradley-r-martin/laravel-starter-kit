@@ -52,6 +52,8 @@ const Reset: InertiaView<ResetProps> = ({ token, email }) => {
                                 }}
                             >
                                 <Stack gap="md">
+                                    <input type="hidden" name="token" value={form.data.token} />
+
                                     <Field name="email">
                                         <TextInput
                                             label="Email"

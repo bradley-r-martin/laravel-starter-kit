@@ -32,9 +32,9 @@ final class UserUpdateProcessRequest extends FormRequest
         $user = User::findOrFail($this->route('user'));
 
         return [
-            'first_name' => ['sometimes', 'string', 'max:255'],
-            'last_name' => ['sometimes', 'string', 'max:255'],
-            'email' => ['sometimes', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'first_name' => ['sometimes', 'required', 'string', 'max:255'],
+            'last_name' => ['sometimes', 'required', 'string', 'max:255'],
+            'email' => ['sometimes', 'required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'avatar' => ['sometimes', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
@@ -44,7 +44,7 @@ final class UserUpdateProcessRequest extends FormRequest
         /** @var User $user */
         $user = User::findOrFail($this->route('user'));
 
-        /** @var array{first_name?: string|null, last_name?: string|null, email?: string|null, avatar?: string|null} $data */
+        /** @var array{first_name?: string|null, last_name?: string|null, email?: string|null, avatar?: File|null} $data */
         $data = $this->validated();
 
         // Handle avatar file upload

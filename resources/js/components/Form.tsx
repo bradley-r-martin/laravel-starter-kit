@@ -27,12 +27,23 @@ const Form: FunctionComponent<FormProps> = (props) => {
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        const formElement = e.currentTarget;
+
+        // Get all disabled and hidden input names from the form
+        const disabledAndHiddenFields = Array.from(
+            formElement.querySelectorAll('input[disabled], input[type="hidden"]')
+        ).map((input) => (input as HTMLInputElement).name);
+
         const dirtyFieldNames = Object.keys(original).filter(
             (key) => form.data[key] !== original[key]
         );
+
+        // Always include disabled and hidden fields along with dirty fields
+        const fieldsToInclude = [...new Set([...dirtyFieldNames, ...disabledAndHiddenFields])];
+
         form.transform(() =>
             Object.fromEntries(
-                Object.entries(form.data).filter(([key]) => dirtyFieldNames.includes(key))
+                Object.entries(form.data).filter(([key]) => fieldsToInclude.includes(key))
             )
         );
 

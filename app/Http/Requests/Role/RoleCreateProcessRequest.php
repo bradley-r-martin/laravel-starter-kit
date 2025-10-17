@@ -37,7 +37,7 @@ final class RoleCreateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        /** @var array{name: string, description: string, hidden: bool, policies?: array<int, string>} $data */
+        /** @var array{name: string, description: string, hidden?: bool, policies?: array<int, string>} $data */
         $data = $this->validated();
 
         $roleId = (string) Str::ulid();
@@ -46,7 +46,7 @@ final class RoleCreateProcessRequest extends FormRequest
             ->create(
                 (string) $data['name'],
                 (string) $data['description'],
-                (bool) $data['hidden']
+                (bool) ($data['hidden'] ?? false)
             );
 
         // Attach selected policies
