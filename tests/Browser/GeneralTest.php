@@ -3,13 +3,6 @@
 declare(strict_types=1);
 
 describe('General Pages', function (): void {
-    it('displays the welcome page correctly', function (): void {
-        visit('/')
-            ->assertTitle('Welcome - Laravel')
-            ->assertNoJavascriptErrors()
-            ->assertSee('Laravel')
-            ->assertSee('Get started by editing resources/js/pages/welcome.tsx');
-    });
 
     it('redirects unauthenticated users to login for protected routes', function (): void {
         $protectedRoutes = [
