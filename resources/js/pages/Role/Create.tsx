@@ -1,21 +1,18 @@
 import { Actions } from '@/components/Actions';
+import Data from '@/components/Data/Data';
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
 import { ModalContent } from '@/components/ModalContent';
 import ModalHeader from '@/components/ModalHeader';
-import { TransferInput, TransferItem } from '@/components/TransferInput';
+import { TransferInput } from '@/components/TransferInput';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
 import { Button, Checkbox, Textarea, TextInput } from '@mantine/core';
 import { ShieldPlusIcon } from 'lucide-react';
 
-interface CreateProps {
-    availablePolicies: TransferItem[];
-}
-
-export default function Create({ availablePolicies }: CreateProps) {
+export default function Create() {
     const modal = useModal();
     const form = useForm({
         name: '',
@@ -56,12 +53,13 @@ export default function Create({ availablePolicies }: CreateProps) {
                                 <Checkbox label="Hidden" name="hidden" />
                             </Field>
 
-                            <Field name="policies">
-                                <TransferInput
-                                    label="Policies"
-                                    items={availablePolicies}
-                                    className="max-h-[300px]"
-                                />
+                            <Field name="policies" type="transfer">
+                                <Data parameter="availablePolicies" property='items'>
+                                    <TransferInput
+                                        label="Policies"
+                                        className="max-h-[300px]"
+                                    />
+                                </Data>
                             </Field>
                         </ModalContent>
 

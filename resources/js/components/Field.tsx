@@ -13,7 +13,8 @@ interface FieldProps {
         | 'radio'
         | 'select'
         | 'textarea'
-        | 'file';
+        | 'file'
+        | 'transfer';
     name: string;
     children: React.ReactNode;
 }
@@ -36,6 +37,7 @@ const Field: FunctionComponent<FieldProps> = (props) => {
                             inertiaFormInstance.setData(name, e.target.checked);
                             break;
                         case 'select':
+                        case 'transfer':
                             inertiaFormInstance.setData(name, e);
                             break;
                         case 'text':
