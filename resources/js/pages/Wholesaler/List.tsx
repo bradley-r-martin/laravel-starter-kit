@@ -1,4 +1,5 @@
 import Cast from '@/components/Cast';
+import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
 import Table from '@/components/Table/Table';
@@ -66,9 +67,7 @@ const List: InertiaView<ListProps> = (props) => {
                                     <Table.Tbody.Td
                                         data-testid={`wholesaler-row-${wholesaler.id}-name`}
                                     >
-                                        <Text size="sm" fw={500}>
-                                            {wholesaler.name}
-                                        </Text>
+                                       <Navatar name={wholesaler.name} />
                                     </Table.Tbody.Td>
                                     <Table.Tbody.Td
                                         data-span="hidden"
