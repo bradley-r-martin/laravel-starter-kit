@@ -39,7 +39,7 @@ final class RoleAggregate extends AggregateRoot
 
     public function create(
         string $name,
-        string $description,
+        ?string $description = null,
         bool $hidden = false,
     ): self {
         $this->recordThat(new RoleCreated(

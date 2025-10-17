@@ -10,7 +10,7 @@ final class RoleCreated extends ShouldBeStored
 {
     public function __construct(
         public string $name,
-        public string $description,
+        public ?string $description = null,
         public bool $hidden = false,
     ) {}
 }

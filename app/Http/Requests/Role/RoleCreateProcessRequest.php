@@ -37,16 +37,16 @@ final class RoleCreateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        /** @var array{name: string, description: string, hidden?: bool, policies?: array<int, string>} $data */
+        /** @var array{name: string, description?: string, hidden?: bool, policies?: array<int, string>} $data */
         $data = $this->validated();
 
         $roleId = (string) Str::ulid();
 
         $aggregate = RoleAggregate::retrieve($roleId)
             ->create(
-                (string) $data['name'],
-                (string) $data['description'],
-                (bool) ($data['hidden'] ?? false)
+                name: $data['name'],
+                description: $data['description'] ?? null,
+                hidden: $data['hidden'] ?? false,
             );
 
         // Attach selected policies
