@@ -35,7 +35,8 @@ final class UserListViewRequest extends FormRequest
             ->with(['role', 'operator'])
             ->select(['id', 'first_name', 'last_name', 'email', 'role_id', 'operator_id', '__operator_name', '__last_login_at', 'closed_at', 'suspended_at', 'created_at'])
             ->orderBy('created_at', 'desc')
-            ->paginate()
+            ->filterBySearch($this->string('users_search')->toString())
+            ->paginate(10, ['*'], 'users_page')
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{User $user}> $users */
             ->through(fn (User $user): array => [
                 'id' => $user->id,

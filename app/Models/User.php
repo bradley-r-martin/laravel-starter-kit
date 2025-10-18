@@ -8,6 +8,7 @@ use App\Casts\AddressCast;
 use App\Casts\FileCast;
 use App\Casts\PhoneCast;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -33,6 +34,18 @@ final class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeFilterBySearch(Builder $query, ?string $search): Builder
+    {
+        return $query->when($search, fn (Builder $q) => $q->where(fn (Builder $q) => $q
+            ->where('first_name', 'like', "%{$search}%")
+            ->orWhere('last_name', 'like', "%{$search}%")
+            ->orWhere('email', 'like', "%{$search}%")));
+    }
 
     /**
      * Get the operator that owns this user.

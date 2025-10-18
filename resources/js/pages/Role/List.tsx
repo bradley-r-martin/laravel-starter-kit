@@ -1,5 +1,6 @@
 import Cast from '@/components/Cast';
 import { Empty } from '@/components/Empty';
+import MobileSearch from '@/components/MobileSearch';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
@@ -9,7 +10,7 @@ import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Stack, Text, Tooltip } from '@mantine/core';
-import { PencilIcon, RotateCcwIcon, SearchIcon, TrashIcon, XIcon } from 'lucide-react';
+import { PencilIcon, RotateCcwIcon, TrashIcon, XIcon } from 'lucide-react';
 
 interface Role {
     id: string;
@@ -38,9 +39,7 @@ const List: InertiaView<ListProps> = (props) => {
                 title="Roles"
                 action={
                     <Group gap="xs">
-                        <ActionIcon variant="transparent" color="zinc" radius="xl" size="lg">
-                            <SearchIcon className="size-4" />
-                        </ActionIcon>
+                        <MobileSearch data={roles} attribute="roles" />
                         <Navigate type="modal" href={route('roles.create')}>
                             <Button size="xs">Create Role</Button>
                         </Navigate>

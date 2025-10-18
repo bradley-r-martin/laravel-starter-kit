@@ -1,15 +1,16 @@
 import Cast from '@/components/Cast';
 import { Empty } from '@/components/Empty';
+import MobileSearch from '@/components/MobileSearch';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
 import Table from '@/components/Table/Table';
 import AppLayout from '@/Layouts/AppLayout';
 import Header from '@/Parts/Header';
-import { InertiaView, UploadedFile } from '@/types';
+import { InertiaView, Paginated, UploadedFile } from '@/types';
 import { Asset } from '@/Utilities/Asset';
 import { Head } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
-import { PencilIcon, RotateCcwIcon, SearchIcon, TrashIcon, XIcon } from 'lucide-react';
+import { PencilIcon, RotateCcwIcon, TrashIcon, XIcon } from 'lucide-react';
 
 interface Product {
     id: string;
@@ -27,7 +28,7 @@ interface Product {
 }
 
 interface ListProps {
-    products: Product[];
+    products: Paginated<Product>;
 }
 
 const List: InertiaView<ListProps> = (props) => {
@@ -36,15 +37,13 @@ const List: InertiaView<ListProps> = (props) => {
         <>
             <Head title="Products" />
             <div className="relative z-20 container mx-auto translate-y-3 px-5 lg:pt-10">
-                <div className="text-xs text-zinc-500">{products.length} products</div>
+                <div className="text-xs text-zinc-500">{products.data.length} products</div>
             </div>
             <Header
                 title="Products"
                 action={
                     <Group gap="xs">
-                        <ActionIcon variant="transparent" color="zinc" radius="xl" size="lg">
-                            <SearchIcon className="size-4" />
-                        </ActionIcon>
+                        <MobileSearch data={products} attribute="products" />
                         <Navigate type="modal" href={route('products.create')}>
                             <Button size="xs">Create Product</Button>
                         </Navigate>
@@ -53,7 +52,7 @@ const List: InertiaView<ListProps> = (props) => {
             />
 
             <div className="container mx-auto mt-5 px-3 pb-[800px] lg:px-5">
-                {products.length === 0 ? (
+                {products.data.length === 0 ? (
                     <Empty
                         title="No products found"
                         subtitle="Create a new product to get started."
@@ -72,7 +71,7 @@ const List: InertiaView<ListProps> = (props) => {
                             </Table.Thead.Tr>
                         </Table.Thead>
                         <Table.Tbody>
-                            {products.map((product) => (
+                            {products.data.map((product) => (
                                 <Table.Tbody.Tr
                                     key={product.id}
                                     data-testid={`product-row-${product.id}`}

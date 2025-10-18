@@ -32,8 +32,9 @@ final class ProductListViewRequest extends FormRequest
     {
         $products = Product::query()
             ->orderBy('name')
-            ->get()
-            ->map(fn (Product $product): array => [
+            ->paginate()
+            /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Product $product}> $products */
+            ->through(fn (Product $product): array => [
                 'id' => $product->id,
                 'name' => $product->name,
                 'sku' => $product->sku,

@@ -1,5 +1,6 @@
 import Cast from '@/components/Cast';
 import { Empty } from '@/components/Empty';
+import MobileSearch from '@/components/MobileSearch';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
@@ -15,7 +16,6 @@ import {
     KeyIcon,
     PencilIcon,
     RotateCcwIcon,
-    SearchIcon,
     TrashIcon,
     XIcon,
 } from 'lucide-react';
@@ -49,9 +49,7 @@ const List: InertiaView<ListProps> = (props) => {
                 title="Users"
                 action={
                     <Group gap="xs">
-                        <ActionIcon variant="transparent" color="zinc" radius="xl" size="lg">
-                            <SearchIcon className="size-4" />
-                        </ActionIcon>
+                        <MobileSearch data={users} attribute="users" />
                         <Navigate type="modal" href={route('users.create')}>
                             <Button size="xs">Create User</Button>
                         </Navigate>
