@@ -32,6 +32,7 @@ export default function Close({ manufacturer }: Props) {
         <>
             <Head title={`Close Manufacturer: ${manufacturer.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title={`Close manufacturer`}
@@ -79,6 +80,7 @@ export default function Close({ manufacturer }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

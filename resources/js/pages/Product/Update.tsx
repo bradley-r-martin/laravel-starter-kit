@@ -62,6 +62,7 @@ export default function Update({ product, product_types, manufacturers }: Update
         <>
             <Head title={`Update Product: ${product.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Update product"
@@ -190,6 +191,7 @@ export default function Update({ product, product_types, manufacturers }: Update
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

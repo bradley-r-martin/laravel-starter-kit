@@ -35,6 +35,7 @@ export default function Destroy({ user }: Props) {
         <>
             <Head title={`Destroy User Account: ${user.first_name} ${user.last_name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Destroy account"
@@ -92,6 +93,7 @@ export default function Destroy({ user }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

@@ -34,6 +34,7 @@ export function AnimatedModal({
 
     const modalProps = isMobile()
         ? {
+            padding: 0,
               xOffset: 0,
               yOffset: 0,
               styles: {
@@ -41,7 +42,12 @@ export function AnimatedModal({
                       maxHeight: '90%',
                       borderBottomLeftRadius: 0,
                       borderBottomRightRadius: 0,
+                      display: 'flex',
+                      overflow: 'hidden',
                   },
+                  body:{
+                    width: '100%',
+                }
               },
 
               transitionProps: {
@@ -55,6 +61,16 @@ export function AnimatedModal({
               },
           }
         : {
+            padding: 0,
+            styles: {
+                content: {
+                    display: 'flex',
+                    overflow: 'hidden',
+                },
+                body:{
+                    width: '100%',
+                }
+            },
               transitionProps: {
                   transition: 'pop' as const,
                   duration: 250, // faster

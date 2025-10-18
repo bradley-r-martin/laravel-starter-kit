@@ -30,6 +30,7 @@ export default function Reinstate({ product }: ReinstateProps) {
         <>
             <Head title={`Reinstate Product: ${product.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Reinstate product"
@@ -80,6 +81,7 @@ export default function Reinstate({ product }: ReinstateProps) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

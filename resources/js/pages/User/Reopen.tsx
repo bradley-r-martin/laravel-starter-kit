@@ -35,6 +35,7 @@ export default function Reopen({ user }: Props) {
         <>
             <Head title={`Reopen User Account: ${user.first_name} ${user.last_name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Reopen account"
@@ -82,6 +83,7 @@ export default function Reopen({ user }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

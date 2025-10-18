@@ -21,6 +21,7 @@ export default function Create() {
         <>
             <Head title="Create Product Type" />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Create product type"
@@ -62,6 +63,7 @@ export default function Create() {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

@@ -32,6 +32,7 @@ export default function Reopen({ product_type }: Props) {
         <>
             <Head title={`Reopen Product Type: ${product_type.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title={`Reopen product type`}
@@ -79,6 +80,7 @@ export default function Reopen({ product_type }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

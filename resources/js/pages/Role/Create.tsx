@@ -26,6 +26,7 @@ export default function Create() {
         <>
             <Head title="Create Role" />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Create role"
@@ -76,6 +77,7 @@ export default function Create() {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

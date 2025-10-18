@@ -30,6 +30,7 @@ export default function Update({ wholesaler }: UpdateProps) {
         <>
             <Head title={`Update Wholesaler: ${wholesaler.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Update wholesaler"
@@ -75,6 +76,7 @@ export default function Update({ wholesaler }: UpdateProps) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

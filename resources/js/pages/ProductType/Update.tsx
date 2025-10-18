@@ -30,6 +30,7 @@ export default function Update({ product_type }: UpdateProps) {
         <>
             <Head title={`Update Product Type: ${product_type.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Update product type"
@@ -78,6 +79,7 @@ export default function Update({ product_type }: UpdateProps) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

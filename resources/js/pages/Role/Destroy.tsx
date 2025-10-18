@@ -31,6 +31,7 @@ export default function Destroy({ role }: Props) {
         <>
             <Head title={`Destroy Role: ${role.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Destroy role"
@@ -95,6 +96,7 @@ export default function Destroy({ role }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

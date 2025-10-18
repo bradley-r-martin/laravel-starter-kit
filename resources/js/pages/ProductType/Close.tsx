@@ -32,6 +32,7 @@ export default function Close({ product_type }: Props) {
         <>
             <Head title={`Close Product Type: ${product_type.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title={`Close product type`}
@@ -79,6 +80,7 @@ export default function Close({ product_type }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

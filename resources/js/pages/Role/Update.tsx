@@ -42,6 +42,7 @@ export default function Update({ role }: Props) {
         <>
             <Head title={`Update Role: ${role.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Update role"
@@ -113,6 +114,7 @@ export default function Update({ role }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

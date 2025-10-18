@@ -36,6 +36,7 @@ export default function Unsuspend({ user }: Props) {
         <>
             <Head title={`Unsuspend User: ${user.first_name} ${user.last_name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Unsuspend user"
@@ -90,6 +91,7 @@ export default function Unsuspend({ user }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

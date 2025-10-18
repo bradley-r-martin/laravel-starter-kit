@@ -36,6 +36,7 @@ export default function Create({ roles, operators }: CreateProps) {
         <>
             <Head title="Create User" />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Create user"
@@ -106,6 +107,7 @@ export default function Create({ roles, operators }: CreateProps) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

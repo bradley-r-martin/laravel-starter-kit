@@ -32,6 +32,7 @@ export default function Reopen({ wholesaler }: Props) {
         <>
             <Head title={`Reopen Wholesaler: ${wholesaler.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title={`Reopen wholesaler`}
@@ -76,6 +77,7 @@ export default function Reopen({ wholesaler }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

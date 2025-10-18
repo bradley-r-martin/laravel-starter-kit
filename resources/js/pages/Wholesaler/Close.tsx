@@ -32,6 +32,7 @@ export default function Close({ wholesaler }: Props) {
         <>
             <Head title={`Close Wholesaler: ${wholesaler.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title={`Close wholesaler`}
@@ -76,6 +77,7 @@ export default function Close({ wholesaler }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

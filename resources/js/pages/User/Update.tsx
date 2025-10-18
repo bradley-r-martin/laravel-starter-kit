@@ -43,6 +43,7 @@ export default function Update({ user }: UpdateProps) {
         <>
             <Head title="Update User" />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Update user"
@@ -98,6 +99,7 @@ export default function Update({ user }: UpdateProps) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

@@ -30,6 +30,7 @@ export default function Update({ manufacturer }: UpdateProps) {
         <>
             <Head title={`Update Manufacturer: ${manufacturer.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Update manufacturer"
@@ -78,6 +79,7 @@ export default function Update({ manufacturer }: UpdateProps) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

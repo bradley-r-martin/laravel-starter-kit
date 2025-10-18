@@ -32,6 +32,7 @@ export default function Destroy({ manufacturer }: Props) {
         <>
             <Head title={`Destroy Manufacturer: ${manufacturer.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title={`Destroy manufacturer`}
@@ -87,6 +88,7 @@ export default function Destroy({ manufacturer }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

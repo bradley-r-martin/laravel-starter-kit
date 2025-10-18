@@ -37,6 +37,7 @@ export default function Password({ user, is_current_user }: Props) {
         <>
             <Head title={`Change Password: ${user.first_name} ${user.last_name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Change password"
@@ -103,6 +104,7 @@ export default function Password({ user, is_current_user }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

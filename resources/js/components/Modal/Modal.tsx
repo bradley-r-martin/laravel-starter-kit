@@ -3,7 +3,11 @@ import { ActionIcon, ModalProps as MantineModalProps } from '@mantine/core';
 import { XIcon } from 'lucide-react';
 import { FunctionComponent, useRef } from 'react';
 import { AnimatedModal } from './AnimatedModal';
+import ModalBody from './ModalBody';
 
+interface ModalComposition {
+    Body: typeof ModalBody;
+}
 interface ModalProps extends Omit<MantineModalProps, 'opened' | 'onClose'> {
     children: React.ReactNode;
 }
@@ -24,7 +28,7 @@ interface HeadlessModalRenderProps {
     setOpen: (value: boolean) => void;
 }
 
-const Modal: FunctionComponent<ModalProps> = ({ children, ...props }) => {
+const Modal: FunctionComponent<ModalProps> & ModalComposition = ({ children, ...props }) => {
     const modalRef = useRef<any>(null);
 
     return (
@@ -57,4 +61,5 @@ const Modal: FunctionComponent<ModalProps> = ({ children, ...props }) => {
     );
 };
 
+Modal.Body = ModalBody;
 export default Modal;

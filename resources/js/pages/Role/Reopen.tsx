@@ -34,6 +34,7 @@ export default function Reopen({ role }: Props) {
         <>
             <Head title={`Reopen Role: ${role.name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title="Reopen role"
@@ -79,6 +80,7 @@ export default function Reopen({ role }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );

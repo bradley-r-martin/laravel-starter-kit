@@ -35,6 +35,7 @@ export default function Close({ user }: Props) {
         <>
             <Head title={`Close User Account: ${user.first_name} ${user.last_name}`} />
             <Modal>
+                <Modal.Body>
                 <ModalHeader
                     hero
                     title={`Close account`}
@@ -81,6 +82,7 @@ export default function Close({ user }: Props) {
                         </Actions>
                     </Form>
                 </FormErrorSound>
+                </Modal.Body>
             </Modal>
         </>
     );
