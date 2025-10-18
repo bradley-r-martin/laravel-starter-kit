@@ -31,7 +31,7 @@ final class ProductTypeListViewRequest extends FormRequest
     public function respond(): Response
     {
         $productTypes = ProductType::query()
-            ->select(['id', 'name', 'closed_at', 'created_at'])
+            ->select(['id', 'name', 'closed_at', 'created_at', '__products_count'])
             ->orderBy('created_at', 'desc')
             ->paginate()
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{ProductType $productType}> $productTypes */
@@ -40,6 +40,7 @@ final class ProductTypeListViewRequest extends FormRequest
                 'name' => $productType->name,
                 'closed_at' => $productType->closed_at,
                 'created_at' => $productType->created_at,
+                'products_count' => $productType->__products_count,
             ]);
 
         return inertia()

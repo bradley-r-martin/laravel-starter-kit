@@ -46,6 +46,9 @@ final class ProductProjector extends Projector
             '__product_type_name' => $productType->name,
             '__manufacturer_name' => $manufacturer->name,
         ]);
+
+        // Update product type count
+        $productType->increment('__products_count');
     }
 
     public function onProductUpdated(ProductUpdated $event): void
@@ -55,9 +58,17 @@ final class ProductProjector extends Projector
         $updates = [];
 
         if ($event->productTypeId !== null) {
-            $productType = ProductType::findOrFail($event->productTypeId);
+            // Update product type counts if the product type changed
+            $oldProductType = ProductType::findOrFail($product->product_type_id);
+            $newProductType = ProductType::findOrFail($event->productTypeId);
+
+            if ($product->product_type_id !== $event->productTypeId) {
+                $oldProductType->decrement('__products_count');
+                $newProductType->increment('__products_count');
+            }
+
             $updates['product_type_id'] = $event->productTypeId;
-            $updates['__product_type_name'] = $productType->name;
+            $updates['__product_type_name'] = $newProductType->name;
         }
 
         if ($event->manufacturerId !== null) {
@@ -124,6 +135,10 @@ final class ProductProjector extends Projector
     public function onProductDestroyed(ProductDestroyed $event): void
     {
         $product = Product::findOrFail($this->aggregateUuid);
+
+        // Update product type count
+        $productType = ProductType::findOrFail($product->product_type_id);
+        $productType->decrement('__products_count');
 
         $product->delete();
     }
