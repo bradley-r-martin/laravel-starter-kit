@@ -27,7 +27,7 @@ export default function useUploadPreview(
         }
 
         if (typeof file === 'object' && 'path' in file) {
-            setPreviewUrl(Asset(file.path));
+            setPreviewUrl(Asset(file));
             return;
         }
 

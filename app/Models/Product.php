@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\FileCast;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -66,6 +67,7 @@ final class Product extends Model
             'rebate' => 'decimal:2',
             'royalty' => 'decimal:2',
             'closed_at' => 'datetime',
+            'avatar' => FileCast::class,
         ];
     }
 }

@@ -17,8 +17,8 @@ final class ProductCreated extends ShouldBeStored
         public int $units,
         public int $cost,
         public int $price,
-        public string $rebate,
-        public string $royalty,
+        public float $rebate,
+        public float $royalty,
         public ?File $avatar = null,
     ) {}
 }

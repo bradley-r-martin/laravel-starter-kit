@@ -22,8 +22,8 @@ it('can create a product', function () {
             units: 12,
             cost: 100,
             price: 200,
-            rebate: '0.05',
-            royalty: '0.10',
+            rebate: 0.05,
+            royalty: 0.10,
             avatar: null,
         );
 
@@ -39,8 +39,8 @@ it('can create a product', function () {
     expect($event->units)->toBe(12);
     expect($event->cost)->toBe(100);
     expect($event->price)->toBe(200);
-    expect($event->rebate)->toBe('0.05');
-    expect($event->royalty)->toBe('0.10');
+    expect($event->rebate)->toBe(0.05);
+    expect($event->royalty)->toBe(0.10);
 });
 
 it('can update a product', function () {
@@ -55,8 +55,8 @@ it('can update a product', function () {
             units: 12,
             cost: 100,
             price: 200,
-            rebate: '0.05',
-            royalty: '0.10',
+            rebate: 0.05,
+            royalty: 0.10,
         )
         ->update(
             name: 'Updated Product',
@@ -84,8 +84,8 @@ it('can close a product', function () {
             units: 12,
             cost: 100,
             price: 200,
-            rebate: '0.05',
-            royalty: '0.10',
+            rebate: 0.05,
+            royalty: 0.10,
         )
         ->close(reason: 'Discontinued');
 
@@ -109,8 +109,8 @@ it('can reinstate a product', function () {
             units: 12,
             cost: 100,
             price: 200,
-            rebate: '0.05',
-            royalty: '0.10',
+            rebate: 0.05,
+            royalty: 0.10,
         )
         ->close(reason: 'Discontinued')
         ->reinstate(reason: 'Back in stock');
@@ -135,8 +135,8 @@ it('can destroy a product', function () {
             units: 12,
             cost: 100,
             price: 200,
-            rebate: '0.05',
-            royalty: '0.10',
+            rebate: 0.05,
+            royalty: 0.10,
         )
         ->destroy(reason: 'Obsolete');
 
@@ -162,8 +162,8 @@ it('tracks aggregate state correctly', function () {
         units: 12,
         cost: 100,
         price: 200,
-        rebate: '0.05',
-        royalty: '0.10',
+        rebate: 0.05,
+        royalty: 0.10,
     );
 
     // Use reflection to call the private apply method

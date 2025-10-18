@@ -1,6 +1,14 @@
 export * from './global';
 export * from './inertia';
 
+export interface UploadedFile {
+    path: string;
+    disk: string;
+    mime_type: string;
+    size: number;
+    filename: string;
+}
+
 export interface Paginated<Record> {
     data: Record[];
     current_page: number;

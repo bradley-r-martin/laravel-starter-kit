@@ -17,8 +17,8 @@ final class ProductUpdated extends ShouldBeStored
         public ?int $units = null,
         public ?int $cost = null,
         public ?int $price = null,
-        public ?string $rebate = null,
-        public ?string $royalty = null,
+        public ?float $rebate = null,
+        public ?float $royalty = null,
         public ?File $avatar = null,
     ) {}
 }

@@ -29,9 +29,9 @@ final class ProductAggregate extends AggregateRoot
 
     public ?int $price = null;
 
-    public ?string $rebate = null;
+    public ?float $rebate = null;
 
-    public ?string $royalty = null;
+    public ?float $royalty = null;
 
     public ?File $avatar = null;
 
@@ -51,8 +51,8 @@ final class ProductAggregate extends AggregateRoot
         int $units,
         int $cost,
         int $price,
-        string $rebate,
-        string $royalty,
+        float $rebate,
+        float $royalty,
         ?File $avatar = null,
     ): self {
         $this->recordThat(new ProductCreated(
@@ -79,8 +79,8 @@ final class ProductAggregate extends AggregateRoot
         ?int $units = null,
         ?int $cost = null,
         ?int $price = null,
-        ?string $rebate = null,
-        ?string $royalty = null,
+        ?float $rebate = null,
+        ?float $royalty = null,
         ?File $avatar = null,
     ): self {
         $this->recordThat(new ProductUpdated(

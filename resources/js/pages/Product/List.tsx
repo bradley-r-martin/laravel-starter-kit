@@ -5,9 +5,10 @@ import Navigate from '@/components/Navigate';
 import Table from '@/components/Table/Table';
 import AppLayout from '@/Layouts/AppLayout';
 import Header from '@/Parts/Header';
-import { InertiaView } from '@/types';
+import { InertiaView, UploadedFile } from '@/types';
+import { Asset } from '@/Utilities/Asset';
 import { Head } from '@inertiajs/react';
-import { ActionIcon, Avatar, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
+import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import { PencilIcon, RotateCcwIcon, SearchIcon, TrashIcon, XIcon } from 'lucide-react';
 
 interface ProductType {
@@ -30,7 +31,7 @@ interface Product {
     price: number;
     rebate: string;
     royalty: string;
-    avatar: string | null;
+    avatar: UploadedFile | null;
     closed_at: string | null;
     __product_type_name: string;
     __manufacturer_name: string;
@@ -88,22 +89,7 @@ const List: InertiaView<ListProps> = (props) => {
                                     data-testid={`product-row-${product.id}`}
                                 >
                                     <Table.Tbody.Td data-testid={`product-row-${product.id}-name`}>
-                                        <Group gap="sm">
-                                            {product.avatar ? (
-                                                <Avatar
-                                                    src={product.avatar}
-                                                    size="sm"
-                                                    radius="xl"
-                                                />
-                                            ) : (
-                                                <Avatar size="sm" radius="xl">
-                                                    {product.name.charAt(0)}
-                                                </Avatar>
-                                            )}
-                                            <Text size="sm" fw={500}>
-                                                {product.name}
-                                            </Text>
-                                        </Group>
+                                        <Navatar name={product.name} src={Asset(product.avatar)} />
                                     </Table.Tbody.Td>
                                     <Table.Tbody.Td
                                         data-span="hidden"

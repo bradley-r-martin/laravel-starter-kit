@@ -1,4 +1,5 @@
 import { Actions } from '@/components/Actions';
+import AvatarInput from '@/components/AvatarInput';
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
@@ -84,6 +85,9 @@ export default function Update({ product, product_types, manufacturers }: Update
                     >
                         <ModalContent>
                             <Stack>
+                                <Field name="avatar" type="file">
+                                    <AvatarInput label="Image" name="avatar" />
+                                </Field>
                                 <Field name="name">
                                     <TextInput
                                         label="Name"

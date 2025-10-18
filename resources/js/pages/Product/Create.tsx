@@ -1,4 +1,5 @@
 import { Actions } from '@/components/Actions';
+import AvatarInput from '@/components/AvatarInput';
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
@@ -69,6 +70,9 @@ export default function Create({ product_types, manufacturers }: CreateProps) {
                             <Stepper size="xs" color="zinc" active={active} onStepClick={setActive}>
                                 <Stepper.Step label="Details">
                                     <Stack>
+                                        <Field name="avatar" type="file">
+                                            <AvatarInput label="Image" name="avatar" />
+                                        </Field>
                                         <Field name="name">
                                             <TextInput
                                                 label="Name"

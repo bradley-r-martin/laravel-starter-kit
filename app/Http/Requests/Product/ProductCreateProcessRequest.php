@@ -37,13 +37,13 @@ final class ProductCreateProcessRequest extends FormRequest
             'price' => ['required', 'integer', 'min:0'],
             'rebate' => ['nullable', 'numeric', 'min:0'],
             'royalty' => ['nullable', 'numeric', 'min:0'],
-            'avatar' => ['nullable', 'string'],
+            'avatar' => ['sometimes', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
 
     public function respond(): Response
     {
-        /** @var array{product_type_id: string, manufacturer_id: string, name: string, sku: string, units?: int|null, cost: int, price: int, rebate?: string|null, royalty?: string|null, avatar?: File|null} $data */
+        /** @var array{product_type_id: string, manufacturer_id: string, name: string, sku: string, units?: int|null, cost: int, price: int, rebate?: float|null, royalty?: float|null, avatar?: File|null} $data */
         $data = $this->validated();
 
         $productId = (string) Str::ulid();
@@ -55,16 +55,16 @@ final class ProductCreateProcessRequest extends FormRequest
 
         ProductAggregate::retrieve($productId)
             ->create(
-                productTypeId: $data['product_type_id'],
-                manufacturerId: $data['manufacturer_id'],
-                name: $data['name'],
-                sku: $data['sku'],
-                units: $data['units'] ?? 1,
-                cost: $data['cost'],
-                price: $data['price'],
-                rebate: $data['rebate'] ?? '0.00',
-                royalty: $data['royalty'] ?? '0.00',
-                avatar: $data['avatar'] ?? ($this->has('avatar') ? new File() : null),
+                productTypeId: $this->string('product_type_id')->toString(),
+                manufacturerId: $this->string('manufacturer_id')->toString(),
+                name: $this->string('name')->toString(),
+                sku: $this->string('sku')->toString(),
+                units: $this->integer('units'),
+                cost: $this->integer('cost'),
+                price: $this->integer('price'),
+                rebate: $this->float('rebate'),
+                royalty: $this->float('royalty'),
+                avatar: $this->file('avatar') ? File::fromUploadedFile($this->file('avatar'), 'public') : null,
             )
             ->persist();
 

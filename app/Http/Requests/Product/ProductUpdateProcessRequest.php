@@ -37,7 +37,7 @@ final class ProductUpdateProcessRequest extends FormRequest
             'price' => ['sometimes', 'required', 'integer', 'min:0'],
             'rebate' => ['sometimes', 'required', 'numeric', 'min:0'],
             'royalty' => ['sometimes', 'required', 'numeric', 'min:0'],
-            'avatar' => ['nullable', 'string'],
+            'avatar' => ['sometimes', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
 
@@ -56,16 +56,16 @@ final class ProductUpdateProcessRequest extends FormRequest
 
         ProductAggregate::retrieve($product->id)
             ->update(
-                productTypeId: $data['product_type_id'] ?? null,
-                manufacturerId: $data['manufacturer_id'] ?? null,
-                name: $data['name'] ?? null,
-                sku: $data['sku'] ?? null,
-                units: $data['units'] ?? null,
-                cost: $data['cost'] ?? null,
-                price: $data['price'] ?? null,
-                rebate: $data['rebate'] ?? null,
-                royalty: $data['royalty'] ?? null,
-                avatar: $data['avatar'] ?? ($this->has('avatar') ? new File() : null),
+                productTypeId: $this->string('product_type_id')->toString(),
+                manufacturerId: $this->string('manufacturer_id')->toString(),
+                name: $this->string('name')->toString(),
+                sku: $this->string('sku')->toString(),
+                units: $this->integer('units'),
+                cost: $this->integer('cost'),
+                price: $this->integer('price'),
+                rebate: $this->float('rebate'),
+                royalty: $this->float('royalty'),
+                avatar: $this->file('avatar') ? File::fromUploadedFile($this->file('avatar'), 'public') : null,
             )
             ->persist();
 
