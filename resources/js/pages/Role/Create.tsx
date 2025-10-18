@@ -27,56 +27,56 @@ export default function Create() {
             <Head title="Create Role" />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Create role"
-                    description="Add a new role to the system"
-                    icon={<ShieldPlusIcon className="size-6" />}
-                    color="blue"
-                />
+                    <ModalHeader
+                        hero
+                        title="Create role"
+                        description="Add a new role to the system"
+                        icon={<ShieldPlusIcon className="size-6" />}
+                        color="blue"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{ url: route('roles.store'), method: 'post' }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Field name="name">
-                                <TextInput label="Name" name="name" />
-                            </Field>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{ url: route('roles.store'), method: 'post' }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Field name="name">
+                                    <TextInput label="Name" name="name" />
+                                </Field>
 
-                            <Field name="description">
-                                <Textarea label="Description" name="description" rows={4} />
-                            </Field>
+                                <Field name="description">
+                                    <Textarea label="Description" name="description" rows={4} />
+                                </Field>
 
-                            <Field name="hidden" type="checkbox">
-                                <Checkbox label="Hidden" name="hidden" />
-                            </Field>
+                                <Field name="hidden" type="checkbox">
+                                    <Checkbox label="Hidden" name="hidden" />
+                                </Field>
 
-                            <Field name="policies" type="transfer">
-                                <Data parameter="availablePolicies" property="items">
-                                    <TransferInput label="Policies" className="max-h-[300px]" />
-                                </Data>
-                            </Field>
-                        </ModalContent>
+                                <Field name="policies" type="transfer">
+                                    <Data parameter="availablePolicies" property="items">
+                                        <TransferInput label="Policies" className="max-h-[300px]" />
+                                    </Data>
+                                </Field>
+                            </ModalContent>
 
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                                data-testid="cancel-action"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing}>
-                                Create Role
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                    data-testid="cancel-action"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing}>
+                                    Create Role
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

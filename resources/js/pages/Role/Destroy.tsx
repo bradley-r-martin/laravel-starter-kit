@@ -32,70 +32,70 @@ export default function Destroy({ role }: Props) {
             <Head title={`Destroy Role: ${role.name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Destroy role"
-                    description={
-                        <>
-                            Permanently delete role: <strong>{role.name}</strong>
-                        </>
-                    }
-                    icon={<ShieldOffIcon className="size-6" />}
-                    color="red"
-                />
+                    <ModalHeader
+                        hero
+                        title="Destroy role"
+                        description={
+                            <>
+                                Permanently delete role: <strong>{role.name}</strong>
+                            </>
+                        }
+                        icon={<ShieldOffIcon className="size-6" />}
+                        color="red"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{ url: route('roles.destroy', role.id), method: 'delete' }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            {isNotClosed && (
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{ url: route('roles.destroy', role.id), method: 'delete' }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                {isNotClosed && (
+                                    <Alert
+                                        variant="light"
+                                        color="red"
+                                        icon={<AlertCircleIcon className="size-5" />}
+                                        title="Cannot Destroy Role"
+                                        mb="md"
+                                    >
+                                        This role must be closed before it can be destroyed. Please
+                                        close the role first.
+                                    </Alert>
+                                )}
+
                                 <Alert
                                     variant="light"
                                     color="red"
-                                    icon={<AlertCircleIcon className="size-5" />}
-                                    title="Cannot Destroy Role"
+                                    icon={<AlertTriangleIcon className="size-5" />}
                                     mb="md"
                                 >
-                                    This role must be closed before it can be destroyed. Please
-                                    close the role first.
+                                    <strong>Warning:</strong> This action is permanent and cannot be
+                                    undone. The role will be completely removed from the system.
                                 </Alert>
-                            )}
+                            </ModalContent>
 
-                            <Alert
-                                variant="light"
-                                color="red"
-                                icon={<AlertTriangleIcon className="size-5" />}
-                                mb="md"
-                            >
-                                <strong>Warning:</strong> This action is permanent and cannot be
-                                undone. The role will be completely removed from the system.
-                            </Alert>
-                        </ModalContent>
-
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                                data-testid="cancel-action"
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                loading={processing}
-                                color="red"
-                                disabled={isNotClosed}
-                            >
-                                {processing ? 'Destroying...' : 'Destroy Role'}
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                    data-testid="cancel-action"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    loading={processing}
+                                    color="red"
+                                    disabled={isNotClosed}
+                                >
+                                    {processing ? 'Destroying...' : 'Destroy Role'}
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

@@ -33,53 +33,53 @@ export default function Reopen({ manufacturer }: Props) {
             <Head title={`Reopen Manufacturer: ${manufacturer.name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title={`Reopen manufacturer`}
-                    description={
-                        <>
-                            You are about to reopen the manufacturer:{' '}
-                            <strong>{manufacturer.name}</strong>
-                        </>
-                    }
-                    icon={<RotateCcwIcon className="size-6" />}
-                    color="green"
-                />
+                    <ModalHeader
+                        hero
+                        title={`Reopen manufacturer`}
+                        description={
+                            <>
+                                You are about to reopen the manufacturer:{' '}
+                                <strong>{manufacturer.name}</strong>
+                            </>
+                        }
+                        icon={<RotateCcwIcon className="size-6" />}
+                        color="green"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{
-                            url: route('manufacturers.reopen', manufacturer.id),
-                            method: 'post',
-                        }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Field name="reason">
-                                <Textarea
-                                    label="Reason for Reopening"
-                                    name="reason"
-                                    rows={4}
-                                    placeholder="Provide a reason for reopening this manufacturer..."
-                                />
-                            </Field>
-                        </ModalContent>
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing} color="green">
-                                Reopen manufacturer
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{
+                                url: route('manufacturers.reopen', manufacturer.id),
+                                method: 'post',
+                            }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Field name="reason">
+                                    <Textarea
+                                        label="Reason for Reopening"
+                                        name="reason"
+                                        rows={4}
+                                        placeholder="Provide a reason for reopening this manufacturer..."
+                                    />
+                                </Field>
+                            </ModalContent>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing} color="green">
+                                    Reopen manufacturer
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

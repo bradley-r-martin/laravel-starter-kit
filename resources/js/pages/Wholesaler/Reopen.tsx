@@ -33,50 +33,53 @@ export default function Reopen({ wholesaler }: Props) {
             <Head title={`Reopen Wholesaler: ${wholesaler.name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title={`Reopen wholesaler`}
-                    description={
-                        <>
-                            You are about to reopen the wholesaler:{' '}
-                            <strong>{wholesaler.name}</strong>
-                        </>
-                    }
-                    icon={<RotateCcwIcon className="size-6" />}
-                    color="green"
-                />
+                    <ModalHeader
+                        hero
+                        title={`Reopen wholesaler`}
+                        description={
+                            <>
+                                You are about to reopen the wholesaler:{' '}
+                                <strong>{wholesaler.name}</strong>
+                            </>
+                        }
+                        icon={<RotateCcwIcon className="size-6" />}
+                        color="green"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{ url: route('wholesalers.reopen', wholesaler.id), method: 'post' }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Field name="reason">
-                                <Textarea
-                                    label="Reason for Reopening"
-                                    name="reason"
-                                    rows={4}
-                                    placeholder="Provide a reason for reopening this wholesaler..."
-                                />
-                            </Field>
-                        </ModalContent>
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing} color="green">
-                                Reopen wholesaler
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{
+                                url: route('wholesalers.reopen', wholesaler.id),
+                                method: 'post',
+                            }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Field name="reason">
+                                    <Textarea
+                                        label="Reason for Reopening"
+                                        name="reason"
+                                        rows={4}
+                                        placeholder="Provide a reason for reopening this wholesaler..."
+                                    />
+                                </Field>
+                            </ModalContent>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing} color="green">
+                                    Reopen wholesaler
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

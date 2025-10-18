@@ -33,53 +33,53 @@ export default function Close({ manufacturer }: Props) {
             <Head title={`Close Manufacturer: ${manufacturer.name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title={`Close manufacturer`}
-                    description={
-                        <>
-                            You are about to close the manufacturer:{' '}
-                            <strong>{manufacturer.name}</strong>
-                        </>
-                    }
-                    icon={<XIcon className="size-6" />}
-                    color="red"
-                />
+                    <ModalHeader
+                        hero
+                        title={`Close manufacturer`}
+                        description={
+                            <>
+                                You are about to close the manufacturer:{' '}
+                                <strong>{manufacturer.name}</strong>
+                            </>
+                        }
+                        icon={<XIcon className="size-6" />}
+                        color="red"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{
-                            url: route('manufacturers.close', manufacturer.id),
-                            method: 'post',
-                        }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Field name="reason">
-                                <Textarea
-                                    label="Reason for Closing"
-                                    name="reason"
-                                    rows={4}
-                                    placeholder="Provide a reason for closing this manufacturer..."
-                                />
-                            </Field>
-                        </ModalContent>
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing} color="red">
-                                Close manufacturer
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{
+                                url: route('manufacturers.close', manufacturer.id),
+                                method: 'post',
+                            }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Field name="reason">
+                                    <Textarea
+                                        label="Reason for Closing"
+                                        name="reason"
+                                        rows={4}
+                                        placeholder="Provide a reason for closing this manufacturer..."
+                                    />
+                                </Field>
+                            </ModalContent>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing} color="red">
+                                    Close manufacturer
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

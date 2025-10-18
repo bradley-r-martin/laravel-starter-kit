@@ -37,60 +37,60 @@ export default function Unsuspend({ user }: Props) {
             <Head title={`Unsuspend User: ${user.first_name} ${user.last_name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Unsuspend user"
-                    description={
-                        <>
-                            Restore access for:{' '}
-                            <strong>
-                                {user.first_name} {user.last_name}
-                            </strong>
-                        </>
-                    }
-                    icon={<UserPlusIcon className="size-6" />}
-                    color="green"
-                />
+                    <ModalHeader
+                        hero
+                        title="Unsuspend user"
+                        description={
+                            <>
+                                Restore access for:{' '}
+                                <strong>
+                                    {user.first_name} {user.last_name}
+                                </strong>
+                            </>
+                        }
+                        icon={<UserPlusIcon className="size-6" />}
+                        color="green"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{ url: route('users.unsuspend', user.id), method: 'post' }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Field name="reason">
-                                <Textarea
-                                    label="Reason for Unsuspension"
-                                    name="reason"
-                                    rows={4}
-                                    placeholder="Provide a reason for unsuspending this user..."
-                                />
-                            </Field>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{ url: route('users.unsuspend', user.id), method: 'post' }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Field name="reason">
+                                    <Textarea
+                                        label="Reason for Unsuspension"
+                                        name="reason"
+                                        rows={4}
+                                        placeholder="Provide a reason for unsuspending this user..."
+                                    />
+                                </Field>
 
-                            <Field name="notify" type="checkbox">
-                                <Checkbox
-                                    label="Notify user via email about the unsuspension"
-                                    name="notify"
-                                />
-                            </Field>
-                        </ModalContent>
+                                <Field name="notify" type="checkbox">
+                                    <Checkbox
+                                        label="Notify user via email about the unsuspension"
+                                        name="notify"
+                                    />
+                                </Field>
+                            </ModalContent>
 
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing} color="green">
-                                {processing ? 'Unsuspending...' : 'Unsuspend User'}
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing} color="green">
+                                    {processing ? 'Unsuspending...' : 'Unsuspend User'}
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

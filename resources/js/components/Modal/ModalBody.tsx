@@ -1,11 +1,11 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent } from 'react';
 
 interface ModalBodyProps {
     children: React.ReactNode;
 }
- 
+
 const ModalBody: FunctionComponent<ModalBodyProps> = (props) => {
-    return ( <div className='p-5 flex-1 h-full overflow-auto'>{props.children}</div>);
-}
- 
+    return <div className="h-full flex-1 overflow-auto p-5">{props.children}</div>;
+};
+
 export default ModalBody;

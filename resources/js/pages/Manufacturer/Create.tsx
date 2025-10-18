@@ -22,47 +22,47 @@ export default function Create() {
             <Head title="Create Manufacturer" />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Create manufacturer"
-                    description="Add a new manufacturer to the system"
-                    icon={<PlusIcon className="size-6" />}
-                    color="blue"
-                />
+                    <ModalHeader
+                        hero
+                        title="Create manufacturer"
+                        description="Add a new manufacturer to the system"
+                        icon={<PlusIcon className="size-6" />}
+                        color="blue"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{ url: route('manufacturers.store'), method: 'post' }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Stack>
-                                <Field name="name">
-                                    <TextInput
-                                        label="Name"
-                                        name="name"
-                                        placeholder="Enter manufacturer name"
-                                    />
-                                </Field>
-                            </Stack>
-                        </ModalContent>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{ url: route('manufacturers.store'), method: 'post' }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Stack>
+                                    <Field name="name">
+                                        <TextInput
+                                            label="Name"
+                                            name="name"
+                                            placeholder="Enter manufacturer name"
+                                        />
+                                    </Field>
+                                </Stack>
+                            </ModalContent>
 
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing}>
-                                {processing ? 'Creating...' : 'Create Manufacturer'}
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing}>
+                                    {processing ? 'Creating...' : 'Create Manufacturer'}
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

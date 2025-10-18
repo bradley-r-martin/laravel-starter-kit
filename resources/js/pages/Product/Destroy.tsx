@@ -31,56 +31,56 @@ export default function Destroy({ product }: DestroyProps) {
             <Head title={`Destroy Product: ${product.name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Destroy product"
-                    description={
-                        <>
-                            You are permanently destroying: <strong>{product.name}</strong>
-                        </>
-                    }
-                    icon={<TrashIcon className="size-6" />}
-                    color="red"
-                />
+                    <ModalHeader
+                        hero
+                        title="Destroy product"
+                        description={
+                            <>
+                                You are permanently destroying: <strong>{product.name}</strong>
+                            </>
+                        }
+                        icon={<TrashIcon className="size-6" />}
+                        color="red"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{
-                            url: route('products.destroy', product.id),
-                            method: 'delete',
-                        }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Stack>
-                                <Field name="reason">
-                                    <Textarea
-                                        label="Reason"
-                                        name="reason"
-                                        placeholder="Enter reason for destroying this product"
-                                        required
-                                        rows={4}
-                                    />
-                                </Field>
-                            </Stack>
-                        </ModalContent>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{
+                                url: route('products.destroy', product.id),
+                                method: 'delete',
+                            }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Stack>
+                                    <Field name="reason">
+                                        <Textarea
+                                            label="Reason"
+                                            name="reason"
+                                            placeholder="Enter reason for destroying this product"
+                                            required
+                                            rows={4}
+                                        />
+                                    </Field>
+                                </Stack>
+                            </ModalContent>
 
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing} color="red">
-                                {processing ? 'Destroying...' : 'Destroy Product'}
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing} color="red">
+                                    {processing ? 'Destroying...' : 'Destroy Product'}
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

@@ -53,14 +53,14 @@ export default function Create({ product_types, manufacturers }: CreateProps) {
             <Head title="Create Product" />
             <Modal size="lg">
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Create product"
-                    description="Add a new product to the system"
-                    icon={<PlusIcon className="size-6" />}
-                    color="blue"
-                />
-                
+                    <ModalHeader
+                        hero
+                        title="Create product"
+                        description="Add a new product to the system"
+                        icon={<PlusIcon className="size-6" />}
+                        color="blue"
+                    />
+
                     <FormErrorSound>
                         <Form
                             form={form}
@@ -68,7 +68,12 @@ export default function Create({ product_types, manufacturers }: CreateProps) {
                             onSuccess={() => modal?.close()}
                         >
                             <ModalContent>
-                                <Stepper size="xs" color="zinc" active={active} onStepClick={setActive}>
+                                <Stepper
+                                    size="xs"
+                                    color="zinc"
+                                    active={active}
+                                    onStepClick={setActive}
+                                >
                                     <Stepper.Step label="Details">
                                         <Stack>
                                             <Field name="avatar" type="file">

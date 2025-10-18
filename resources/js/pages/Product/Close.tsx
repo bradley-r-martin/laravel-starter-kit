@@ -30,57 +30,57 @@ export default function Close({ product }: CloseProps) {
         <>
             <Head title={`Close Product: ${product.name}`} />
             <Modal>
-            <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Close product"
-                    description={
-                        <>
-                            You are closing: <strong>{product.name}</strong>
-                        </>
-                    }
-                    icon={<XIcon className="size-6" />}
-                    color="red"
-                />
+                <Modal.Body>
+                    <ModalHeader
+                        hero
+                        title="Close product"
+                        description={
+                            <>
+                                You are closing: <strong>{product.name}</strong>
+                            </>
+                        }
+                        icon={<XIcon className="size-6" />}
+                        color="red"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{
-                            url: route('products.close', product.id),
-                            method: 'post',
-                        }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Stack>
-                                <Field name="reason">
-                                    <Textarea
-                                        label="Reason"
-                                        name="reason"
-                                        placeholder="Enter reason for closing this product"
-                                        required
-                                        rows={4}
-                                    />
-                                </Field>
-                            </Stack>
-                        </ModalContent>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{
+                                url: route('products.close', product.id),
+                                method: 'post',
+                            }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Stack>
+                                    <Field name="reason">
+                                        <Textarea
+                                            label="Reason"
+                                            name="reason"
+                                            placeholder="Enter reason for closing this product"
+                                            required
+                                            rows={4}
+                                        />
+                                    </Field>
+                                </Stack>
+                            </ModalContent>
 
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing} color="red">
-                                {processing ? 'Closing...' : 'Close Product'}
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing} color="red">
+                                    {processing ? 'Closing...' : 'Close Product'}
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

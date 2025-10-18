@@ -35,51 +35,51 @@ export default function Reopen({ role }: Props) {
             <Head title={`Reopen Role: ${role.name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Reopen role"
-                    description={
-                        <>
-                            Restore role: <strong>{role.name}</strong>
-                        </>
-                    }
-                    icon={<ShieldCheckIcon className="size-6" />}
-                    color="green"
-                />
+                    <ModalHeader
+                        hero
+                        title="Reopen role"
+                        description={
+                            <>
+                                Restore role: <strong>{role.name}</strong>
+                            </>
+                        }
+                        icon={<ShieldCheckIcon className="size-6" />}
+                        color="green"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{ url: route('roles.reopen', role.id), method: 'post' }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Field name="reason">
-                                <Textarea
-                                    label="Reason for Reopening"
-                                    name="reason"
-                                    rows={4}
-                                    placeholder="Provide a reason for reopening this role..."
-                                />
-                            </Field>
-                        </ModalContent>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{ url: route('roles.reopen', role.id), method: 'post' }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Field name="reason">
+                                    <Textarea
+                                        label="Reason for Reopening"
+                                        name="reason"
+                                        rows={4}
+                                        placeholder="Provide a reason for reopening this role..."
+                                    />
+                                </Field>
+                            </ModalContent>
 
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                                data-testid="cancel-action"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing} color="green">
-                                {processing ? 'Reopening...' : 'Reopen Role'}
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                    data-testid="cancel-action"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing} color="green">
+                                    {processing ? 'Reopening...' : 'Reopen Role'}
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

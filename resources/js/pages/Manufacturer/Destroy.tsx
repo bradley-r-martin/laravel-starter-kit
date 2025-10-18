@@ -33,61 +33,61 @@ export default function Destroy({ manufacturer }: Props) {
             <Head title={`Destroy Manufacturer: ${manufacturer.name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title={`Destroy manufacturer`}
-                    description={
-                        <>
-                            You are about to permanently destroy:{' '}
-                            <strong>{manufacturer.name}</strong>
-                        </>
-                    }
-                    icon={<TrashIcon className="size-6" />}
-                    color="red"
-                />
+                    <ModalHeader
+                        hero
+                        title={`Destroy manufacturer`}
+                        description={
+                            <>
+                                You are about to permanently destroy:{' '}
+                                <strong>{manufacturer.name}</strong>
+                            </>
+                        }
+                        icon={<TrashIcon className="size-6" />}
+                        color="red"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{
-                            url: route('manufacturers.destroy', manufacturer.id),
-                            method: 'delete',
-                        }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Alert
-                                color="red"
-                                icon={<AlertTriangleIcon className="size-4" />}
-                                mb="md"
-                            >
-                                This action cannot be undone. This will permanently delete the
-                                manufacturer record.
-                            </Alert>
-                            <Field name="reason">
-                                <Textarea
-                                    label="Reason for Destroying"
-                                    name="reason"
-                                    rows={4}
-                                    placeholder="Provide a reason for destroying this manufacturer..."
-                                />
-                            </Field>
-                        </ModalContent>
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing} color="red">
-                                Permanently destroy
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{
+                                url: route('manufacturers.destroy', manufacturer.id),
+                                method: 'delete',
+                            }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Alert
+                                    color="red"
+                                    icon={<AlertTriangleIcon className="size-4" />}
+                                    mb="md"
+                                >
+                                    This action cannot be undone. This will permanently delete the
+                                    manufacturer record.
+                                </Alert>
+                                <Field name="reason">
+                                    <Textarea
+                                        label="Reason for Destroying"
+                                        name="reason"
+                                        rows={4}
+                                        placeholder="Provide a reason for destroying this manufacturer..."
+                                    />
+                                </Field>
+                            </ModalContent>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing} color="red">
+                                    Permanently destroy
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

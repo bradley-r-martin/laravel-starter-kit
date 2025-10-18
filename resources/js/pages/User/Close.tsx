@@ -36,52 +36,52 @@ export default function Close({ user }: Props) {
             <Head title={`Close User Account: ${user.first_name} ${user.last_name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title={`Close account`}
-                    description={
-                        <>
-                            You are about to close the account for:{' '}
-                            <strong>
-                                {user.first_name} {user.last_name}
-                            </strong>
-                        </>
-                    }
-                    icon={<UserIcon className="size-6" />}
-                    color="red"
-                />
+                    <ModalHeader
+                        hero
+                        title={`Close account`}
+                        description={
+                            <>
+                                You are about to close the account for:{' '}
+                                <strong>
+                                    {user.first_name} {user.last_name}
+                                </strong>
+                            </>
+                        }
+                        icon={<UserIcon className="size-6" />}
+                        color="red"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{ url: route('users.close', user.id), method: 'post' }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Field name="reason">
-                                <Textarea
-                                    label="Reason for Closing"
-                                    name="reason"
-                                    rows={4}
-                                    placeholder="Provide a reason for closing this account..."
-                                />
-                            </Field>
-                        </ModalContent>
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing} color="red">
-                                Close account
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{ url: route('users.close', user.id), method: 'post' }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Field name="reason">
+                                    <Textarea
+                                        label="Reason for Closing"
+                                        name="reason"
+                                        rows={4}
+                                        placeholder="Provide a reason for closing this account..."
+                                    />
+                                </Field>
+                            </ModalContent>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing} color="red">
+                                    Close account
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

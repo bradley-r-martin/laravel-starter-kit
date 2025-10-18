@@ -31,51 +31,54 @@ export default function Update({ wholesaler }: UpdateProps) {
             <Head title={`Update Wholesaler: ${wholesaler.name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Update wholesaler"
-                    description={
-                        <>
-                            You are updating: <strong>{wholesaler.name}</strong>
-                        </>
-                    }
-                    icon={<PencilIcon className="size-6" />}
-                    color="blue"
-                />
+                    <ModalHeader
+                        hero
+                        title="Update wholesaler"
+                        description={
+                            <>
+                                You are updating: <strong>{wholesaler.name}</strong>
+                            </>
+                        }
+                        icon={<PencilIcon className="size-6" />}
+                        color="blue"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{ url: route('wholesalers.update', wholesaler.id), method: 'post' }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Stack>
-                                <Field name="name">
-                                    <TextInput
-                                        label="Name"
-                                        name="name"
-                                        placeholder="Enter wholesaler name"
-                                    />
-                                </Field>
-                            </Stack>
-                        </ModalContent>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{
+                                url: route('wholesalers.update', wholesaler.id),
+                                method: 'post',
+                            }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Stack>
+                                    <Field name="name">
+                                        <TextInput
+                                            label="Name"
+                                            name="name"
+                                            placeholder="Enter wholesaler name"
+                                        />
+                                    </Field>
+                                </Stack>
+                            </ModalContent>
 
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing}>
-                                {processing ? 'Updating...' : 'Update Wholesaler'}
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing}>
+                                    {processing ? 'Updating...' : 'Update Wholesaler'}
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

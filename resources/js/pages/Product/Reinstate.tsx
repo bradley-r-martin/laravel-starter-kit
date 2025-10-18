@@ -31,56 +31,56 @@ export default function Reinstate({ product }: ReinstateProps) {
             <Head title={`Reinstate Product: ${product.name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Reinstate product"
-                    description={
-                        <>
-                            You are reinstating: <strong>{product.name}</strong>
-                        </>
-                    }
-                    icon={<RotateCcwIcon className="size-6" />}
-                    color="green"
-                />
+                    <ModalHeader
+                        hero
+                        title="Reinstate product"
+                        description={
+                            <>
+                                You are reinstating: <strong>{product.name}</strong>
+                            </>
+                        }
+                        icon={<RotateCcwIcon className="size-6" />}
+                        color="green"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{
-                            url: route('products.reinstate', product.id),
-                            method: 'post',
-                        }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Stack>
-                                <Field name="reason">
-                                    <Textarea
-                                        label="Reason"
-                                        name="reason"
-                                        placeholder="Enter reason for reinstating this product"
-                                        required
-                                        rows={4}
-                                    />
-                                </Field>
-                            </Stack>
-                        </ModalContent>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{
+                                url: route('products.reinstate', product.id),
+                                method: 'post',
+                            }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Stack>
+                                    <Field name="reason">
+                                        <Textarea
+                                            label="Reason"
+                                            name="reason"
+                                            placeholder="Enter reason for reinstating this product"
+                                            required
+                                            rows={4}
+                                        />
+                                    </Field>
+                                </Stack>
+                            </ModalContent>
 
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing} color="green">
-                                {processing ? 'Reinstating...' : 'Reinstate Product'}
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing} color="green">
+                                    {processing ? 'Reinstating...' : 'Reinstate Product'}
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

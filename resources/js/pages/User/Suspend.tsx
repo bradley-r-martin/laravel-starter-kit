@@ -37,62 +37,62 @@ export default function Suspend({ user }: Props) {
             <Head title={`Suspend User: ${user.first_name} ${user.last_name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Suspend user"
-                    description={
-                        <>
-                            Temporarily restrict access for:{' '}
-                            <strong>
-                                {user.first_name} {user.last_name}
-                            </strong>
-                        </>
-                    }
-                    icon={<UserMinusIcon className="size-6" />}
-                    color="orange"
-                />
+                    <ModalHeader
+                        hero
+                        title="Suspend user"
+                        description={
+                            <>
+                                Temporarily restrict access for:{' '}
+                                <strong>
+                                    {user.first_name} {user.last_name}
+                                </strong>
+                            </>
+                        }
+                        icon={<UserMinusIcon className="size-6" />}
+                        color="orange"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{ url: route('users.suspend', user.id), method: 'post' }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Stack>
-                                <Field name="reason">
-                                    <Textarea
-                                        label="Reason for Suspension"
-                                        name="reason"
-                                        rows={4}
-                                        placeholder="Provide a reason for suspending this user..."
-                                    />
-                                </Field>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{ url: route('users.suspend', user.id), method: 'post' }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Stack>
+                                    <Field name="reason">
+                                        <Textarea
+                                            label="Reason for Suspension"
+                                            name="reason"
+                                            rows={4}
+                                            placeholder="Provide a reason for suspending this user..."
+                                        />
+                                    </Field>
 
-                                <Field name="notify" type="checkbox">
-                                    <Checkbox
-                                        label="Notify user via email about the suspension"
-                                        name="notify"
-                                    />
-                                </Field>
-                            </Stack>
-                        </ModalContent>
+                                    <Field name="notify" type="checkbox">
+                                        <Checkbox
+                                            label="Notify user via email about the suspension"
+                                            name="notify"
+                                        />
+                                    </Field>
+                                </Stack>
+                            </ModalContent>
 
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing} color="orange">
-                                {processing ? 'Suspending...' : 'Suspend User'}
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing} color="orange">
+                                    {processing ? 'Suspending...' : 'Suspend User'}
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

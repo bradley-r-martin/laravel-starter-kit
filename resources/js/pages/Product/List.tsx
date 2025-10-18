@@ -11,8 +11,6 @@ import { Head } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import { PencilIcon, RotateCcwIcon, SearchIcon, TrashIcon, XIcon } from 'lucide-react';
 
-
-
 interface Product {
     id: string;
     name: string;

@@ -31,54 +31,54 @@ export default function Update({ product_type }: UpdateProps) {
             <Head title={`Update Product Type: ${product_type.name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Update product type"
-                    description={
-                        <>
-                            You are updating: <strong>{product_type.name}</strong>
-                        </>
-                    }
-                    icon={<PencilIcon className="size-6" />}
-                    color="blue"
-                />
+                    <ModalHeader
+                        hero
+                        title="Update product type"
+                        description={
+                            <>
+                                You are updating: <strong>{product_type.name}</strong>
+                            </>
+                        }
+                        icon={<PencilIcon className="size-6" />}
+                        color="blue"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{
-                            url: route('product-types.update', product_type.id),
-                            method: 'post',
-                        }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Stack>
-                                <Field name="name">
-                                    <TextInput
-                                        label="Name"
-                                        name="name"
-                                        placeholder="Enter product type name"
-                                    />
-                                </Field>
-                            </Stack>
-                        </ModalContent>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{
+                                url: route('product-types.update', product_type.id),
+                                method: 'post',
+                            }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Stack>
+                                    <Field name="name">
+                                        <TextInput
+                                            label="Name"
+                                            name="name"
+                                            placeholder="Enter product type name"
+                                        />
+                                    </Field>
+                                </Stack>
+                            </ModalContent>
 
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing}>
-                                {processing ? 'Updating...' : 'Update Product Type'}
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing}>
+                                    {processing ? 'Updating...' : 'Update Product Type'}
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

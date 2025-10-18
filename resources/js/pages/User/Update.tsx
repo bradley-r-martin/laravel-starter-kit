@@ -44,61 +44,61 @@ export default function Update({ user }: UpdateProps) {
             <Head title="Update User" />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Update user"
-                    description={
-                        <>
-                            Edit details for:{' '}
-                            <strong>
-                                {user.first_name} {user.last_name}
-                            </strong>
-                        </>
-                    }
-                    icon={<UserCogIcon className="size-6" />}
-                    color="blue"
-                />
+                    <ModalHeader
+                        hero
+                        title="Update user"
+                        description={
+                            <>
+                                Edit details for:{' '}
+                                <strong>
+                                    {user.first_name} {user.last_name}
+                                </strong>
+                            </>
+                        }
+                        icon={<UserCogIcon className="size-6" />}
+                        color="blue"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{ url: route('users.update', user.id), method: 'post' }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Stack>
-                                <Field name="avatar" type="file">
-                                    <AvatarInput label="Avatar" name="avatar" />
-                                </Field>
-                                <Field name="first_name">
-                                    <TextInput label="First Name" name="first_name" />
-                                </Field>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{ url: route('users.update', user.id), method: 'post' }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Stack>
+                                    <Field name="avatar" type="file">
+                                        <AvatarInput label="Avatar" name="avatar" />
+                                    </Field>
+                                    <Field name="first_name">
+                                        <TextInput label="First Name" name="first_name" />
+                                    </Field>
 
-                                <Field name="last_name">
-                                    <TextInput label="Last Name" name="last_name" />
-                                </Field>
+                                    <Field name="last_name">
+                                        <TextInput label="Last Name" name="last_name" />
+                                    </Field>
 
-                                <Field name="email">
-                                    <TextInput label="Email" name="email" type="email" />
-                                </Field>
-                            </Stack>
-                        </ModalContent>
+                                    <Field name="email">
+                                        <TextInput label="Email" name="email" type="email" />
+                                    </Field>
+                                </Stack>
+                            </ModalContent>
 
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing}>
-                                {processing ? 'Updating...' : 'Update User'}
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing}>
+                                    {processing ? 'Updating...' : 'Update User'}
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

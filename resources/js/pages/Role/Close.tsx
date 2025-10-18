@@ -37,70 +37,70 @@ export default function Close({ role }: Props) {
             <Head title={`Close Role: ${role.name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title="Close role"
-                    description={
-                        <>
-                            Deactivate role: <strong>{role.name}</strong>
-                        </>
-                    }
-                    icon={<ShieldXIcon className="size-6" />}
-                    color="red"
-                />
+                    <ModalHeader
+                        hero
+                        title="Close role"
+                        description={
+                            <>
+                                Deactivate role: <strong>{role.name}</strong>
+                            </>
+                        }
+                        icon={<ShieldXIcon className="size-6" />}
+                        color="red"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{ url: route('roles.close', role.id), method: 'post' }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            {hasUsers && (
-                                <Alert
-                                    variant="light"
-                                    color="red"
-                                    icon={<AlertCircleIcon className="size-5" />}
-                                    title="Cannot Close Role"
-                                    mb="md"
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{ url: route('roles.close', role.id), method: 'post' }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                {hasUsers && (
+                                    <Alert
+                                        variant="light"
+                                        color="red"
+                                        icon={<AlertCircleIcon className="size-5" />}
+                                        title="Cannot Close Role"
+                                        mb="md"
+                                    >
+                                        This role has {role.users_count} user
+                                        {role.users_count !== 1 ? 's' : ''} assigned. Please
+                                        reassign all users before closing this role.
+                                    </Alert>
+                                )}
+
+                                <Field name="reason">
+                                    <Textarea
+                                        label="Reason for Closing"
+                                        name="reason"
+                                        rows={4}
+                                        placeholder="Provide a reason for closing this role..."
+                                    />
+                                </Field>
+                            </ModalContent>
+
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                    data-testid="cancel-action"
                                 >
-                                    This role has {role.users_count} user
-                                    {role.users_count !== 1 ? 's' : ''} assigned. Please reassign
-                                    all users before closing this role.
-                                </Alert>
-                            )}
-
-                            <Field name="reason">
-                                <Textarea
-                                    label="Reason for Closing"
-                                    name="reason"
-                                    rows={4}
-                                    placeholder="Provide a reason for closing this role..."
-                                />
-                            </Field>
-                        </ModalContent>
-
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                                data-testid="cancel-action"
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                loading={processing}
-                                color="red"
-                                disabled={hasUsers}
-                            >
-                                {processing ? 'Closing...' : 'Close Role'}
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    loading={processing}
+                                    color="red"
+                                    disabled={hasUsers}
+                                >
+                                    {processing ? 'Closing...' : 'Close Role'}
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>

@@ -33,50 +33,53 @@ export default function Close({ wholesaler }: Props) {
             <Head title={`Close Wholesaler: ${wholesaler.name}`} />
             <Modal>
                 <Modal.Body>
-                <ModalHeader
-                    hero
-                    title={`Close wholesaler`}
-                    description={
-                        <>
-                            You are about to close the wholesaler:{' '}
-                            <strong>{wholesaler.name}</strong>
-                        </>
-                    }
-                    icon={<XIcon className="size-6" />}
-                    color="red"
-                />
+                    <ModalHeader
+                        hero
+                        title={`Close wholesaler`}
+                        description={
+                            <>
+                                You are about to close the wholesaler:{' '}
+                                <strong>{wholesaler.name}</strong>
+                            </>
+                        }
+                        icon={<XIcon className="size-6" />}
+                        color="red"
+                    />
 
-                <FormErrorSound>
-                    <Form
-                        form={form}
-                        action={{ url: route('wholesalers.close', wholesaler.id), method: 'post' }}
-                        onSuccess={() => modal?.close()}
-                    >
-                        <ModalContent>
-                            <Field name="reason">
-                                <Textarea
-                                    label="Reason for Closing"
-                                    name="reason"
-                                    rows={4}
-                                    placeholder="Provide a reason for closing this wholesaler..."
-                                />
-                            </Field>
-                        </ModalContent>
-                        <Actions>
-                            <Button
-                                onClick={() => modal?.close()}
-                                type="button"
-                                variant="subtle"
-                                color="zinc"
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" loading={processing} color="red">
-                                Close wholesaler
-                            </Button>
-                        </Actions>
-                    </Form>
-                </FormErrorSound>
+                    <FormErrorSound>
+                        <Form
+                            form={form}
+                            action={{
+                                url: route('wholesalers.close', wholesaler.id),
+                                method: 'post',
+                            }}
+                            onSuccess={() => modal?.close()}
+                        >
+                            <ModalContent>
+                                <Field name="reason">
+                                    <Textarea
+                                        label="Reason for Closing"
+                                        name="reason"
+                                        rows={4}
+                                        placeholder="Provide a reason for closing this wholesaler..."
+                                    />
+                                </Field>
+                            </ModalContent>
+                            <Actions>
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button type="submit" loading={processing} color="red">
+                                    Close wholesaler
+                                </Button>
+                            </Actions>
+                        </Form>
+                    </FormErrorSound>
                 </Modal.Body>
             </Modal>
         </>
