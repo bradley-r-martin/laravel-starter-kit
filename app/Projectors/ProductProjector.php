@@ -49,6 +49,9 @@ final class ProductProjector extends Projector
 
         // Update product type count
         $productType->increment('__products_count');
+
+        // Update manufacturer count
+        $manufacturer->increment('__products_count');
     }
 
     public function onProductUpdated(ProductUpdated $event): void
@@ -72,9 +75,17 @@ final class ProductProjector extends Projector
         }
 
         if ($event->manufacturerId !== null) {
-            $manufacturer = Manufacturer::findOrFail($event->manufacturerId);
+            // Update manufacturer counts if the manufacturer changed
+            $oldManufacturer = Manufacturer::findOrFail($product->manufacturer_id);
+            $newManufacturer = Manufacturer::findOrFail($event->manufacturerId);
+
+            if ($product->manufacturer_id !== $event->manufacturerId) {
+                $oldManufacturer->decrement('__products_count');
+                $newManufacturer->increment('__products_count');
+            }
+
             $updates['manufacturer_id'] = $event->manufacturerId;
-            $updates['__manufacturer_name'] = $manufacturer->name;
+            $updates['__manufacturer_name'] = $newManufacturer->name;
         }
 
         if ($event->name !== null) {
@@ -139,6 +150,10 @@ final class ProductProjector extends Projector
         // Update product type count
         $productType = ProductType::findOrFail($product->product_type_id);
         $productType->decrement('__products_count');
+
+        // Update manufacturer count
+        $manufacturer = Manufacturer::findOrFail($product->manufacturer_id);
+        $manufacturer->decrement('__products_count');
 
         $product->delete();
     }

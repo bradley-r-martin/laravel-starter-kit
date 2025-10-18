@@ -31,7 +31,7 @@ final class ManufacturerListViewRequest extends FormRequest
     public function respond(): Response
     {
         $manufacturers = Manufacturer::query()
-            ->select(['id', 'name', 'closed_at', 'created_at'])
+            ->select(['id', 'name', 'closed_at', 'created_at', '__products_count'])
             ->orderBy('created_at', 'desc')
             ->paginate()
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Manufacturer $manufacturer}> $manufacturers */
@@ -40,6 +40,7 @@ final class ManufacturerListViewRequest extends FormRequest
                 'name' => $manufacturer->name,
                 'closed_at' => $manufacturer->closed_at,
                 'created_at' => $manufacturer->created_at,
+                'products_count' => $manufacturer->__products_count,
             ]);
 
         return inertia()

@@ -16,6 +16,7 @@ interface Manufacturer {
     name: string;
     closed_at: string | null;
     created_at: string;
+    products_count: number;
 }
 
 interface ListProps {
@@ -57,6 +58,7 @@ const List: InertiaView<ListProps> = (props) => {
                         <Table.Thead>
                             <Table.Thead.Tr>
                                 <Table.Th>Name</Table.Th>
+                                <Table.Th>Products</Table.Th>
                                 <Table.Th>Status</Table.Th>
                                 <Table.Th>Created</Table.Th>
                                 <Table.Th style={{ width: '180px' }}>Actions</Table.Th>
@@ -72,6 +74,14 @@ const List: InertiaView<ListProps> = (props) => {
                                         data-testid={`manufacturer-row-${manufacturer.id}-name`}
                                     >
                                         <Navatar name={manufacturer.name} />
+                                    </Table.Tbody.Td>
+                                    <Table.Tbody.Td
+                                        data-span="hidden"
+                                        data-testid={`manufacturer-row-${manufacturer.id}-products`}
+                                    >
+                                        <Text size="sm" c="dimmed">
+                                            {manufacturer.products_count}
+                                        </Text>
                                     </Table.Tbody.Td>
                                     <Table.Tbody.Td
                                         data-span="hidden"
