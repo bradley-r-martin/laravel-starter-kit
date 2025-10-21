@@ -1,6 +1,7 @@
 import Cast from '@/components/Cast';
 import { Empty } from '@/components/Empty';
 import MobileSearch from '@/components/MobileSearch';
+import MobileSort from '@/components/MobileSort';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
@@ -10,8 +11,19 @@ import Header from '@/Parts/Header';
 import { InertiaView, Paginated, UploadedFile } from '@/types';
 import { Asset } from '@/Utilities/Asset';
 import { Head } from '@inertiajs/react';
-import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
-import { PencilIcon, RotateCcwIcon, TrashIcon, XIcon } from 'lucide-react';
+import { ActionIcon, Badge, Button, Group, SegmentedControl, Text, Tooltip } from '@mantine/core';
+import {
+    Building2Icon,
+    CircleDotIcon,
+    DollarSignIcon,
+    HashIcon,
+    LayersIcon,
+    PencilIcon,
+    RotateCcwIcon,
+    TrashIcon,
+    TypeIcon,
+    XIcon,
+} from 'lucide-react';
 
 interface Product {
     id: string;
@@ -34,21 +46,40 @@ interface ListProps {
 
 const List: InertiaView<ListProps> = (props) => {
     const { products } = props;
+
+    const sortOptions = [
+        { value: 'name', label: 'Name', icon: TypeIcon },
+        { value: 'sku', label: 'SKU', icon: HashIcon },
+        { value: 'type', label: 'Type', icon: LayersIcon },
+        { value: 'manufacturer', label: 'Manufacturer', icon: Building2Icon },
+        { value: 'price', label: 'Price', icon: DollarSignIcon },
+        { value: 'status', label: 'Status', icon: CircleDotIcon },
+    ];
+
     return (
         <>
             <Head title="Products" />
-            <div className="relative z-20 container mx-auto translate-y-3 px-5 lg:pt-10">
-                <div className="text-xs text-zinc-500">{products.data.length} products</div>
-            </div>
+
             <Header
                 title="Products"
                 action={
                     <Group gap="xs">
-                        <MobileSearch data={products} attribute="products" />
                         <Navigate type="modal" href={route('products.create')}>
                             <Button size="xs">Create Product</Button>
                         </Navigate>
                     </Group>
+                }
+                subtitle={
+                    <div className="text-xs text-zinc-500">{products.data.length} products</div>
+                }
+                filters={
+                    <div className="flex items-center gap-2 pb-2">
+                        <MobileSort options={sortOptions} data={products} attribute="products" />
+                        <div className="flex-1">
+                            <SegmentedControl data={['Active', 'Closed']} fullWidth />
+                        </div>
+                        <MobileSearch data={products} attribute="products" />
+                    </div>
                 }
             />
 

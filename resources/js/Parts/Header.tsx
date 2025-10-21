@@ -5,9 +5,11 @@ import { FunctionComponent, useRef } from 'react';
 interface HeaderProps {
     title?: React.ReactNode;
     action?: React.ReactNode;
+    filters?: React.ReactNode;
+    subtitle?: React.ReactNode;
 }
 
-const Header: FunctionComponent<HeaderProps> = ({ title, action }) => {
+const Header: FunctionComponent<HeaderProps> = ({ title, action, filters, subtitle }) => {
     const headerRef = useRef<HTMLDivElement>(null);
     const { ref: scrollContainerRef } = useContentContext();
 
@@ -29,35 +31,66 @@ const Header: FunctionComponent<HeaderProps> = ({ title, action }) => {
         ['rgba(224,224,224,0)', 'rgba(224,224,224,1)']
     );
 
+    const paddingX = useTransform(scrollY, [0, margin], ['20px', '10px']);
+    const paddingBottom = useTransform(scrollY, [0, margin], [20, 8]);
+    const paddingTop = useTransform(scrollY, [0, margin], [0, 0]);
+    const opacity = useTransform(scrollY, [0, margin], [1, 0]);
+
+    const backgroundColor = useTransform(
+        scrollY,
+        [0, margin],
+        ['rgba(255,255,255,0)', 'rgba(255,255,255,1)']
+    );
+
     return (
-        <motion.div
-            ref={headerRef}
-            className="sticky top-0 z-10 container mx-auto bg-gradient-to-b from-zinc-100 via-zinc-100 to-zinc-100/50 lg:from-white lg:via-white lg:to-white/50"
-        >
+        <>
             <motion.div
+                className="relative z-20 translate-y-3"
+                style={{
+                    paddingLeft: paddingX,
+                    paddingRight: paddingX,
+                    opacity: opacity,
+                }}
+            >
+                {subtitle}
+            </motion.div>
+            <motion.div
+                ref={headerRef}
                 style={{
                     borderBottomWidth: '1px',
                     borderBottomStyle: 'solid',
                     borderBottomColor: borderColor,
+                    paddingLeft: paddingX,
+                    paddingRight: paddingX,
+                    backgroundColor: backgroundColor,
+                    paddingTop: paddingTop,
                 }}
-                className="flex items-center justify-between p-2 px-5"
+                className="sticky top-0 z-10 container mx-auto"
             >
-                <motion.h1
+                <motion.div
                     style={{
-                        fontSize,
+                        paddingBottom: paddingBottom,
                     }}
-                    className="font-bold text-zinc-950/80"
+                    className="flex items-center justify-between pt-2"
                 >
-                    {title}
-                </motion.h1>
+                    <motion.h1
+                        style={{
+                            fontSize,
+                        }}
+                        className="font-bold text-zinc-950/80"
+                    >
+                        {title}
+                    </motion.h1>
 
-                <motion.div style={{ scale, transformOrigin: 'right' }}>{action}</motion.div>
-            </motion.div>
+                    <motion.div style={{ scale, transformOrigin: 'right' }}>{action}</motion.div>
+                </motion.div>
 
-            {/* <div className='border-b border-zinc-950/20 py-2 px-5'>
+                {/* <div className='border-b border-zinc-950/20 py-2 px-5'>
                 <input type="text" placeholder='Search' className='p-2 w-full bg-zinc-200 rounded' />
             </div> */}
-        </motion.div>
+                <motion.div data-testid="filters-bar">{filters}</motion.div>
+            </motion.div>
+        </>
     );
 };
 

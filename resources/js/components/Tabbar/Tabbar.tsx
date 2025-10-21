@@ -3,21 +3,24 @@ import { Avatar } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
     BellIcon,
+    Building2Icon,
     BuildingIcon,
     ChevronDownIcon,
     ChevronRightIcon,
-    FactoryIcon,
     FilesIcon,
     GaugeIcon,
     GitPullRequestIcon,
     LogOutIcon,
+    PackageIcon,
     QrCodeIcon,
     Radar,
     ReceiptIcon,
+    RowsIcon,
     SettingsIcon,
     ShieldIcon,
     TruckIcon,
     UsersIcon,
+    WarehouseIcon,
 } from 'lucide-react';
 import { AnimatePresence, motion, Transition, useDragControls } from 'motion/react';
 import { FunctionComponent } from 'react';
@@ -241,16 +244,30 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
 
                                 <MenuGroup opened={manageOpened}>
                                     <TabbarItem
-                                        icon={<TruckIcon className="size-7 shrink-0" />}
-                                        label="Wholesalers"
-                                        href={'/wholesalers'}
+                                        icon={<PackageIcon className="size-7 shrink-0" />}
+                                        label="Products"
+                                        href={'/products'}
                                         opened={opened}
                                         onClose={onClose}
                                     />
                                     <TabbarItem
-                                        icon={<FactoryIcon className="size-7 shrink-0" />}
+                                        icon={<RowsIcon className="size-7 shrink-0" />}
+                                        label="Product Types"
+                                        href={'/product-types'}
+                                        opened={opened}
+                                        onClose={onClose}
+                                    />
+                                    <TabbarItem
+                                        icon={<Building2Icon className="size-7 shrink-0" />}
                                         label="Manufacturers"
                                         href={'/manufacturers'}
+                                        opened={opened}
+                                        onClose={onClose}
+                                    />
+                                    <TabbarItem
+                                        icon={<WarehouseIcon className="size-7 shrink-0" />}
+                                        label="Wholesalers"
+                                        href={'/wholesalers'}
                                         opened={opened}
                                         onClose={onClose}
                                     />

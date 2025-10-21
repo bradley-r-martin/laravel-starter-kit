@@ -1,3 +1,4 @@
+import useQueryString from '@/hooks/useQueryString';
 import { Paginated } from '@/types';
 import { ReloadOptions } from '@inertiajs/core';
 import { router } from '@inertiajs/react';
@@ -14,6 +15,8 @@ interface SearchProps extends Omit<TextInputProps, 'value' | 'onChange'> {
 
 const Search: FunctionComponent<SearchProps> = (props) => {
     const { options = {}, attribute, ...restProps } = props;
+
+    const defaultSearch = useQueryString(`${attribute}_search`);
 
     const [searching, setSearching] = useState(false);
 
@@ -48,6 +51,7 @@ const Search: FunctionComponent<SearchProps> = (props) => {
             size="xs"
             radius="xl"
             placeholder="Search"
+            defaultValue={defaultSearch || ''}
             onChange={(event) => handleSearch(event.currentTarget.value)}
             {...restProps}
         />
