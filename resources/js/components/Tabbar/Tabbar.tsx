@@ -11,7 +11,10 @@ import {
     GaugeIcon,
     GitPullRequestIcon,
     LogOutIcon,
+    LollipopIcon,
+    MapIcon,
     PackageIcon,
+    PuzzleIcon,
     QrCodeIcon,
     Radar,
     ReceiptIcon,
@@ -141,7 +144,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                 }
                                 label="Close"
                                 opened={opened}
-                                onClick={toggle}
+                                onClick={opened ? onClose : toggle}
                                 data-active={component.startsWith('Dashboard')}
                                 className="data-[opened=true]:*:text-rose-600"
                             />
@@ -244,6 +247,13 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
 
                                 <MenuGroup opened={manageOpened}>
                                     <TabbarItem
+                                        icon={<LollipopIcon className="size-7 shrink-0" />}
+                                        label="Snackwares"
+                                        href={'/snackwares'}
+                                        opened={opened}
+                                        onClose={onClose}
+                                    />
+                                    <TabbarItem
                                         icon={<PackageIcon className="size-7 shrink-0" />}
                                         label="Products"
                                         href={'/products'}
@@ -282,6 +292,20 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         icon={<UsersIcon className="size-7 shrink-0" />}
                                         label="Users"
                                         href={'/users'}
+                                        opened={opened}
+                                        onClose={onClose}
+                                    />
+                                    <TabbarItem
+                                        icon={<MapIcon className="size-7 shrink-0" />}
+                                        label="Territories"
+                                        href={'/territories'}
+                                        opened={opened}
+                                        onClose={onClose}
+                                    />
+                                    <TabbarItem
+                                        icon={<PuzzleIcon className="size-7 shrink-0" />}
+                                        label="Operators"
+                                        href={'/operators'}
                                         opened={opened}
                                         onClose={onClose}
                                     />
