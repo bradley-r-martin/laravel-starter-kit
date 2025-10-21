@@ -44,7 +44,8 @@ final class User extends Authenticatable implements MustVerifyEmail
         return $query->when($search, fn (Builder $q) => $q->where(fn (Builder $q) => $q
             ->where('first_name', 'like', "%{$search}%")
             ->orWhere('last_name', 'like', "%{$search}%")
-            ->orWhere('email', 'like', "%{$search}%")));
+            ->orWhere('email', 'like', "%{$search}%")
+        ));
     }
 
     /**
