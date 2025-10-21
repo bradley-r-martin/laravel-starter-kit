@@ -33,7 +33,8 @@ final class WholesalerListViewRequest extends FormRequest
         $wholesalers = Wholesaler::query()
             ->select(['id', 'name', 'closed_at', 'created_at'])
             ->orderBy('created_at', 'desc')
-            ->paginate()
+            ->filterBySearch($this->string('wholesalers_search')->toString())
+            ->paginate(10, ['*'], 'wholesalers_page')
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Wholesaler $wholesaler}> $wholesalers */
             ->through(fn (Wholesaler $wholesaler): array => [
                 'id' => $wholesaler->id,

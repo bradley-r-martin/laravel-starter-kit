@@ -1,5 +1,6 @@
 import { Paginated } from '@/types';
-import { router, VisitHelperOptions } from '@inertiajs/core';
+import { ReloadOptions } from '@inertiajs/core';
+import { router } from '@inertiajs/react';
 import {
     Pagination as MantinePagination,
     PaginationProps as MantinePaginationProps,
@@ -9,7 +10,7 @@ import { FunctionComponent } from 'react';
 interface PaginationProps extends Omit<MantinePaginationProps, 'total' | 'value' | 'onChange'> {
     data: Paginated<unknown>;
     attribute: string;
-    options?: VisitHelperOptions;
+    options?: ReloadOptions;
 }
 
 const Pagination: FunctionComponent<PaginationProps> = (props) => {

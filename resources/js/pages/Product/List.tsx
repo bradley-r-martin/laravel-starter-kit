@@ -3,6 +3,7 @@ import { Empty } from '@/components/Empty';
 import MobileSearch from '@/components/MobileSearch';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
+import { Pagination } from '@/components/Pagination';
 import Table from '@/components/Table/Table';
 import AppLayout from '@/Layouts/AppLayout';
 import Header from '@/Parts/Header';
@@ -227,6 +228,7 @@ const List: InertiaView<ListProps> = (props) => {
                         </Table.Tbody>
                     </Table>
                 )}
+                <Pagination data={products} attribute="products" />
             </div>
         </>
     );

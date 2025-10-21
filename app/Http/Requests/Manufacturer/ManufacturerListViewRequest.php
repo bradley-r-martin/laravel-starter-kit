@@ -33,7 +33,8 @@ final class ManufacturerListViewRequest extends FormRequest
         $manufacturers = Manufacturer::query()
             ->select(['id', 'name', 'closed_at', 'created_at', '__products_count'])
             ->orderBy('created_at', 'desc')
-            ->paginate()
+            ->filterBySearch($this->string('manufacturers_search')->toString())
+            ->paginate(10, ['*'], 'manufacturers_page')
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Manufacturer $manufacturer}> $manufacturers */
             ->through(fn (Manufacturer $manufacturer): array => [
                 'id' => $manufacturer->id,
