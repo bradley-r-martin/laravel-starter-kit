@@ -1,3 +1,4 @@
+import { isMobile } from '@/Utilities/Environment';
 import { motion, MotionValue, useTransform } from 'motion/react';
 import { FunctionComponent } from 'react';
 
@@ -28,7 +29,7 @@ const HeaderFilters: FunctionComponent<HeaderFiltersProps> = (props) => {
 
     return (
         <motion.div
-            style={{
+            style={isMobile() ? {
                 backgroundColor: filtersBackgroundColor,
                 borderColor: filtersBorderColor,
                 borderWidth: '1px',
@@ -36,7 +37,7 @@ const HeaderFilters: FunctionComponent<HeaderFiltersProps> = (props) => {
                 marginLeft: filtersMargin,
                 marginRight: filtersMargin,
                 boxShadow: filtersShadow,
-            }}
+            } : {}}
             data-testid="filters-bar"
             className="rounded px-2 py-1"
         >

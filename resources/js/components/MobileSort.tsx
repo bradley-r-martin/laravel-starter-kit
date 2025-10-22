@@ -60,7 +60,8 @@ const MobileSort: FunctionComponent<MobileSortProps> = (props) => {
                         <ArrowUpDownIcon className="size-3 stroke-[1.5] text-zinc-500" />
                     )
                 }
-                comboboxProps={{ width: 'auto', position: 'bottom-start', withArrow: true }}
+                
+                comboboxProps={{ width: 'auto', position: 'bottom-start', withArrow: true, arrowOffset: 10 }}
                 variant="filled"
                 size="xs"
                 radius="xl"
