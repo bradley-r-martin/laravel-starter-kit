@@ -113,7 +113,7 @@ export const theme: MantineThemeOverride = createTheme({
             },
             classNames: {
                 root: '!bg-zinc-200 !shadow-inner',
-                label: '!py-0.5 !px-5',
+                label: '!py-1 lg:!py-0.5 !px-5',
             },
         },
 

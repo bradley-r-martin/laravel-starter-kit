@@ -73,12 +73,20 @@ const List: InertiaView<ListProps> = (props) => {
                     <div className="text-xs text-zinc-500">{products.data.length} products</div>
                 }
                 filters={
-                    <div className="flex items-center gap-2 pb-2">
-                        <MobileSort options={sortOptions} data={products} attribute="products" />
-                        <div className="flex-1">
+                    <div className="flex items-center gap-2 lg:gap-10">
+                        <div className="order-1 lg:order-2 lg:flex-1">
+                            <MobileSort
+                                options={sortOptions}
+                                data={products}
+                                attribute="products"
+                            />
+                        </div>
+                        <div className="order-1 flex-1 lg:flex-none">
                             <SegmentedControl data={['Active', 'Closed']} fullWidth />
                         </div>
-                        <MobileSearch data={products} attribute="products" />
+                        <div className="order-2">
+                            <MobileSearch data={products} attribute="products" />
+                        </div>
                     </div>
                 }
             />

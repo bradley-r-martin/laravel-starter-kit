@@ -1,6 +1,7 @@
 import useContentContext from '@/hooks/useContentContext';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { FunctionComponent, useRef } from 'react';
+import HeaderFilters from './HeaderFilters';
 
 interface HeaderProps {
     title?: React.ReactNode;
@@ -60,8 +61,7 @@ const Header: FunctionComponent<HeaderProps> = ({ title, action, filters, subtit
                     borderBottomWidth: '1px',
                     borderBottomStyle: 'solid',
                     borderBottomColor: borderColor,
-                    paddingLeft: paddingX,
-                    paddingRight: paddingX,
+
                     backgroundColor: backgroundColor,
                     paddingTop: paddingTop,
                 }}
@@ -70,6 +70,8 @@ const Header: FunctionComponent<HeaderProps> = ({ title, action, filters, subtit
                 <motion.div
                     style={{
                         paddingBottom: paddingBottom,
+                        paddingLeft: paddingX,
+                        paddingRight: paddingX,
                     }}
                     className="flex items-center justify-between pt-2"
                 >
@@ -88,7 +90,8 @@ const Header: FunctionComponent<HeaderProps> = ({ title, action, filters, subtit
                 {/* <div className='border-b border-zinc-950/20 py-2 px-5'>
                 <input type="text" placeholder='Search' className='p-2 w-full bg-zinc-200 rounded' />
             </div> */}
-                <motion.div data-testid="filters-bar">{filters}</motion.div>
+
+                <HeaderFilters position={scrollY}>{filters}</HeaderFilters>
             </motion.div>
         </>
     );
