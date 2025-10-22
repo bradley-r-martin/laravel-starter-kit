@@ -29,13 +29,13 @@ createInertiaApp({
                             const child = createElement(Component, { key, ...pageProps });
 
                             if (Array.isArray(Component?.layout)) {
-                                const layouts = Component.layout
-                                    .concat(child)
+                                const layouts = [...Component.layout]
                                     .reverse()
-                                    .reduce((children, Layout) =>
-                                        createElement(Layout, pageProps, children)
+                                    .reduce(
+                                        (children, Layout) =>
+                                            createElement(Layout, pageProps as any, children),
+                                        child
                                     );
-
                                 return (
                                     <>
                                         {layouts}

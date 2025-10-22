@@ -29,17 +29,21 @@ const HeaderFilters: FunctionComponent<HeaderFiltersProps> = (props) => {
 
     return (
         <motion.div
-            style={isMobile() ? {
-                backgroundColor: filtersBackgroundColor,
-                borderColor: filtersBorderColor,
-                borderWidth: '1px',
-                borderStyle: 'solid',
-                marginLeft: filtersMargin,
-                marginRight: filtersMargin,
-                boxShadow: filtersShadow,
-            } : {}}
+            style={
+                isMobile()
+                    ? {
+                          backgroundColor: filtersBackgroundColor,
+                          borderColor: filtersBorderColor,
+                          borderWidth: '1px',
+                          borderStyle: 'solid',
+                          marginLeft: filtersMargin,
+                          marginRight: filtersMargin,
+                          boxShadow: filtersShadow,
+                      }
+                    : {}
+            }
             data-testid="filters-bar"
-            className="rounded px-2 lg:px-5 lg:pb-2 py-1"
+            className="rounded px-2 py-1 lg:px-5 lg:pb-2"
         >
             {children}
         </motion.div>

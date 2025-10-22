@@ -46,7 +46,7 @@ const Header: FunctionComponent<HeaderProps> = ({ title, action, filters, subtit
     return (
         <>
             <motion.div
-                className="relative z-20 translate-y-3 mx-auto container"
+                className="relative z-20 container mx-auto translate-y-3"
                 style={{
                     paddingLeft: paddingX,
                     paddingRight: paddingX,
