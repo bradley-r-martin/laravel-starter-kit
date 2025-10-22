@@ -29,7 +29,7 @@ createInertiaApp({
                             const child = createElement(Component, { key, ...pageProps });
 
                             // Handle layouts
-                            if (typeof Component.layout === 'function') {
+                            if (typeof Component?.layout === 'function') {
                                 return (
                                     <>
                                         {Component.layout(child)}
