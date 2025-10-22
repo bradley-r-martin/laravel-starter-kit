@@ -1,4 +1,5 @@
 import useContentContext from '@/hooks/useContentContext';
+import { isMobile } from '@/Utilities/Environment';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { FunctionComponent, useRef } from 'react';
 import HeaderFilters from './HeaderFilters';
@@ -35,7 +36,6 @@ const Header: FunctionComponent<HeaderProps> = ({ title, action, filters, subtit
     const paddingX = useTransform(scrollY, [0, margin], ['20px', '10px']);
     const paddingBottom = useTransform(scrollY, [0, margin], [20, 8]);
     const paddingTop = useTransform(scrollY, [0, margin], [0, 0]);
-    const opacity = useTransform(scrollY, [0, margin], [1, 0]);
 
     const backgroundColor = useTransform(
         scrollY,
@@ -46,12 +46,15 @@ const Header: FunctionComponent<HeaderProps> = ({ title, action, filters, subtit
     return (
         <>
             <motion.div
-                className="relative z-20 container mx-auto translate-y-3"
-                style={{
-                    paddingLeft: paddingX,
-                    paddingRight: paddingX,
-                    opacity: opacity,
-                }}
+                className="relative z-20 container mx-auto translate-y-3 lg:px-4 lg:pt-10"
+                style={
+                    isMobile()
+                        ? {
+                              paddingLeft: paddingX,
+                              paddingRight: paddingX,
+                          }
+                        : {}
+                }
             >
                 {subtitle}
             </motion.div>
@@ -68,12 +71,18 @@ const Header: FunctionComponent<HeaderProps> = ({ title, action, filters, subtit
                 className="sticky top-0 z-10 container mx-auto"
             >
                 <motion.div
-                    style={{
-                        paddingBottom: paddingBottom,
-                        paddingLeft: paddingX,
-                        paddingRight: paddingX,
-                    }}
-                    className="flex items-center justify-between pt-2"
+                    style={
+                        isMobile()
+                            ? {
+                                  paddingBottom: paddingBottom,
+                                  paddingLeft: paddingX,
+                                  paddingRight: paddingX,
+                              }
+                            : {
+                                  paddingBottom: paddingBottom,
+                              }
+                    }
+                    className="flex items-center justify-between pt-2 lg:px-4"
                 >
                     <motion.h1
                         style={{

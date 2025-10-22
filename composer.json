@@ -15,6 +15,7 @@
         "inertiaui/modal": "^0.21.1",
         "laravel-notification-channels/webpush": "^10.2",
         "laravel/framework": "^12.31.1",
+        "laravel/octane": "^2.13",
         "nunomaduro/essentials": "^1.0.1",
         "rlanvin/php-rrule": "^2.6",
         "spatie/laravel-event-sourcing": "^7.12",

@@ -31,8 +31,10 @@ final class ProductListViewRequest extends FormRequest
     public function respond(): Response
     {
         $products = Product::query()
-            ->orderBy('name')
+            ->filterSortBy($this->string('products_sort')->toString())
+
             ->filterBySearch($this->string('products_search')->toString())
+
             ->paginate(10, ['*'], 'products_page')
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Product $product}> $products */
             ->through(fn (Product $product): array => [

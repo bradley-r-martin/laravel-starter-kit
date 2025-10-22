@@ -13,12 +13,16 @@ import { Asset } from '@/Utilities/Asset';
 import { Head } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, SegmentedControl, Text, Tooltip } from '@mantine/core';
 import {
+    BadgePercent,
+    BoxesIcon,
     Building2Icon,
     CircleDotIcon,
     DollarSignIcon,
     HashIcon,
+    HeartIcon,
     LayersIcon,
     PencilIcon,
+    PiggyBankIcon,
     RotateCcwIcon,
     TrashIcon,
     TypeIcon,
@@ -32,8 +36,8 @@ interface Product {
     units: number;
     cost: number;
     price: number;
-    rebate: string;
-    royalty: string;
+    rebate: number;
+    royalty: number;
     avatar: UploadedFile | null;
     closed_at: string | null;
     __product_type_name: string;
@@ -52,8 +56,12 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'sku', label: 'SKU', icon: HashIcon },
         { value: 'type', label: 'Type', icon: LayersIcon },
         { value: 'manufacturer', label: 'Manufacturer', icon: Building2Icon },
+        { value: 'units', label: 'Units', icon: BoxesIcon },
+        { value: 'cost', label: 'Cost', icon: PiggyBankIcon },
         { value: 'price', label: 'Price', icon: DollarSignIcon },
-        { value: 'status', label: 'Status', icon: CircleDotIcon },
+        { value: 'rebate', label: 'Rebate', icon: BadgePercent },
+        { value: 'royalty', label: 'Royalty', icon: HeartIcon },
+        { value: 'created_at', label: 'Created At', icon: CircleDotIcon },
     ];
 
     return (
@@ -105,7 +113,11 @@ const List: InertiaView<ListProps> = (props) => {
                                 <Table.Th>SKU</Table.Th>
                                 <Table.Th>Type</Table.Th>
                                 <Table.Th>Manufacturer</Table.Th>
+                                <Table.Th>Units</Table.Th>
+                                <Table.Th>Cost</Table.Th>
                                 <Table.Th>Price</Table.Th>
+                                <Table.Th>Rebate</Table.Th>
+                                <Table.Th>Royalty</Table.Th>
                                 <Table.Th>Status</Table.Th>
                                 <Table.Th style={{ width: '180px' }}>Actions</Table.Th>
                             </Table.Thead.Tr>
@@ -141,10 +153,45 @@ const List: InertiaView<ListProps> = (props) => {
                                     </Table.Tbody.Td>
                                     <Table.Tbody.Td
                                         data-span="hidden"
+                                        data-testid={`product-row-${product.id}-units`}
+                                    >
+                                        <Text size="sm" c="dimmed">
+                                            {product.units}
+                                        </Text>
+                                    </Table.Tbody.Td>
+                                    <Table.Tbody.Td
+                                        data-span="hidden"
+                                        data-testid={`product-row-${product.id}-cost`}
+                                    >
+                                        <Text size="sm" c="dimmed">
+                                            <Cast.Currency children={product.cost} fallback="—" />
+                                        </Text>
+                                    </Table.Tbody.Td>
+                                    <Table.Tbody.Td
+                                        data-span="hidden"
                                         data-testid={`product-row-${product.id}-price`}
                                     >
                                         <Text size="sm" c="dimmed">
                                             <Cast.Currency children={product.price} fallback="—" />
+                                        </Text>
+                                    </Table.Tbody.Td>
+                                    <Table.Tbody.Td
+                                        data-span="hidden"
+                                        data-testid={`product-row-${product.id}-rebate`}
+                                    >
+                                        <Text size="sm" c="dimmed">
+                                            <Cast.Currency children={product.rebate} fallback="—" />
+                                        </Text>
+                                    </Table.Tbody.Td>
+                                    <Table.Tbody.Td
+                                        data-span="hidden"
+                                        data-testid={`product-row-${product.id}-royalty`}
+                                    >
+                                        <Text size="sm" c="dimmed">
+                                            <Cast.Currency
+                                                children={product.royalty}
+                                                fallback="—"
+                                            />
                                         </Text>
                                     </Table.Tbody.Td>
                                     <Table.Tbody.Td
