@@ -25,20 +25,10 @@ createInertiaApp({
             <ModalStackProvider>
                 <MantineServiceProvider>
                     <App {...props}>
-                        {({ Component, key, props: pageProps }) => {
+                        {({ component: Component, key, props: pageProps }) => {
                             const child = createElement(Component, { key, ...pageProps });
 
-                            // Handle layouts
-                            if (typeof Component?.layout === 'function') {
-                                return (
-                                    <>
-                                        {Component.layout(child)}
-                                        <ModalRoot />
-                                    </>
-                                );
-                            }
-
-                            if (Array.isArray(Component.layout)) {
+                            if (Array.isArray(Component?.layout)) {
                                 const layouts = Component.layout
                                     .concat(child)
                                     .reverse()
