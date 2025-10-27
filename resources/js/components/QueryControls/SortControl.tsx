@@ -1,11 +1,10 @@
-import useQueryString from '@/hooks/useQueryString';
-import { Paginated } from '@/types';
+import useQueryControlReload from '@/hooks/useQueryControlReload';
 import { isMobile } from '@/Utilities/Environment';
-import { router } from '@inertiajs/react';
+import { ReloadOptions } from '@inertiajs/core';
 import { ActionIcon, Group, Loader } from '@mantine/core';
 import { ArrowUpDownIcon, LucideIcon, SortAscIcon } from 'lucide-react';
-import { FunctionComponent, useState } from 'react';
-import AutoWidthSelect from './AutoWidthSelect';
+import { FunctionComponent } from 'react';
+import AutoWidthSelect from '../AutoWidthSelect';
 
 interface Option {
     value: string;
@@ -13,31 +12,15 @@ interface Option {
     icon: LucideIcon;
 }
 
-interface MobileSortProps {
-    data: Paginated<unknown>;
+interface SortControlProps {
     attribute: string;
-    options: Option[];
+    data: Option[];
+    options?: ReloadOptions;
 }
 
-const MobileSort: FunctionComponent<MobileSortProps> = (props) => {
-    const { options, attribute } = props;
-
-    const [searching, setSearching] = useState(false);
-
-    // get attribute_sort from querystring
-    const defaultSort = useQueryString(`${attribute}_sort`);
-
-    const handleSort = (value: string) => {
-        setSearching(true);
-        router.reload({
-            only: [attribute],
-            data: {
-                [`${attribute}_sort`]: value,
-            },
-            ...options,
-            onFinish: () => setSearching(false),
-        });
-    };
+const SortControl: FunctionComponent<SortControlProps> = (props) => {
+    const { data, options, attribute } = props;
+    const [reloading, value, handle] = useQueryControlReload(attribute, 'sort', options);
 
     if (isMobile()) {
         return (
@@ -51,10 +34,10 @@ const MobileSort: FunctionComponent<MobileSortProps> = (props) => {
         <div className="flex items-center gap-2">
             <div className="text-xs font-bold text-zinc-600">Sort by:</div>
             <AutoWidthSelect
-                onChange={(value) => handleSort(value as string)}
+                onChange={(value) => handle(value as string)}
                 placeholder="Sort by"
                 leftSection={
-                    searching ? (
+                    reloading ? (
                         <Loader size={10} color="zinc" />
                     ) : (
                         <ArrowUpDownIcon className="size-3 stroke-[1.5] text-zinc-500" />
@@ -68,12 +51,12 @@ const MobileSort: FunctionComponent<MobileSortProps> = (props) => {
                 }}
                 variant="filled"
                 size="xs"
-                radius="xl"
-                defaultValue={defaultSort || options[0].value}
+                radius="sm"
+                defaultValue={value || data[0].value}
                 allowDeselect={false}
-                data={options}
+                data={data}
                 renderOption={({ option, checked }) => {
-                    const Icon = options.find((opt) => opt.value === option.value)?.icon;
+                    const Icon = data.find((opt) => opt.value === option.value)?.icon;
                     return (
                         <Group gap="xs">
                             {Icon && (
@@ -90,4 +73,4 @@ const MobileSort: FunctionComponent<MobileSortProps> = (props) => {
     );
 };
 
-export default MobileSort;
+export default SortControl;

@@ -34,7 +34,7 @@ const Header: FunctionComponent<HeaderProps> = ({ title, action, filters, subtit
     );
 
     const paddingX = useTransform(scrollY, [0, margin], ['20px', '10px']);
-    const paddingBottom = useTransform(scrollY, [0, margin], [20, 8]);
+    const paddingBottom = useTransform(scrollY, [0, margin], [20, 2]);
     const paddingTop = useTransform(scrollY, [0, margin], [0, 0]);
 
     const backgroundColor = useTransform(
@@ -95,10 +95,6 @@ const Header: FunctionComponent<HeaderProps> = ({ title, action, filters, subtit
 
                     <motion.div style={{ scale, transformOrigin: 'right' }}>{action}</motion.div>
                 </motion.div>
-
-                {/* <div className='border-b border-zinc-950/20 py-2 px-5'>
-                <input type="text" placeholder='Search' className='p-2 w-full bg-zinc-200 rounded' />
-            </div> */}
 
                 <HeaderFilters position={scrollY}>{filters}</HeaderFilters>
             </motion.div>

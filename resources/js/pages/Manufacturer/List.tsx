@@ -1,6 +1,6 @@
 import Cast from '@/components/Cast';
 import { Empty } from '@/components/Empty';
-import MobileSearch from '@/components/MobileSearch';
+
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
@@ -38,7 +38,6 @@ const List: InertiaView<ListProps> = (props) => {
                 title="Manufacturers"
                 action={
                     <Group gap="xs">
-                        <MobileSearch data={manufacturers} attribute="manufacturers" />
                         <Navigate type="modal" href={route('manufacturers.create')}>
                             <Button size="xs">Create Manufacturer</Button>
                         </Navigate>

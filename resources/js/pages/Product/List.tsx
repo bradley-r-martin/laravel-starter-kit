@@ -1,17 +1,16 @@
 import Cast from '@/components/Cast';
 import { Empty } from '@/components/Empty';
-import MobileSearch from '@/components/MobileSearch';
-import MobileSort from '@/components/MobileSort';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
+import Filters from '@/components/QueryControls/Filters';
 import Table from '@/components/Table/Table';
 import AppLayout from '@/Layouts/AppLayout';
 import Header from '@/Parts/Header';
 import { InertiaView, Paginated, UploadedFile } from '@/types';
 import { Asset } from '@/Utilities/Asset';
 import { Head } from '@inertiajs/react';
-import { ActionIcon, Badge, Button, Group, SegmentedControl, Text, Tooltip } from '@mantine/core';
+import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import {
     BadgePercent,
     BoxesIcon,
@@ -23,6 +22,7 @@ import {
     LayersIcon,
     PencilIcon,
     PiggyBankIcon,
+    PlusIcon,
     RotateCcwIcon,
     TrashIcon,
     TypeIcon,
@@ -67,13 +67,19 @@ const List: InertiaView<ListProps> = (props) => {
     return (
         <>
             <Head title="Products" />
-
             <Header
                 title="Products"
                 action={
                     <Group gap="xs">
                         <Navigate type="modal" href={route('products.create')}>
-                            <Button size="xs">Create Product</Button>
+                            <Button
+                                size="xs"
+                                radius="sm"
+                                color="zinc"
+                                leftSection={<PlusIcon className="size-3" />}
+                            >
+                                Create
+                            </Button>
                         </Navigate>
                     </Group>
                 }
@@ -81,21 +87,18 @@ const List: InertiaView<ListProps> = (props) => {
                     <div className="text-xs text-zinc-500">{products.data.length} products</div>
                 }
                 filters={
-                    <div className="flex items-center gap-2 lg:gap-10">
-                        <div className="order-1 lg:order-2 lg:flex-1">
-                            <MobileSort
-                                options={sortOptions}
-                                data={products}
-                                attribute="products"
-                            />
-                        </div>
-                        <div className="order-1 flex-1 lg:flex-none">
-                            <SegmentedControl data={['Active', 'Closed']} fullWidth />
-                        </div>
-                        <div className="order-2">
-                            <MobileSearch data={products} attribute="products" />
-                        </div>
-                    </div>
+                    <Filters>
+                        <Filters.Search attribute="products" />
+                        <Filters.Sort data={sortOptions} attribute="products" />
+                        <Filters.Status
+                            data={[
+                                { value: 'active', label: 'Active' },
+                                { value: 'closed', label: 'Closed' },
+                            ]}
+                            attribute="products"
+                            className="ml-auto !hidden lg:!flex"
+                        />
+                    </Filters>
                 }
             />
 

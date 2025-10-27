@@ -43,7 +43,7 @@ const HeaderFilters: FunctionComponent<HeaderFiltersProps> = (props) => {
                     : {}
             }
             data-testid="filters-bar"
-            className="rounded px-2 py-1 lg:px-5 lg:pb-2"
+            className="rounded px-2 py-1 lg:px-4 lg:pb-2"
         >
             {children}
         </motion.div>

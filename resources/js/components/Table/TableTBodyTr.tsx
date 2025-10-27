@@ -20,9 +20,9 @@ function asTableTbodyTr<TProps extends object>(WrappedComponent: React.Component
                 `grid grid-cols-2 gap-px md:table-row text-xs ${disabled ? 'disabled-bg text-slate-400' : 'text-slate-600'}`,
                 className
             ),
-            animate: { opacity: 1 },
-            initial: { opacity: 0 },
-            exit: { opacity: 0 },
+            // animate: { opacity: 1, height: 'auto' },
+            // initial: { opacity: 0, height: 0 },
+            // exit: { opacity: 0, height: 0 },
             component: motion.tr,
         };
 

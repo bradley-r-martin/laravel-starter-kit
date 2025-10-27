@@ -44,6 +44,18 @@ final class Product extends Model
      * @param  Builder<self>  $query
      * @return Builder<self>
      */
+    public function scopeFilterByStatus(Builder $query, string $status): Builder
+    {
+        return match ($status) {
+            'closed' => $query->whereNotNull('closed_at'),
+            default => $query->whereNull('closed_at')
+        };
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopeFilterBySearch(Builder $query, ?string $search): Builder
     {
         return $query->when($search, fn (Builder $q) => $q->where(fn (Builder $q) => $q
