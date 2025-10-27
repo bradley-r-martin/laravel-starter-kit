@@ -13,7 +13,7 @@ interface FiltersComposition {
 const Filters: FunctionComponent<GroupProps> & FiltersComposition = (props) => {
     const { children, ...restProps } = props;
     return (
-        <Group gap="xs" {...restProps}>
+        <Group gap="xs" wrap="nowrap" {...restProps}>
             {children}
         </Group>
     );

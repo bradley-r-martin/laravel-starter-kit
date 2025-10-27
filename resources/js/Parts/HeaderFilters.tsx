@@ -13,7 +13,7 @@ const HeaderFilters: FunctionComponent<HeaderFiltersProps> = (props) => {
     const filtersBackgroundColor = useTransform(
         position,
         [0, margin],
-        ['rgba(255,255,255,0.4)', 'rgba(240,240,240,0)']
+        ['rgba(255,255,255,1)', 'rgba(240,240,240,0)']
     );
     const filtersBorderColor = useTransform(
         position,

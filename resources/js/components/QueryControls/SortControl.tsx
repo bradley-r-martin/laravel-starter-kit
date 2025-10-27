@@ -24,14 +24,20 @@ const SortControl: FunctionComponent<SortControlProps> = (props) => {
 
     if (isMobile()) {
         return (
-            <ActionIcon variant="transparent" color="zinc" radius="xl" size="lg">
+            <ActionIcon
+                variant="transparent"
+                color="zinc"
+                radius="xl"
+                size="lg"
+                className="order-3 lg:order-0"
+            >
                 <SortAscIcon className="size-4" />
             </ActionIcon>
         );
     }
 
     return (
-        <div className="flex items-center gap-2">
+        <div className="order-3 flex items-center gap-2">
             <div className="text-xs font-bold text-zinc-600">Sort by:</div>
             <AutoWidthSelect
                 onChange={(value) => handle(value as string)}

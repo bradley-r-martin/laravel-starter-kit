@@ -86,7 +86,7 @@ const List: InertiaView<ListProps> = (props) => {
                 }
                 filters={
                     <Filters>
-                        <Filters.Search attribute="products" />
+                        <Filters.Search attribute="products" className="order-1" />
                         <Filters.Sort data={sortOptions} attribute="products" />
                         <Filters.Status
                             data={[
@@ -94,7 +94,7 @@ const List: InertiaView<ListProps> = (props) => {
                                 { value: 'closed', label: 'Closed' },
                             ]}
                             attribute="products"
-                            className="ml-auto !hidden lg:!flex"
+                            className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
                         />
                     </Filters>
                 }
