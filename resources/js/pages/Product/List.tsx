@@ -70,18 +70,16 @@ const List: InertiaView<ListProps> = (props) => {
             <Header
                 title="Products"
                 action={
-                    <Group gap="xs">
-                        <Navigate type="modal" href={route('products.create')}>
-                            <Button
-                                size="xs"
-                                radius="sm"
-                                color="zinc"
-                                leftSection={<PlusIcon className="size-3" />}
-                            >
-                                Create
-                            </Button>
-                        </Navigate>
-                    </Group>
+                    <Navigate type="modal" href={route('products.create')}>
+                        <Button
+                            size="xs"
+                            radius="sm"
+                            color="zinc"
+                            leftSection={<PlusIcon className="size-3" />}
+                        >
+                            Create
+                        </Button>
+                    </Navigate>
                 }
                 subtitle={
                     <div className="text-xs text-zinc-500">{products.data.length} products</div>

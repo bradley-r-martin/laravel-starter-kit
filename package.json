@@ -10,7 +10,6 @@
         "test:types": "tsc --noEmit"
     },
     "devDependencies": {
-        "@inertiajs/react": "^2.2.9",
         "@tailwindcss/vite": "^4.0.14",
         "@types/node": "^20.19.18",
         "@types/react": "^19.1.16",
@@ -26,7 +25,8 @@
         "vite": "^6.3.6"
     },
     "dependencies": {
-        "@inertiajs/core": "^2.2.9",
+        "@inertiajs/react": "^2.2.11",
+        "@inertiajs/core": "^2.2.11",
         "@inertiaui/modal-react": "link:vendor/inertiaui/modal/react",
         "@mantine/core": "^8.3.2",
         "@mantine/form": "^8.3.2",

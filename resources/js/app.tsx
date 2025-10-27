@@ -25,7 +25,7 @@ createInertiaApp({
             <ModalStackProvider>
                 <MantineServiceProvider>
                     <App {...props}>
-                        {({ component: Component, key, props: pageProps }) => {
+                        {({ Component, key, props: pageProps }) => {
                             const child = createElement(Component, { key, ...pageProps });
 
                             if (Array.isArray(Component?.layout)) {
