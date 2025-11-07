@@ -18,17 +18,6 @@ class IosPwaNavigationLockService {
     };
 
     /**
-     * Check if the app is running in iOS PWA standalone mode
-     */
-    public isIosPwaStandalone(): boolean {
-        return (
-            typeof window !== 'undefined' &&
-            'standalone' in window.navigator &&
-            (window.navigator as any).standalone === true
-        );
-    }
-
-    /**
      * Check if the navigation lock is currently active
      */
     public isLockActive(): boolean {

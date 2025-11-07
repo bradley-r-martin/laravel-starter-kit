@@ -1,8 +1,8 @@
+import { isStandalone } from '@/Utilities/Environment';
 import { ReloadOptions } from '@inertiajs/core';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import useQueryString from './useQueryString';
-import { isStandalone } from '@/Utilities/Environment';
 
 export default function useQueryControlReload(
     attribute: string,
@@ -18,7 +18,7 @@ export default function useQueryControlReload(
         setReloading(true);
         setValue(value);
         router.reload({
-            only: [attribute], 
+            only: [attribute],
             data: {
                 [`${attribute}_${parameter}`]: value,
             },

@@ -16,7 +16,7 @@
         "@types/react-dom": "^19.1.9",
         "@vitejs/plugin-react": "^5.0.4",
         "laravel-vite-plugin": "^1.2.0",
-        "playwright": "^1.55.1",
+        "playwright": "^1.56.1",
         "prettier": "^3.5.3",
         "prettier-plugin-organize-imports": "^4.1.0",
         "prettier-plugin-tailwindcss": "^0.6.11",
@@ -25,8 +25,8 @@
         "vite": "^6.3.6"
     },
     "dependencies": {
-        "@inertiajs/react": "^2.2.11",
         "@inertiajs/core": "^2.2.11",
+        "@inertiajs/react": "^2.2.11",
         "@inertiaui/modal-react": "link:vendor/inertiaui/modal/react",
         "@mantine/core": "^8.3.2",
         "@mantine/form": "^8.3.2",
