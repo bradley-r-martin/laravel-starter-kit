@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Territory;
 
 use App\Aggregates\TerritoryAggregate;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -32,7 +33,7 @@ final class TerritoryCreateProcessRequest extends FormRequest
             'merchant_account_id' => [
                 'nullable',
                 'string',
-                Rule::exists('merchant_accounts', 'id')->where(fn ($query) => $query->where('operator_id', $this->string('operator_id')->toString())),
+                Rule::exists('merchant_accounts', 'id')->where(fn (Builder $query) => $query->where('operator_id', $this->string('operator_id')->toString())),
             ],
             'name' => ['required', 'string', 'max:255'],
         ];

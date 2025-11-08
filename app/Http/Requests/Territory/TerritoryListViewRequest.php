@@ -31,7 +31,6 @@ final class TerritoryListViewRequest extends FormRequest
     public function respond(): Response
     {
         $territories = Territory::query()
-            ->with(['operator:id,name', 'merchantAccount:id,operator_id,provider'])
             ->filterSortBy($this->string('territories_sort')->toString())
             ->filterBySearch($this->string('territories_search')->toString())
             ->filterByStatus($this->string('territories_status')->toString())
@@ -40,17 +39,10 @@ final class TerritoryListViewRequest extends FormRequest
             ->through(fn (Territory $territory): array => [
                 'id' => $territory->id,
                 'name' => $territory->name,
-                'operator' => [
-                    'id' => $territory->operator_id,
-                    'name' => $territory->operator?->name ?? $territory->__operator_name,
-                ],
-                'merchant_account' => $territory->merchantAccount?->id ? [
-                    'id' => $territory->merchantAccount->id,
-                    'provider' => $territory->merchantAccount->provider,
-                ] : null,
-                'last_transaction_at' => $territory->__last_transaction_at,
                 'closed_at' => $territory->closed_at,
                 'created_at' => $territory->created_at,
+                '__operator_name' => $territory->__operator_name,
+                '__last_transaction_at' => $territory->__last_transaction_at,
             ]);
 
         return inertia()

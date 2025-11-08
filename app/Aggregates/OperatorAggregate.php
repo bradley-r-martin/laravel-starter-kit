@@ -65,28 +65,18 @@ final class OperatorAggregate extends AggregateRoot
 
     public function update(
         ?string $name = null,
-        bool $emailTouched = false,
         ?string $email = null,
-        bool $addressTouched = false,
         ?Address $address = null,
-        bool $phoneTouched = false,
         ?Phone $phone = null,
-        bool $entityTouched = false,
         ?Entity $entity = null,
-        bool $imageTouched = false,
         ?string $image = null,
     ): self {
         $this->recordThat(new OperatorUpdated(
             name: $name,
-            emailTouched: $emailTouched,
             email: $email,
-            addressTouched: $addressTouched,
             address: $address,
-            phoneTouched: $phoneTouched,
             phone: $phone,
-            entityTouched: $entityTouched,
             entity: $entity,
-            imageTouched: $imageTouched,
             image: $image,
         ));
 
@@ -165,23 +155,23 @@ final class OperatorAggregate extends AggregateRoot
             $this->name = $event->name;
         }
 
-        if ($event->emailTouched) {
+        if ($event->email !== null) {
             $this->email = $event->email;
         }
 
-        if ($event->addressTouched) {
+        if ($event->address instanceof Address) {
             $this->address = $event->address;
         }
 
-        if ($event->phoneTouched) {
+        if ($event->phone instanceof Phone) {
             $this->phone = $event->phone;
         }
 
-        if ($event->entityTouched) {
+        if ($event->entity instanceof Entity) {
             $this->entity = $event->entity;
         }
 
-        if ($event->imageTouched) {
+        if ($event->image !== null) {
             $this->image = $event->image;
         }
     }

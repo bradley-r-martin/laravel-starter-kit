@@ -49,23 +49,23 @@ final class OperatorProjector extends Projector
             $updates['name'] = $event->name;
         }
 
-        if ($event->emailTouched) {
+        if ($event->email !== null) {
             $updates['email'] = $event->email;
         }
 
-        if ($event->addressTouched) {
+        if ($event->address instanceof \App\Domain\Address) {
             $updates['address'] = $event->address;
         }
 
-        if ($event->phoneTouched) {
+        if ($event->phone instanceof \App\Domain\Phone) {
             $updates['phone'] = $event->phone;
         }
 
-        if ($event->entityTouched) {
+        if ($event->entity instanceof \App\Domain\Entity) {
             $updates['entity'] = $event->entity;
         }
 
-        if ($event->imageTouched) {
+        if ($event->image !== null) {
             $updates['image'] = $event->image;
         }
 

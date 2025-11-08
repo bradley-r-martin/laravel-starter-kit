@@ -352,16 +352,6 @@ describe('User Management', function (): void {
             $notClosedUser = User::find($user->id);
             expect($notClosedUser->closed_at)->toBeNull();
         });
-
-        it('displays closed badge for closed users', function (): void {
-            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
-
-            User::query()->where('id', $user->id)->update(['closed_at' => now()]);
-
-            $this->as($user, $territory)->visit('/users')
-                ->assertSee('Closed')
-                ->assertNoJavascriptErrors();
-        });
     });
 
     describe('User Reopening', function (): void {

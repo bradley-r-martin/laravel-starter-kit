@@ -36,12 +36,11 @@ final class OperatorCloseProcessRequest extends FormRequest
         $operatorId = (string) $this->route('operator');
         $operator = Operator::query()->select(['id'])->findOrFail($operatorId);
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
+        $this->validated();
 
         OperatorAggregate::retrieve($operator->id)
             ->close(
-                reason: $data['reason'],
+                reason: $this->string('reason')->toString(),
             )
             ->persist();
 
