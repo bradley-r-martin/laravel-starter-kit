@@ -20,6 +20,33 @@ final class Operator extends Model
      * @param  Builder<self>  $query
      * @return Builder<self>
      */
+    public function scopeFilterSortBy(Builder $query, string $sort): Builder
+    {
+        return match ($sort) {
+            'territories_count' => $query->orderBy('__territories_count', 'desc'),
+            'last_transaction_at' => $query->orderBy('__last_transaction_at', 'desc'),
+            'created_at' => $query->orderBy('created_at', 'asc'),
+            default => $query->orderBy('name', 'asc'),
+        };
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeFilterByStatus(Builder $query, string $status): Builder
+    {
+        return match ($status) {
+            'closed' => $query->whereNotNull('closed_at')->whereNull('suspended_at'),
+            'suspended' => $query->whereNotNull('suspended_at')->whereNull('closed_at'),
+            default => $query->whereNull('closed_at')->whereNull('suspended_at'),
+        };
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopeFilterBySearch(Builder $query, ?string $search): Builder
     {
         return $query->when($search, fn (Builder $q) => $q->where(fn (Builder $q) => $q

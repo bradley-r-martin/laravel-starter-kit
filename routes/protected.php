@@ -14,6 +14,14 @@ use App\Http\Controllers\Notification\NotificationListController;
 use App\Http\Controllers\Notification\NotificationMarkAllAsReadController;
 use App\Http\Controllers\Notification\NotificationMarkAsReadController;
 use App\Http\Controllers\Notification\NotificationSendSampleController;
+use App\Http\Controllers\Operator\OperatorCloseController;
+use App\Http\Controllers\Operator\OperatorCreateController;
+use App\Http\Controllers\Operator\OperatorDestroyController;
+use App\Http\Controllers\Operator\OperatorListController;
+use App\Http\Controllers\Operator\OperatorReopenController;
+use App\Http\Controllers\Operator\OperatorSuspendController;
+use App\Http\Controllers\Operator\OperatorUnsuspendController;
+use App\Http\Controllers\Operator\OperatorUpdateController;
 use App\Http\Controllers\Product\ProductCloseController;
 use App\Http\Controllers\Product\ProductCreateController;
 use App\Http\Controllers\Product\ProductDestroyController;
@@ -74,6 +82,24 @@ Route::middleware('territory')->group(function () {
         Route::post('/{territory}/reopen', [TerritoryReopenController::class, 'process'])->name('reopen');
         Route::get('/{territory}/destroy', [TerritoryDestroyController::class, 'view'])->name('destroy');
         Route::delete('/{territory}/destroy', [TerritoryDestroyController::class, 'process'])->name('destroy');
+    });
+
+    Route::prefix('operators')->name('operators.')->group(function () {
+        Route::get('/', [OperatorListController::class, 'view'])->name('index');
+        Route::get('/create', [OperatorCreateController::class, 'view'])->name('create');
+        Route::post('/create', [OperatorCreateController::class, 'process'])->name('store');
+        Route::get('/{operator}/update', [OperatorUpdateController::class, 'view'])->name('update');
+        Route::post('/{operator}/update', [OperatorUpdateController::class, 'process'])->name('update');
+        Route::get('/{operator}/close', [OperatorCloseController::class, 'view'])->name('close');
+        Route::post('/{operator}/close', [OperatorCloseController::class, 'process'])->name('close');
+        Route::get('/{operator}/suspend', [OperatorSuspendController::class, 'view'])->name('suspend');
+        Route::post('/{operator}/suspend', [OperatorSuspendController::class, 'process'])->name('suspend');
+        Route::get('/{operator}/unsuspend', [OperatorUnsuspendController::class, 'view'])->name('unsuspend');
+        Route::post('/{operator}/unsuspend', [OperatorUnsuspendController::class, 'process'])->name('unsuspend');
+        Route::get('/{operator}/reopen', [OperatorReopenController::class, 'view'])->name('reopen');
+        Route::post('/{operator}/reopen', [OperatorReopenController::class, 'process'])->name('reopen');
+        Route::get('/{operator}/destroy', [OperatorDestroyController::class, 'view'])->name('destroy');
+        Route::delete('/{operator}/destroy', [OperatorDestroyController::class, 'process'])->name('destroy');
     });
 
     Route::prefix('roles')->name('roles.')->group(function () {

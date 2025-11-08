@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Role;
 
 use App\Models\Role;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,10 +32,12 @@ final class RoleListViewRequest extends FormRequest
     public function respond(): Response
     {
 
+        $status = $this->string('roles_status')->toString();
+
         $roles = Role::query()
             ->filterSortBy($this->string('roles_sort')->toString())
             ->filterBySearch($this->string('roles_search')->toString())
-            ->filterByStatus($this->string('roles_status')->toString())
+            ->when($status !== '', fn (Builder $query): Builder => $query->filterByStatus($status))
             ->paginate(10, ['*'], 'roles_page')
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Role $role}> $roles */
             ->through(fn (Role $role): array => [
