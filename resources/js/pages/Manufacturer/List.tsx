@@ -1,16 +1,26 @@
 import Cast from '@/components/Cast';
 import { Empty } from '@/components/Empty';
-
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
+import Filters from '@/components/QueryControls/Filters';
 import Table from '@/components/Table/Table';
 import AppLayout from '@/Layouts/AppLayout';
 import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
-import { PencilIcon, RotateCcwIcon, TrashIcon, XIcon } from 'lucide-react';
+import {
+    BoxesIcon,
+    CalendarIcon,
+    CircleDotIcon,
+    PencilIcon,
+    PlusIcon,
+    RotateCcwIcon,
+    TagIcon,
+    TrashIcon,
+    XIcon,
+} from 'lucide-react';
 
 interface Manufacturer {
     id: string;
@@ -26,22 +36,51 @@ interface ListProps {
 
 const List: InertiaView<ListProps> = (props) => {
     const { manufacturers } = props;
+
+    const sortOptions = [
+        { value: 'name', label: 'Name', icon: TagIcon },
+        { value: 'products_count', label: 'Products', icon: BoxesIcon },
+        { value: 'created_at', label: 'Created At', icon: CalendarIcon },
+        { value: 'status', label: 'Status', icon: CircleDotIcon },
+    ];
+
     return (
         <>
             <Head title="Manufacturers" />
-            <div className="relative z-20 container mx-auto translate-y-3 px-5 lg:pt-10">
-                <div className="text-xs text-zinc-500">
-                    {manufacturers.data.length} manufacturers
-                </div>
-            </div>
             <Header
                 title="Manufacturers"
+                subtitle={
+                    <div className="text-xs text-zinc-500">
+                        {manufacturers.data.length} manufacturers
+                    </div>
+                }
                 action={
                     <Group gap="xs">
                         <Navigate type="modal" href={route('manufacturers.create')}>
-                            <Button size="xs">Create Manufacturer</Button>
+                            <Button
+                                size="xs"
+                                radius="sm"
+                                color="zinc"
+                                leftSection={<PlusIcon className="size-3" />}
+                            >
+                                Create
+                            </Button>
                         </Navigate>
                     </Group>
+                }
+                filters={
+                    <Filters>
+                        <Filters.Search attribute="manufacturers" className="order-1" />
+                        <Filters.Sort data={sortOptions} attribute="manufacturers" />
+                        <Filters.Status
+                            data={[
+                                { value: 'active', label: 'Active' },
+                                { value: 'closed', label: 'Closed' },
+                            ]}
+                            attribute="manufacturers"
+                            className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
+                        />
+                    </Filters>
                 }
             />
 

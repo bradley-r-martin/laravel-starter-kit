@@ -3,6 +3,7 @@ import { Empty } from '@/components/Empty';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
+import Filters from '@/components/QueryControls/Filters';
 import Table from '@/components/Table/Table';
 import AppLayout from '@/Layouts/AppLayout';
 import Header from '@/Parts/Header';
@@ -11,11 +12,17 @@ import { Head } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import {
     BanIcon,
+    Building2Icon,
+    CalendarIcon,
     CheckCircleIcon,
+    ClockIcon,
     KeyIcon,
+    MailIcon,
     PencilIcon,
+    PlusIcon,
     RotateCcwIcon,
     TrashIcon,
+    UserIcon,
     XIcon,
 } from 'lucide-react';
 
@@ -38,20 +45,50 @@ interface ListProps {
 
 const List: InertiaView<ListProps> = (props) => {
     const { users } = props;
+
+    const sortOptions = [
+        { value: 'name', label: 'Name', icon: UserIcon },
+        { value: 'email', label: 'Email', icon: MailIcon },
+        { value: 'role', label: 'Role', icon: KeyIcon },
+        { value: 'operator', label: 'Operator', icon: Building2Icon },
+        { value: 'last_login_at', label: 'Last Login', icon: ClockIcon },
+        { value: 'created_at', label: 'Created At', icon: CalendarIcon },
+    ];
+
     return (
         <>
             <Head title="Users" />
-            <div className="relative z-20 container mx-auto translate-y-3 px-5 lg:pt-10">
-                <div className="text-xs text-zinc-500">{users.data.length} users</div>
-            </div>
             <Header
                 title="Users"
+                subtitle={<div className="text-xs text-zinc-500">{users.data.length} users</div>}
                 action={
                     <Group gap="xs">
                         <Navigate type="modal" href={route('users.create')}>
-                            <Button size="xs">Create User</Button>
+                            <Button
+                                size="xs"
+                                radius="sm"
+                                color="zinc"
+                                leftSection={<PlusIcon className="size-3" />}
+                            >
+                                Create
+                            </Button>
                         </Navigate>
                     </Group>
+                }
+                filters={
+                    <Filters>
+                        <Filters.Search attribute="users" className="order-1" />
+                        <Filters.Sort data={sortOptions} attribute="users" />
+                        <Filters.Status
+                            data={[
+                                { value: 'active', label: 'Active' },
+                                { value: 'suspended', label: 'Suspended' },
+                                { value: 'closed', label: 'Closed' },
+                            ]}
+                            attribute="users"
+                            className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
+                        />
+                    </Filters>
                 }
             />
 

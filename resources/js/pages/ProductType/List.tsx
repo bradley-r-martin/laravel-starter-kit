@@ -3,13 +3,23 @@ import { Empty } from '@/components/Empty';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
+import Filters from '@/components/QueryControls/Filters';
 import Table from '@/components/Table/Table';
 import AppLayout from '@/Layouts/AppLayout';
 import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
-import { PencilIcon, RotateCcwIcon, TrashIcon, XIcon } from 'lucide-react';
+import {
+    BoxesIcon,
+    CalendarIcon,
+    PencilIcon,
+    PlusIcon,
+    RotateCcwIcon,
+    TagIcon,
+    TrashIcon,
+    XIcon,
+} from 'lucide-react';
 
 interface ProductType {
     id: string;
@@ -25,22 +35,50 @@ interface ListProps {
 
 const List: InertiaView<ListProps> = (props) => {
     const { product_types } = props;
+
+    const sortOptions = [
+        { value: 'name', label: 'Name', icon: TagIcon },
+        { value: 'products_count', label: 'Products', icon: BoxesIcon },
+        { value: 'created_at', label: 'Created At', icon: CalendarIcon },
+    ];
+
     return (
         <>
             <Head title="Product Types" />
-            <div className="relative z-20 container mx-auto translate-y-3 px-5 lg:pt-10">
-                <div className="text-xs text-zinc-500">
-                    {product_types.data.length} product types
-                </div>
-            </div>
             <Header
                 title="Product Types"
+                subtitle={
+                    <div className="text-xs text-zinc-500">
+                        {product_types.data.length} product types
+                    </div>
+                }
                 action={
                     <Group gap="xs">
                         <Navigate type="modal" href={route('product-types.create')}>
-                            <Button size="xs">Create Product Type</Button>
+                            <Button
+                                size="xs"
+                                radius="sm"
+                                color="zinc"
+                                leftSection={<PlusIcon className="size-3" />}
+                            >
+                                Create
+                            </Button>
                         </Navigate>
                     </Group>
+                }
+                filters={
+                    <Filters>
+                        <Filters.Search attribute="product_types" className="order-1" />
+                        <Filters.Sort data={sortOptions} attribute="product_types" />
+                        <Filters.Status
+                            data={[
+                                { value: 'active', label: 'Active' },
+                                { value: 'closed', label: 'Closed' },
+                            ]}
+                            attribute="product_types"
+                            className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
+                        />
+                    </Filters>
                 }
             />
 

@@ -3,13 +3,23 @@ import { Empty } from '@/components/Empty';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
 import { Pagination } from '@/components/Pagination';
+import Filters from '@/components/QueryControls/Filters';
 import Table from '@/components/Table/Table';
 import AppLayout from '@/Layouts/AppLayout';
 import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
 import { Head } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
-import { PencilIcon, RotateCcwIcon, TrashIcon, XIcon } from 'lucide-react';
+import {
+    CalendarIcon,
+    CircleDotIcon,
+    PencilIcon,
+    PlusIcon,
+    RotateCcwIcon,
+    TagIcon,
+    TrashIcon,
+    XIcon,
+} from 'lucide-react';
 
 interface Wholesaler {
     id: string;
@@ -24,20 +34,50 @@ interface ListProps {
 
 const List: InertiaView<ListProps> = (props) => {
     const { wholesalers } = props;
+
+    const sortOptions = [
+        { value: 'name', label: 'Name', icon: TagIcon },
+        { value: 'status', label: 'Status', icon: CircleDotIcon },
+        { value: 'created_at', label: 'Created At', icon: CalendarIcon },
+    ];
+
     return (
         <>
             <Head title="Wholesalers" />
-            <div className="relative z-20 container mx-auto translate-y-3 px-5 lg:pt-10">
-                <div className="text-xs text-zinc-500">{wholesalers.data.length} wholesalers</div>
-            </div>
             <Header
                 title="Wholesalers"
+                subtitle={
+                    <div className="text-xs text-zinc-500">
+                        {wholesalers.data.length} wholesalers
+                    </div>
+                }
                 action={
                     <Group gap="xs">
                         <Navigate type="modal" href={route('wholesalers.create')}>
-                            <Button size="xs">Create Wholesaler</Button>
+                            <Button
+                                size="xs"
+                                radius="sm"
+                                color="zinc"
+                                leftSection={<PlusIcon className="size-3" />}
+                            >
+                                Create
+                            </Button>
                         </Navigate>
                     </Group>
+                }
+                filters={
+                    <Filters>
+                        <Filters.Search attribute="wholesalers" className="order-1" />
+                        <Filters.Sort data={sortOptions} attribute="wholesalers" />
+                        <Filters.Status
+                            data={[
+                                { value: 'active', label: 'Active' },
+                                { value: 'closed', label: 'Closed' },
+                            ]}
+                            attribute="wholesalers"
+                            className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
+                        />
+                    </Filters>
                 }
             />
 
