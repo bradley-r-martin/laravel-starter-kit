@@ -9,6 +9,8 @@ use App\Domain\Address;
 use App\Domain\Entity;
 use App\Domain\Phone;
 use App\Models\Operator;
+use App\Rules\AddressRule;
+use App\Rules\PhoneRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -32,28 +34,8 @@ final class OperatorUpdateProcessRequest extends FormRequest
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'email' => ['sometimes', 'nullable', 'email', 'max:255'],
-            'address' => ['sometimes', 'nullable', 'array'],
-            'address.place_id' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'address.building_name' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'address.lot_no' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'address.country' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'address.level' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'address.postcode' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'address.state' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'address.street_name' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'address.street_number' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'address.street_type' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'address.street_suffix' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'address.suburb' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'address.unit' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'address.latitude' => ['sometimes', 'nullable', 'numeric'],
-            'address.longitude' => ['sometimes', 'nullable', 'numeric'],
-            'phone' => ['sometimes', 'nullable', 'array'],
-            'phone.country_code' => ['sometimes', 'nullable', 'string', 'max:10'],
-            'phone.area_code' => ['sometimes', 'nullable', 'string', 'max:10'],
-            'phone.number' => ['sometimes', 'nullable', 'string', 'max:50'],
-            'phone.extension' => ['sometimes', 'nullable', 'string', 'max:10'],
-            'phone.type' => ['sometimes', 'nullable', 'string', 'max:50'],
+            'address' => ['sometimes', 'nullable', new AddressRule()],
+            'phone' => ['sometimes', 'nullable', new PhoneRule()],
             'entity' => ['sometimes', 'nullable', 'array'],
             'entity.id' => ['sometimes', 'nullable', 'string', 'max:255'],
             'entity.type' => ['sometimes', 'nullable', 'string', 'max:255'],

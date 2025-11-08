@@ -8,6 +8,8 @@ use App\Aggregates\OperatorAggregate;
 use App\Domain\Address;
 use App\Domain\Entity;
 use App\Domain\Phone;
+use App\Rules\AddressRule;
+use App\Rules\PhoneRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,28 +34,8 @@ final class OperatorCreateProcessRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
-            'address' => ['nullable', 'array'],
-            'address.place_id' => ['nullable', 'string', 'max:255'],
-            'address.building_name' => ['nullable', 'string', 'max:255'],
-            'address.lot_no' => ['nullable', 'string', 'max:255'],
-            'address.country' => ['nullable', 'string', 'max:255'],
-            'address.level' => ['nullable', 'string', 'max:255'],
-            'address.postcode' => ['nullable', 'string', 'max:255'],
-            'address.state' => ['nullable', 'string', 'max:255'],
-            'address.street_name' => ['nullable', 'string', 'max:255'],
-            'address.street_number' => ['nullable', 'string', 'max:255'],
-            'address.street_type' => ['nullable', 'string', 'max:255'],
-            'address.street_suffix' => ['nullable', 'string', 'max:255'],
-            'address.suburb' => ['nullable', 'string', 'max:255'],
-            'address.unit' => ['nullable', 'string', 'max:255'],
-            'address.latitude' => ['nullable', 'numeric'],
-            'address.longitude' => ['nullable', 'numeric'],
-            'phone' => ['nullable', 'array'],
-            'phone.country_code' => ['nullable', 'string', 'max:10'],
-            'phone.area_code' => ['nullable', 'string', 'max:10'],
-            'phone.number' => ['nullable', 'string', 'max:50'],
-            'phone.extension' => ['nullable', 'string', 'max:10'],
-            'phone.type' => ['nullable', 'string', 'max:50'],
+            'address' => ['nullable', new AddressRule()],
+            'phone' => ['nullable', new PhoneRule()],
             'entity' => ['nullable', 'array'],
             'entity.id' => ['nullable', 'string', 'max:255'],
             'entity.type' => ['nullable', 'string', 'max:255'],
