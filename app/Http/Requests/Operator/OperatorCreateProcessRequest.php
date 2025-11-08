@@ -9,6 +9,7 @@ use App\Domain\Address;
 use App\Domain\Entity;
 use App\Domain\Phone;
 use App\Rules\AddressRule;
+use App\Rules\EntityRule;
 use App\Rules\PhoneRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
@@ -36,9 +37,7 @@ final class OperatorCreateProcessRequest extends FormRequest
             'email' => ['nullable', 'email', 'max:255'],
             'address' => ['nullable', new AddressRule()],
             'phone' => ['nullable', new PhoneRule()],
-            'entity' => ['nullable', 'array'],
-            'entity.id' => ['nullable', 'string', 'max:255'],
-            'entity.type' => ['nullable', 'string', 'max:255'],
+            'entity' => ['nullable', new EntityRule()],
             'image' => ['nullable', 'string', 'max:255'],
         ];
     }

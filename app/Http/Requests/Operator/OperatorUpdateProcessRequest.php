@@ -10,6 +10,7 @@ use App\Domain\Entity;
 use App\Domain\Phone;
 use App\Models\Operator;
 use App\Rules\AddressRule;
+use App\Rules\EntityRule;
 use App\Rules\PhoneRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,9 +37,7 @@ final class OperatorUpdateProcessRequest extends FormRequest
             'email' => ['sometimes', 'nullable', 'email', 'max:255'],
             'address' => ['sometimes', 'nullable', new AddressRule()],
             'phone' => ['sometimes', 'nullable', new PhoneRule()],
-            'entity' => ['sometimes', 'nullable', 'array'],
-            'entity.id' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'entity.type' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'entity' => ['sometimes', 'nullable', new EntityRule()],
             'image' => ['sometimes', 'nullable', 'string', 'max:255'],
         ];
     }
