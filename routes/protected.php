@@ -35,6 +35,12 @@ use App\Http\Controllers\Role\RoleDestroyController;
 use App\Http\Controllers\Role\RoleListController;
 use App\Http\Controllers\Role\RoleReopenController;
 use App\Http\Controllers\Role\RoleUpdateController;
+use App\Http\Controllers\Territory\TerritoryCloseController;
+use App\Http\Controllers\Territory\TerritoryCreateController;
+use App\Http\Controllers\Territory\TerritoryDestroyController;
+use App\Http\Controllers\Territory\TerritoryListController;
+use App\Http\Controllers\Territory\TerritoryReopenController;
+use App\Http\Controllers\Territory\TerritoryUpdateController;
 use App\Http\Controllers\User\UserCloseController;
 use App\Http\Controllers\User\UserCreateController;
 use App\Http\Controllers\User\UserDestroyController;
@@ -56,6 +62,20 @@ Route::get('/territory', [AuthenticationTerritoryController::class, 'view'])->na
 Route::post('/territory', [AuthenticationTerritoryController::class, 'process'])->name('territory.process');
 
 Route::middleware('territory')->group(function () {
+    Route::prefix('territories')->name('territories.')->group(function () {
+        Route::get('/', [TerritoryListController::class, 'view'])->name('index');
+        Route::get('/create', [TerritoryCreateController::class, 'view'])->name('create');
+        Route::post('/create', [TerritoryCreateController::class, 'process'])->name('store');
+        Route::get('/{territory}/update', [TerritoryUpdateController::class, 'view'])->name('update');
+        Route::post('/{territory}/update', [TerritoryUpdateController::class, 'process'])->name('update');
+        Route::get('/{territory}/close', [TerritoryCloseController::class, 'view'])->name('close');
+        Route::post('/{territory}/close', [TerritoryCloseController::class, 'process'])->name('close');
+        Route::get('/{territory}/reopen', [TerritoryReopenController::class, 'view'])->name('reopen');
+        Route::post('/{territory}/reopen', [TerritoryReopenController::class, 'process'])->name('reopen');
+        Route::get('/{territory}/destroy', [TerritoryDestroyController::class, 'view'])->name('destroy');
+        Route::delete('/{territory}/destroy', [TerritoryDestroyController::class, 'process'])->name('destroy');
+    });
+
     Route::prefix('roles')->name('roles.')->group(function () {
         Route::get('/', [RoleListController::class, 'view'])->name('index');
         Route::get('/create', [RoleCreateController::class, 'view'])->name('create');

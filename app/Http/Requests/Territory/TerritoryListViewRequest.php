@@ -1,0 +1,62 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Requests\Territory;
+
+use App\Models\Territory;
+use Illuminate\Foundation\Http\FormRequest;
+use Symfony\Component\HttpFoundation\Response;
+
+final class TerritoryListViewRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [];
+    }
+
+    public function respond(): Response
+    {
+        $territories = Territory::query()
+            ->with(['operator:id,name', 'merchantAccount:id,operator_id,provider'])
+            ->filterSortBy($this->string('territories_sort')->toString())
+            ->filterBySearch($this->string('territories_search')->toString())
+            ->filterByStatus($this->string('territories_status')->toString())
+            ->paginate(10, ['*'], 'territories_page')
+            /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Territory $territory}> $territories */
+            ->through(fn (Territory $territory): array => [
+                'id' => $territory->id,
+                'name' => $territory->name,
+                'operator' => [
+                    'id' => $territory->operator_id,
+                    'name' => $territory->operator?->name ?? $territory->__operator_name,
+                ],
+                'merchant_account' => $territory->merchantAccount?->id ? [
+                    'id' => $territory->merchantAccount->id,
+                    'provider' => $territory->merchantAccount->provider,
+                ] : null,
+                'last_transaction_at' => $territory->__last_transaction_at,
+                'closed_at' => $territory->closed_at,
+                'created_at' => $territory->created_at,
+            ]);
+
+        return inertia()
+            ->render('Territory/List', [
+                'territories' => $territories,
+            ])
+            ->toResponse($this);
+    }
+}

@@ -18,10 +18,38 @@ final class Territory extends Model
      * @param  Builder<self>  $query
      * @return Builder<self>
      */
+    public function scopeFilterSortBy(Builder $query, string $sort): Builder
+    {
+        return match ($sort) {
+            'operator' => $query->orderBy('__operator_name', 'asc'),
+            'merchant' => $query->orderBy('merchant_account_id', 'asc'),
+            'last_transaction' => $query->orderBy('__last_transaction_at', 'desc'),
+            'created_at' => $query->orderBy('created_at', 'asc'),
+            default => $query->orderBy('name', 'asc'),
+        };
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeFilterByStatus(Builder $query, string $status): Builder
+    {
+        return match ($status) {
+            'closed' => $query->whereNotNull('closed_at'),
+            default => $query->whereNull('closed_at'),
+        };
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopeFilterBySearch(Builder $query, ?string $search): Builder
     {
         return $query->when($search, fn (Builder $q) => $q->where(fn (Builder $q) => $q
             ->where('name', 'like', "%{$search}%")
+            ->orWhere('__operator_name', 'like', "%{$search}%")
         ));
     }
 
@@ -129,6 +157,7 @@ final class Territory extends Model
     {
         return [
             'closed_at' => 'datetime',
+            '__last_transaction_at' => 'datetime',
         ];
     }
 }
