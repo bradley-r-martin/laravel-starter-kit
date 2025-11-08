@@ -1,14 +1,10 @@
 import Cast from '@/components/Cast';
-import { Empty } from '@/components/Empty';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
-import { Pagination } from '@/components/Pagination';
 import Filters from '@/components/QueryControls/Filters';
-import Table from '@/components/Table/Table';
+import { ResourceColumn, ResourceList } from '@/components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
-import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
-import { Head } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import {
     BoxesIcon,
@@ -42,223 +38,185 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    return (
-        <>
-            <Head title="Product Types" />
-            <Header
-                title="Product Types"
-                subtitle={
-                    <div className="text-xs text-zinc-500">
-                        {product_types.data.length} product types
-                    </div>
-                }
-                action={
-                    <Group gap="xs">
-                        <Navigate type="modal" href={route('product-types.create')}>
-                            <Button
-                                size="xs"
-                                radius="sm"
-                                color="zinc"
-                                leftSection={<PlusIcon className="size-3" />}
-                            >
-                                Create
-                            </Button>
-                        </Navigate>
-                    </Group>
-                }
-                filters={
-                    <Filters>
-                        <Filters.Search attribute="product_types" className="order-1" />
-                        <Filters.Sort data={sortOptions} attribute="product_types" />
-                        <Filters.Status
-                            data={[
-                                { value: 'active', label: 'Active' },
-                                { value: 'closed', label: 'Closed' },
-                            ]}
-                            attribute="product_types"
-                            className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
-                        />
-                    </Filters>
-                }
-            />
-
-            <div className="container mx-auto mt-5 px-3 pb-[800px] lg:px-5">
-                {product_types.data.length === 0 ? (
-                    <Empty
-                        title="No product types found"
-                        subtitle="Create a new product type to get started."
+    const columns: ResourceColumn<ProductType>[] = [
+        {
+            header: 'Name',
+            accessor: 'name',
+            render: (productType) => <Navatar name={productType.name} />,
+        },
+        {
+            header: 'Products',
+            accessor: 'products',
+            dataSpan: 'hidden',
+            render: (productType) => (
+                <Text size="sm" c="dimmed">
+                    {productType.products_count}
+                </Text>
+            ),
+        },
+        {
+            header: 'Status',
+            accessor: 'status',
+            dataSpan: 'hidden',
+            render: (productType) => (
+                <Group gap="xs">
+                    {productType.closed_at && (
+                        <Badge variant="light" color="red">
+                            Closed
+                        </Badge>
+                    )}
+                    {!productType.closed_at && (
+                        <Badge variant="light" color="green">
+                            Active
+                        </Badge>
+                    )}
+                </Group>
+            ),
+        },
+        {
+            header: 'Created',
+            accessor: 'created',
+            dataSpan: 'hidden',
+            render: (productType) => (
+                <Text size="sm" c="dimmed">
+                    <Cast.Datetime
+                        format="DD/MM/YYYY"
+                        children={productType.created_at}
+                        fallback="—"
                     />
-                ) : (
-                    <Table striped highlightOnHover>
-                        <Table.Thead>
-                            <Table.Thead.Tr>
-                                <Table.Th>Name</Table.Th>
-                                <Table.Th>Products</Table.Th>
-                                <Table.Th>Status</Table.Th>
-                                <Table.Th>Created</Table.Th>
-                                <Table.Th style={{ width: '180px' }}>Actions</Table.Th>
-                            </Table.Thead.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                            {product_types.data.map((productType) => (
-                                <Table.Tbody.Tr
-                                    key={productType.id}
-                                    data-testid={`product-type-row-${productType.id}`}
+                </Text>
+            ),
+        },
+    ];
+
+    const actionsColumn: ResourceColumn<ProductType> = {
+        header: 'Actions',
+        accessor: 'actions',
+        width: '180px',
+        render: (productType) => (
+            <Group gap="xs" justify="end">
+                {!productType.closed_at && (
+                    <>
+                        <Tooltip label="Edit Product Type" position="left">
+                            <Navigate
+                                type="modal"
+                                href={route('product-types.update', productType.id)}
+                            >
+                                <ActionIcon
+                                    data-testid={`product-type-row-${productType.id}-edit`}
+                                    variant="subtle"
+                                    color="blue"
+                                    size="md"
+                                    radius="xl"
                                 >
-                                    <Table.Tbody.Td
-                                        data-testid={`product-type-row-${productType.id}-name`}
-                                    >
-                                        <Navatar name={productType.name} />
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`product-type-row-${productType.id}-products`}
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            {productType.products_count}
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`product-type-row-${productType.id}-status`}
-                                    >
-                                        <Group gap="xs">
-                                            {productType.closed_at && (
-                                                <Badge variant="light" color="red">
-                                                    Closed
-                                                </Badge>
-                                            )}
-                                            {!productType.closed_at && (
-                                                <Badge variant="light" color="green">
-                                                    Active
-                                                </Badge>
-                                            )}
-                                        </Group>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`product-type-row-${productType.id}-created`}
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            <Cast.Datetime
-                                                format="DD/MM/YYYY"
-                                                children={productType.created_at}
-                                                fallback="—"
-                                            />
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-testid={`product-type-row-${productType.id}-actions`}
-                                    >
-                                        <Group gap="xs" justify="end">
-                                            {!productType.closed_at && (
-                                                <>
-                                                    <Tooltip
-                                                        label="Edit Product Type"
-                                                        position="left"
-                                                    >
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route(
-                                                                'product-types.update',
-                                                                productType.id
-                                                            )}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`product-type-row-${productType.id}-edit`}
-                                                                variant="subtle"
-                                                                color="blue"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <PencilIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
+                                    <PencilIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
 
-                                                    <Tooltip
-                                                        label="Close Product Type"
-                                                        position="left"
-                                                    >
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route(
-                                                                'product-types.close',
-                                                                productType.id
-                                                            )}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`product-type-row-${productType.id}-close`}
-                                                                variant="subtle"
-                                                                color="red"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <XIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
-                                                </>
-                                            )}
-                                            {productType.closed_at && (
-                                                <>
-                                                    <Tooltip
-                                                        label="Reopen Product Type"
-                                                        position="left"
-                                                    >
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route(
-                                                                'product-types.reopen',
-                                                                productType.id
-                                                            )}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`product-type-row-${productType.id}-reopen`}
-                                                                variant="subtle"
-                                                                color="green"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <RotateCcwIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
-
-                                                    <Tooltip
-                                                        label="Destroy Product Type"
-                                                        position="left"
-                                                    >
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route(
-                                                                'product-types.destroy',
-                                                                productType.id
-                                                            )}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`product-type-row-${productType.id}-destroy`}
-                                                                variant="subtle"
-                                                                color="red"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <TrashIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
-                                                </>
-                                            )}
-                                        </Group>
-                                    </Table.Tbody.Td>
-                                </Table.Tbody.Tr>
-                            ))}
-                        </Table.Tbody>
-                    </Table>
+                        <Tooltip label="Close Product Type" position="left">
+                            <Navigate
+                                type="modal"
+                                href={route('product-types.close', productType.id)}
+                            >
+                                <ActionIcon
+                                    data-testid={`product-type-row-${productType.id}-close`}
+                                    variant="subtle"
+                                    color="red"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <XIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+                    </>
                 )}
-                <Pagination data={product_types} attribute="product_types" />
-            </div>
-        </>
+                {productType.closed_at && (
+                    <>
+                        <Tooltip label="Reopen Product Type" position="left">
+                            <Navigate
+                                type="modal"
+                                href={route('product-types.reopen', productType.id)}
+                            >
+                                <ActionIcon
+                                    data-testid={`product-type-row-${productType.id}-reopen`}
+                                    variant="subtle"
+                                    color="green"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <RotateCcwIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+
+                        <Tooltip label="Destroy Product Type" position="left">
+                            <Navigate
+                                type="modal"
+                                href={route('product-types.destroy', productType.id)}
+                            >
+                                <ActionIcon
+                                    data-testid={`product-type-row-${productType.id}-destroy`}
+                                    variant="subtle"
+                                    color="red"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <TrashIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+                    </>
+                )}
+            </Group>
+        ),
+    };
+
+    return (
+        <ResourceList
+            headTitle="Product Types"
+            title="Product Types"
+            items={product_types}
+            resource={{ singular: 'product-type', plural: 'product types' }}
+            rowKey={(productType) => productType.id}
+            columns={columns}
+            actionsColumn={actionsColumn}
+            emptyState={{
+                title: 'No product types found',
+                subtitle: 'Create a new product type to get started.',
+            }}
+            headerAction={
+                <Group gap="xs">
+                    <Navigate type="modal" href={route('product-types.create')}>
+                        <Button
+                            size="xs"
+                            radius="sm"
+                            color="zinc"
+                            leftSection={<PlusIcon className="size-3" />}
+                        >
+                            Create
+                        </Button>
+                    </Navigate>
+                </Group>
+            }
+            filters={
+                <Filters>
+                    <Filters.Search attribute="product_types" className="order-1" />
+                    <Filters.Sort data={sortOptions} attribute="product_types" />
+                    <Filters.Status
+                        data={[
+                            { value: 'active', label: 'Active' },
+                            { value: 'closed', label: 'Closed' },
+                        ]}
+                        attribute="product_types"
+                        className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
+                    />
+                </Filters>
+            }
+            paginationAttribute="product_types"
+            getRowTestId={(productType) => `product-type-row-${productType.id}`}
+        />
     );
 };
 

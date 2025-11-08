@@ -1,15 +1,11 @@
 import Cast from '@/components/Cast';
-import { Empty } from '@/components/Empty';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
-import { Pagination } from '@/components/Pagination';
 import Filters from '@/components/QueryControls/Filters';
-import Table from '@/components/Table/Table';
+import { ResourceColumn, ResourceList } from '@/components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
-import Header from '@/Parts/Header';
 import { InertiaView, Paginated, UploadedFile } from '@/types';
 import { Asset } from '@/Utilities/Asset';
-import { Head } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import {
     BadgePercent,
@@ -64,260 +60,219 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'created_at', label: 'Created At', icon: CircleDotIcon },
     ];
 
-    return (
-        <>
-            <Head title="Products" />
-            <Header
-                title="Products"
-                action={
-                    <Navigate type="modal" href={route('products.create')}>
-                        <Button
-                            size="xs"
-                            radius="sm"
-                            color="zinc"
-                            leftSection={<PlusIcon className="size-3" />}
-                        >
-                            Create
-                        </Button>
-                    </Navigate>
-                }
-                subtitle={
-                    <div className="text-xs text-zinc-500">{products.data.length} products</div>
-                }
-                filters={
-                    <Filters>
-                        <Filters.Search attribute="products" className="order-1" />
-                        <Filters.Sort data={sortOptions} attribute="products" />
-                        <Filters.Status
-                            data={[
-                                { value: 'active', label: 'Active' },
-                                { value: 'closed', label: 'Closed' },
-                            ]}
-                            attribute="products"
-                            className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
-                        />
-                    </Filters>
-                }
-            />
+    const columns: ResourceColumn<Product>[] = [
+        {
+            header: 'Product',
+            accessor: 'name',
+            render: (product) => <Navatar name={product.name} src={Asset(product.avatar)} />,
+        },
+        {
+            header: 'SKU',
+            accessor: 'sku',
+            dataSpan: 'hidden',
+            render: (product) => (
+                <Text size="sm" c="dimmed">
+                    {product.sku}
+                </Text>
+            ),
+        },
+        {
+            header: 'Type',
+            accessor: 'type',
+            dataSpan: 'hidden',
+            render: (product) => <Navatar name={product.__product_type_name} />,
+        },
+        {
+            header: 'Manufacturer',
+            accessor: 'manufacturer',
+            dataSpan: 'hidden',
+            render: (product) => <Navatar name={product.__manufacturer_name} />,
+        },
+        {
+            header: 'Units',
+            accessor: 'units',
+            dataSpan: 'hidden',
+            render: (product) => (
+                <Text size="sm" c="dimmed">
+                    {product.units}
+                </Text>
+            ),
+        },
+        {
+            header: 'Cost',
+            accessor: 'cost',
+            dataSpan: 'hidden',
+            render: (product) => (
+                <Text size="sm" c="dimmed">
+                    <Cast.Currency children={product.cost} fallback="—" />
+                </Text>
+            ),
+        },
+        {
+            header: 'Price',
+            accessor: 'price',
+            dataSpan: 'hidden',
+            render: (product) => (
+                <Text size="sm" c="dimmed">
+                    <Cast.Currency children={product.price} fallback="—" />
+                </Text>
+            ),
+        },
+        {
+            header: 'Rebate',
+            accessor: 'rebate',
+            dataSpan: 'hidden',
+            render: (product) => (
+                <Text size="sm" c="dimmed">
+                    <Cast.Currency children={product.rebate} fallback="—" />
+                </Text>
+            ),
+        },
+        {
+            header: 'Royalty',
+            accessor: 'royalty',
+            dataSpan: 'hidden',
+            render: (product) => (
+                <Text size="sm" c="dimmed">
+                    <Cast.Currency children={product.royalty} fallback="—" />
+                </Text>
+            ),
+        },
+        {
+            header: 'Status',
+            accessor: 'status',
+            dataSpan: 'hidden',
+            render: (product) => (
+                <Group gap="xs">
+                    {product.closed_at && (
+                        <Badge variant="light" color="red">
+                            Closed
+                        </Badge>
+                    )}
+                    {!product.closed_at && (
+                        <Badge variant="light" color="green">
+                            Active
+                        </Badge>
+                    )}
+                </Group>
+            ),
+        },
+    ];
 
-            <div className="container mx-auto mt-5 px-3 pb-[800px] lg:px-5">
-                {products.data.length === 0 ? (
-                    <Empty
-                        title="No products found"
-                        subtitle="Create a new product to get started."
-                    />
-                ) : (
-                    <Table striped highlightOnHover>
-                        <Table.Thead>
-                            <Table.Thead.Tr>
-                                <Table.Th>Product</Table.Th>
-                                <Table.Th>SKU</Table.Th>
-                                <Table.Th>Type</Table.Th>
-                                <Table.Th>Manufacturer</Table.Th>
-                                <Table.Th>Units</Table.Th>
-                                <Table.Th>Cost</Table.Th>
-                                <Table.Th>Price</Table.Th>
-                                <Table.Th>Rebate</Table.Th>
-                                <Table.Th>Royalty</Table.Th>
-                                <Table.Th>Status</Table.Th>
-                                <Table.Th style={{ width: '180px' }}>Actions</Table.Th>
-                            </Table.Thead.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                            {products.data.map((product) => (
-                                <Table.Tbody.Tr
-                                    key={product.id}
-                                    data-testid={`product-row-${product.id}`}
+    const actionsColumn: ResourceColumn<Product> = {
+        header: 'Actions',
+        accessor: 'actions',
+        width: '180px',
+        render: (product) => (
+            <Group gap="xs" justify="end">
+                {!product.closed_at && (
+                    <>
+                        <Tooltip label="Edit Product" position="left">
+                            <Navigate type="modal" href={route('products.update', product.id)}>
+                                <ActionIcon
+                                    data-testid={`product-row-${product.id}-edit`}
+                                    variant="subtle"
+                                    color="blue"
+                                    size="md"
+                                    radius="xl"
                                 >
-                                    <Table.Tbody.Td data-testid={`product-row-${product.id}-name`}>
-                                        <Navatar name={product.name} src={Asset(product.avatar)} />
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`product-row-${product.id}-sku`}
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            {product.sku}
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`product-row-${product.id}-type`}
-                                    >
-                                        <Navatar name={product.__product_type_name} />
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`product-row-${product.id}-manufacturer`}
-                                    >
-                                        <Navatar name={product.__manufacturer_name} />
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`product-row-${product.id}-units`}
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            {product.units}
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`product-row-${product.id}-cost`}
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            <Cast.Currency children={product.cost} fallback="—" />
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`product-row-${product.id}-price`}
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            <Cast.Currency children={product.price} fallback="—" />
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`product-row-${product.id}-rebate`}
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            <Cast.Currency children={product.rebate} fallback="—" />
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`product-row-${product.id}-royalty`}
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            <Cast.Currency
-                                                children={product.royalty}
-                                                fallback="—"
-                                            />
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`product-row-${product.id}-status`}
-                                    >
-                                        <Group gap="xs">
-                                            {product.closed_at && (
-                                                <Badge variant="light" color="red">
-                                                    Closed
-                                                </Badge>
-                                            )}
-                                            {!product.closed_at && (
-                                                <Badge variant="light" color="green">
-                                                    Active
-                                                </Badge>
-                                            )}
-                                        </Group>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-testid={`product-row-${product.id}-actions`}
-                                    >
-                                        <Group gap="xs" justify="end">
-                                            {!product.closed_at && (
-                                                <>
-                                                    <Tooltip label="Edit Product" position="left">
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route(
-                                                                'products.update',
-                                                                product.id
-                                                            )}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`product-row-${product.id}-edit`}
-                                                                variant="subtle"
-                                                                color="blue"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <PencilIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
+                                    <PencilIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
 
-                                                    <Tooltip label="Close Product" position="left">
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route(
-                                                                'products.close',
-                                                                product.id
-                                                            )}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`product-row-${product.id}-close`}
-                                                                variant="subtle"
-                                                                color="red"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <XIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
-                                                </>
-                                            )}
-                                            {product.closed_at && (
-                                                <>
-                                                    <Tooltip
-                                                        label="Reinstate Product"
-                                                        position="left"
-                                                    >
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route(
-                                                                'products.reinstate',
-                                                                product.id
-                                                            )}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`product-row-${product.id}-reinstate`}
-                                                                variant="subtle"
-                                                                color="green"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <RotateCcwIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
-
-                                                    <Tooltip
-                                                        label="Destroy Product"
-                                                        position="left"
-                                                    >
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route(
-                                                                'products.destroy',
-                                                                product.id
-                                                            )}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`product-row-${product.id}-destroy`}
-                                                                variant="subtle"
-                                                                color="red"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <TrashIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
-                                                </>
-                                            )}
-                                        </Group>
-                                    </Table.Tbody.Td>
-                                </Table.Tbody.Tr>
-                            ))}
-                        </Table.Tbody>
-                    </Table>
+                        <Tooltip label="Close Product" position="left">
+                            <Navigate type="modal" href={route('products.close', product.id)}>
+                                <ActionIcon
+                                    data-testid={`product-row-${product.id}-close`}
+                                    variant="subtle"
+                                    color="red"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <XIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+                    </>
                 )}
-                <Pagination data={products} attribute="products" />
-            </div>
-        </>
+                {product.closed_at && (
+                    <>
+                        <Tooltip label="Reinstate Product" position="left">
+                            <Navigate type="modal" href={route('products.reinstate', product.id)}>
+                                <ActionIcon
+                                    data-testid={`product-row-${product.id}-reinstate`}
+                                    variant="subtle"
+                                    color="green"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <RotateCcwIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+
+                        <Tooltip label="Destroy Product" position="left">
+                            <Navigate type="modal" href={route('products.destroy', product.id)}>
+                                <ActionIcon
+                                    data-testid={`product-row-${product.id}-destroy`}
+                                    variant="subtle"
+                                    color="red"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <TrashIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+                    </>
+                )}
+            </Group>
+        ),
+    };
+
+    return (
+        <ResourceList
+            headTitle="Products"
+            title="Products"
+            items={products}
+            resource={{ singular: 'product', plural: 'products' }}
+            rowKey={(product) => product.id}
+            columns={columns}
+            actionsColumn={actionsColumn}
+            emptyState={{
+                title: 'No products found',
+                subtitle: 'Create a new product to get started.',
+            }}
+            headerAction={
+                <Navigate type="modal" href={route('products.create')}>
+                    <Button
+                        size="xs"
+                        radius="sm"
+                        color="zinc"
+                        leftSection={<PlusIcon className="size-3" />}
+                    >
+                        Create
+                    </Button>
+                </Navigate>
+            }
+            filters={
+                <Filters>
+                    <Filters.Search attribute="products" className="order-1" />
+                    <Filters.Sort data={sortOptions} attribute="products" />
+                    <Filters.Status
+                        data={[
+                            { value: 'active', label: 'Active' },
+                            { value: 'closed', label: 'Closed' },
+                        ]}
+                        attribute="products"
+                        className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
+                    />
+                </Filters>
+            }
+            paginationAttribute="products"
+            getRowTestId={(product) => `product-row-${product.id}`}
+        />
     );
 };
 

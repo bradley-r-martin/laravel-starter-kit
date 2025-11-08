@@ -1,14 +1,10 @@
 import Cast from '@/components/Cast';
-import { Empty } from '@/components/Empty';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
-import { Pagination } from '@/components/Pagination';
 import Filters from '@/components/QueryControls/Filters';
-import Table from '@/components/Table/Table';
+import { ResourceColumn, ResourceList } from '@/components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
-import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
-import { Head } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import {
     BanIcon,
@@ -55,278 +51,248 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    return (
-        <>
-            <Head title="Users" />
-            <Header
-                title="Users"
-                subtitle={<div className="text-xs text-zinc-500">{users.data.length} users</div>}
-                action={
-                    <Group gap="xs">
-                        <Navigate type="modal" href={route('users.create')}>
-                            <Button
-                                size="xs"
-                                radius="sm"
-                                color="zinc"
-                                leftSection={<PlusIcon className="size-3" />}
-                            >
-                                Create
-                            </Button>
-                        </Navigate>
-                    </Group>
-                }
-                filters={
-                    <Filters>
-                        <Filters.Search attribute="users" className="order-1" />
-                        <Filters.Sort data={sortOptions} attribute="users" />
-                        <Filters.Status
-                            data={[
-                                { value: 'active', label: 'Active' },
-                                { value: 'suspended', label: 'Suspended' },
-                                { value: 'closed', label: 'Closed' },
-                            ]}
-                            attribute="users"
-                            className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
-                        />
-                    </Filters>
-                }
-            />
+    const columns: ResourceColumn<User>[] = [
+        {
+            header: 'Name',
+            accessor: 'name',
+            render: (user) => <Navatar name={`${user.first_name} ${user.last_name}`} />,
+        },
+        {
+            header: 'Email',
+            accessor: 'email',
+            dataSpan: 'hidden',
+            render: (user) => <Text size="sm">{user.email}</Text>,
+        },
+        {
+            header: 'Role',
+            accessor: 'role',
+            dataSpan: 'hidden',
+            render: (user) => (
+                <Text c="dimmed" size="sm">
+                    {user.role_name || '—'}
+                </Text>
+            ),
+        },
+        {
+            header: 'Operator',
+            accessor: 'operator',
+            dataSpan: 'hidden',
+            render: (user) => (
+                <Text c="dimmed" size="sm">
+                    {user.operator_name || '—'}
+                </Text>
+            ),
+        },
+        {
+            header: 'Last Login',
+            accessor: 'last-login',
+            dataSpan: 'hidden',
+            render: (user) => (
+                <Text size="sm" c="dimmed">
+                    <Cast.Datetime
+                        format="DD/MM/YYYY HH:mm"
+                        children={user.last_login_at}
+                        fallback="—"
+                    />
+                </Text>
+            ),
+        },
+        {
+            header: 'Status',
+            accessor: 'status',
+            dataSpan: 'hidden',
+            render: (user) => (
+                <Group gap="xs">
+                    {user.suspended_at && (
+                        <Badge variant="light" color="orange">
+                            Suspended
+                        </Badge>
+                    )}
+                    {user.closed_at && (
+                        <Badge variant="light" color="red">
+                            Closed
+                        </Badge>
+                    )}
+                    {!user.suspended_at && !user.closed_at && (
+                        <Badge variant="light" color="green">
+                            Active
+                        </Badge>
+                    )}
+                </Group>
+            ),
+        },
+        {
+            header: 'Created',
+            accessor: 'created',
+            dataSpan: 'hidden',
+            render: (user) => (
+                <Text size="sm" c="dimmed">
+                    <Cast.Datetime format="DD/MM/YYYY" children={user.created_at} fallback="—" />
+                </Text>
+            ),
+        },
+    ];
 
-            <div className="container mx-auto mt-5 px-3 pb-[800px] lg:px-5">
-                {users.data.length === 0 ? (
-                    <Empty title="No users found" subtitle="Create a new user to get started." />
-                ) : (
-                    <Table striped highlightOnHover>
-                        <Table.Thead>
-                            <Table.Thead.Tr>
-                                <Table.Th>Name</Table.Th>
-                                <Table.Th>Email</Table.Th>
-                                <Table.Th>Role</Table.Th>
-                                <Table.Th>Operator</Table.Th>
-                                <Table.Th>Last Login</Table.Th>
-                                <Table.Th>Status</Table.Th>
-                                <Table.Th>Created</Table.Th>
-                                <Table.Th style={{ width: '180px' }}>Actions</Table.Th>
-                            </Table.Thead.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                            {users.data.map((user) => (
-                                <Table.Tbody.Tr key={user.id} data-testid={`user-row-${user.id}`}>
-                                    <Table.Tbody.Td data-testid={`user-row-${user.id}-name`}>
-                                        <Navatar name={`${user.first_name} ${user.last_name}`} />
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`user-row-${user.id}-email`}
-                                    >
-                                        <Text size="sm">{user.email}</Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`user-row-${user.id}-role`}
-                                    >
-                                        <Text c="dimmed" size="sm">
-                                            {user.role_name || '—'}
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`user-row-${user.id}-operator`}
-                                    >
-                                        <Text c="dimmed" size="sm">
-                                            {user.operator_name || '—'}
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`user-row-${user.id}-last-login`}
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            <Cast.Datetime
-                                                format="DD/MM/YYYY HH:mm"
-                                                children={user.last_login_at}
-                                                fallback="—"
-                                            />
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`user-row-${user.id}-status`}
-                                    >
-                                        <Group gap="xs">
-                                            {user.suspended_at && (
-                                                <Badge variant="light" color="orange">
-                                                    Suspended
-                                                </Badge>
-                                            )}
-                                            {user.closed_at && (
-                                                <Badge variant="light" color="red">
-                                                    Closed
-                                                </Badge>
-                                            )}
-                                            {!user.suspended_at && !user.closed_at && (
-                                                <Badge variant="light" color="green">
-                                                    Active
-                                                </Badge>
-                                            )}
-                                        </Group>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`user-row-${user.id}-created`}
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            <Cast.Datetime
-                                                format="DD/MM/YYYY"
-                                                children={user.created_at}
-                                                fallback="—"
-                                            />
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td data-testid={`user-row-${user.id}-actions`}>
-                                        <Group gap="xs" justify="end">
-                                            {!user.closed_at && !user.suspended_at && (
-                                                <>
-                                                    <Tooltip label="Edit User" position="left">
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route('users.update', user.id)}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`user-row-${user.id}-edit`}
-                                                                variant="subtle"
-                                                                color="blue"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <PencilIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
+    const actionsColumn: ResourceColumn<User> = {
+        header: 'Actions',
+        accessor: 'actions',
+        width: '180px',
+        render: (user) => (
+            <Group gap="xs" justify="end">
+                {!user.closed_at && !user.suspended_at && (
+                    <>
+                        <Tooltip label="Edit User" position="left">
+                            <Navigate type="modal" href={route('users.update', user.id)}>
+                                <ActionIcon
+                                    data-testid={`user-row-${user.id}-edit`}
+                                    variant="subtle"
+                                    color="blue"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <PencilIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
 
-                                                    <Tooltip
-                                                        label="Change Password"
-                                                        position="left"
-                                                    >
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route('users.password', user.id)}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`user-row-${user.id}-password`}
-                                                                variant="subtle"
-                                                                color="yellow"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <KeyIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
+                        <Tooltip label="Change Password" position="left">
+                            <Navigate type="modal" href={route('users.password', user.id)}>
+                                <ActionIcon
+                                    data-testid={`user-row-${user.id}-password`}
+                                    variant="subtle"
+                                    color="yellow"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <KeyIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
 
-                                                    <Tooltip label="Suspend User" position="left">
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route('users.suspend', user.id)}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`user-row-${user.id}-suspend`}
-                                                                variant="subtle"
-                                                                color="orange"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <BanIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
+                        <Tooltip label="Suspend User" position="left">
+                            <Navigate type="modal" href={route('users.suspend', user.id)}>
+                                <ActionIcon
+                                    data-testid={`user-row-${user.id}-suspend`}
+                                    variant="subtle"
+                                    color="orange"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <BanIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
 
-                                                    <Tooltip label="Close Account" position="left">
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route('users.close', user.id)}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`user-row-${user.id}-close`}
-                                                                variant="subtle"
-                                                                color="red"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <XIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
-                                                </>
-                                            )}
-                                            {!user.closed_at && user.suspended_at && (
-                                                <Tooltip label="Unsuspend User" position="left">
-                                                    <Navigate
-                                                        type="modal"
-                                                        href={route('users.unsuspend', user.id)}
-                                                    >
-                                                        <ActionIcon
-                                                            data-testid={`user-row-${user.id}-unsuspend`}
-                                                            variant="subtle"
-                                                            color="green"
-                                                            size="md"
-                                                            radius="xl"
-                                                        >
-                                                            <CheckCircleIcon className="size-4" />
-                                                        </ActionIcon>
-                                                    </Navigate>
-                                                </Tooltip>
-                                            )}
-                                            {user.closed_at && (
-                                                <>
-                                                    <Tooltip label="Reopen Account" position="left">
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route('users.reopen', user.id)}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`user-row-${user.id}-reopen`}
-                                                                variant="subtle"
-                                                                color="green"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <RotateCcwIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
-
-                                                    <Tooltip
-                                                        label="Destroy Account"
-                                                        position="left"
-                                                    >
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route('users.destroy', user.id)}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`user-row-${user.id}-destroy`}
-                                                                variant="subtle"
-                                                                color="red"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <TrashIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
-                                                </>
-                                            )}
-                                        </Group>
-                                    </Table.Tbody.Td>
-                                </Table.Tbody.Tr>
-                            ))}
-                        </Table.Tbody>
-                    </Table>
+                        <Tooltip label="Close Account" position="left">
+                            <Navigate type="modal" href={route('users.close', user.id)}>
+                                <ActionIcon
+                                    data-testid={`user-row-${user.id}-close`}
+                                    variant="subtle"
+                                    color="red"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <XIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+                    </>
                 )}
-                <Pagination data={users} attribute="users" />
-            </div>
-        </>
+                {!user.closed_at && user.suspended_at && (
+                    <Tooltip label="Unsuspend User" position="left">
+                        <Navigate type="modal" href={route('users.unsuspend', user.id)}>
+                            <ActionIcon
+                                data-testid={`user-row-${user.id}-unsuspend`}
+                                variant="subtle"
+                                color="green"
+                                size="md"
+                                radius="xl"
+                            >
+                                <CheckCircleIcon className="size-4" />
+                            </ActionIcon>
+                        </Navigate>
+                    </Tooltip>
+                )}
+                {user.closed_at && (
+                    <>
+                        <Tooltip label="Reopen Account" position="left">
+                            <Navigate type="modal" href={route('users.reopen', user.id)}>
+                                <ActionIcon
+                                    data-testid={`user-row-${user.id}-reopen`}
+                                    variant="subtle"
+                                    color="green"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <RotateCcwIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+
+                        <Tooltip label="Destroy Account" position="left">
+                            <Navigate type="modal" href={route('users.destroy', user.id)}>
+                                <ActionIcon
+                                    data-testid={`user-row-${user.id}-destroy`}
+                                    variant="subtle"
+                                    color="red"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <TrashIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+                    </>
+                )}
+            </Group>
+        ),
+    };
+
+    return (
+        <ResourceList
+            headTitle="Users"
+            title="Users"
+            items={users}
+            resource={{ singular: 'user', plural: 'users' }}
+            rowKey={(user) => user.id}
+            columns={columns}
+            actionsColumn={actionsColumn}
+            emptyState={{
+                title: 'No users found',
+                subtitle: 'Create a new user to get started.',
+            }}
+            headerAction={
+                <Group gap="xs">
+                    <Navigate type="modal" href={route('users.create')}>
+                        <Button
+                            size="xs"
+                            radius="sm"
+                            color="zinc"
+                            leftSection={<PlusIcon className="size-3" />}
+                        >
+                            Create
+                        </Button>
+                    </Navigate>
+                </Group>
+            }
+            filters={
+                <Filters>
+                    <Filters.Search attribute="users" className="order-1" />
+                    <Filters.Sort data={sortOptions} attribute="users" />
+                    <Filters.Status
+                        data={[
+                            { value: 'active', label: 'Active' },
+                            { value: 'suspended', label: 'Suspended' },
+                            { value: 'closed', label: 'Closed' },
+                        ]}
+                        attribute="users"
+                        className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
+                    />
+                </Filters>
+            }
+            paginationAttribute="users"
+            getRowTestId={(user) => `user-row-${user.id}`}
+        />
     );
 };
 

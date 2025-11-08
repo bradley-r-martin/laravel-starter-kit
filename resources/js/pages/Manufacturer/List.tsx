@@ -1,14 +1,10 @@
 import Cast from '@/components/Cast';
-import { Empty } from '@/components/Empty';
 import Navatar from '@/components/Navatar';
 import Navigate from '@/components/Navigate';
-import { Pagination } from '@/components/Pagination';
 import Filters from '@/components/QueryControls/Filters';
-import Table from '@/components/Table/Table';
+import { ResourceColumn, ResourceList } from '@/components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
-import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';
-import { Head } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import {
     BoxesIcon,
@@ -44,223 +40,185 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'status', label: 'Status', icon: CircleDotIcon },
     ];
 
-    return (
-        <>
-            <Head title="Manufacturers" />
-            <Header
-                title="Manufacturers"
-                subtitle={
-                    <div className="text-xs text-zinc-500">
-                        {manufacturers.data.length} manufacturers
-                    </div>
-                }
-                action={
-                    <Group gap="xs">
-                        <Navigate type="modal" href={route('manufacturers.create')}>
-                            <Button
-                                size="xs"
-                                radius="sm"
-                                color="zinc"
-                                leftSection={<PlusIcon className="size-3" />}
-                            >
-                                Create
-                            </Button>
-                        </Navigate>
-                    </Group>
-                }
-                filters={
-                    <Filters>
-                        <Filters.Search attribute="manufacturers" className="order-1" />
-                        <Filters.Sort data={sortOptions} attribute="manufacturers" />
-                        <Filters.Status
-                            data={[
-                                { value: 'active', label: 'Active' },
-                                { value: 'closed', label: 'Closed' },
-                            ]}
-                            attribute="manufacturers"
-                            className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
-                        />
-                    </Filters>
-                }
-            />
-
-            <div className="container mx-auto mt-5 px-3 pb-[800px] lg:px-5">
-                {manufacturers.data.length === 0 ? (
-                    <Empty
-                        title="No manufacturers found"
-                        subtitle="Create a new manufacturer to get started."
+    const columns: ResourceColumn<Manufacturer>[] = [
+        {
+            header: 'Name',
+            accessor: 'name',
+            render: (manufacturer) => <Navatar name={manufacturer.name} />,
+        },
+        {
+            header: 'Products',
+            accessor: 'products',
+            dataSpan: 'hidden',
+            render: (manufacturer) => (
+                <Text size="sm" c="dimmed">
+                    {manufacturer.products_count}
+                </Text>
+            ),
+        },
+        {
+            header: 'Status',
+            accessor: 'status',
+            dataSpan: 'hidden',
+            render: (manufacturer) => (
+                <Group gap="xs">
+                    {manufacturer.closed_at && (
+                        <Badge variant="light" color="red">
+                            Closed
+                        </Badge>
+                    )}
+                    {!manufacturer.closed_at && (
+                        <Badge variant="light" color="green">
+                            Active
+                        </Badge>
+                    )}
+                </Group>
+            ),
+        },
+        {
+            header: 'Created',
+            accessor: 'created',
+            dataSpan: 'hidden',
+            render: (manufacturer) => (
+                <Text size="sm" c="dimmed">
+                    <Cast.Datetime
+                        format="DD/MM/YYYY"
+                        children={manufacturer.created_at}
+                        fallback="—"
                     />
-                ) : (
-                    <Table striped highlightOnHover>
-                        <Table.Thead>
-                            <Table.Thead.Tr>
-                                <Table.Th>Name</Table.Th>
-                                <Table.Th>Products</Table.Th>
-                                <Table.Th>Status</Table.Th>
-                                <Table.Th>Created</Table.Th>
-                                <Table.Th style={{ width: '180px' }}>Actions</Table.Th>
-                            </Table.Thead.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                            {manufacturers.data.map((manufacturer) => (
-                                <Table.Tbody.Tr
-                                    key={manufacturer.id}
-                                    data-testid={`manufacturer-row-${manufacturer.id}`}
+                </Text>
+            ),
+        },
+    ];
+
+    const actionsColumn: ResourceColumn<Manufacturer> = {
+        header: 'Actions',
+        accessor: 'actions',
+        width: '180px',
+        render: (manufacturer) => (
+            <Group gap="xs" justify="end">
+                {!manufacturer.closed_at && (
+                    <>
+                        <Tooltip label="Edit Manufacturer" position="left">
+                            <Navigate
+                                type="modal"
+                                href={route('manufacturers.update', manufacturer.id)}
+                            >
+                                <ActionIcon
+                                    data-testid={`manufacturer-row-${manufacturer.id}-edit`}
+                                    variant="subtle"
+                                    color="blue"
+                                    size="md"
+                                    radius="xl"
                                 >
-                                    <Table.Tbody.Td
-                                        data-testid={`manufacturer-row-${manufacturer.id}-name`}
-                                    >
-                                        <Navatar name={manufacturer.name} />
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`manufacturer-row-${manufacturer.id}-products`}
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            {manufacturer.products_count}
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`manufacturer-row-${manufacturer.id}-status`}
-                                    >
-                                        <Group gap="xs">
-                                            {manufacturer.closed_at && (
-                                                <Badge variant="light" color="red">
-                                                    Closed
-                                                </Badge>
-                                            )}
-                                            {!manufacturer.closed_at && (
-                                                <Badge variant="light" color="green">
-                                                    Active
-                                                </Badge>
-                                            )}
-                                        </Group>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-span="hidden"
-                                        data-testid={`manufacturer-row-${manufacturer.id}-created`}
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            <Cast.Datetime
-                                                format="DD/MM/YYYY"
-                                                children={manufacturer.created_at}
-                                                fallback="—"
-                                            />
-                                        </Text>
-                                    </Table.Tbody.Td>
-                                    <Table.Tbody.Td
-                                        data-testid={`manufacturer-row-${manufacturer.id}-actions`}
-                                    >
-                                        <Group gap="xs" justify="end">
-                                            {!manufacturer.closed_at && (
-                                                <>
-                                                    <Tooltip
-                                                        label="Edit Manufacturer"
-                                                        position="left"
-                                                    >
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route(
-                                                                'manufacturers.update',
-                                                                manufacturer.id
-                                                            )}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`manufacturer-row-${manufacturer.id}-edit`}
-                                                                variant="subtle"
-                                                                color="blue"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <PencilIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
+                                    <PencilIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
 
-                                                    <Tooltip
-                                                        label="Close Manufacturer"
-                                                        position="left"
-                                                    >
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route(
-                                                                'manufacturers.close',
-                                                                manufacturer.id
-                                                            )}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`manufacturer-row-${manufacturer.id}-close`}
-                                                                variant="subtle"
-                                                                color="red"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <XIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
-                                                </>
-                                            )}
-                                            {manufacturer.closed_at && (
-                                                <>
-                                                    <Tooltip
-                                                        label="Reopen Manufacturer"
-                                                        position="left"
-                                                    >
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route(
-                                                                'manufacturers.reopen',
-                                                                manufacturer.id
-                                                            )}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`manufacturer-row-${manufacturer.id}-reopen`}
-                                                                variant="subtle"
-                                                                color="green"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <RotateCcwIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
-
-                                                    <Tooltip
-                                                        label="Destroy Manufacturer"
-                                                        position="left"
-                                                    >
-                                                        <Navigate
-                                                            type="modal"
-                                                            href={route(
-                                                                'manufacturers.destroy',
-                                                                manufacturer.id
-                                                            )}
-                                                        >
-                                                            <ActionIcon
-                                                                data-testid={`manufacturer-row-${manufacturer.id}-destroy`}
-                                                                variant="subtle"
-                                                                color="red"
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                                <TrashIcon className="size-4" />
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>
-                                                </>
-                                            )}
-                                        </Group>
-                                    </Table.Tbody.Td>
-                                </Table.Tbody.Tr>
-                            ))}
-                        </Table.Tbody>
-                    </Table>
+                        <Tooltip label="Close Manufacturer" position="left">
+                            <Navigate
+                                type="modal"
+                                href={route('manufacturers.close', manufacturer.id)}
+                            >
+                                <ActionIcon
+                                    data-testid={`manufacturer-row-${manufacturer.id}-close`}
+                                    variant="subtle"
+                                    color="red"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <XIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+                    </>
                 )}
-                <Pagination data={manufacturers} attribute="manufacturers" />
-            </div>
-        </>
+                {manufacturer.closed_at && (
+                    <>
+                        <Tooltip label="Reopen Manufacturer" position="left">
+                            <Navigate
+                                type="modal"
+                                href={route('manufacturers.reopen', manufacturer.id)}
+                            >
+                                <ActionIcon
+                                    data-testid={`manufacturer-row-${manufacturer.id}-reopen`}
+                                    variant="subtle"
+                                    color="green"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <RotateCcwIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+
+                        <Tooltip label="Destroy Manufacturer" position="left">
+                            <Navigate
+                                type="modal"
+                                href={route('manufacturers.destroy', manufacturer.id)}
+                            >
+                                <ActionIcon
+                                    data-testid={`manufacturer-row-${manufacturer.id}-destroy`}
+                                    variant="subtle"
+                                    color="red"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <TrashIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+                    </>
+                )}
+            </Group>
+        ),
+    };
+
+    return (
+        <ResourceList
+            headTitle="Manufacturers"
+            title="Manufacturers"
+            items={manufacturers}
+            resource={{ singular: 'manufacturer', plural: 'manufacturers' }}
+            rowKey={(manufacturer) => manufacturer.id}
+            columns={columns}
+            actionsColumn={actionsColumn}
+            emptyState={{
+                title: 'No manufacturers found',
+                subtitle: 'Create a new manufacturer to get started.',
+            }}
+            headerAction={
+                <Group gap="xs">
+                    <Navigate type="modal" href={route('manufacturers.create')}>
+                        <Button
+                            size="xs"
+                            radius="sm"
+                            color="zinc"
+                            leftSection={<PlusIcon className="size-3" />}
+                        >
+                            Create
+                        </Button>
+                    </Navigate>
+                </Group>
+            }
+            filters={
+                <Filters>
+                    <Filters.Search attribute="manufacturers" className="order-1" />
+                    <Filters.Sort data={sortOptions} attribute="manufacturers" />
+                    <Filters.Status
+                        data={[
+                            { value: 'active', label: 'Active' },
+                            { value: 'closed', label: 'Closed' },
+                        ]}
+                        attribute="manufacturers"
+                        className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
+                    />
+                </Filters>
+            }
+            paginationAttribute="manufacturers"
+            getRowTestId={(manufacturer) => `manufacturer-row-${manufacturer.id}`}
+        />
     );
 };
 
