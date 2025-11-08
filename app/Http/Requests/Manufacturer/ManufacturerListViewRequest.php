@@ -31,9 +31,9 @@ final class ManufacturerListViewRequest extends FormRequest
     public function respond(): Response
     {
         $manufacturers = Manufacturer::query()
-            ->select(['id', 'name', 'closed_at', 'created_at', '__products_count'])
-            ->orderBy('created_at', 'desc')
+            ->filterSortBy($this->string('manufacturers_sort')->toString())
             ->filterBySearch($this->string('manufacturers_search')->toString())
+            ->filterByStatus($this->string('manufacturers_status')->toString())
             ->paginate(10, ['*'], 'manufacturers_page')
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Manufacturer $manufacturer}> $manufacturers */
             ->through(fn (Manufacturer $manufacturer): array => [

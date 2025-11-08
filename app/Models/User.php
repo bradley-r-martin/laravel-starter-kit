@@ -39,6 +39,34 @@ final class User extends Authenticatable implements MustVerifyEmail
      * @param  Builder<self>  $query
      * @return Builder<self>
      */
+    public function scopeFilterSortBy(Builder $query, string $sort): Builder
+    {
+        return match ($sort) {
+            'email' => $query->orderBy('email', 'asc'),
+            'role' => $query->orderBy('role_id', 'asc'),
+            'operator' => $query->orderBy('operator_id', 'asc'),
+            'last_login_at' => $query->orderBy('__last_login_at', 'desc'),
+            'created_at' => $query->orderBy('created_at', 'asc'),
+            default => $query->orderBy('first_name', 'asc'),
+        };
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeFilterByStatus(Builder $query, string $status): Builder
+    {
+        return match ($status) {
+            'closed' => $query->whereNotNull('closed_at'),
+            default => $query->whereNull('closed_at')
+        };
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopeFilterBySearch(Builder $query, ?string $search): Builder
     {
         return $query->when($search, fn (Builder $q) => $q->where(fn (Builder $q) => $q

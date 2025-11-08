@@ -18,6 +18,34 @@ final class Role extends Model
      * @param  Builder<self>  $query
      * @return Builder<self>
      */
+    public function scopeFilterSortBy(Builder $query, string $sort): Builder
+    {
+
+        return match ($sort) {
+            'status' => $query->orderBy('closed_at', 'asc'),
+            'users_count' => $query->orderBy('__users_count', 'desc'),
+            'created_at' => $query->orderBy('created_at', 'asc'),
+            default => $query->orderBy('name', 'asc'),
+        };
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeFilterByStatus(Builder $query, string $status): Builder
+    {
+        return match ($status) {
+            'closed' => $query->whereNotNull('closed_at'),
+            'hidden' => $query->where('hidden', true),
+            default => $query->whereNull('closed_at')->where('hidden', false)
+        };
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopeFilterBySearch(Builder $query, ?string $search): Builder
     {
         return $query->when($search, fn (Builder $q) => $q->where(fn (Builder $q) => $q

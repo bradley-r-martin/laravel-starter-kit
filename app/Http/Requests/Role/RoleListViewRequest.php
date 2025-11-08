@@ -32,9 +32,9 @@ final class RoleListViewRequest extends FormRequest
     {
 
         $roles = Role::query()
-            ->select(['id', 'name', 'description', 'hidden', 'closed_at', '__users_count', 'created_at'])
-            ->orderBy('created_at', 'desc')
+            ->filterSortBy($this->string('roles_sort')->toString())
             ->filterBySearch($this->string('roles_search')->toString())
+            ->filterByStatus($this->string('roles_status')->toString())
             ->paginate(10, ['*'], 'roles_page')
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Role $role}> $roles */
             ->through(fn (Role $role): array => [

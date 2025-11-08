@@ -31,9 +31,9 @@ final class ProductTypeListViewRequest extends FormRequest
     public function respond(): Response
     {
         $productTypes = ProductType::query()
-            ->select(['id', 'name', 'closed_at', 'created_at', '__products_count'])
-            ->orderBy('created_at', 'desc')
+            ->filterSortBy($this->string('product_types_sort')->toString())
             ->filterBySearch($this->string('product_types_search')->toString())
+            ->filterByStatus($this->string('product_types_status')->toString())
             ->paginate(10, ['*'], 'product_types_page')
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{ProductType $productType}> $productTypes */
             ->through(fn (ProductType $productType): array => [
