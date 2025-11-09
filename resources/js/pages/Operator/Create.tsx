@@ -5,6 +5,7 @@ import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
 import { ModalContent } from '@/components/ModalContent';
 import ModalHeader from '@/components/ModalHeader';
+import { PhoneInput } from '@/components/PhoneInput';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
 import { Button, Stack, TextInput } from '@mantine/core';
@@ -15,6 +16,7 @@ export default function Create() {
     const form = useForm({
         name: '',
         email: '',
+        phone: null,
     });
     const { processing } = form;
 
@@ -55,6 +57,9 @@ export default function Create() {
                                             type="email"
                                             placeholder="Enter contact email (optional)"
                                         />
+                                    </Field>
+                                    <Field name="phone" type="phone">
+                                        <PhoneInput label="Phone" name="phone" countryCode="+61" />
                                     </Field>
                                 </Stack>
                             </ModalContent>

@@ -31,7 +31,7 @@ final class OperatorUpdateViewRequest extends FormRequest
     public function respond(): Response
     {
         $operatorId = (string) $this->route('operator');
-        $operator = Operator::query()->select(['id', 'name', 'email'])->findOrFail($operatorId);
+        $operator = Operator::query()->findOrFail($operatorId);
 
         return inertia()
             ->modal('Operator/Update', [
@@ -39,6 +39,7 @@ final class OperatorUpdateViewRequest extends FormRequest
                     'id' => $operator->id,
                     'name' => $operator->name,
                     'email' => $operator->email,
+                    'phone' => $operator->phone,
                 ],
             ])
             ->baseRoute('operators.index')

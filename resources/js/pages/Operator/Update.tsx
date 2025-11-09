@@ -5,6 +5,7 @@ import FormErrorSound from '@/components/FormErrorSound';
 import { Modal } from '@/components/Modal';
 import { ModalContent } from '@/components/ModalContent';
 import ModalHeader from '@/components/ModalHeader';
+import { PhoneInput, PhoneInputValue } from '@/components/PhoneInput';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
 import { Button, Stack, TextInput } from '@mantine/core';
@@ -14,6 +15,7 @@ interface Operator {
     id: string;
     name: string;
     email: string | null;
+    phone: PhoneInputValue | null;
 }
 
 interface UpdateProps {
@@ -25,6 +27,7 @@ export default function Update({ operator }: UpdateProps) {
     const form = useForm({
         name: operator.name,
         email: operator.email ?? '',
+        phone: operator.phone ?? null,
     });
     const { processing } = form;
 
@@ -71,6 +74,9 @@ export default function Update({ operator }: UpdateProps) {
                                             type="email"
                                             placeholder="Enter contact email (optional)"
                                         />
+                                    </Field>
+                                    <Field name="phone" type="phone">
+                                        <PhoneInput label="Phone" name="phone" countryCode="+61" />
                                     </Field>
                                 </Stack>
                             </ModalContent>
