@@ -15,7 +15,8 @@ interface FieldProps {
         | 'textarea'
         | 'file'
         | 'transfer'
-        | 'phone';
+        | 'phone'
+        | 'address';
     name: string;
     children: React.ReactNode;
 }
@@ -41,6 +42,7 @@ const Field: FunctionComponent<FieldProps> = (props) => {
                         case 'transfer':
                         case 'number':
                         case 'phone':
+                        case 'address':
                             inertiaFormInstance.setData(name, e);
                             break;
                         case 'text':

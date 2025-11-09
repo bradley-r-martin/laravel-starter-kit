@@ -11,16 +11,18 @@ import {
     type PointerEventHandler,
 } from 'react';
 
+type NavigateType = 'modal' | 'page' | 'manual';
+
 type NavigateProps = ComponentPropsWithoutRef<'a'> & {
-    type: 'modal' | 'page';
+    type: NavigateType;
 };
 
-const Navigate = forwardRef<HTMLAnchorElement, NavigateProps>((props, ref) => {
+const Navigate = forwardRef<HTMLElement, NavigateProps>((props, ref) => {
     const { type, onPointerDown, ...restProps } = props;
 
     const [loading, setLoading] = useState(false);
 
-    const handlePointerDown = useCallback<PointerEventHandler<HTMLAnchorElement>>(
+    const handlePointerDown = useCallback<PointerEventHandler<HTMLElement>>(
         (event) => {
             const element = event.currentTarget;
             const rect = element.getBoundingClientRect();
@@ -42,12 +44,14 @@ const Navigate = forwardRef<HTMLAnchorElement, NavigateProps>((props, ref) => {
                   onStart: () => setLoading(true),
                   onSuccess: () => setLoading(false),
               }
-            : {
-                  component: Link,
-                  loading: loading,
-                  onStart: () => setLoading(true),
-                  onSuccess: () => setLoading(false),
-              };
+            : type === 'page'
+              ? {
+                    component: Link,
+                    loading: loading,
+                    onStart: () => setLoading(true),
+                    onSuccess: () => setLoading(false),
+                }
+              : {};
 
     return <Slot ref={ref} {...restProps} {...componentProps} onPointerDown={handlePointerDown} />;
 });

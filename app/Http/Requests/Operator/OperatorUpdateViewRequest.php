@@ -40,6 +40,7 @@ final class OperatorUpdateViewRequest extends FormRequest
                     'name' => $operator->name,
                     'email' => $operator->email,
                     'phone' => $operator->phone,
+                    'address' => $operator->address,
                 ],
             ])
             ->baseRoute('operators.index')

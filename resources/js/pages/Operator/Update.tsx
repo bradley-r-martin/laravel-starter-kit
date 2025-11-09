@@ -1,4 +1,5 @@
 import { Actions } from '@/components/Actions';
+import { AddressInput, AddressInputValue } from '@/components/AddressInput';
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
@@ -16,6 +17,7 @@ interface Operator {
     name: string;
     email: string | null;
     phone: PhoneInputValue | null;
+    address: AddressInputValue | null;
 }
 
 interface UpdateProps {
@@ -28,6 +30,7 @@ export default function Update({ operator }: UpdateProps) {
         name: operator.name,
         email: operator.email ?? '',
         phone: operator.phone ?? null,
+        address: operator.address ?? null,
     });
     const { processing } = form;
 
@@ -77,6 +80,13 @@ export default function Update({ operator }: UpdateProps) {
                                     </Field>
                                     <Field name="phone" type="phone">
                                         <PhoneInput label="Phone" name="phone" countryCode="+61" />
+                                    </Field>
+                                    <Field name="address" type="address">
+                                        <AddressInput
+                                            label="Address"
+                                            name="address"
+                                            showCoordinates={false}
+                                        />
                                     </Field>
                                 </Stack>
                             </ModalContent>

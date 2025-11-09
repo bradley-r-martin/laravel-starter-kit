@@ -1,4 +1,5 @@
 import { Actions } from '@/components/Actions';
+import { AddressInput } from '@/components/AddressInput';
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
@@ -17,6 +18,7 @@ export default function Create() {
         name: '',
         email: '',
         phone: null,
+        address: null,
     });
     const { processing } = form;
 
@@ -60,6 +62,13 @@ export default function Create() {
                                     </Field>
                                     <Field name="phone" type="phone">
                                         <PhoneInput label="Phone" name="phone" countryCode="+61" />
+                                    </Field>
+                                    <Field name="address" type="address">
+                                        <AddressInput
+                                            label="Address"
+                                            name="address"
+                                            showCoordinates={false}
+                                        />
                                     </Field>
                                 </Stack>
                             </ModalContent>
