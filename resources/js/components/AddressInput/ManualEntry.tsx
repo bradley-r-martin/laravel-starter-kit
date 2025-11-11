@@ -1,4 +1,4 @@
-import { Button, TextInput } from '@mantine/core';
+import { Button, Text, TextInput } from '@mantine/core';
 import { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Actions } from '../Actions';
 import { AnimatedModal } from '../Modal/AnimatedModal';
@@ -71,7 +71,7 @@ const AddressManualEntry: FunctionComponent<AddressManualEntryProps> = (props) =
         [draft]
     );
 
-    const handleClear = () => {
+    const handleReset = () => {
         setDraft(createEmptyAddress());
     };
 
@@ -242,11 +242,19 @@ const AddressManualEntry: FunctionComponent<AddressManualEntryProps> = (props) =
                             />
                         </div>
                     ) : null}
+                    {helper ? (
+                        <Text size="xs" c="dimmed">
+                            {helper}
+                        </Text>
+                    ) : null}
                 </div>
             </ModalContent>
             <Actions>
                 <Button type="button" variant="subtle" onClick={onClose}>
                     Back
+                </Button>
+                <Button type="button" variant="subtle" onClick={handleReset}>
+                    Reset fields
                 </Button>
                 <Button type="button" onClick={handleSubmit}>
                     Use address
