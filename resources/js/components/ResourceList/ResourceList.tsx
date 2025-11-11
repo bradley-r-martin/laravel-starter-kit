@@ -2,7 +2,7 @@ import { Empty } from '@/components/Empty';
 import { Pagination } from '@/components/Pagination';
 import Table from '@/components/Table/Table';
 import Header from '@/Parts/Header';
-import { Paginated } from '@/types';
+import { Paginated } from '@/XTypes';
 import { Head } from '@inertiajs/react';
 import { ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react';
 

@@ -1,4 +1,4 @@
-import { Paginated } from '@/types';
+import { Paginated } from '@/XTypes';
 import { ReloadOptions } from '@inertiajs/core';
 import { router } from '@inertiajs/react';
 import {

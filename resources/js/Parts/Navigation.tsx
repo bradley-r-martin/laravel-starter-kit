@@ -1,5 +1,5 @@
 import Navbar from '@/components/Navbar';
-import { User } from '@/types/inertia';
+import { User } from '@/XTypes/inertia';
 import { Link, usePage } from '@inertiajs/react';
 import { Avatar, Indicator, Menu } from '@mantine/core';
 import {

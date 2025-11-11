@@ -1,5 +1,5 @@
 import RequiresInstallationLayout from '@/Layouts/RequiresInstallationLayout';
-import { PageProps } from '@/types';
+import { PageProps } from '@/XTypes';
 import { Head } from '@inertiajs/react';
 
 export default function Welcome({ auth }: PageProps) {

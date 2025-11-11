@@ -2,7 +2,7 @@ import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
 import BaseLayout from '@/Layouts/BaseLayout';
-import { InertiaView } from '@/types';
+import { InertiaView } from '@/XTypes';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Button, Container, Paper, Stack, Text, TextInput, Title } from '@mantine/core';
 

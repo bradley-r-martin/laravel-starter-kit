@@ -5,7 +5,7 @@ import Table from '@/components/Table/Table';
 import usePushNotifications from '@/Hooks/usePushNotifications';
 import AppLayout from '@/Layouts/AppLayout';
 import Header from '@/Parts/Header';
-import { InertiaView, Paginated } from '@/types';
+import { InertiaView, Paginated } from '@/XTypes';
 import { Head, Link } from '@inertiajs/react';
 import { ActionIcon, Badge, Button, Group, Stack, Text, Tooltip } from '@mantine/core';
 import { CheckCheckIcon, CheckIcon, TrashIcon } from 'lucide-react';
