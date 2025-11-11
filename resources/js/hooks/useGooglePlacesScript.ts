@@ -75,7 +75,9 @@ export const useGooglePlacesScript = () => {
                 const errorMessage = event instanceof ErrorEvent ? event.message : undefined;
                 setError(errorMessage ?? 'Failed to load Google Maps script.');
                 window.__googlePlacesScriptRejecter__?.(
-                    event instanceof ErrorEvent ? event : new ErrorEvent('error', { message: errorMessage })
+                    event instanceof ErrorEvent
+                        ? event
+                        : new ErrorEvent('error', { message: errorMessage })
                 );
             };
 
@@ -86,7 +88,6 @@ export const useGooglePlacesScript = () => {
                 existingScript.removeEventListener('load', handleLoad);
                 existingScript.removeEventListener('error', handleError);
             };
-
         }
 
         const script = document.createElement('script');
@@ -101,7 +102,9 @@ export const useGooglePlacesScript = () => {
             const errorMessage = event instanceof ErrorEvent ? event.message : undefined;
             setError(errorMessage ?? 'Failed to load Google Maps script.');
             window.__googlePlacesScriptRejecter__?.(
-                event instanceof ErrorEvent ? event : new ErrorEvent('error', { message: errorMessage })
+                event instanceof ErrorEvent
+                    ? event
+                    : new ErrorEvent('error', { message: errorMessage })
             );
             delete window.__googlePlacesScriptOnLoad__;
         };
@@ -139,5 +142,3 @@ export const useGooglePlacesScript = () => {
         error,
     };
 };
-
-

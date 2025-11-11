@@ -404,4 +404,3 @@ const AddressInput: FunctionComponent<AddressInputProps> = (props) => {
 export default AddressInput;
 
 export type { AddressInputValue } from './types';
-
