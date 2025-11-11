@@ -1,4 +1,4 @@
-import FormContext from '@/XContexts/FormContext';
+import FormContext from '@/Contexts/FormContext';
 import { InertiaFormProps, usePage } from '@inertiajs/react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
 

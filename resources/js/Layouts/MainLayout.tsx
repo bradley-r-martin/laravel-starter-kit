@@ -1,4 +1,4 @@
-import ContentContext from '@/XContexts/ContentContext';
+import ContentContext from '@/Contexts/ContentContext';
 import Navigation from '@/Parts/Navigation';
 import { FunctionComponent, useRef } from 'react';
 

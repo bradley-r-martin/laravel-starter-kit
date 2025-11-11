@@ -1,4 +1,4 @@
-import NavbarContext from '@/XContexts/NavbarContext';
+import NavbarContext from '@/Contexts/NavbarContext';
 import { useContext } from 'react';
 
 const useNavbar = () => {

@@ -1,4 +1,4 @@
-import ContentContext from '@/XContexts/ContentContext';
+import ContentContext from '@/Contexts/ContentContext';
 import { useContext } from 'react';
 
 export default function useContentContext() {
