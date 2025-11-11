@@ -4,7 +4,7 @@ import Navigate from '@/components/Navigate';
 import Filters from '@/components/QueryControls/Filters';
 import { ResourceColumn, ResourceList } from '@/components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
-import { InertiaView, Paginated } from '@/XTypes';
+import { InertiaView, Paginated } from '@/Types';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import {
     BanIcon,

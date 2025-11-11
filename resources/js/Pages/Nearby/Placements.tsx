@@ -1,6 +1,6 @@
 import NearbyNoPlacementsFoundView from '@/Features/Nearby/Views/NearbyNoPlacementsFoundView';
 import AppLayout from '@/Layouts/AppLayout';
-import { InertiaView } from '@/XTypes';
+import { InertiaView } from '@/Types';
 import { useModalStack } from '@inertiaui/modal-react';
 import { Button, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';

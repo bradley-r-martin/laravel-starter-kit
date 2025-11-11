@@ -1,7 +1,7 @@
 import useContentContext from '@/Hooks/useContentContext';
 import AppLayout from '@/Layouts/AppLayout';
 import Header from '@/Parts/Header';
-import { InertiaView } from '@/XTypes';
+import { InertiaView } from '@/Types';
 import { Head } from '@inertiajs/react';
 
 interface DashboardProps {}

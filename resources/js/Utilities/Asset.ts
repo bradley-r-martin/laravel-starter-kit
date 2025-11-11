@@ -1,4 +1,4 @@
-import { UploadedFile } from '@/XTypes';
+import { UploadedFile } from '@/Types';
 
 export function Asset(file: UploadedFile | null) {
     if (!file) return null;

@@ -1,6 +1,6 @@
 import BaseLayout from '@/Layouts/BaseLayout';
 import EntryLayout from '@/Layouts/EntryLayout';
-import { InertiaView } from '@/XTypes';
+import { InertiaView } from '@/Types';
 import { Head, Link } from '@inertiajs/react';
 import { Button, Stack } from '@mantine/core';
 

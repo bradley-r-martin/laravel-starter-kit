@@ -4,7 +4,7 @@ import FormErrorSound from '@/components/FormErrorSound';
 import BaseLayout from '@/Layouts/BaseLayout';
 
 import EntryLayout from '@/Layouts/EntryLayout';
-import { InertiaView } from '@/XTypes';
+import { InertiaView } from '@/Types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Button, Divider, PasswordInput, Stack, TextInput } from '@mantine/core';
 import { KeyRoundIcon } from 'lucide-react';
