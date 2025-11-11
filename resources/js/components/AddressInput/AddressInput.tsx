@@ -1,5 +1,5 @@
 import Navigate from '@/components/Navigate';
-import { useGooglePlacesScript } from '@/XHooks/useGooglePlacesScript';
+import { useGooglePlacesScript } from '@/Hooks/useGooglePlacesScript';
 import {
     ActionIcon,
     Button,

@@ -1,5 +1,5 @@
-import useContentContext from '@/XHooks/useContentContext';
-import usePushNotifications from '@/XHooks/usePushNotifications';
+import useContentContext from '@/Hooks/useContentContext';
+import usePushNotifications from '@/Hooks/usePushNotifications';
 import Prompt from '@/Parts/Prompt';
 import { Button, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';

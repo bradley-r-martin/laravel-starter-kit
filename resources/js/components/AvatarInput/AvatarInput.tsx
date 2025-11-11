@@ -1,4 +1,4 @@
-import useUploadPreview from '@/XHooks/useUploadPreview';
+import useUploadPreview from '@/Hooks/useUploadPreview';
 import { ActionIcon, Button, FileButton, FileButtonProps, Input } from '@mantine/core';
 import { X } from 'lucide-react';
 import { forwardRef } from 'react';

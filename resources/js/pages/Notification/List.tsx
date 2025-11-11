@@ -2,7 +2,7 @@ import Cast from '@/components/Cast';
 import { Pagination } from '@/components/Pagination';
 import PushNotificationToggle from '@/components/push-notification-toggle';
 import Table from '@/components/Table/Table';
-import usePushNotifications from '@/XHooks/usePushNotifications';
+import usePushNotifications from '@/Hooks/usePushNotifications';
 import AppLayout from '@/Layouts/AppLayout';
 import Header from '@/Parts/Header';
 import { InertiaView, Paginated } from '@/types';

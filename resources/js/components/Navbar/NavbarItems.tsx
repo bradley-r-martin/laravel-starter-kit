@@ -1,4 +1,4 @@
-import useNavbar from '@/XHooks/useNavbar';
+import useNavbar from '@/Hooks/useNavbar';
 import { motion } from 'motion/react';
 import { FunctionComponent, HTMLAttributes } from 'react';
 import { twMerge } from 'tailwind-merge';
