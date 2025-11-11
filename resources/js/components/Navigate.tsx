@@ -1,4 +1,4 @@
-import { setNavigatePointerPosition } from '@/stores/navigatePointerPosition';
+import { setNavigatePointerPosition } from '@/XStores/navigatePointerPosition';
 import { isStandalone } from '@/Utilities/Environment';
 import { Link } from '@inertiajs/react';
 import { ModalLink } from '@inertiaui/modal-react';

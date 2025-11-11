@@ -1,4 +1,4 @@
-import { getNavigatePointerPosition } from '@/stores/navigatePointerPosition';
+import { getNavigatePointerPosition } from '@/XStores/navigatePointerPosition';
 import { isMobile } from '@/Utilities/Environment';
 import { Modal, ModalProps } from '@mantine/core';
 import { useLayoutEffect, useRef, useState } from 'react';
