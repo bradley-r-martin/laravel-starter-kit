@@ -1,4 +1,4 @@
-import NavbarContext from '@/contexts/NavbarContext';
+import NavbarContext from '@/XContexts/NavbarContext';
 import { useDisclosure } from '@mantine/hooks';
 import { FunctionComponent, ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';

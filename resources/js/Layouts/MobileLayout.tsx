@@ -1,5 +1,5 @@
 import Tabbar from '@/components/Tabbar/Tabbar';
-import ContentContext from '@/contexts/ContentContext';
+import ContentContext from '@/XContexts/ContentContext';
 import { useModalStack } from '@inertiaui/modal-react';
 import { useDisclosure } from '@mantine/hooks';
 import { motion } from 'motion/react';
