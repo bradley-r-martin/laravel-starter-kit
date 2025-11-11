@@ -1,4 +1,4 @@
-import useNavbar from '@/hooks/useNavbar';
+import useNavbar from '@/XHooks/useNavbar';
 import { FunctionComponent, HTMLAttributes } from 'react';
 import { twMerge } from 'tailwind-merge';
 import Logo from '../../../img/Logo.svg?react';

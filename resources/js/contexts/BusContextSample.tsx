@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useMemo } from 'react';
-import { CommandBus, useBus } from '../hooks/useBus';
+import { CommandBus, useBus } from '../XHooks/useBus';
 
 export type ChatEvents = {
     focusInput: void;

@@ -1,4 +1,4 @@
-import useQueryControlReload from '@/hooks/useQueryControlReload';
+import useQueryControlReload from '@/XHooks/useQueryControlReload';
 import { ReloadOptions } from '@inertiajs/core';
 
 import { Loader, SegmentedControl, SegmentedControlProps } from '@mantine/core';

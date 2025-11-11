@@ -1,4 +1,4 @@
-import useSounds from '@/hooks/useSounds';
+import useSounds from '@/XHooks/useSounds';
 import merge from 'merge-props';
 import React, { FunctionComponent } from 'react';
 import Slot from './Slot';

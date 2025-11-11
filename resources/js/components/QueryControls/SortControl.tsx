@@ -1,4 +1,4 @@
-import useQueryControlReload from '@/hooks/useQueryControlReload';
+import useQueryControlReload from '@/XHooks/useQueryControlReload';
 import { isMobile } from '@/Utilities/Environment';
 import { ReloadOptions } from '@inertiajs/core';
 import { ActionIcon, Group, Loader } from '@mantine/core';

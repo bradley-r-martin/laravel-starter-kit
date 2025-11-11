@@ -1,4 +1,4 @@
-import useContentContext from '@/hooks/useContentContext';
+import useContentContext from '@/XHooks/useContentContext';
 import { isMobile } from '@/Utilities/Environment';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { FunctionComponent, useRef } from 'react';
