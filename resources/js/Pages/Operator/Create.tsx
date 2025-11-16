@@ -1,5 +1,5 @@
 import { Actions } from '@/components/Actions';
-import { AddressInput } from '@/components/AddressInput';
+import AddressInput from '@/Components/AddressInput/AInput';
 import Field from '@/components/Field';
 import Form from '@/components/Form';
 import FormErrorSound from '@/components/FormErrorSound';
@@ -67,7 +67,8 @@ export default function Create() {
                                         <AddressInput
                                             label="Address"
                                             name="address"
-                                            showCoordinates={false}
+                                            allowManualEntry
+                                            allowManualEntryChange
                                         />
                                     </Field>
                                 </Stack>

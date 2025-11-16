@@ -5,6 +5,7 @@ import { AxiosInstance } from 'axios';
 declare global {
     interface Window {
         axios: AxiosInstance;
+        google: typeof google;
     }
     var route: typeof ziggyRoute;
 }

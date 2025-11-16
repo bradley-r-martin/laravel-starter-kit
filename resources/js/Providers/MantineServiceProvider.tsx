@@ -141,6 +141,21 @@ export const theme: MantineThemeOverride = createTheme({
                 radius: 'xl',
             },
         },
+        Combobox: {
+            defaultProps: {
+                shadow: 'md',
+                transitionProps: { transition: 'scale-y', duration: 200 },
+                withArrow: true,
+            },
+        },
+        Popover: {
+            defaultProps: {
+                trapFocus: true,
+                overlayProps: {
+                    backgroundOpacity: 0.24,
+                },
+            },
+        },
         Modal: {
             defaultProps: {
                 centered: true,
