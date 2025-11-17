@@ -67,4 +67,3 @@ final class SiteListViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
-

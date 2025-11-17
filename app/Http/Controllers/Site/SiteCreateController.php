@@ -20,4 +20,3 @@ final class SiteCreateController
         return $request->respond();
     }
 }
-

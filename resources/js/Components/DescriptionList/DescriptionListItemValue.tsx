@@ -7,7 +7,9 @@ interface DescriptionListItemValueProps extends React.HTMLAttributes<HTMLDivElem
 
 const DescriptionListItemValue: FunctionComponent<DescriptionListItemValueProps> = (props) => {
     const { className, ...restProps } = props;
-    return <div className={twMerge('flex-1 truncate text-zinc-950/50', className)} {...restProps} />;
+    return (
+        <div className={twMerge('flex-1 truncate text-zinc-950/50', className)} {...restProps} />
+    );
 };
 
 export default DescriptionListItemValue;

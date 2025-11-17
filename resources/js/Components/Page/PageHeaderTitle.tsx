@@ -7,7 +7,12 @@ interface PageHeaderTitleProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const PageHeaderTitle: FunctionComponent<PageHeaderTitleProps> = (props) => {
     const { className, ...restProps } = props;
-    return <div className={twMerge('text-2xl font-semibold text-zinc-950/70', className)} {...restProps} />;
+    return (
+        <div
+            className={twMerge('text-2xl font-semibold text-zinc-950/70', className)}
+            {...restProps}
+        />
+    );
 };
 
 export default PageHeaderTitle;

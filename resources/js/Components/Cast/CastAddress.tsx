@@ -12,7 +12,15 @@ interface CastAddressProps {
 const CastAddress: FunctionComponent<CastAddressProps> = (props) => {
     const { children, format = 'string', fallback, leftSection, rightSection } = props;
     try {
-        return <>{leftSection}{format === 'envelope' ? addressToEnvelopeString(children as Domain.Address) : addressToString(children as Domain.Address) || fallback || 'Err'}{rightSection}</>;
+        return (
+            <>
+                {leftSection}
+                {format === 'envelope'
+                    ? addressToEnvelopeString(children as Domain.Address)
+                    : addressToString(children as Domain.Address) || fallback || 'Err'}
+                {rightSection}
+            </>
+        );
     } catch (_e) {
         return fallback || 'Err';
     }

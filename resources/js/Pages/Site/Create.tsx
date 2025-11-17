@@ -165,4 +165,3 @@ export default function Create({ territories, operators, routes }: CreateProps) 
         </>
     );
 }
-

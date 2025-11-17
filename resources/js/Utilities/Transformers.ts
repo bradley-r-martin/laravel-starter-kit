@@ -39,80 +39,82 @@ export function addressToString(address: Domain.Address): string {
 export function addressToEnvelopeString(address: Domain.Address): string {
     const lines: string[] = [];
 
-        // Line 1: Building/Unit/Level information (if any)
-        let buildingLine = '';
-        if (address.building_name) {
-            buildingLine = address.building_name.trim();
-        }
-        if (address.level) {
-            buildingLine = buildingLine ? `${buildingLine}, Level ${address.level}` : `Level ${address.level}`;
-        }
-        if (buildingLine) {
-            lines.push(buildingLine);
-        }
+    // Line 1: Building/Unit/Level information (if any)
+    let buildingLine = '';
+    if (address.building_name) {
+        buildingLine = address.building_name.trim();
+    }
+    if (address.level) {
+        buildingLine = buildingLine
+            ? `${buildingLine}, Level ${address.level}`
+            : `Level ${address.level}`;
+    }
+    if (buildingLine) {
+        lines.push(buildingLine);
+    }
 
-        // Line 2: Street address
-        let streetLine = '';
+    // Line 2: Street address
+    let streetLine = '';
 
-        // Add unit/apartment
-        if (address.unit) {
-            streetLine += `${address.unit}/`;
-        }
+    // Add unit/apartment
+    if (address.unit) {
+        streetLine += `${address.unit}/`;
+    }
 
-        // Add lot number
-        if (address.lot_no) {
-            const lotNo = address.lot_no.replace(/lot\s*/gi, '').trim();
-            streetLine += `Lot ${lotNo} `;
-        }
+    // Add lot number
+    if (address.lot_no) {
+        const lotNo = address.lot_no.replace(/lot\s*/gi, '').trim();
+        streetLine += `Lot ${lotNo} `;
+    }
 
-        // Add street number
-        if (address.street_number) {
-            streetLine += address.street_number;
-        }
+    // Add street number
+    if (address.street_number) {
+        streetLine += address.street_number;
+    }
 
-        // Add street name
-        if (address.street_name) {
-            streetLine += (streetLine ? ' ' : '') + address.street_name;
-        }
+    // Add street name
+    if (address.street_name) {
+        streetLine += (streetLine ? ' ' : '') + address.street_name;
+    }
 
-        // Add street type
-        if (address.street_type) {
-            streetLine += ' ' + address.street_type;
-        }
+    // Add street type
+    if (address.street_type) {
+        streetLine += ' ' + address.street_type;
+    }
 
-        // Add street suffix
-        if (address.street_suffix) {
-            streetLine += ' ' + address.street_suffix;
-        }
+    // Add street suffix
+    if (address.street_suffix) {
+        streetLine += ' ' + address.street_suffix;
+    }
 
-        if (streetLine.trim()) {
-            lines.push(streetLine.trim().toUpperCase());
-        }
+    if (streetLine.trim()) {
+        lines.push(streetLine.trim().toUpperCase());
+    }
 
-        // Line 3: Suburb, State, Postcode
-        let localityLine = '';
-        if (address.suburb) {
-            localityLine = address.suburb.toUpperCase();
-        }
+    // Line 3: Suburb, State, Postcode
+    let localityLine = '';
+    if (address.suburb) {
+        localityLine = address.suburb.toUpperCase();
+    }
 
-        if (address.state) {
-            localityLine += (localityLine ? ' ' : '') + address.state.toUpperCase();
-        }
+    if (address.state) {
+        localityLine += (localityLine ? ' ' : '') + address.state.toUpperCase();
+    }
 
-        if (address.postcode) {
-            localityLine += (localityLine ? ' ' : '') + address.postcode;
-        }
+    if (address.postcode) {
+        localityLine += (localityLine ? ' ' : '') + address.postcode;
+    }
 
-        if (localityLine.trim()) {
-            lines.push(localityLine.trim());
-        }
+    if (localityLine.trim()) {
+        lines.push(localityLine.trim());
+    }
 
-        // Line 4: Country
-        if (address.country) {
-            lines.push(address.country.toUpperCase());
-        }
+    // Line 4: Country
+    if (address.country) {
+        lines.push(address.country.toUpperCase());
+    }
 
-        return lines.filter((line) => line.length > 0).join('\n');
+    return lines.filter((line) => line.length > 0).join('\n');
 }
 
 export type GeocoderAddressComponent = {

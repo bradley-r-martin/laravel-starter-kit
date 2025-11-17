@@ -46,6 +46,7 @@ use App\Http\Controllers\Role\RoleUpdateController;
 use App\Http\Controllers\Site\SiteCreateController;
 use App\Http\Controllers\Site\SiteDetailController;
 use App\Http\Controllers\Site\SiteListController;
+use App\Http\Controllers\Site\SiteUpdateController;
 use App\Http\Controllers\Snackware\SnackwareCloseController;
 use App\Http\Controllers\Snackware\SnackwareCreateController;
 use App\Http\Controllers\Snackware\SnackwareDestroyController;
@@ -144,6 +145,8 @@ Route::middleware('territory')->group(function () {
         Route::get('/create', [SiteCreateController::class, 'view'])->name('create');
         Route::post('/create', [SiteCreateController::class, 'process'])->name('store');
         Route::get('/{site}', [SiteDetailController::class, 'view'])->name('show');
+        Route::get('/{site}/update', [SiteUpdateController::class, 'view'])->name('update');
+        Route::put('/{site}/update', [SiteUpdateController::class, 'process'])->name('update');
     });
 
     Route::prefix('users')->name('users.')->group(function () {

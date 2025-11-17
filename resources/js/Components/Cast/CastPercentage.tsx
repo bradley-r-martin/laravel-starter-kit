@@ -12,7 +12,13 @@ interface CastPercentageProps {
 const CastPercentage: FunctionComponent<CastPercentageProps> = (props) => {
     const { children, format = '0.00%', fallback, leftSection, rightSection } = props;
     try {
-        return <>{leftSection}{numbro((children ?? 0)).format(format)}{rightSection}</>;
+        return (
+            <>
+                {leftSection}
+                {numbro(children ?? 0).format(format)}
+                {rightSection}
+            </>
+        );
     } catch (_e) {
         return fallback || 'Err';
     }

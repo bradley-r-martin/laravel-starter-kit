@@ -1,8 +1,8 @@
 import { FunctionComponent } from 'react';
+import CastAddress from './CastAddress';
 import CastCurrency from './CastCurrency';
 import CastDatetime from './CastDatetime';
 import CastPercentage from './CastPercentage';
-import CastAddress from './CastAddress';
 
 interface Composition {
     Datetime: typeof CastDatetime;

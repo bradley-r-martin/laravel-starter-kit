@@ -6,6 +6,7 @@ namespace App\Aggregates;
 
 use App\Domain\Address;
 use App\Events\Site\SiteCreated;
+use App\Events\Site\SiteUpdated;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 final class SiteAggregate extends AggregateRoot
@@ -50,6 +51,22 @@ final class SiteAggregate extends AggregateRoot
         return $this;
     }
 
+    public function update(
+        ?string $name = null,
+        ?Address $address = null,
+        ?array $openingHours = null,
+        ?string $managerCode = null,
+    ): self {
+        $this->recordThat(new SiteUpdated(
+            name: $name,
+            address: $address,
+            openingHours: $openingHours,
+            managerCode: $managerCode,
+        ));
+
+        return $this;
+    }
+
     /**
      * @phpstan-ignore-next-line
      */
@@ -64,5 +81,23 @@ final class SiteAggregate extends AggregateRoot
         $this->openingHours = $event->openingHours;
         $this->managerCode = $event->managerCode;
     }
-}
 
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applySiteUpdated(SiteUpdated $event): void
+    {
+        if ($event->name !== null) {
+            $this->name = $event->name;
+        }
+        if ($event->address instanceof \App\Domain\Address) {
+            $this->address = $event->address;
+        }
+        if ($event->openingHours !== null) {
+            $this->openingHours = $event->openingHours;
+        }
+        if ($event->managerCode !== null) {
+            $this->managerCode = $event->managerCode;
+        }
+    }
+}

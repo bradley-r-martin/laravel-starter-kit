@@ -7,14 +7,10 @@ namespace App\Events\Site;
 use App\Domain\Address;
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-final class SiteCreated extends ShouldBeStored
+final class SiteUpdated extends ShouldBeStored
 {
     public function __construct(
-        public string $territoryId,
-        public string $operatorId,
-        public ?string $routeId,
-        public int $order,
-        public string $name,
+        public ?string $name = null,
         public ?Address $address = null,
         public ?array $openingHours = null,
         public ?string $managerCode = null,

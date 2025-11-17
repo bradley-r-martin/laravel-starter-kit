@@ -19,7 +19,7 @@ const PageContent: FunctionComponent<PageContentProps> & Composition = (props) =
             className={twMerge(
                 'container mx-auto flex flex-col-reverse items-stretch divide-x divide-zinc-200 px-4 lg:flex-row',
                 split ? '*:first:pr-8 *:last:pl-8' : '',
-                className,
+                className
             )}
             {...restProps}
         />

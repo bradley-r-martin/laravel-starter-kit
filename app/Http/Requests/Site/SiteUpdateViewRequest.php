@@ -8,7 +8,7 @@ use App\Models\Site;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
-final class SiteDetailViewRequest extends FormRequest
+final class SiteUpdateViewRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,14 +30,25 @@ final class SiteDetailViewRequest extends FormRequest
 
     public function respond(): Response
     {
-        $siteId = (string) $this->route('site');
+        $siteId = $this->route('site');
+
+        /** @var Site $site */
         $site = Site::query()
+            ->select(['id', 'name', 'address', 'opening_hours', 'manager_code', 'closed_at'])
             ->findOrFail($siteId);
 
         return inertia()
-            ->render('Site/Detail', [
-                'site' => $site,
+            ->modal('Site/Update', [
+                'site' => [
+                    'id' => $site->id,
+                    'name' => $site->name,
+                    'address' => $site->address?->toArray(),
+                    'opening_hours' => $site->opening_hours,
+                    'manager_code' => $site->manager_code,
+                    'closed_at' => $site->closed_at,
+                ],
             ])
+            ->baseRoute('sites.show', $site->id)
             ->toResponse($this);
     }
 }

@@ -15,7 +15,13 @@ const CastDatetime: FunctionComponent<CastDatetimeProps> = (props) => {
         return fallback;
     }
     try {
-        return <>{leftSection}{dayjs(children).format(format)}{rightSection}</>;
+        return (
+            <>
+                {leftSection}
+                {dayjs(children).format(format)}
+                {rightSection}
+            </>
+        );
     } catch (_e) {
         return fallback || 'Err';
     }

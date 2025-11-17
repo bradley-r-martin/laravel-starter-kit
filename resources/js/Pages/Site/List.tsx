@@ -6,11 +6,7 @@ import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
-import {
-    CalendarIcon,
-    EyeIcon,
-    PlusIcon,
-} from 'lucide-react';
+import { CalendarIcon, EyeIcon, PlusIcon } from 'lucide-react';
 
 interface Territory {
     id: string;
@@ -121,11 +117,7 @@ const List: InertiaView<ListProps> = (props) => {
             dataSpan: 'hidden',
             render: (site) => (
                 <Text size="sm" c="dimmed">
-                    <Cast.Datetime
-                        format="DD/MM/YYYY"
-                        children={site.created_at}
-                        fallback="—"
-                    />
+                    <Cast.Datetime format="DD/MM/YYYY" children={site.created_at} fallback="—" />
                 </Text>
             ),
         },
@@ -204,4 +196,3 @@ const List: InertiaView<ListProps> = (props) => {
 List.layout = [AppLayout];
 
 export default List;
-

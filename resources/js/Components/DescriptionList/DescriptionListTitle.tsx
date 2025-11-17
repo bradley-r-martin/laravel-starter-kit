@@ -7,7 +7,15 @@ interface DescriptionListTitleProps extends React.HTMLAttributes<HTMLDivElement>
 
 const DescriptionListTitle: FunctionComponent<DescriptionListTitleProps> = (props) => {
     const { className, ...restProps } = props;
-    return <div className={twMerge('select-none text-base font-semibold tracking-tight text-zinc-950/70', className)} {...restProps} />;
+    return (
+        <div
+            className={twMerge(
+                'text-base font-semibold tracking-tight text-zinc-950/70 select-none',
+                className
+            )}
+            {...restProps}
+        />
+    );
 };
 
 export default DescriptionListTitle;

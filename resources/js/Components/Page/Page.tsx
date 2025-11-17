@@ -12,7 +12,12 @@ interface Composition {
 
 const Page: FunctionComponent<HTMLAttributes<HTMLDivElement>> & Composition = (props) => {
     const { className, ...restProps } = props;
-    return <div className={twMerge('flex flex-col space-y-8 py-5 lg:py-14', className)} {...restProps} />;
+    return (
+        <div
+            className={twMerge('flex flex-col space-y-8 py-5 lg:py-14', className)}
+            {...restProps}
+        />
+    );
 };
 
 Page.Bar = PageBar;

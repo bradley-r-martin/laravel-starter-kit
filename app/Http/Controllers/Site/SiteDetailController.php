@@ -14,4 +14,3 @@ final class SiteDetailController
         return $request->respond();
     }
 }
-

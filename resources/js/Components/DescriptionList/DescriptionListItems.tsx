@@ -7,7 +7,12 @@ interface DescriptionListItemsProps extends React.HTMLAttributes<HTMLDivElement>
 
 const DescriptionListItems: FunctionComponent<DescriptionListItemsProps> = (props) => {
     const { className, ...restProps } = props;
-    return <div className={twMerge('divide-y divide-zinc-950/10 text-sm *:py-3', className)} {...restProps} />;
+    return (
+        <div
+            className={twMerge('divide-y divide-zinc-950/10 text-sm *:py-3', className)}
+            {...restProps}
+        />
+    );
 };
 
 export default DescriptionListItems;

@@ -12,7 +12,13 @@ interface CastCurrencyProps {
 const CastCurrency: FunctionComponent<CastCurrencyProps> = (props) => {
     const { children, format = '$0,0.00', fallback, leftSection, rightSection } = props;
     try {
-        return <>{leftSection}{numbro((children ?? 0) / 100).format(format)}{rightSection}</>;
+        return (
+            <>
+                {leftSection}
+                {numbro((children ?? 0) / 100).format(format)}
+                {rightSection}
+            </>
+        );
     } catch (_e) {
         return fallback || 'Err';
     }

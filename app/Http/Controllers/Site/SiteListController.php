@@ -14,4 +14,3 @@ final class SiteListController
         return $request->respond();
     }
 }
-

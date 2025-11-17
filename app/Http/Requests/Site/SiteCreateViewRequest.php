@@ -66,4 +66,3 @@ final class SiteCreateViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
-

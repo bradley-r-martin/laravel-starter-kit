@@ -7,7 +7,15 @@ interface DescriptionListItemLabelProps extends React.HTMLAttributes<HTMLDivElem
 
 const DescriptionListItemLabel: FunctionComponent<DescriptionListItemLabelProps> = (props) => {
     const { className, ...restProps } = props;
-    return <div className={twMerge('w-32 shrink-0 select-none truncate font-semibold tracking-tight text-zinc-950/60', className)} {...restProps} />;
+    return (
+        <div
+            className={twMerge(
+                'w-32 shrink-0 truncate font-semibold tracking-tight text-zinc-950/60 select-none',
+                className
+            )}
+            {...restProps}
+        />
+    );
 };
 
 export default DescriptionListItemLabel;

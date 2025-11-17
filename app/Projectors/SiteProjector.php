@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Projectors;
 
 use App\Events\Site\SiteCreated;
+use App\Events\Site\SiteUpdated;
 use App\Models\Site;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 use Spatie\EventSourcing\StoredEvents\StoredEvent;
@@ -34,5 +35,31 @@ final class SiteProjector extends Projector
             'manager_code' => $event->managerCode,
         ]);
     }
-}
 
+    public function onSiteUpdated(SiteUpdated $event): void
+    {
+        $site = Site::findOrFail($this->aggregateUuid);
+
+        $updateData = [];
+
+        if ($event->name !== null) {
+            $updateData['name'] = $event->name;
+        }
+
+        if ($event->address instanceof \App\Domain\Address) {
+            $updateData['address'] = $event->address->toArray();
+        }
+
+        if ($event->openingHours !== null) {
+            $updateData['opening_hours'] = $event->openingHours;
+        }
+
+        if ($event->managerCode !== null) {
+            $updateData['manager_code'] = $event->managerCode;
+        }
+
+        if ($updateData !== []) {
+            $site->update($updateData);
+        }
+    }
+}
