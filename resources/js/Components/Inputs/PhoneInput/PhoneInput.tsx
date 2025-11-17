@@ -8,6 +8,7 @@ import {
     TextInput,
     Tooltip,
 } from '@mantine/core';
+import * as CountryFlagIcons from 'country-flag-icons/react/3x2';
 import {
     getCountries,
     getCountryCallingCode,
@@ -16,10 +17,11 @@ import {
     type CountryCode,
     type NumberType,
 } from 'libphonenumber-js';
-import { Phone, PhoneMissedIcon } from 'lucide-react';
-import { FunctionComponent, ReactNode, useEffect, useMemo, useState } from 'react';
 
+import { Phone, PhoneCall, PhoneMissedIcon, Smartphone } from 'lucide-react';
+import { FunctionComponent, ReactNode, useEffect, useMemo, useState } from 'react';
 export interface PhoneInputValue {
+    country?: string | null;
     country_code?: string | null;
     area_code?: string | null;
     number?: string | null;
@@ -49,6 +51,14 @@ const PHONE_FIELDS: Array<keyof PhoneInputValue> = [
     'extension',
     'type',
 ];
+
+const CountryFlag = ({ country }: { country?: string | null }) => {
+    if (!country) {
+        return null;
+    }
+    const CountryFlagIcon = CountryFlagIcons[country as keyof typeof CountryFlagIcons];
+    return <CountryFlagIcon className="size-4" />;
+};
 
 const isBlank = (value: string | null | undefined): boolean =>
     value === undefined || value === null || value.trim() === '';
@@ -219,6 +229,7 @@ const PhoneInput: FunctionComponent<PhoneInputProps> = (props) => {
         }
 
         const nextValue: PhoneInputValue = {
+            country: phoneNumber.country ?? null,
             country_code: phoneNumber.countryCallingCode ?? null,
             area_code: areaCode,
             number: subscriberNumber || nationalNumber || null,
@@ -377,6 +388,13 @@ const PhoneInput: FunctionComponent<PhoneInputProps> = (props) => {
                         disabled={disabled}
                         autoComplete="tel"
                         className="flex-1"
+                        leftSection={
+                            parsedValue?.type === 'mobile' ? (
+                                <Smartphone className="size-4" />
+                            ) : (
+                                <PhoneCall className="size-4" />
+                            )
+                        }
                         rightSection={
                             <Tooltip
                                 label={parsedDetailsTooltip}

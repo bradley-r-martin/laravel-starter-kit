@@ -1,12 +1,12 @@
-import { Actions } from '@/components/Actions';
-import { AddressInput, AddressInputValue } from '@/components/AddressInput';
-import Field from '@/components/Field';
-import Form from '@/components/Form';
-import FormErrorSound from '@/components/FormErrorSound';
-import { Modal } from '@/components/Modal';
-import { ModalContent } from '@/components/ModalContent';
-import ModalHeader from '@/components/ModalHeader';
-import { PhoneInput, PhoneInputValue } from '@/components/PhoneInput';
+import { Actions } from '@/Components/Actions';
+import Field from '@/Components/Field';
+import Form from '@/Components/Form';
+import FormErrorSound from '@/Components/FormErrorSound';
+import AddressInput from '@/Components/Inputs/AddressInput';
+import { PhoneInput, PhoneInputValue } from '@/Components/Inputs/PhoneInput';
+import { Modal } from '@/Components/Modal';
+import { ModalContent } from '@/Components/ModalContent';
+import ModalHeader from '@/Components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
 import { Button, Stack, TextInput } from '@mantine/core';
@@ -17,7 +17,7 @@ interface Operator {
     name: string;
     email: string | null;
     phone: PhoneInputValue | null;
-    address: AddressInputValue | null;
+    address: Domain.Address | null;
 }
 
 interface UpdateProps {
@@ -85,7 +85,7 @@ export default function Update({ operator }: UpdateProps) {
                                         <AddressInput
                                             label="Address"
                                             name="address"
-                                            showCoordinates={false}
+                                            allowManualEntry
                                         />
                                     </Field>
                                 </Stack>

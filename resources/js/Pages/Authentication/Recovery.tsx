@@ -1,6 +1,6 @@
-import Field from '@/components/Field';
-import Form from '@/components/Form';
-import FormErrorSound from '@/components/FormErrorSound';
+import Field from '@/Components/Field';
+import Form from '@/Components/Form';
+import FormErrorSound from '@/Components/FormErrorSound';
 import BaseLayout from '@/Layouts/BaseLayout';
 import { InertiaView } from '@/Types';
 import { Head, Link, useForm } from '@inertiajs/react';

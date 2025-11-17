@@ -1,10 +1,10 @@
-import { Actions } from '@/components/Actions';
-import Field from '@/components/Field';
-import Form from '@/components/Form';
-import FormErrorSound from '@/components/FormErrorSound';
-import { Modal } from '@/components/Modal';
-import { ModalContent } from '@/components/ModalContent';
-import ModalHeader from '@/components/ModalHeader';
+import { Actions } from '@/Components/Actions';
+import Field from '@/Components/Field';
+import Form from '@/Components/Form';
+import FormErrorSound from '@/Components/FormErrorSound';
+import { Modal } from '@/Components/Modal';
+import { ModalContent } from '@/Components/ModalContent';
+import ModalHeader from '@/Components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
 import { Button, Stack, TextInput } from '@mantine/core';

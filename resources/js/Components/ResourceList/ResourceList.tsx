@@ -1,6 +1,6 @@
-import { Empty } from '@/components/Empty';
-import { Pagination } from '@/components/Pagination';
-import Table from '@/components/Table/Table';
+import { Empty } from '@/Components/Empty';
+import { Pagination } from '@/Components/Pagination';
+import Table from '@/Components/Table/Table';
 import Header from '@/Parts/Header';
 import { Paginated } from '@/Types';
 import { Head } from '@inertiajs/react';

@@ -1,7 +1,7 @@
-import Cast from '@/components/Cast';
-import { Pagination } from '@/components/Pagination';
-import PushNotificationToggle from '@/components/push-notification-toggle';
-import Table from '@/components/Table/Table';
+import Cast from '@/Components/Cast';
+import { Pagination } from '@/Components/Pagination';
+import PushNotificationToggle from '@/Components/push-notification-toggle';
+import Table from '@/Components/Table/Table';
 import usePushNotifications from '@/Hooks/usePushNotifications';
 import AppLayout from '@/Layouts/AppLayout';
 import Header from '@/Parts/Header';

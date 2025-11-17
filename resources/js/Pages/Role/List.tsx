@@ -1,8 +1,8 @@
-import Cast from '@/components/Cast';
-import Navatar from '@/components/Navatar';
-import Navigate from '@/components/Navigate';
-import Filters from '@/components/QueryControls/Filters';
-import { ResourceColumn, ResourceList } from '@/components/ResourceList';
+import Cast from '@/Components/Cast';
+import Navatar from '@/Components/Navatar';
+import Navigate from '@/Components/Navigate';
+import Filters from '@/Components/QueryControls/Filters';
+import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';

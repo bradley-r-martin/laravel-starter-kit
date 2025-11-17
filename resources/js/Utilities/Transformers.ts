@@ -13,14 +13,16 @@ export function toLowerCase(str: string): string {
 }
 
 export function appendIfPresent(base: string, part?: string, prefix = '', suffix = ''): string {
-    return part ? base + prefix + part + suffix : base;
+    return part && part.length > 0 ? base + prefix + part + suffix : base;
 }
 
 export function addressToString(address: Domain.Address): string {
     let result = '';
 
     result = appendIfPresent(result, address?.unit, '', '/');
-    result = appendIfPresent(result, `${address.lot_no}`.replace(/lot\s*/gi, ''), 'Lot. ', ' ');
+    if (address.lot_no) {
+        result = appendIfPresent(result, `${address.lot_no}`.replace(/lot\s*/gi, ''), 'Lot. ', ' ');
+    }
     result = appendIfPresent(result, address?.level, ' Level ', ', ');
     result = appendIfPresent(result, address?.building_name, ' ', ' ');
     result = appendIfPresent(result, address?.street_number);

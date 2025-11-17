@@ -1,7 +1,8 @@
-import { useGooglePlacesScript } from '@/Hooks/useGooglePlacesScript';
+import { useGooglePlacesScriptService } from '@/Hooks/useGooglePlacesScripService';
 import { addressToString } from '@/Utilities/Transformers';
 import { Autocomplete, AutocompleteProps, Loader, Popover } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+
 import {
     AlertCircleIcon,
     BuildingIcon,
@@ -125,8 +126,10 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>((pro
     } = props;
 
     const [opened, controls] = useDisclosure(false);
-    const [inputValue, setInputValue] = useState<string>('');
-    const google = useGooglePlacesScript();
+    const [inputValue, setInputValue] = useState<string>(() =>
+        value ? addressToString(value) : ''
+    );
+    const google = useGooglePlacesScriptService();
 
     function results(search: string) {
         if (google.error) {
@@ -249,7 +252,13 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>((pro
                         value={value}
                         opened={opened}
                         onClose={controls.close}
-                        onSubmit={() => {}}
+                        onSubmit={(address) => {
+                            if (!address) {
+                                return;
+                            }
+                            onChange?.(address);
+                            setInputValue(addressToString(address));
+                        }}
                     />
                 )}
             </Popover.Dropdown>

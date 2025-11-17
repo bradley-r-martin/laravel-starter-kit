@@ -1,8 +1,8 @@
+import { Actions } from '@/Components/Actions';
+import ModalHeader from '@/Components/ModalHeader';
 import { AUSTRALIA_STATES, COUNTRY, STREET_SUFFIX, STREET_TYPE } from '@/Utilities/Constants';
 import { Button, Select, TextInput } from '@mantine/core';
 import { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Actions } from '../Actions';
-import ModalHeader from '../ModalHeader';
 import {
     AddressInputKey,
     AddressInputValue,
@@ -72,6 +72,7 @@ const AddressManualEntry: FunctionComponent<AddressManualEntryProps> = (props) =
     const handleSubmit = () => {
         const sanitized = sanitizeAddressValue(draft);
         onSubmit(isAddressValueEmpty(sanitized) ? null : sanitized);
+        onClose();
     };
 
     return (

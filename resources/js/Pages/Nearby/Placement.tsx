@@ -1,6 +1,6 @@
-import { Actions } from '@/components/Actions';
-import { Modal } from '@/components/Modal';
-import ModalHeader from '@/components/ModalHeader';
+import { Actions } from '@/Components/Actions';
+import { Modal } from '@/Components/Modal';
+import ModalHeader from '@/Components/ModalHeader';
 import { useModal } from '@inertiaui/modal-react';
 import { Button } from '@mantine/core';
 import { ShieldPlusIcon } from 'lucide-react';

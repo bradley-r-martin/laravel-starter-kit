@@ -1,4 +1,4 @@
-import Tabbar from '@/components/Tabbar/Tabbar';
+import Tabbar from '@/Components/Tabbar/Tabbar';
 import ContentContext from '@/Contexts/ContentContext';
 import { useModalStack } from '@inertiaui/modal-react';
 import { useDisclosure } from '@mantine/hooks';
