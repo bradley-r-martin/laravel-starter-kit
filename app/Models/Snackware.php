@@ -15,6 +15,34 @@ final class Snackware extends Model
 {
     use HasUlids;
 
+    protected $table = 'snackware';
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeFilterSortBy(Builder $query, string $sort): Builder
+    {
+        return match ($sort) {
+            'type' => $query->orderBy('type', 'asc'),
+            'price' => $query->orderBy('price', 'desc'),
+            'created_at' => $query->orderBy('created_at', 'asc'),
+            default => $query->orderBy('name', 'asc'),
+        };
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeFilterByStatus(Builder $query, string $status): Builder
+    {
+        return match ($status) {
+            'closed' => $query->whereNotNull('closed_at'),
+            default => $query->whereNull('closed_at'),
+        };
+    }
+
     /**
      * @param  Builder<self>  $query
      * @return Builder<self>

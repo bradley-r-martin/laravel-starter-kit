@@ -43,6 +43,12 @@ use App\Http\Controllers\Role\RoleDestroyController;
 use App\Http\Controllers\Role\RoleListController;
 use App\Http\Controllers\Role\RoleReopenController;
 use App\Http\Controllers\Role\RoleUpdateController;
+use App\Http\Controllers\Snackware\SnackwareCloseController;
+use App\Http\Controllers\Snackware\SnackwareCreateController;
+use App\Http\Controllers\Snackware\SnackwareDestroyController;
+use App\Http\Controllers\Snackware\SnackwareListController;
+use App\Http\Controllers\Snackware\SnackwareReopenController;
+use App\Http\Controllers\Snackware\SnackwareUpdateController;
 use App\Http\Controllers\Territory\TerritoryCloseController;
 use App\Http\Controllers\Territory\TerritoryCreateController;
 use App\Http\Controllers\Territory\TerritoryDestroyController;
@@ -114,6 +120,20 @@ Route::middleware('territory')->group(function () {
         Route::post('/{role}/reopen', [RoleReopenController::class, 'process'])->name('reopen');
         Route::get('/{role}/destroy', [RoleDestroyController::class, 'view'])->name('destroy');
         Route::delete('/{role}/destroy', [RoleDestroyController::class, 'process'])->name('destroy');
+    });
+
+    Route::prefix('snackwares')->name('snackwares.')->group(function () {
+        Route::get('/', [SnackwareListController::class, 'view'])->name('index');
+        Route::get('/create', [SnackwareCreateController::class, 'view'])->name('create');
+        Route::post('/create', [SnackwareCreateController::class, 'process'])->name('store');
+        Route::get('/{snackware}/update', [SnackwareUpdateController::class, 'view'])->name('update');
+        Route::put('/{snackware}/update', [SnackwareUpdateController::class, 'process'])->name('update');
+        Route::get('/{snackware}/close', [SnackwareCloseController::class, 'view'])->name('close');
+        Route::post('/{snackware}/close', [SnackwareCloseController::class, 'process'])->name('close');
+        Route::get('/{snackware}/reopen', [SnackwareReopenController::class, 'view'])->name('reopen');
+        Route::post('/{snackware}/reopen', [SnackwareReopenController::class, 'process'])->name('reopen');
+        Route::get('/{snackware}/destroy', [SnackwareDestroyController::class, 'view'])->name('destroy');
+        Route::delete('/{snackware}/destroy', [SnackwareDestroyController::class, 'process'])->name('destroy');
     });
 
     Route::prefix('users')->name('users.')->group(function () {
