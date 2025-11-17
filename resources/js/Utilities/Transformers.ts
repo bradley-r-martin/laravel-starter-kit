@@ -39,55 +39,80 @@ export function addressToString(address: Domain.Address): string {
 export function addressToEnvelopeString(address: Domain.Address): string {
     const lines: string[] = [];
 
-    // Line 1: Building/Unit/Level information (if any)
-    let buildingLine = '';
-    if (address.building_name) {
-        buildingLine = address.building_name.trim();
-    }
-    if (address.level) {
-        buildingLine = buildingLine
-            ? `${buildingLine}, Level ${address.level}`
-            : `Level ${address.level}`;
-    }
-    if (buildingLine) {
-        lines.push(buildingLine);
-    }
+        // Line 1: Building/Unit/Level information (if any)
+        let buildingLine = '';
+        if (address.building_name) {
+            buildingLine = address.building_name.trim();
+        }
+        if (address.level) {
+            buildingLine = buildingLine ? `${buildingLine}, Level ${address.level}` : `Level ${address.level}`;
+        }
+        if (buildingLine) {
+            lines.push(buildingLine);
+        }
 
-    // Line 2: Street address
-    let streetLine = '';
-    streetLine += appendIfPresent(streetLine, address.unit, '', '/');
-    streetLine += appendIfPresent(
-        streetLine,
-        address.lot_no?.replace(/lot\s*/gi, ''),
-        'Lot. ',
-        ' '
-    );
+        // Line 2: Street address
+        let streetLine = '';
 
-    streetLine += appendIfPresent(streetLine, address.street_number, '', ' ');
-    streetLine += appendIfPresent(streetLine, address.street_name, ' ');
-    streetLine += appendIfPresent(streetLine, address.street_type, ' ');
-    streetLine += appendIfPresent(streetLine, address.street_suffix, ' ');
+        // Add unit/apartment
+        if (address.unit) {
+            streetLine += `${address.unit}/`;
+        }
 
-    if (streetLine.trim()) {
-        lines.push(streetLine.trim().toUpperCase());
-    }
+        // Add lot number
+        if (address.lot_no) {
+            const lotNo = address.lot_no.replace(/lot\s*/gi, '').trim();
+            streetLine += `Lot ${lotNo} `;
+        }
 
-    // Line 3: Suburb, State, Postcode
-    let localityLine = '';
-    localityLine += appendIfPresent(localityLine, address.suburb, '', ' ');
-    localityLine += appendIfPresent(localityLine, address.state?.toUpperCase(), ', ');
-    localityLine += appendIfPresent(localityLine, address.postcode, ' ');
+        // Add street number
+        if (address.street_number) {
+            streetLine += address.street_number;
+        }
 
-    if (localityLine.trim()) {
-        lines.push(localityLine.trim());
-    }
+        // Add street name
+        if (address.street_name) {
+            streetLine += (streetLine ? ' ' : '') + address.street_name;
+        }
 
-    // Line 4: Country (only if not Australia or empty)
-    if (address.country) {
-        lines.push(address.country.toUpperCase());
-    }
+        // Add street type
+        if (address.street_type) {
+            streetLine += ' ' + address.street_type;
+        }
 
-    return lines.filter((line) => line.length > 0).join('\n');
+        // Add street suffix
+        if (address.street_suffix) {
+            streetLine += ' ' + address.street_suffix;
+        }
+
+        if (streetLine.trim()) {
+            lines.push(streetLine.trim().toUpperCase());
+        }
+
+        // Line 3: Suburb, State, Postcode
+        let localityLine = '';
+        if (address.suburb) {
+            localityLine = address.suburb.toUpperCase();
+        }
+
+        if (address.state) {
+            localityLine += (localityLine ? ' ' : '') + address.state.toUpperCase();
+        }
+
+        if (address.postcode) {
+            localityLine += (localityLine ? ' ' : '') + address.postcode;
+        }
+
+        if (localityLine.trim()) {
+            lines.push(localityLine.trim());
+        }
+
+        // Line 4: Country
+        if (address.country) {
+            lines.push(address.country.toUpperCase());
+        }
+
+        return lines.filter((line) => line.length > 0).join('\n');
 }
 
 export type GeocoderAddressComponent = {

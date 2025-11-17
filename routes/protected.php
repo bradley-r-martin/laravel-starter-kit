@@ -43,6 +43,9 @@ use App\Http\Controllers\Role\RoleDestroyController;
 use App\Http\Controllers\Role\RoleListController;
 use App\Http\Controllers\Role\RoleReopenController;
 use App\Http\Controllers\Role\RoleUpdateController;
+use App\Http\Controllers\Site\SiteCreateController;
+use App\Http\Controllers\Site\SiteDetailController;
+use App\Http\Controllers\Site\SiteListController;
 use App\Http\Controllers\Snackware\SnackwareCloseController;
 use App\Http\Controllers\Snackware\SnackwareCreateController;
 use App\Http\Controllers\Snackware\SnackwareDestroyController;
@@ -134,6 +137,13 @@ Route::middleware('territory')->group(function () {
         Route::post('/{snackware}/reopen', [SnackwareReopenController::class, 'process'])->name('reopen');
         Route::get('/{snackware}/destroy', [SnackwareDestroyController::class, 'view'])->name('destroy');
         Route::delete('/{snackware}/destroy', [SnackwareDestroyController::class, 'process'])->name('destroy');
+    });
+
+    Route::prefix('sites')->name('sites.')->group(function () {
+        Route::get('/', [SiteListController::class, 'view'])->name('index');
+        Route::get('/create', [SiteCreateController::class, 'view'])->name('create');
+        Route::post('/create', [SiteCreateController::class, 'process'])->name('store');
+        Route::get('/{site}', [SiteDetailController::class, 'view'])->name('show');
     });
 
     Route::prefix('users')->name('users.')->group(function () {

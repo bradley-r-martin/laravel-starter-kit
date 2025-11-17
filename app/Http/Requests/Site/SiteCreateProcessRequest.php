@@ -1,0 +1,78 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Requests\Site;
+
+use App\Aggregates\SiteAggregate;
+use App\Domain\Address;
+use App\Rules\AddressRule;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
+
+final class SiteCreateProcessRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'territory_id' => 'required|string|exists:territories,id',
+            'operator_id' => 'required|string|exists:operators,id',
+            'route_id' => 'nullable|string|exists:routes,id',
+            'order' => 'sometimes|integer|min:0',
+            'name' => 'required|string|max:255',
+            'address' => ['nullable', new AddressRule()],
+            'opening_hours' => 'nullable|array',
+            'manager_code' => 'nullable|string|max:255',
+        ];
+    }
+
+    public function respond(): Response
+    {
+        /** @var array{territory_id: string, operator_id: string, route_id?: string|null, order?: int, name: string, address?: array<string, mixed>|null, opening_hours?: array|null, manager_code?: string|null} $data */
+        $data = $this->validated();
+
+        $siteId = (string) Str::ulid();
+
+        $address = null;
+        if (isset($data['address']) && $data['address'] !== null) {
+            /** @var array<string, string|float|null> $addressData */
+            $addressData = $data['address'];
+            $address = Address::fromArray($addressData);
+        }
+
+        SiteAggregate::retrieve($siteId)
+            ->create(
+                territoryId: $data['territory_id'],
+                operatorId: $data['operator_id'],
+                routeId: $data['route_id'] ?? null,
+                order: $data['order'] ?? 0,
+                name: $data['name'],
+                address: $address,
+                openingHours: $data['opening_hours'] ?? null,
+                managerCode: $data['manager_code'] ?? null,
+            )
+            ->persist();
+
+        return redirect()
+            ->route('sites.index')
+            ->with('toast', [
+                'message' => 'Site created successfully',
+                'type' => 'success',
+            ]);
+    }
+}
+
