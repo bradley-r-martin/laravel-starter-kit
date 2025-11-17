@@ -61,4 +61,3 @@ final class SiteCloseProcessRequest extends FormRequest
             ]);
     }
 }
-

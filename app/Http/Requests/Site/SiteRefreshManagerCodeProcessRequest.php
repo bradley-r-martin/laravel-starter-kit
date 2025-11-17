@@ -33,8 +33,7 @@ final class SiteRefreshManagerCodeProcessRequest extends FormRequest
     {
         $siteId = (string) $this->route('site');
 
-        /** @var Site $site */
-        $site = Site::query()
+        Site::query()
             ->select(['id'])
             ->findOrFail($siteId);
 
@@ -50,4 +49,3 @@ final class SiteRefreshManagerCodeProcessRequest extends FormRequest
             ]);
     }
 }
-

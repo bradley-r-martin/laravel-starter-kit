@@ -49,4 +49,3 @@ final class SiteCloseViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
-

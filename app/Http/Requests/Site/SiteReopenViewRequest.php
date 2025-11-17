@@ -49,4 +49,3 @@ final class SiteReopenViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
-

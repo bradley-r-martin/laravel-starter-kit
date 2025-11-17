@@ -76,11 +76,7 @@ export default function Close({ site }: Props) {
                                 >
                                     Cancel
                                 </Button>
-                                <Button
-                                    type="submit"
-                                    loading={processing}
-                                    color="red"
-                                >
+                                <Button type="submit" loading={processing} color="red">
                                     {processing ? 'Closing...' : 'Close Site'}
                                 </Button>
                             </Actions>
@@ -91,4 +87,3 @@ export default function Close({ site }: Props) {
         </>
     );
 }
-

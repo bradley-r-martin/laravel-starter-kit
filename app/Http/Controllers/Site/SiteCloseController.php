@@ -20,4 +20,3 @@ final class SiteCloseController
         return $request->respond();
     }
 }
-

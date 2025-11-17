@@ -12,4 +12,3 @@ final class SiteManagerCodeRefreshed extends ShouldBeStored
         public string $managerCode,
     ) {}
 }
-

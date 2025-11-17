@@ -20,4 +20,3 @@ final class SiteReopenController
         return $request->respond();
     }
 }
-

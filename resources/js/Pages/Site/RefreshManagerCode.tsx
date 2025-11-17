@@ -60,8 +60,8 @@ export default function RefreshManagerCode({ site }: Props) {
                                         icon={<AlertCircleIcon className="size-5" />}
                                     >
                                         <Text size="sm">
-                                            This will generate a new 4-digit manager code. The current
-                                            code{' '}
+                                            This will generate a new 4-digit manager code. The
+                                            current code{' '}
                                             {site.manager_code ? (
                                                 <strong>{site.manager_code}</strong>
                                             ) : (
@@ -97,4 +97,3 @@ export default function RefreshManagerCode({ site }: Props) {
         </>
     );
 }
-

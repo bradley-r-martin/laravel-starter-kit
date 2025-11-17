@@ -12,4 +12,3 @@ final class SiteClosed extends ShouldBeStored
         public string $reason,
     ) {}
 }
-

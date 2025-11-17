@@ -12,4 +12,3 @@ final class SiteReopened extends ShouldBeStored
         public string $reason,
     ) {}
 }
-

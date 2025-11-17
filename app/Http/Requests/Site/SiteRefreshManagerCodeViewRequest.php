@@ -49,4 +49,3 @@ final class SiteRefreshManagerCodeViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
-

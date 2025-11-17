@@ -132,7 +132,13 @@ const Detail: InertiaView<DetailProps> = (props) => {
                                                 </span>
                                             ))}
                                             <Tooltip withArrow label="Refresh manager code">
-                                                <Navigate type="modal" href={route('sites.refresh-manager-code', site.id)}>
+                                                <Navigate
+                                                    type="modal"
+                                                    href={route(
+                                                        'sites.refresh-manager-code',
+                                                        site.id
+                                                    )}
+                                                >
                                                     <ActionIcon color="zinc" variant="subtle">
                                                         <RefreshCcw className="size-4" />
                                                     </ActionIcon>

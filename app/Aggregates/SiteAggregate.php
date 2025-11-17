@@ -89,7 +89,7 @@ final class SiteAggregate extends AggregateRoot
 
     public function refreshManagerCode(): self
     {
-        $managerCode = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+        $managerCode = mb_str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
 
         $this->recordThat(new SiteManagerCodeRefreshed(managerCode: $managerCode));
 
@@ -119,7 +119,7 @@ final class SiteAggregate extends AggregateRoot
         if ($event->name !== null) {
             $this->name = $event->name;
         }
-        if ($event->address instanceof \App\Domain\Address) {
+        if ($event->address instanceof Address) {
             $this->address = $event->address;
         }
         if ($event->openingHours !== null) {
