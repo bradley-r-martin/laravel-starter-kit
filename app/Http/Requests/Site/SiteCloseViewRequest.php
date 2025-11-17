@@ -8,7 +8,7 @@ use App\Models\Site;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
-final class SiteUpdateViewRequest extends FormRequest
+final class SiteCloseViewRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,16 +34,14 @@ final class SiteUpdateViewRequest extends FormRequest
 
         /** @var Site $site */
         $site = Site::query()
-            ->select(['id', 'name', 'address', 'opening_hours', 'closed_at'])
+            ->select(['id', 'name', 'closed_at'])
             ->findOrFail($siteId);
 
         return inertia()
-            ->modal('Site/Update', [
+            ->modal('Site/Close', [
                 'site' => [
                     'id' => $site->id,
                     'name' => $site->name,
-                    'address' => $site->address?->toArray(),
-                    'opening_hours' => $site->opening_hours,
                     'closed_at' => $site->closed_at,
                 ],
             ])
@@ -51,3 +49,4 @@ final class SiteUpdateViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
+

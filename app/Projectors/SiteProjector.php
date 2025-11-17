@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Projectors;
 
+use App\Events\Site\SiteClosed;
 use App\Events\Site\SiteCreated;
+use App\Events\Site\SiteManagerCodeRefreshed;
+use App\Events\Site\SiteReopened;
 use App\Events\Site\SiteUpdated;
 use App\Models\Site;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
@@ -54,12 +57,35 @@ final class SiteProjector extends Projector
             $updateData['opening_hours'] = $event->openingHours;
         }
 
-        if ($event->managerCode !== null) {
-            $updateData['manager_code'] = $event->managerCode;
-        }
-
         if ($updateData !== []) {
             $site->update($updateData);
         }
+    }
+
+    public function onSiteClosed(SiteClosed $event): void
+    {
+        $site = Site::findOrFail($this->aggregateUuid);
+
+        $site->update([
+            'closed_at' => now(),
+        ]);
+    }
+
+    public function onSiteReopened(SiteReopened $event): void
+    {
+        $site = Site::findOrFail($this->aggregateUuid);
+
+        $site->update([
+            'closed_at' => null,
+        ]);
+    }
+
+    public function onSiteManagerCodeRefreshed(SiteManagerCodeRefreshed $event): void
+    {
+        $site = Site::findOrFail($this->aggregateUuid);
+
+        $site->update([
+            'manager_code' => $event->managerCode,
+        ]);
     }
 }

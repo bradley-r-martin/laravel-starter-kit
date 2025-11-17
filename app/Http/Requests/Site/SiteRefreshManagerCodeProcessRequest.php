@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Site;
 
+use App\Aggregates\SiteAggregate;
 use App\Models\Site;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
-final class SiteUpdateViewRequest extends FormRequest
+final class SiteRefreshManagerCodeProcessRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,24 +31,23 @@ final class SiteUpdateViewRequest extends FormRequest
 
     public function respond(): Response
     {
-        $siteId = $this->route('site');
+        $siteId = (string) $this->route('site');
 
         /** @var Site $site */
         $site = Site::query()
-            ->select(['id', 'name', 'address', 'opening_hours', 'closed_at'])
+            ->select(['id'])
             ->findOrFail($siteId);
 
-        return inertia()
-            ->modal('Site/Update', [
-                'site' => [
-                    'id' => $site->id,
-                    'name' => $site->name,
-                    'address' => $site->address?->toArray(),
-                    'opening_hours' => $site->opening_hours,
-                    'closed_at' => $site->closed_at,
-                ],
-            ])
-            ->baseRoute('sites.show', $site->id)
-            ->toResponse($this);
+        SiteAggregate::retrieve($siteId)
+            ->refreshManagerCode()
+            ->persist();
+
+        return redirect()
+            ->route('sites.show', $siteId)
+            ->with('toast', [
+                'message' => 'Manager code refreshed successfully',
+                'type' => 'success',
+            ]);
     }
 }
+

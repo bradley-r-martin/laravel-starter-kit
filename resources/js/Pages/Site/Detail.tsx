@@ -99,13 +99,17 @@ const Detail: InertiaView<DetailProps> = (props) => {
 
                             <ActionWell.Divider />
                             {site.closed_at ? (
-                                <Button variant="light" color="green">
-                                    Reinstate site
-                                </Button>
+                                <Navigate type="modal" href={route('sites.reopen', site.id)}>
+                                    <Button variant="light" color="green">
+                                        Reinstate site
+                                    </Button>
+                                </Navigate>
                             ) : (
-                                <Button variant="light" color="red">
-                                    Close site
-                                </Button>
+                                <Navigate type="modal" href={route('sites.close', site.id)}>
+                                    <Button variant="light" color="red">
+                                        Close site
+                                    </Button>
+                                </Navigate>
                             )}
                         </ActionWell.Row>
                     </ActionWell>
@@ -128,9 +132,11 @@ const Detail: InertiaView<DetailProps> = (props) => {
                                                 </span>
                                             ))}
                                             <Tooltip withArrow label="Refresh manager code">
-                                                <ActionIcon color="zinc" variant="subtle">
-                                                    <RefreshCcw className="size-4" />
-                                                </ActionIcon>
+                                                <Navigate type="modal" href={route('sites.refresh-manager-code', site.id)}>
+                                                    <ActionIcon color="zinc" variant="subtle">
+                                                        <RefreshCcw className="size-4" />
+                                                    </ActionIcon>
+                                                </Navigate>
                                             </Tooltip>
                                         </div>
                                     </DescriptionList.Item.Value>

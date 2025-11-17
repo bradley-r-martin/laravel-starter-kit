@@ -13,6 +13,5 @@ final class SiteUpdated extends ShouldBeStored
         public ?string $name = null,
         public ?Address $address = null,
         public ?array $openingHours = null,
-        public ?string $managerCode = null,
     ) {}
 }

@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Requests\Site;
 
 use App\Aggregates\SiteAggregate;
-use App\Domain\Address;
 use App\Models\Site;
-use App\Rules\AddressRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
-final class SiteUpdateProcessRequest extends FormRequest
+final class SiteReopenProcessRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,9 +27,7 @@ final class SiteUpdateProcessRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|required|string|max:255',
-            'address' => ['nullable', new AddressRule()],
-            'opening_hours' => 'nullable|array',
+            'reason' => 'required|string|max:500',
         ];
     }
 
@@ -44,34 +40,25 @@ final class SiteUpdateProcessRequest extends FormRequest
             ->select(['id', 'closed_at'])
             ->findOrFail($siteId);
 
-        // Only non-closed sites can be updated
-        if ($site->closed_at !== null) {
-            abort(403, 'Closed sites cannot be updated.');
+        if ($site->closed_at === null) {
+            abort(403, 'Site is not closed.');
         }
 
-        /** @var array{name?: string, address?: array<string, mixed>|null, opening_hours?: array|null} $data */
+        /** @var array{reason: string} $data */
         $data = $this->validated();
 
-        $address = null;
-        if (isset($data['address']) && $data['address'] !== null) {
-            /** @var array<string, string|float|null> $addressData */
-            $addressData = $data['address'];
-            $address = Address::fromArray($addressData);
-        }
-
         SiteAggregate::retrieve($siteId)
-            ->update(
-                name: $data['name'] ?? null,
-                address: $address,
-                openingHours: $data['opening_hours'] ?? null,
+            ->reopen(
+                reason: $data['reason'],
             )
             ->persist();
 
         return redirect()
             ->route('sites.show', $siteId)
             ->with('toast', [
-                'message' => 'Site updated successfully',
+                'message' => 'Site reopened successfully',
                 'type' => 'success',
             ]);
     }
 }
+

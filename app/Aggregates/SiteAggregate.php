@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace App\Aggregates;
 
 use App\Domain\Address;
+use App\Events\Site\SiteClosed;
 use App\Events\Site\SiteCreated;
+use App\Events\Site\SiteManagerCodeRefreshed;
+use App\Events\Site\SiteReopened;
 use App\Events\Site\SiteUpdated;
+use DateTimeImmutable;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 final class SiteAggregate extends AggregateRoot
@@ -26,6 +30,10 @@ final class SiteAggregate extends AggregateRoot
     public ?array $openingHours = null;
 
     public ?string $managerCode = null;
+
+    public ?DateTimeImmutable $closedAt = null;
+
+    public ?string $closedReason = null;
 
     public function create(
         string $territoryId,
@@ -55,14 +63,35 @@ final class SiteAggregate extends AggregateRoot
         ?string $name = null,
         ?Address $address = null,
         ?array $openingHours = null,
-        ?string $managerCode = null,
     ): self {
         $this->recordThat(new SiteUpdated(
             name: $name,
             address: $address,
             openingHours: $openingHours,
-            managerCode: $managerCode,
         ));
+
+        return $this;
+    }
+
+    public function close(string $reason): self
+    {
+        $this->recordThat(new SiteClosed(reason: $reason));
+
+        return $this;
+    }
+
+    public function reopen(string $reason): self
+    {
+        $this->recordThat(new SiteReopened(reason: $reason));
+
+        return $this;
+    }
+
+    public function refreshManagerCode(): self
+    {
+        $managerCode = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+
+        $this->recordThat(new SiteManagerCodeRefreshed(managerCode: $managerCode));
 
         return $this;
     }
@@ -96,8 +125,31 @@ final class SiteAggregate extends AggregateRoot
         if ($event->openingHours !== null) {
             $this->openingHours = $event->openingHours;
         }
-        if ($event->managerCode !== null) {
-            $this->managerCode = $event->managerCode;
-        }
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applySiteClosed(SiteClosed $event): void
+    {
+        $this->closedAt = new DateTimeImmutable();
+        $this->closedReason = $event->reason;
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applySiteReopened(): void
+    {
+        $this->closedAt = null;
+        $this->closedReason = null;
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applySiteManagerCodeRefreshed(SiteManagerCodeRefreshed $event): void
+    {
+        $this->managerCode = $event->managerCode;
     }
 }

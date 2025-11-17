@@ -16,7 +16,6 @@ interface Site {
     name: string;
     address: Domain.Address | null;
     opening_hours: any[] | null;
-    manager_code: string | null;
     closed_at: string | null;
 }
 
@@ -32,7 +31,6 @@ export default function Update({ site }: Props) {
         name: site.name || '',
         address: site.address || null,
         opening_hours: site.opening_hours || null,
-        manager_code: site.manager_code || null,
     });
 
     const { processing } = form;
@@ -92,15 +90,6 @@ export default function Update({ site }: Props) {
                                             name="address"
                                             allowManualEntry
                                             allowManualEntryChange
-                                            disabled={isClosed}
-                                        />
-                                    </Field>
-
-                                    <Field name="manager_code">
-                                        <TextInput
-                                            label="Manager Code"
-                                            name="manager_code"
-                                            placeholder="Enter manager code (optional)"
                                             disabled={isClosed}
                                         />
                                     </Field>

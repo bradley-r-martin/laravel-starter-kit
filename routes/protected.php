@@ -43,9 +43,12 @@ use App\Http\Controllers\Role\RoleDestroyController;
 use App\Http\Controllers\Role\RoleListController;
 use App\Http\Controllers\Role\RoleReopenController;
 use App\Http\Controllers\Role\RoleUpdateController;
+use App\Http\Controllers\Site\SiteCloseController;
 use App\Http\Controllers\Site\SiteCreateController;
 use App\Http\Controllers\Site\SiteDetailController;
 use App\Http\Controllers\Site\SiteListController;
+use App\Http\Controllers\Site\SiteReopenController;
+use App\Http\Controllers\Site\SiteRefreshManagerCodeController;
 use App\Http\Controllers\Site\SiteUpdateController;
 use App\Http\Controllers\Snackware\SnackwareCloseController;
 use App\Http\Controllers\Snackware\SnackwareCreateController;
@@ -147,6 +150,12 @@ Route::middleware('territory')->group(function () {
         Route::get('/{site}', [SiteDetailController::class, 'view'])->name('show');
         Route::get('/{site}/update', [SiteUpdateController::class, 'view'])->name('update');
         Route::put('/{site}/update', [SiteUpdateController::class, 'process'])->name('update');
+        Route::get('/{site}/close', [SiteCloseController::class, 'view'])->name('close');
+        Route::post('/{site}/close', [SiteCloseController::class, 'process'])->name('close');
+        Route::get('/{site}/reopen', [SiteReopenController::class, 'view'])->name('reopen');
+        Route::post('/{site}/reopen', [SiteReopenController::class, 'process'])->name('reopen');
+        Route::get('/{site}/refresh-manager-code', [SiteRefreshManagerCodeController::class, 'view'])->name('refresh-manager-code');
+        Route::post('/{site}/refresh-manager-code', [SiteRefreshManagerCodeController::class, 'process'])->name('refresh-manager-code');
     });
 
     Route::prefix('users')->name('users.')->group(function () {
