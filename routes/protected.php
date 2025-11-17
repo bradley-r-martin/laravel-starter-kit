@@ -43,6 +43,9 @@ use App\Http\Controllers\Role\RoleDestroyController;
 use App\Http\Controllers\Role\RoleListController;
 use App\Http\Controllers\Role\RoleReopenController;
 use App\Http\Controllers\Role\RoleUpdateController;
+use App\Http\Controllers\Route\RouteCreateController;
+use App\Http\Controllers\Route\RouteListController;
+use App\Http\Controllers\Route\RouteUpdateController;
 use App\Http\Controllers\Site\SiteCloseController;
 use App\Http\Controllers\Site\SiteCreateController;
 use App\Http\Controllers\Site\SiteDetailController;
@@ -127,6 +130,14 @@ Route::middleware('territory')->group(function () {
         Route::post('/{role}/reopen', [RoleReopenController::class, 'process'])->name('reopen');
         Route::get('/{role}/destroy', [RoleDestroyController::class, 'view'])->name('destroy');
         Route::delete('/{role}/destroy', [RoleDestroyController::class, 'process'])->name('destroy');
+    });
+
+    Route::prefix('routes')->name('routes.')->group(function () {
+        Route::get('/', [RouteListController::class, 'view'])->name('index');
+        Route::get('/create', [RouteCreateController::class, 'view'])->name('create');
+        Route::post('/create', [RouteCreateController::class, 'process'])->name('store');
+        Route::get('/{route}/update', [RouteUpdateController::class, 'view'])->name('update');
+        Route::put('/{route}/update', [RouteUpdateController::class, 'process'])->name('update');
     });
 
     Route::prefix('snackwares')->name('snackwares.')->group(function () {
