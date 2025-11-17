@@ -93,9 +93,11 @@ const Detail: InertiaView<DetailProps> = (props) => {
                             </Navigate>
                         </ActionWell.Row>
                         <ActionWell.Row>
-                            <Button variant="light" color="zinc">
-                                Change route
-                            </Button>
+                            <Navigate type="modal" href={route('sites.change-route', site.id)}>
+                                <Button variant="light" color="zinc">
+                                    Change route
+                                </Button>
+                            </Navigate>
 
                             <ActionWell.Divider />
                             {site.closed_at ? (

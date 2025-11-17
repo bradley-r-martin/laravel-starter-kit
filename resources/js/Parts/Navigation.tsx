@@ -348,7 +348,7 @@ const Navigation: FunctionComponent<NavigationProps> = () => {
 
                             <Menu.Item
                                 component={Link}
-                                href={'/territories'}
+                                href={'/territory'}
                                 className="data-[active=true]:!bg-zinc-950/8"
                                 leftSection={<RefreshCcwIcon className="size-4" />}
                             >

@@ -46,6 +46,7 @@ use App\Http\Controllers\Role\RoleUpdateController;
 use App\Http\Controllers\Route\RouteCreateController;
 use App\Http\Controllers\Route\RouteListController;
 use App\Http\Controllers\Route\RouteUpdateController;
+use App\Http\Controllers\Site\SiteChangeRouteController;
 use App\Http\Controllers\Site\SiteCloseController;
 use App\Http\Controllers\Site\SiteCreateController;
 use App\Http\Controllers\Site\SiteDetailController;
@@ -167,6 +168,8 @@ Route::middleware('territory')->group(function () {
         Route::post('/{site}/reopen', [SiteReopenController::class, 'process'])->name('reopen');
         Route::get('/{site}/refresh-manager-code', [SiteRefreshManagerCodeController::class, 'view'])->name('refresh-manager-code');
         Route::post('/{site}/refresh-manager-code', [SiteRefreshManagerCodeController::class, 'process'])->name('refresh-manager-code');
+        Route::get('/{site}/change-route', [SiteChangeRouteController::class, 'view'])->name('change-route');
+        Route::post('/{site}/change-route', [SiteChangeRouteController::class, 'process'])->name('change-route');
     });
 
     Route::prefix('users')->name('users.')->group(function () {

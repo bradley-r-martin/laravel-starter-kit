@@ -8,7 +8,9 @@ use App\Events\Site\SiteClosed;
 use App\Events\Site\SiteCreated;
 use App\Events\Site\SiteManagerCodeRefreshed;
 use App\Events\Site\SiteReopened;
+use App\Events\Site\SiteRouteChanged;
 use App\Events\Site\SiteUpdated;
+use App\Models\Route;
 use App\Models\Site;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 use Spatie\EventSourcing\StoredEvents\StoredEvent;
@@ -86,6 +88,17 @@ final class SiteProjector extends Projector
 
         $site->update([
             'manager_code' => $event->managerCode,
+        ]);
+    }
+
+    public function onSiteRouteChanged(SiteRouteChanged $event): void
+    {
+        $site = Site::findOrFail($this->aggregateUuid);
+        $route = Route::findOrFail($event->routeId);
+
+        $site->update([
+            'route_id' => $event->routeId,
+            '__route_name' => $route->name,
         ]);
     }
 }

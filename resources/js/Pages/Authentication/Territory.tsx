@@ -44,7 +44,7 @@ const Territory: InertiaView<TerritoryProps> = ({ territories }) => {
                         ))}
                     </Stack>
 
-                    <Button component={Link} href={route('dashboard')} variant="subtle" color="red">
+                    <Button component={Link} href={route('logout')} variant="subtle" color="red">
                         Logout
                     </Button>
                 </Stack>

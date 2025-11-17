@@ -9,6 +9,7 @@ use App\Events\Site\SiteClosed;
 use App\Events\Site\SiteCreated;
 use App\Events\Site\SiteManagerCodeRefreshed;
 use App\Events\Site\SiteReopened;
+use App\Events\Site\SiteRouteChanged;
 use App\Events\Site\SiteUpdated;
 use DateTimeImmutable;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
@@ -96,6 +97,13 @@ final class SiteAggregate extends AggregateRoot
         return $this;
     }
 
+    public function changeRoute(?string $routeId): self
+    {
+        $this->recordThat(new SiteRouteChanged(routeId: $routeId));
+
+        return $this;
+    }
+
     /**
      * @phpstan-ignore-next-line
      */
@@ -151,5 +159,13 @@ final class SiteAggregate extends AggregateRoot
     private function applySiteManagerCodeRefreshed(SiteManagerCodeRefreshed $event): void
     {
         $this->managerCode = $event->managerCode;
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private function applySiteRouteChanged(SiteRouteChanged $event): void
+    {
+        $this->routeId = $event->routeId;
     }
 }

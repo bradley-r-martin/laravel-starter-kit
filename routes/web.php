@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Authentication\AuthenticationLoginController;
+use App\Http\Controllers\Authentication\AuthenticationLogoutController;
 use App\Http\Controllers\Authentication\AuthenticationRecoveryController;
 use App\Http\Controllers\Authentication\AuthenticationResetController;
 use App\Http\Controllers\Nearby\NearbyPlacementController;
@@ -25,3 +26,5 @@ Route::post('/recovery', [AuthenticationRecoveryController::class, 'process'])->
 
 Route::get('/reset-password', [AuthenticationResetController::class, 'view'])->middleware('guest')->name('reset');
 Route::post('/reset-password', [AuthenticationResetController::class, 'process'])->name('reset.process');
+
+Route::get('/logout', [AuthenticationLogoutController::class, 'view'])->name('logout');
