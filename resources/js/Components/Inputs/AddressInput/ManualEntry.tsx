@@ -3,14 +3,6 @@ import ModalHeader from '@/Components/ModalHeader';
 import { AUSTRALIA_STATES, COUNTRY, STREET_SUFFIX, STREET_TYPE } from '@/Utilities/Constants';
 import { Button, Select, TextInput } from '@mantine/core';
 import { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import {
-    AddressInputKey,
-    AddressInputValue,
-    LABELS,
-    createEmptyAddress,
-    isAddressValueEmpty,
-    sanitizeAddressValue,
-} from './types';
 
 interface AddressManualEntryProps {
     opened: boolean;
@@ -23,38 +15,25 @@ interface AddressManualEntryProps {
 const AddressManualEntry: FunctionComponent<AddressManualEntryProps> = (props) => {
     const { opened, onClose, onSubmit, value, disabled = false } = props;
 
-    const [draft, setDraft] = useState<AddressInputValue>(() => ({
-        ...createEmptyAddress(),
-        ...(value ?? {}),
-    }));
+    const [draft, setDraft] = useState<Domain.Address>(value ?? {});
 
     useEffect(() => {
         if (opened) {
-            setDraft({
-                ...createEmptyAddress(),
-                ...(value ?? {}),
-            });
+            setDraft(value ?? {});
         }
     }, [opened, value]);
 
     const handleChange =
-        (field: AddressInputKey) => (event: React.ChangeEvent<HTMLInputElement>) => {
-            const rawValue = event.currentTarget.value;
+        (field: keyof Domain.Address, value: string | number | null) => {
             setDraft((current) => ({
                 ...current,
-                [field]: rawValue,
+                [field]: value,
             }));
         };
 
-    const handleSelectChange = (field: AddressInputKey) => (value: string | null) => {
-        setDraft((current) => ({
-            ...current,
-            [field]: value,
-        }));
-    };
 
     const getStringValue = useCallback(
-        (field: AddressInputKey) => {
+        (field: keyof Domain.Address) => {
             const fieldValue = draft[field];
             if (fieldValue === null || fieldValue === undefined) {
                 return '';
@@ -65,47 +44,42 @@ const AddressManualEntry: FunctionComponent<AddressManualEntryProps> = (props) =
         [draft]
     );
 
-    const handleReset = () => {
-        setDraft(createEmptyAddress());
-    };
 
     const handleSubmit = () => {
-        const sanitized = sanitizeAddressValue(draft);
-        onSubmit(isAddressValueEmpty(sanitized) ? null : sanitized);
+        onSubmit(draft);
         onClose();
     };
 
     return (
         <div className="max-h-96 max-w-md space-y-4 overflow-y-auto p-4">
             <ModalHeader title="Manual address" />
-
             <div className="space-y-4">
                 <div className="flex gap-4">
                     <TextInput
                         size="xs"
                         className="flex-1"
                         name={`${name}.unit`}
-                        label={LABELS.unit}
+                        label="Unit / Apartment"
                         value={getStringValue('unit')}
-                        onChange={handleChange('unit')}
+                        onChange={(e)=>handleChange('unit', e.target.value)}
                         disabled={disabled}
                     />
                     <TextInput
                         size="xs"
                         className="flex-1"
                         name={`${name}.lot_no`}
-                        label={LABELS.lot_no}
+                        label="Lot number"
                         value={getStringValue('lot_no')}
-                        onChange={handleChange('lot_no')}
+                        onChange={(e)=>handleChange('lot_no', e.target.value)}
                         disabled={disabled}
                     />
                     <TextInput
                         size="xs"
                         className="flex-1"
                         name={`${name}.level`}
-                        label={LABELS.level}
+                        label="Level"
                         value={getStringValue('level')}
-                        onChange={handleChange('level')}
+                        onChange={(e)=>handleChange('level', e.target.value)}
                         disabled={disabled}
                     />
                 </div>
@@ -113,9 +87,9 @@ const AddressManualEntry: FunctionComponent<AddressManualEntryProps> = (props) =
                 <TextInput
                     size="xs"
                     name={`${name}.building_name`}
-                    label={LABELS.building_name}
+                    label="Building name"
                     value={getStringValue('building_name')}
-                    onChange={handleChange('building_name')}
+                    onChange={(e)=>handleChange('building_name', e.target.value)}
                     disabled={disabled}
                 />
 
@@ -124,21 +98,19 @@ const AddressManualEntry: FunctionComponent<AddressManualEntryProps> = (props) =
                         size="xs"
                         className="min-w-[150px] flex-1"
                         name={`${name}.street_number`}
-                        label={LABELS.street_number}
+                        label="Street number"
                         value={getStringValue('street_number')}
-                        onChange={handleChange('street_number')}
+                        onChange={(e)=>handleChange('street_number', e.target.value)}
                         autoComplete="address-line1"
-                        placeholder="123"
                         disabled={disabled}
                     />
                     <TextInput
                         size="xs"
                         className="grow"
                         name={`${name}.street_name`}
-                        label={LABELS.street_name}
+                        label="Street name"
                         value={getStringValue('street_name')}
-                        onChange={handleChange('street_name')}
-                        placeholder="George Street"
+                        onChange={(e)=>handleChange('street_name', e.target.value)}
                         disabled={disabled}
                     />
                 </div>
@@ -148,10 +120,10 @@ const AddressManualEntry: FunctionComponent<AddressManualEntryProps> = (props) =
                         size="xs"
                         className="min-w-[150px] flex-1"
                         name={`${name}.street_type`}
-                        label={LABELS.street_type}
+                        label="Street type"
                         searchable
                         value={getStringValue('street_type')}
-                        onChange={handleSelectChange('street_type')}
+                        onChange={(e)=>handleChange('street_type', e)}
                         data={STREET_TYPE}
                         disabled={disabled}
                     />
@@ -159,9 +131,9 @@ const AddressManualEntry: FunctionComponent<AddressManualEntryProps> = (props) =
                         size="xs"
                         className="min-w-[150px] flex-1"
                         name={`${name}.street_suffix`}
-                        label={LABELS.street_suffix}
+                        label="Street suffix"
                         value={getStringValue('street_suffix')}
-                        onChange={handleSelectChange('street_suffix')}
+                        onChange={(e)=>handleChange('street_suffix', e)}
                         searchable
                         data={STREET_SUFFIX}
                         disabled={disabled}
@@ -173,49 +145,56 @@ const AddressManualEntry: FunctionComponent<AddressManualEntryProps> = (props) =
                         size="xs"
                         className="grow"
                         name={`${name}.suburb`}
-                        label={LABELS.suburb}
+                        label="Suburb / City"
                         value={getStringValue('suburb')}
-                        onChange={handleChange('suburb')}
+                        onChange={(e)=>handleChange('suburb', e.target.value)}
                         autoComplete="address-level2"
-                        placeholder="Sydney"
                         disabled={disabled}
                     />
                     <TextInput
                         size="xs"
                         className="min-w-[150px] flex-1"
                         name={`${name}.postcode`}
-                        label={LABELS.postcode}
+                        label="Postcode"
                         value={getStringValue('postcode')}
-                        onChange={handleChange('postcode')}
+                        onChange={(e)=>handleChange('postcode', e.target.value)}
                         autoComplete="postal-code"
-                        placeholder="2000"
                         disabled={disabled}
                     />
                 </div>
 
                 <div className="flex flex-wrap gap-4">
-                    <Select
+                    {getStringValue('country') === 'Australia' ? (
+                        <Select
                         size="xs"
                         className="min-w-[150px] flex-1"
                         name={`${name}.state`}
-                        label={LABELS.state}
+                        label="State / Territory"
                         value={getStringValue('state')}
-                        onChange={handleSelectChange('state')}
+                        onChange={(e)=>handleChange('state', e)}
                         autoComplete="address-level1"
-                        placeholder="NSW"
                         searchable
                         data={AUSTRALIA_STATES}
                         disabled={disabled}
                     />
+                    ) : <TextInput
+                        size="xs"
+                        className="min-w-[150px] flex-1"
+                        name={`${name}.state`}
+                        label="State / Territory"
+                        value={getStringValue('state')}
+                        onChange={(e)=>handleChange('state', e.target.value)}
+                        autoComplete="address-level1"
+                        disabled={disabled}
+                    />}
                     <Select
                         size="xs"
                         className="min-w-[150px] flex-1"
                         name={`${name}.country`}
-                        label={LABELS.country}
+                        label="Country"
                         value={getStringValue('country')}
-                        onChange={handleSelectChange('country')}
+                        onChange={(e)=>handleChange('country', e)}
                         autoComplete="country-name"
-                        placeholder="Australia"
                         searchable
                         data={COUNTRY}
                         disabled={disabled}

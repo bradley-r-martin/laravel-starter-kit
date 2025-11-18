@@ -37,7 +37,11 @@ class GoogleAddressLookupService {
                             reject(new Error('Error getting predictions: ' + status));
                         }
                     }
-                );
+                ).catch((error) => {
+                    reject(new Error('Error getting predictions: ' + error));
+                });
+            }).catch((error) => {
+                reject(new Error('Error getting predictions: ' + error));
             });
         });
     }
@@ -55,6 +59,8 @@ class GoogleAddressLookupService {
                         reject(new Error('Error getting details: ' + status));
                     }
                 });
+            }).catch((error) => {
+                reject(new Error('Error getting details: ' + error));
             });
         });
     }

@@ -140,7 +140,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>((pro
             ];
         }
 
-        if (search.length < 3) {
+        if (search.length < 4) {
             return [
                 {
                     value: 'START_TYPING',
@@ -153,6 +153,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>((pro
             return [
                 {
                     value: 'SEARCHING',
+                    disabled: true,
                 },
             ];
         }
