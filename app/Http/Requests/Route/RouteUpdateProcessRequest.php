@@ -51,7 +51,7 @@ final class RouteUpdateProcessRequest extends FormRequest
         $data = $this->validated();
 
         $schedule = null;
-        if (isset($data['schedule']) && $data['schedule'] !== null && $data['schedule'] !== '') {
+        if (isset($data['schedule']) && $data['schedule'] !== '') {
             $schedule = Schedule::fromString($data['schedule']);
         }
 

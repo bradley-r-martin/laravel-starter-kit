@@ -12,6 +12,7 @@ final class SiteUpdated extends ShouldBeStored
     public function __construct(
         public ?string $name = null,
         public ?Address $address = null,
+        /** @var array<int|string, mixed>|null */
         public ?array $openingHours = null,
     ) {}
 }

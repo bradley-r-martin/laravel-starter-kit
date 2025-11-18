@@ -43,7 +43,7 @@ final class RouteCreateProcessRequest extends FormRequest
         $routeId = (string) Str::ulid();
 
         $schedule = null;
-        if (isset($data['schedule']) && $data['schedule'] !== null && $data['schedule'] !== '') {
+        if (isset($data['schedule']) && $data['schedule'] !== '') {
             $schedule = Schedule::fromString($data['schedule']);
         }
 

@@ -49,21 +49,24 @@ final class SiteUpdateProcessRequest extends FormRequest
             abort(403, 'Closed sites cannot be updated.');
         }
 
-        /** @var array{name?: string, address?: array<string, mixed>|null, opening_hours?: array|null} $data */
+        /** @var array{name?: string, address?: array<string, mixed>|null, opening_hours?: array<int|string, mixed>|null} $data */
         $data = $this->validated();
 
         $address = null;
-        if (isset($data['address']) && $data['address'] !== null) {
+        if (isset($data['address'])) {
             /** @var array<string, string|float|null> $addressData */
             $addressData = $data['address'];
             $address = Address::fromArray($addressData);
         }
 
+        /** @var array<int|string, mixed>|null $openingHours */
+        $openingHours = $data['opening_hours'] ?? null;
+
         SiteAggregate::retrieve($siteId)
             ->update(
                 name: $data['name'] ?? null,
                 address: $address,
-                openingHours: $data['opening_hours'] ?? null,
+                openingHours: $openingHours,
             )
             ->persist();
 

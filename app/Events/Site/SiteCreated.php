@@ -16,6 +16,7 @@ final class SiteCreated extends ShouldBeStored
         public int $order,
         public string $name,
         public ?Address $address = null,
+        /** @var array<int|string, mixed>|null */
         public ?array $openingHours = null,
         public ?string $managerCode = null,
     ) {}

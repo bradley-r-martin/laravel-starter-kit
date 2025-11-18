@@ -28,6 +28,7 @@ final class SiteAggregate extends AggregateRoot
 
     public ?Address $address = null;
 
+    /** @var array<int|string, mixed>|null */
     public ?array $openingHours = null;
 
     public ?string $managerCode = null;
@@ -36,6 +37,9 @@ final class SiteAggregate extends AggregateRoot
 
     public ?string $closedReason = null;
 
+    /**
+     * @param  array<int|string, mixed>|null  $openingHours
+     */
     public function create(
         string $territoryId,
         string $operatorId,
@@ -60,6 +64,9 @@ final class SiteAggregate extends AggregateRoot
         return $this;
     }
 
+    /**
+     * @param  array<int|string, mixed>|null  $openingHours
+     */
     public function update(
         ?string $name = null,
         ?Address $address = null,

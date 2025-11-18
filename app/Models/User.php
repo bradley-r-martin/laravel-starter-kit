@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Casts\AddressCast;
 use App\Casts\FileCast;
 use App\Casts\PhoneCast;
+use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Session;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 
 /**
@@ -34,6 +36,20 @@ final class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
+
+    public function territory(): Territory
+    {
+        $territoryId = Session::get('selected_territory');
+
+        /** @var Territory|null $territory */
+        $territory = $territoryId ? Territory::find($territoryId) : null;
+
+        if (! $territory) {
+            throw new Exception('Territory not found');
+        }
+
+        return $territory;
+    }
 
     /**
      * @param  Builder<self>  $query

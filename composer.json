@@ -14,7 +14,7 @@
         "inertiajs/inertia-laravel": "^2.0",
         "inertiaui/modal": "^0.21.1",
         "laravel-notification-channels/webpush": "^10.2",
-        "laravel/framework": "^12.31.1",
+        "laravel/framework": "^12.38.1",
         "laravel/octane": "^2.13",
         "nunomaduro/essentials": "^1.0.1",
         "rlanvin/php-rrule": "^2.6",
@@ -30,10 +30,10 @@
         "laravel/telescope": "^5.13",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.8.2",
-        "pestphp/pest": "^4.1.0",
-        "pestphp/pest-plugin-browser": "^4.1.0",
-        "pestphp/pest-plugin-laravel": "^4.0.0",
-        "pestphp/pest-plugin-type-coverage": "^4.0.2",
+        "pestphp/pest": "4.x-dev",
+        "pestphp/pest-plugin-browser": "^4.1.1",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "pestphp/pest-plugin-type-coverage": "^4.0.3",
         "rector/rector": "^2.1.7"
     },
     "autoload": {
@@ -79,7 +79,7 @@
             "rector --dry-run",
             "npm run test:lint"
         ],
-        "test:unit": "pest --parallel",
+        "test:unit": "php -d memory_limit=512M vendor/bin/pest --parallel --passthru-php=\"-d memory_limit=512M\"",
         "test:types": "php -d memory_limit=512M vendor/bin/phpstan analyse",
         "test": [
             "@test:type-coverage",

@@ -18,50 +18,56 @@ class GoogleAddressLookupService {
             return Promise.resolve([]);
         }
         return new Promise<google.maps.places.AutocompletePrediction[]>((resolve, reject) => {
-            this.initialize().then(() => {
-                const autocompleteService = new window.google.maps.places.AutocompleteService();
-                autocompleteService.getPlacePredictions(
-                    {
-                        input: query,
-                        location: new google.maps.LatLng(-35.2802, 149.131),
-                        radius: 2000,
-                        types: ['address'],
-                    },
-                    (predictions, status) => {
-                        if (
-                            status === window.google.maps.places.PlacesServiceStatus.OK &&
-                            predictions
-                        ) {
-                            resolve(predictions);
-                        } else {
-                            reject(new Error('Error getting predictions: ' + status));
-                        }
-                    }
-                ).catch((error) => {
+            this.initialize()
+                .then(() => {
+                    const autocompleteService = new window.google.maps.places.AutocompleteService();
+                    autocompleteService
+                        .getPlacePredictions(
+                            {
+                                input: query,
+                                location: new google.maps.LatLng(-35.2802, 149.131),
+                                radius: 2000,
+                                types: ['address'],
+                            },
+                            (predictions, status) => {
+                                if (
+                                    status === window.google.maps.places.PlacesServiceStatus.OK &&
+                                    predictions
+                                ) {
+                                    resolve(predictions);
+                                } else {
+                                    reject(new Error('Error getting predictions: ' + status));
+                                }
+                            }
+                        )
+                        .catch((error) => {
+                            reject(new Error('Error getting predictions: ' + error));
+                        });
+                })
+                .catch((error) => {
                     reject(new Error('Error getting predictions: ' + error));
                 });
-            }).catch((error) => {
-                reject(new Error('Error getting predictions: ' + error));
-            });
         });
     }
 
     public select(prediction: google.maps.places.AutocompletePrediction) {
         return new Promise<google.maps.places.PlaceResult>((resolve, reject) => {
-            this.initialize().then(() => {
-                const placesService = new window.google.maps.places.PlacesService(
-                    document.createElement('div')
-                );
-                placesService.getDetails({ placeId: prediction.place_id }, (result, status) => {
-                    if (status === window.google.maps.places.PlacesServiceStatus.OK && result) {
-                        resolve(result);
-                    } else {
-                        reject(new Error('Error getting details: ' + status));
-                    }
+            this.initialize()
+                .then(() => {
+                    const placesService = new window.google.maps.places.PlacesService(
+                        document.createElement('div')
+                    );
+                    placesService.getDetails({ placeId: prediction.place_id }, (result, status) => {
+                        if (status === window.google.maps.places.PlacesServiceStatus.OK && result) {
+                            resolve(result);
+                        } else {
+                            reject(new Error('Error getting details: ' + status));
+                        }
+                    });
+                })
+                .catch((error) => {
+                    reject(new Error('Error getting details: ' + error));
                 });
-            }).catch((error) => {
-                reject(new Error('Error getting details: ' + error));
-            });
         });
     }
 

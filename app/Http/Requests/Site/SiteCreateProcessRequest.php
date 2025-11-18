@@ -42,17 +42,20 @@ final class SiteCreateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        /** @var array{territory_id: string, operator_id: string, route_id?: string|null, order?: int, name: string, address?: array<string, mixed>|null, opening_hours?: array|null, manager_code?: string|null} $data */
+        /** @var array{territory_id: string, operator_id: string, route_id?: string|null, order?: int, name: string, address?: array<string, mixed>|null, opening_hours?: array<int|string, mixed>|null, manager_code?: string|null} $data */
         $data = $this->validated();
 
         $siteId = (string) Str::ulid();
 
         $address = null;
-        if (isset($data['address']) && $data['address'] !== null) {
+        if (isset($data['address'])) {
             /** @var array<string, string|float|null> $addressData */
             $addressData = $data['address'];
             $address = Address::fromArray($addressData);
         }
+
+        /** @var array<int|string, mixed>|null $openingHours */
+        $openingHours = $data['opening_hours'] ?? null;
 
         SiteAggregate::retrieve($siteId)
             ->create(
@@ -62,7 +65,7 @@ final class SiteCreateProcessRequest extends FormRequest
                 order: $data['order'] ?? 0,
                 name: $data['name'],
                 address: $address,
-                openingHours: $data['opening_hours'] ?? null,
+                openingHours: $openingHours,
                 managerCode: $data['manager_code'] ?? null,
             )
             ->persist();

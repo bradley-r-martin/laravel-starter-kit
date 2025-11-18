@@ -53,7 +53,7 @@ final class SiteChangeRouteViewRequest extends FormRequest
                     'id' => $site->id,
                     'name' => $site->name,
                     'route_id' => $site->route_id,
-                    '__route_name' => $site->route?->name ?? null,
+                    '__route_name' => $site->route->name ?? null,
                 ],
                 'routes' => $routes,
             ])

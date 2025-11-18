@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Site;
 
+use App\Domain\Address;
 use App\Models\Site;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,12 +38,15 @@ final class SiteUpdateViewRequest extends FormRequest
             ->select(['id', 'name', 'address', 'opening_hours', 'closed_at'])
             ->findOrFail($siteId);
 
+        /** @var Address $address */
+        $address = $site->address;
+
         return inertia()
             ->modal('Site/Update', [
                 'site' => [
                     'id' => $site->id,
                     'name' => $site->name,
-                    'address' => $site->address?->toArray(),
+                    'address' => $address->toArray(),
                     'opening_hours' => $site->opening_hours,
                     'closed_at' => $site->closed_at,
                 ],
