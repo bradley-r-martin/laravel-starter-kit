@@ -20,3 +20,4 @@ final class SiteChangeRouteController
         return $request->respond();
     }
 }
+

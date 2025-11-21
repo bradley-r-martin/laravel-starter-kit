@@ -137,3 +137,4 @@ final class SnackwareAggregate extends AggregateRoot
         $this->closedReason = null;
     }
 }
+

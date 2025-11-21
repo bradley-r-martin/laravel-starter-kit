@@ -78,3 +78,4 @@ final class TerritoryUpdateViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
+

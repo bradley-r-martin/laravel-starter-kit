@@ -15,3 +15,4 @@ final class SnackwareUpdated extends ShouldBeStored
         public ?int $price = null,
     ) {}
 }
+

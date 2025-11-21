@@ -20,3 +20,4 @@ final class TerritoryReopenController
         return $request->respond();
     }
 }
+

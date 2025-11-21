@@ -12,3 +12,4 @@ final class TerritoryClosed extends ShouldBeStored
         public string $reason,
     ) {}
 }
+

@@ -20,3 +20,4 @@ final class RouteUpdateController
         return $request->respond();
     }
 }
+

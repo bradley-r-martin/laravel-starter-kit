@@ -20,3 +20,4 @@ final class TerritoryUpdateController
         return $request->respond();
     }
 }
+

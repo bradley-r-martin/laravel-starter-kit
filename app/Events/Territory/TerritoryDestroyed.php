@@ -12,3 +12,4 @@ final class TerritoryDestroyed extends ShouldBeStored
         public string $reason,
     ) {}
 }
+

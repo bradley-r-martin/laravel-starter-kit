@@ -68,3 +68,4 @@ final class SnackwareUpdateProcessRequest extends FormRequest
             ]);
     }
 }
+

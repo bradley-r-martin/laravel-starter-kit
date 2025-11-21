@@ -50,3 +50,4 @@ final class SnackwareCloseViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
+

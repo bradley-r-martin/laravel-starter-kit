@@ -20,3 +20,4 @@ final class SnackwareReopenController
         return $request->respond();
     }
 }
+
