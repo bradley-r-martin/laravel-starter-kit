@@ -34,6 +34,7 @@ final class RouteListViewRequest extends FormRequest
         $status = $this->string('routes_status')->toString();
 
         $routes = Route::query()
+            ->owned()
             ->with(['territory:id,name', 'operator:id,name'])
             ->filterBySearch($this->string('routes_search')->toString())
             ->when($status !== '', fn (Builder $query): Builder => $query->where(fn (Builder $q) => $q

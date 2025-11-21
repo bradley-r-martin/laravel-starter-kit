@@ -29,8 +29,6 @@ final class SiteCreateProcessRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'territory_id' => 'required|string|exists:territories,id',
-            'operator_id' => 'required|string|exists:operators,id',
             'route_id' => 'nullable|string|exists:routes,id',
             'order' => 'sometimes|integer|min:0',
             'name' => 'required|string|max:255',
@@ -42,8 +40,18 @@ final class SiteCreateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        /** @var array{territory_id: string, operator_id: string, route_id?: string|null, order?: int, name: string, address?: array<string, mixed>|null, opening_hours?: array<int|string, mixed>|null, manager_code?: string|null} $data */
+        /** @var array{route_id?: string|null, order?: int, name: string, address?: array<string, mixed>|null, opening_hours?: array<int|string, mixed>|null, manager_code?: string|null} $data */
         $data = $this->validated();
+
+        /** @var \App\Models\User $user */
+        $user = $this->user();
+
+        $operator = $user->operator;
+        $territory = $user->territory();
+
+        if (! $operator) {
+            abort(403, 'User must be associated with an operator');
+        }
 
         $siteId = (string) Str::ulid();
 
@@ -59,8 +67,8 @@ final class SiteCreateProcessRequest extends FormRequest
 
         SiteAggregate::retrieve($siteId)
             ->create(
-                territoryId: $data['territory_id'],
-                operatorId: $data['operator_id'],
+                territoryId: $territory->id,
+                operatorId: $operator->id,
                 routeId: $data['route_id'] ?? null,
                 order: $data['order'] ?? 0,
                 name: $data['name'],

@@ -40,6 +40,7 @@ final class SiteChangeRouteViewRequest extends FormRequest
             ->findOrFail($siteId);
 
         $routes = Route::query()
+            ->owned()
             ->orderBy('name')
             ->get(['id', 'name'])
             ->map(fn (Route $route): array => [

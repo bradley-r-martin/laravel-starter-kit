@@ -7,29 +7,14 @@ import { ModalContent } from '@/Components/ModalContent';
 import ModalHeader from '@/Components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Button, Select, Stack, TextInput } from '@mantine/core';
+import { Button, Stack, TextInput } from '@mantine/core';
 import { RouteIcon } from 'lucide-react';
 
-interface Territory {
-    id: string;
-    name: string;
-}
+interface CreateProps {}
 
-interface Operator {
-    id: string;
-    name: string;
-}
-
-interface CreateProps {
-    territories: Territory[];
-    operators: Operator[];
-}
-
-export default function Create({ territories, operators }: CreateProps) {
+export default function Create({}: CreateProps) {
     const modal = useModal();
     const form = useForm({
-        territory_id: '',
-        operator_id: '',
         name: '',
         schedule: null as string | null,
     });
@@ -62,32 +47,6 @@ export default function Create({ territories, operators }: CreateProps) {
                                             name="name"
                                             placeholder="Enter route name"
                                             autoFocus
-                                        />
-                                    </Field>
-
-                                    <Field name="territory_id" type="select">
-                                        <Select
-                                            label="Territory"
-                                            name="territory_id"
-                                            placeholder="Select territory"
-                                            data={territories.map((territory) => ({
-                                                value: territory.id,
-                                                label: territory.name,
-                                            }))}
-                                            searchable
-                                        />
-                                    </Field>
-
-                                    <Field name="operator_id" type="select">
-                                        <Select
-                                            label="Operator"
-                                            name="operator_id"
-                                            placeholder="Select operator"
-                                            data={operators.map((operator) => ({
-                                                value: operator.id,
-                                                label: operator.name,
-                                            }))}
-                                            searchable
                                         />
                                     </Field>
 

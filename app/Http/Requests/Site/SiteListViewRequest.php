@@ -34,6 +34,7 @@ final class SiteListViewRequest extends FormRequest
         $status = $this->string('sites_status')->toString();
 
         $sites = Site::query()
+            ->owned()
             ->with(['territory:id,name', 'operator:id,name', 'route:id,name'])
             ->filterSortBy($this->string('sites_sort')->toString())
             ->filterBySearch($this->string('sites_search')->toString())

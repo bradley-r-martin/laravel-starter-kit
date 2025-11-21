@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Snackware;
 
-use App\Models\Operator;
-use App\Models\Territory;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,27 +29,8 @@ final class SnackwareCreateViewRequest extends FormRequest
 
     public function respond(): Response
     {
-        $territories = Territory::query()
-            ->orderBy('name')
-            ->get(['id', 'name'])
-            ->map(fn (Territory $territory): array => [
-                'id' => $territory->id,
-                'name' => $territory->name,
-            ]);
-
-        $operators = Operator::query()
-            ->orderBy('name')
-            ->get(['id', 'name'])
-            ->map(fn (Operator $operator): array => [
-                'id' => $operator->id,
-                'name' => $operator->name,
-            ]);
-
         return inertia()
-            ->modal('Snackware/Create', [
-                'territories' => $territories,
-                'operators' => $operators,
-            ])
+            ->modal('Snackware/Create', [])
             ->baseRoute('snackwares.index')
             ->toResponse($this);
     }

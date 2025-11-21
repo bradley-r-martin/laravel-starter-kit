@@ -34,6 +34,7 @@ final class SnackwareListViewRequest extends FormRequest
         $status = $this->string('snackwares_status')->toString();
 
         $snackwares = Snackware::query()
+            ->owned()
             ->with(['territory:id,name', 'operator:id,name'])
             ->filterSortBy($this->string('snackwares_sort')->toString())
             ->filterBySearch($this->string('snackwares_search')->toString())

@@ -28,8 +28,6 @@ final class RouteCreateProcessRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'territory_id' => 'required|string|exists:territories,id',
-            'operator_id' => 'required|string|exists:operators,id',
             'name' => 'required|string|max:255',
             'schedule' => 'nullable|string',
         ];
@@ -37,8 +35,18 @@ final class RouteCreateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        /** @var array{territory_id: string, operator_id: string, name: string, schedule?: string|null} $data */
+        /** @var array{name: string, schedule?: string|null} $data */
         $data = $this->validated();
+
+        /** @var \App\Models\User $user */
+        $user = $this->user();
+
+        $operator = $user->operator;
+        $territory = $user->territory();
+
+        if (! $operator) {
+            abort(403, 'User must be associated with an operator');
+        }
 
         $routeId = (string) Str::ulid();
 
@@ -49,8 +57,8 @@ final class RouteCreateProcessRequest extends FormRequest
 
         RouteAggregate::retrieve($routeId)
             ->create(
-                territoryId: $data['territory_id'],
-                operatorId: $data['operator_id'],
+                territoryId: $territory->id,
+                operatorId: $operator->id,
                 name: $data['name'],
                 schedule: $schedule,
             )

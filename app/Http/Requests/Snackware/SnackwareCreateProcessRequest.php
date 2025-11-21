@@ -27,8 +27,6 @@ final class SnackwareCreateProcessRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'territory_id' => 'required|string|exists:territories,id',
-            'operator_id' => 'required|string|exists:operators,id',
             'name' => 'required|string|max:255',
             'type' => 'sometimes|string|max:255',
             'icon' => 'nullable|string|max:255',
@@ -38,15 +36,25 @@ final class SnackwareCreateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        /** @var array{territory_id: string, operator_id: string, name: string, type?: string, icon?: string|null, price?: int} $data */
+        /** @var array{name: string, type?: string, icon?: string|null, price?: int} $data */
         $data = $this->validated();
+
+        /** @var \App\Models\User $user */
+        $user = $this->user();
+
+        $operator = $user->operator;
+        $territory = $user->territory();
+
+        if (! $operator) {
+            abort(403, 'User must be associated with an operator');
+        }
 
         $snackwareId = (string) Str::ulid();
 
         SnackwareAggregate::retrieve($snackwareId)
             ->create(
-                territoryId: $data['territory_id'],
-                operatorId: $data['operator_id'],
+                territoryId: $territory->id,
+                operatorId: $operator->id,
                 name: $data['name'],
                 type: $data['type'] ?? 'box',
                 icon: $data['icon'] ?? null,

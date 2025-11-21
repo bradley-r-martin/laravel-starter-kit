@@ -10,12 +10,22 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Session;
 
 final class Snackware extends Model
 {
     use HasUlids;
 
     protected $table = 'snackware';
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeOwned(Builder $query): Builder
+    {
+        return $query->where('territory_id', Session::get('selected_territory'));
+    }
 
     /**
      * @param  Builder<self>  $query
