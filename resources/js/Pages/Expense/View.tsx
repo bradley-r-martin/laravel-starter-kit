@@ -8,7 +8,7 @@ import Navigate from '@/Components/Navigate';
 import { Page } from '@/Components/Page';
 import { InertiaView } from '@/Types';
 import { Badge, Button, Stack, Table } from '@mantine/core';
-import { ArrowLeftIcon, TrashIcon } from 'lucide-react';
+import { ArrowLeftIcon, MailWarning } from 'lucide-react';
 
 interface ExpenseItem {
     id: string;
@@ -46,6 +46,9 @@ interface ViewProps {
 
 const View: InertiaView<ViewProps> = (props) => {
     const { expense } = props;
+
+    const completable = expense.expense_items.every((item) => item.product);
+    const itemsLeft = expense.expense_items.filter((item) => !item.product).length;
 
     return (
         <Page>
@@ -147,21 +150,50 @@ const View: InertiaView<ViewProps> = (props) => {
                             <div className="text-xs uppercase">Total Royalty</div>
                         </div>
                     </div>
+
+                    <div className="mx-auto flex items-center space-x-2 text-amber-600">
+                        <MailWarning className="size-5 shrink-0 text-amber-500" />
+                        <div className="max-w-72 text-xs">
+                            {itemsLeft} {itemsLeft > 1 ? 'items need' : 'item needs'} to be assigned
+                            to {itemsLeft > 1 ? 'products' : 'a product'}.
+                        </div>
+                    </div>
+
                     <ActionWell>
                         <ActionWell.Row>
-                            {!expense.completed_at && (
-                                <Navigate type="modal" href={route('expenses.destroy', expense.id)}>
-                                    <Button
-                                        variant="light"
-                                        color="red"
-                                        leftSection={<TrashIcon className="size-4" />}
-                                    >
-                                        Destroy Expense
-                                    </Button>
-                                </Navigate>
-                            )}
+                            <Navigate type="modal" href={route('expenses.destroy', expense.id)}>
+                                <Button
+                                    disabled={!!expense.completed_at || !completable}
+                                    variant="filled"
+                                    color="blue"
+                                >
+                                    Mark as complete
+                                </Button>
+                            </Navigate>
+                        </ActionWell.Row>
+                        <ActionWell.Row>
+                            <Navigate type="modal" href={route('expenses.destroy', expense.id)}>
+                                <Button
+                                    variant="light"
+                                    color="zinc"
+                                    disabled={!!expense.completed_at}
+                                >
+                                    Change details
+                                </Button>
+                            </Navigate>
+                            <ActionWell.Divider />
+                            <Navigate type="modal" href={route('expenses.destroy', expense.id)}>
+                                <Button
+                                    variant="light"
+                                    color="zinc"
+                                    disabled={!!expense.completed_at}
+                                >
+                                    Cancel expense
+                                </Button>
+                            </Navigate>
                         </ActionWell.Row>
                     </ActionWell>
+
                     <Stack>
                         <DescriptionList>
                             <DescriptionList.Title>Details</DescriptionList.Title>
