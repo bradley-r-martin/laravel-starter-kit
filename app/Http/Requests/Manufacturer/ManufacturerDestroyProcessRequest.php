@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Manufacturer;
 
-use App\Aggregates\ManufacturerAggregate;
-use App\Models\Manufacturer;
+use App\Actions\ManufacturerActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,17 +32,10 @@ final class ManufacturerDestroyProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $manufacturerId = (string) $this->route('manufacturer');
-        $manufacturer = Manufacturer::query()->select(['id'])->findOrFail($manufacturerId);
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
+        $this->validated();
 
-        ManufacturerAggregate::retrieve($manufacturer->id)
-            ->destroy(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new ManufacturerActions((string) $this->route('manufacturer'))->destroy();
 
         return redirect()
             ->route('manufacturers.index')

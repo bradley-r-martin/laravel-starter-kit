@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Manufacturer;
 
-use App\Aggregates\ManufacturerAggregate;
+use App\Actions\ManufacturerActions;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ManufacturerCreateProcessRequest extends FormRequest
@@ -36,13 +35,7 @@ final class ManufacturerCreateProcessRequest extends FormRequest
         /** @var array{name: string} $data */
         $data = $this->validated();
 
-        $manufacturerId = (string) Str::ulid();
-
-        ManufacturerAggregate::retrieve($manufacturerId)
-            ->create(
-                name: $data['name'],
-            )
-            ->persist();
+        ManufacturerActions::create($data);
 
         return redirect()
             ->route('manufacturers.index')

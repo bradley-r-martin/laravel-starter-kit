@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Manufacturer;
 
-use App\Aggregates\ManufacturerAggregate;
-use App\Models\Manufacturer;
+use App\Actions\ManufacturerActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,17 +32,10 @@ final class ManufacturerUpdateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        /** @var Manufacturer $manufacturer */
-        $manufacturer = Manufacturer::findOrFail($this->route('manufacturer'));
-
         /** @var array{name?: string|null} $data */
         $data = $this->validated();
 
-        ManufacturerAggregate::retrieve($manufacturer->id)
-            ->update(
-                name: $data['name'] ?? null,
-            )
-            ->persist();
+        new ManufacturerActions((string) $this->route('manufacturer'))->update($data);
 
         return redirect()
             ->route('manufacturers.index')

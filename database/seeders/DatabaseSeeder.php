@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Actions\ManufacturerActions;
 use App\Actions\OperatorActions;
 use App\Actions\ProductTypeActions;
 use App\Actions\TerritoryActions;
@@ -31,6 +32,10 @@ final class DatabaseSeeder extends Seeder
         ProductTypeActions::create([
             'name' => 'Test Product Type',
             'description' => 'Test Product Type Description',
+        ]);
+
+        ManufacturerActions::create([
+            'name' => 'Test Manufacturer',
         ]);
 
         User::create([
