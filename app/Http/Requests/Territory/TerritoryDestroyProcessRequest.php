@@ -53,4 +53,3 @@ final class TerritoryDestroyProcessRequest extends FormRequest
             ]);
     }
 }
-

@@ -14,4 +14,3 @@ final class TerritoryCreated extends ShouldBeStored
         public string $name,
     ) {}
 }
-

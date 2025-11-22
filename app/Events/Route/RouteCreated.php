@@ -16,4 +16,3 @@ final class RouteCreated extends ShouldBeStored
         public ?Schedule $schedule = null,
     ) {}
 }
-

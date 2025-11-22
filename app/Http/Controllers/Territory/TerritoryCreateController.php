@@ -20,4 +20,3 @@ final class TerritoryCreateController
         return $request->respond();
     }
 }
-

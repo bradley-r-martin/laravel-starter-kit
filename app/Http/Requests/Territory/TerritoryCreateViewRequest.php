@@ -57,4 +57,3 @@ final class TerritoryCreateViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
-

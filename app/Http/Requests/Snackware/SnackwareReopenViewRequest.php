@@ -49,4 +49,3 @@ final class SnackwareReopenViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
-

@@ -17,4 +17,3 @@ final class SnackwareCreated extends ShouldBeStored
         public int $price = 0,
     ) {}
 }
-

@@ -85,4 +85,3 @@ export default function Close({ territory }: Props) {
         </>
     );
 }
-

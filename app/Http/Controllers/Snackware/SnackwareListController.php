@@ -14,4 +14,3 @@ final class SnackwareListController
         return $request->respond();
     }
 }
-

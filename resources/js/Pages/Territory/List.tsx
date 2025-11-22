@@ -245,4 +245,3 @@ const List: InertiaView<ListProps> = ({ territories }) => {
 List.layout = [AppLayout];
 
 export default List;
-

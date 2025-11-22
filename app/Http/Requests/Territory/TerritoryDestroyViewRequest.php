@@ -44,4 +44,3 @@ final class TerritoryDestroyViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
-

@@ -44,4 +44,3 @@ final class TerritoryReopenViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
-

@@ -129,7 +129,7 @@ describe('Role Management', function (): void {
 
             $this->as($user, $territory)->visit("/roles/{$role->id}/update")
                 ->fill('name', 'Changed Name')
-                ->press('Cancel')
+                ->press('data-testid=cancel-action')
                 ->assertPathIs('/roles')
                 ->assertSee('Roles')
                 ->assertNoJavascriptErrors();

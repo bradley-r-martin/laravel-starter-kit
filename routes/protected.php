@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Authentication\AuthenticationTerritoryController;
+use App\Http\Controllers\Expense\ExpenseCreateController;
+use App\Http\Controllers\Expense\ExpenseDestroyController;
+use App\Http\Controllers\Expense\ExpenseDetailController;
+use App\Http\Controllers\Expense\ExpenseListController;
 use App\Http\Controllers\Manufacturer\ManufacturerCloseController;
 use App\Http\Controllers\Manufacturer\ManufacturerCreateController;
 use App\Http\Controllers\Manufacturer\ManufacturerDestroyController;
@@ -260,6 +264,15 @@ Route::middleware('territory')->group(function () {
         Route::post('/', [PushSubscriptionCreateController::class, 'process'])->name('create');
         Route::post('/check', [PushSubscriptionCheckController::class, 'process'])->name('check');
         Route::delete('/', [PushSubscriptionDeleteController::class, 'process'])->name('delete');
+    });
+
+    Route::prefix('expenses')->name('expenses.')->group(function () {
+        Route::get('/', [ExpenseListController::class, 'view'])->name('index');
+        Route::get('/create', [ExpenseCreateController::class, 'view'])->name('create');
+        Route::post('/create', [ExpenseCreateController::class, 'process'])->name('store');
+        Route::get('/{expense}', [ExpenseDetailController::class, 'view'])->name('show');
+        Route::get('/{expense}/destroy', [ExpenseDestroyController::class, 'view'])->name('destroy');
+        Route::delete('/{expense}/destroy', [ExpenseDestroyController::class, 'process'])->name('destroy');
     });
 
     Route::get('/dashboard', function () {

@@ -62,4 +62,3 @@ final class SiteChangeRouteProcessRequest extends FormRequest
             ]);
     }
 }
-

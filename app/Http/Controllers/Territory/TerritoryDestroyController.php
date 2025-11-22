@@ -20,4 +20,3 @@ final class TerritoryDestroyController
         return $request->respond();
     }
 }
-

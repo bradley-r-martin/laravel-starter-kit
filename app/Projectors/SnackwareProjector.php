@@ -89,4 +89,3 @@ final class SnackwareProjector extends Projector
         $snackware->delete();
     }
 }
-

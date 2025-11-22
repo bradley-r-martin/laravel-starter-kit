@@ -52,4 +52,3 @@ final class SnackwareUpdateViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
-

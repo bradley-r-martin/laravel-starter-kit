@@ -12,4 +12,3 @@ final class SiteRouteChanged extends ShouldBeStored
         public ?string $routeId,
     ) {}
 }
-

@@ -20,4 +20,3 @@ final class SnackwareCreateController
         return $request->respond();
     }
 }
-

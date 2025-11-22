@@ -49,4 +49,3 @@ final class SnackwareDestroyViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
-

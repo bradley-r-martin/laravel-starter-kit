@@ -12,4 +12,3 @@ final class SnackwareClosed extends ShouldBeStored
         public string $reason,
     ) {}
 }
-

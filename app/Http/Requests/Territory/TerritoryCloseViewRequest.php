@@ -44,4 +44,3 @@ final class TerritoryCloseViewRequest extends FormRequest
             ->toResponse($this);
     }
 }
-

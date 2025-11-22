@@ -14,4 +14,3 @@ final class TerritoryListController
         return $request->respond();
     }
 }
-
