@@ -22,17 +22,10 @@ import {
 interface Territory {
     id: string;
     name: string;
-    operator: {
-        id: string;
-        name: string | null;
-    } | null;
-    merchant_account: {
-        id: string;
-        provider: string;
-    } | null;
     last_transaction_at: string | null;
     closed_at: string | null;
     created_at: string;
+    __operator_name: string;
 }
 
 interface ListProps {
@@ -61,7 +54,7 @@ const List: InertiaView<ListProps> = ({ territories }) => {
             dataSpan: 'hidden',
             render: (territory) => (
                 <Text size="sm" c="dimmed">
-                    {territory.operator?.name ?? '—'}
+                    {territory.__operator_name ?? '—'}
                 </Text>
             ),
         },
@@ -69,16 +62,11 @@ const List: InertiaView<ListProps> = ({ territories }) => {
             header: 'Merchant Account',
             accessor: 'merchant_account',
             dataSpan: 'hidden',
-            render: (territory) =>
-                territory.merchant_account ? (
-                    <Badge variant="light" color="blue">
-                        {territory.merchant_account.provider}
-                    </Badge>
-                ) : (
-                    <Text size="sm" c="dimmed">
-                        —
-                    </Text>
-                ),
+            render: () => (
+                <Text size="sm" c="dimmed">
+                    —
+                </Text>
+            ),
         },
         {
             header: 'Last Transaction',
