@@ -6,6 +6,7 @@ namespace App\Http\Requests\Product;
 
 use App\Aggregates\ProductAggregate;
 use App\Domain\File;
+use App\Rules\FileRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,20 +38,21 @@ final class ProductCreateProcessRequest extends FormRequest
             'price' => ['required', 'integer', 'min:0'],
             'rebate' => ['nullable', 'numeric', 'min:0'],
             'royalty' => ['nullable', 'numeric', 'min:0'],
-            'avatar' => ['sometimes', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'avatar' => ['sometimes', 'nullable', new FileRule()],
         ];
     }
 
     public function respond(): Response
     {
-        /** @var array{product_type_id: string, manufacturer_id: string, name: string, sku: string, units?: int|null, cost: int, price: int, rebate?: float|null, royalty?: float|null, avatar?: File|null} $data */
-        $data = $this->validated();
+        $this->validated();
 
         $productId = (string) Str::ulid();
 
-        if ($this->hasFile('avatar')) {
-            $file = File::fromUploadedFile($this->file('avatar'), 'public');
-            $data['avatar'] = $file;
+        $avatar = null;
+        if ($this->filled('avatar')) {
+            /** @var array<string, int|string|null>|null $avatarInput */
+            $avatarInput = $this->input('avatar');
+            $avatar = File::fromArray($avatarInput)->persist();
         }
 
         ProductAggregate::retrieve($productId)
@@ -64,7 +66,7 @@ final class ProductCreateProcessRequest extends FormRequest
                 price: $this->integer('price'),
                 rebate: $this->float('rebate'),
                 royalty: $this->float('royalty'),
-                avatar: $this->file('avatar') ? File::fromUploadedFile($this->file('avatar'), 'public') : null,
+                avatar: $avatar,
             )
             ->persist();
 

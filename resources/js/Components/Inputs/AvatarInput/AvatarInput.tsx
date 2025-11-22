@@ -1,35 +1,65 @@
 import useUploadPreview from '@/Hooks/useUploadPreview';
-import { ActionIcon, Button, FileButton, FileButtonProps, Input } from '@mantine/core';
+import FileUploadService from '@/Services/FileUploadService';
+import { ActionIcon, Button, FileButton, FileButtonProps, Input, Loader } from '@mantine/core';
 import { X } from 'lucide-react';
-import { forwardRef } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
+
+import { UploadedFile } from '@/Types';
 
 export interface AvatarInputProps extends Omit<FileButtonProps, 'value' | 'onChange' | 'children'> {
     label?: string;
-    value?:
-        | File
-        | { path: string; disk: string; mime_type: string; size: number; filename: string }
-        | null;
+    value?: UploadedFile | null;
     error?: string;
-    onChange?: (
-        value:
-            | File
-            | { path: string; disk: string; mime_type: string; size: number; filename: string }
-            | null
-    ) => void;
+    onChange?: (value: UploadedFile | null) => void;
 }
 
 export const AvatarInput = forwardRef<HTMLButtonElement, AvatarInputProps>((props) => {
     const { onChange, ...restProps } = props;
+    const [uploading, setUploading] = useState(false);
+    // Keep the uploaded file object for preview (same format as persisted files)
+    const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
 
-    const preview = useUploadPreview(restProps.value as File | null);
-    const hasValue = Boolean(restProps.value);
+    // Clear uploaded file when value is explicitly cleared (null)
+    useEffect(() => {
+        if (restProps.value === null) {
+            setUploadedFile(null);
+        }
+    }, [restProps.value]);
+
+    // For preview, use uploaded file object if available, otherwise use the value
+    const previewValue = uploadedFile || restProps.value || null;
+    const preview = useUploadPreview(previewValue);
+    const hasValue = Boolean(restProps.value) || Boolean(uploadedFile);
 
     return (
         <>
             <Input.Wrapper {...restProps}>
                 <FileButton
-                    onChange={(file) => onChange?.(file)}
+                    onChange={async (file) => {
+                        if (!file) {
+                            onChange?.(null);
+                            return;
+                        }
+
+                        setUploading(true);
+                        try {
+                            const uploadedFileResponse = await FileUploadService.upload(file);
+                            // Store the uploaded file object for preview (same format as persisted files)
+                            setUploadedFile(uploadedFileResponse);
+                            // Store the full file object in form for submission
+                            onChange?.(uploadedFileResponse);
+                        } catch (error) {
+                            console.error('File upload failed:', error);
+                            // Clear uploaded file on error
+                            setUploadedFile(null);
+                            // Set to null on error
+                            onChange?.(null);
+                        } finally {
+                            setUploading(false);
+                        }
+                    }}
                     accept="image/jpeg, image/png, image/jpg"
+                    disabled={uploading}
                 >
                     {(p) => (
                         <div className="flex items-center gap-x-3">
@@ -73,8 +103,15 @@ export const AvatarInput = forwardRef<HTMLButtonElement, AvatarInputProps>((prop
                                     color={props?.error ? 'red' : 'gray'}
                                     radius="xl"
                                     {...p}
+                                    disabled={uploading}
                                 >
-                                    {hasValue ? 'Change' : 'Select'}
+                                    {uploading ? (
+                                        <Loader size="xs" />
+                                    ) : hasValue ? (
+                                        'Change'
+                                    ) : (
+                                        'Select'
+                                    )}
                                 </Button>
                                 {hasValue && (
                                     <ActionIcon
@@ -86,7 +123,10 @@ export const AvatarInput = forwardRef<HTMLButtonElement, AvatarInputProps>((prop
                                         variant="light"
                                         color="gray"
                                         radius="xl"
-                                        onClick={() => onChange?.(null)}
+                                        onClick={() => {
+                                            setUploadedFile(null);
+                                            onChange?.(null);
+                                        }}
                                     >
                                         <X className="size-3.5" />
                                     </ActionIcon>

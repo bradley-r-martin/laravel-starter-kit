@@ -55,6 +55,71 @@ final class File
         );
     }
 
+    public static function fromTemporaryUpload(string $uuid, string $targetDisk = 'public', string $targetDirectory = ''): ?self
+    {
+        // Find the file in temp directory by UUID (temp files are now stored in public disk)
+        $files = Storage::disk('public')->files('temp');
+
+        foreach ($files as $file) {
+            // Ensure $file is a string (Storage::files() returns string[])
+            if (! is_string($file)) {
+                continue;
+            }
+
+            $filename = basename($file);
+            // Check if filename starts with the UUID (format: uuid.extension)
+            if (str_starts_with($filename, $uuid.'.')) {
+                $extension = pathinfo($filename, PATHINFO_EXTENSION);
+                $newPath = ($targetDirectory !== '' && $targetDirectory !== '0' ? $targetDirectory.'/' : '').$uuid.'.'.$extension;
+
+                // Move file from temp to target location
+                $contents = Storage::disk('public')->get($file);
+                if ($contents === null) {
+                    return null;
+                }
+
+                Storage::disk($targetDisk)->put($newPath, $contents);
+
+                // Get file info
+                $mimeType = Storage::disk($targetDisk)->mimeType($newPath);
+                $size = Storage::disk($targetDisk)->size($newPath);
+
+                // Delete temp file
+                Storage::disk('public')->delete($file);
+
+                return new self(
+                    path: $newPath,
+                    disk: $targetDisk,
+                    mime_type: $mimeType ?: null,
+                    size: $size ?: null,
+                    filename: $filename,
+                );
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Persist the file from temporary storage to the target disk if it's in temporary storage.
+     * Returns the persisted file instance or the original file if it's already persisted.
+     */
+    public function persist(string $targetDisk = 'public', string $targetDirectory = ''): self
+    {
+        // If not a temporary file, return itself
+        if ($this->path === null || $this->path === '' || $this->path === '0' || ! str_starts_with($this->path, 'temp/')) {
+            return $this;
+        }
+
+        // Extract UUID from path (format: temp/uuid.extension)
+        $uuid = basename($this->path, '.'.pathinfo($this->path, PATHINFO_EXTENSION));
+
+        $persistedFile = self::fromTemporaryUpload($uuid, $targetDisk, $targetDirectory);
+
+        // Return the persisted file if successful, otherwise return original
+        return $persistedFile ?? $this;
+    }
+
     /**
      * @return array<string, string|int|null>
      */

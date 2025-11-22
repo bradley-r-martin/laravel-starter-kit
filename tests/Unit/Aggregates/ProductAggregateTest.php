@@ -58,18 +58,21 @@ it('can update a product', function () {
             rebate: 0.05,
             royalty: 0.10,
         )
-        ->update(
-            name: 'Updated Product',
-            price: 250,
-        );
+        ->update([
+            'name' => 'Updated Product',
+            'price' => 250,
+        ]);
 
     $events = $aggregate->getRecordedEvents();
     expect($events)->toHaveCount(2);
 
     $event = $events[1];
     expect($event)->toBeInstanceOf(ProductUpdated::class);
-    expect($event->name)->toBe('Updated Product');
-    expect($event->price)->toBe(250);
+    expect($event->getName())->toBe('Updated Product');
+    expect($event->getPrice())->toBe(250);
+    expect($event->hasChange('name'))->toBe(true);
+    expect($event->hasChange('price'))->toBe(true);
+    expect($event->hasChange('sku'))->toBe(false);
 });
 
 it('can close a product', function () {
@@ -146,6 +149,77 @@ it('can destroy a product', function () {
     $event = $events[1];
     expect($event)->toBeInstanceOf(ProductDestroyed::class);
     expect($event->reason)->toBe('Obsolete');
+});
+
+it('can clear fields with null values', function () {
+    $productId = (string) Str::ulid();
+
+    $aggregate = ProductAggregate::retrieve($productId)
+        ->create(
+            productTypeId: 'product-type-id',
+            manufacturerId: 'manufacturer-id',
+            name: 'Test Product',
+            sku: 'TEST-001',
+            units: 12,
+            cost: 100,
+            price: 200,
+            rebate: 0.05,
+            royalty: 0.10,
+        )
+        ->update([
+            'sku' => null,
+            'rebate' => null,
+        ]);
+
+    $events = $aggregate->getRecordedEvents();
+    expect($events)->toHaveCount(2);
+
+    $event = $events[1];
+    expect($event)->toBeInstanceOf(ProductUpdated::class);
+    expect($event->hasChange('sku'))->toBe(true);
+    expect($event->getSku())->toBeNull();
+    expect($event->hasChange('rebate'))->toBe(true);
+    expect($event->getRebate())->toBeNull();
+
+    // Apply the event to verify state
+    $reflector = new ReflectionClass($aggregate);
+    $method = $reflector->getMethod('applyProductUpdated');
+    $method->setAccessible(true);
+    $method->invoke($aggregate, $event);
+
+    expect($aggregate->sku)->toBeNull();
+    expect($aggregate->rebate)->toBeNull();
+    expect($aggregate->name)->toBe('Test Product'); // Other fields unchanged
+});
+
+it('only records changes for fields that actually changed', function () {
+    $productId = (string) Str::ulid();
+
+    $aggregate = ProductAggregate::retrieve($productId)
+        ->create(
+            productTypeId: 'product-type-id',
+            manufacturerId: 'manufacturer-id',
+            name: 'Test Product',
+            sku: 'TEST-001',
+            units: 12,
+            cost: 100,
+            price: 200,
+            rebate: 0.05,
+            royalty: 0.10,
+        )
+        ->update([
+            'name' => 'Test Product', // Same value, should not be recorded
+            'price' => 250, // Changed, should be recorded
+        ]);
+
+    $events = $aggregate->getRecordedEvents();
+    expect($events)->toHaveCount(2);
+
+    $event = $events[1];
+    expect($event)->toBeInstanceOf(ProductUpdated::class);
+    expect($event->hasChange('name'))->toBe(false);
+    expect($event->hasChange('price'))->toBe(true);
+    expect($event->getPrice())->toBe(250);
 });
 
 it('tracks aggregate state correctly', function () {

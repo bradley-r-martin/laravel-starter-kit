@@ -7,6 +7,7 @@ use App\Http\Controllers\Expense\ExpenseCreateController;
 use App\Http\Controllers\Expense\ExpenseDestroyController;
 use App\Http\Controllers\Expense\ExpenseDetailController;
 use App\Http\Controllers\Expense\ExpenseListController;
+use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\Manufacturer\ManufacturerCloseController;
 use App\Http\Controllers\Manufacturer\ManufacturerCreateController;
 use App\Http\Controllers\Manufacturer\ManufacturerDestroyController;
@@ -274,6 +275,8 @@ Route::middleware('territory')->group(function () {
         Route::get('/{expense}/destroy', [ExpenseDestroyController::class, 'view'])->name('destroy');
         Route::delete('/{expense}/destroy', [ExpenseDestroyController::class, 'process'])->name('destroy');
     });
+
+    Route::post('/file-upload', [FileUploadController::class, 'process'])->name('file-upload');
 
     Route::get('/dashboard', function () {
         return inertia('Dashboard');

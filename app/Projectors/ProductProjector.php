@@ -60,64 +60,101 @@ final class ProductProjector extends Projector
 
         $updates = [];
 
-        if ($event->productTypeId !== null) {
-            // Update product type counts if the product type changed
-            $oldProductType = ProductType::findOrFail($product->product_type_id);
-            $newProductType = ProductType::findOrFail($event->productTypeId);
+        if ($event->hasChange('product_type_id')) {
+            $newProductTypeId = $event->getProductTypeId();
 
-            if ($product->product_type_id !== $event->productTypeId) {
-                $oldProductType->decrement('__products_count');
-                $newProductType->increment('__products_count');
+            if ($newProductTypeId !== null) {
+                // Update product type counts if the product type changed
+                // @phpstan-ignore-next-line notIdentical.alwaysTrue
+                if ($product->product_type_id !== null && $product->product_type_id !== $newProductTypeId) {
+                    $oldProductType = ProductType::findOrFail($product->product_type_id);
+                    $oldProductType->decrement('__products_count');
+                }
+
+                $newProductType = ProductType::findOrFail($newProductTypeId);
+
+                if ($product->product_type_id !== $newProductTypeId) {
+                    $newProductType->increment('__products_count');
+                }
+
+                $updates['product_type_id'] = $newProductTypeId;
+                $updates['__product_type_name'] = $newProductType->name;
+            } else {
+                // If product_type_id is being cleared, decrement the old count
+                // @phpstan-ignore-next-line notIdentical.alwaysTrue
+                if ($product->product_type_id !== null) {
+                    $oldProductType = ProductType::findOrFail($product->product_type_id);
+                    $oldProductType->decrement('__products_count');
+                }
+
+                $updates['product_type_id'] = null;
+                $updates['__product_type_name'] = null;
             }
-
-            $updates['product_type_id'] = $event->productTypeId;
-            $updates['__product_type_name'] = $newProductType->name;
         }
 
-        if ($event->manufacturerId !== null) {
-            // Update manufacturer counts if the manufacturer changed
-            $oldManufacturer = Manufacturer::findOrFail($product->manufacturer_id);
-            $newManufacturer = Manufacturer::findOrFail($event->manufacturerId);
+        if ($event->hasChange('manufacturer_id')) {
+            $newManufacturerId = $event->getManufacturerId();
 
-            if ($product->manufacturer_id !== $event->manufacturerId) {
-                $oldManufacturer->decrement('__products_count');
-                $newManufacturer->increment('__products_count');
+            if ($newManufacturerId !== null) {
+                // Update manufacturer counts if the manufacturer changed
+                // @phpstan-ignore-next-line notIdentical.alwaysTrue
+                if ($product->manufacturer_id !== null && $product->manufacturer_id !== $newManufacturerId) {
+                    $oldManufacturer = Manufacturer::findOrFail($product->manufacturer_id);
+                    $oldManufacturer->decrement('__products_count');
+                }
+
+                $newManufacturer = Manufacturer::findOrFail($newManufacturerId);
+
+                if ($product->manufacturer_id !== $newManufacturerId) {
+                    $newManufacturer->increment('__products_count');
+                }
+
+                $updates['manufacturer_id'] = $newManufacturerId;
+                $updates['__manufacturer_name'] = $newManufacturer->name;
+            } else {
+                // If manufacturer_id is being cleared, decrement the old count
+                // @phpstan-ignore-next-line notIdentical.alwaysTrue
+                if ($product->manufacturer_id !== null) {
+                    $oldManufacturer = Manufacturer::findOrFail($product->manufacturer_id);
+                    $oldManufacturer->decrement('__products_count');
+                }
+
+                $updates['manufacturer_id'] = null;
+                $updates['__manufacturer_name'] = null;
             }
-
-            $updates['manufacturer_id'] = $event->manufacturerId;
-            $updates['__manufacturer_name'] = $newManufacturer->name;
         }
 
-        if ($event->name !== null) {
-            $updates['name'] = $event->name;
+        if ($event->hasChange('name')) {
+            $updates['name'] = $event->getName();
         }
 
-        if ($event->sku !== null) {
-            $updates['sku'] = $event->sku;
+        if ($event->hasChange('sku')) {
+            $updates['sku'] = $event->getSku();
         }
 
-        if ($event->units !== null) {
-            $updates['units'] = $event->units;
+        if ($event->hasChange('units')) {
+            $updates['units'] = $event->getUnits();
         }
 
-        if ($event->cost !== null) {
-            $updates['cost'] = $event->cost;
+        if ($event->hasChange('cost')) {
+            $updates['cost'] = $event->getCost();
         }
 
-        if ($event->price !== null) {
-            $updates['price'] = $event->price;
+        if ($event->hasChange('price')) {
+            $updates['price'] = $event->getPrice();
         }
 
-        if ($event->rebate !== null) {
-            $updates['rebate'] = $event->rebate;
+        if ($event->hasChange('rebate')) {
+            $updates['rebate'] = $event->getRebate();
         }
 
-        if ($event->royalty !== null) {
-            $updates['royalty'] = $event->royalty;
+        if ($event->hasChange('royalty')) {
+            $updates['royalty'] = $event->getRoyalty();
         }
 
-        if ($event->avatar instanceof \App\Domain\File) {
-            $updates['avatar'] = $event->avatar->isValid() ? $event->avatar : null;
+        if ($event->hasChange('avatar')) {
+            $avatar = $event->getAvatar();
+            $updates['avatar'] = ($avatar instanceof \App\Domain\File && $avatar->isValid()) ? $avatar : null;
         }
 
         if ($updates !== []) {

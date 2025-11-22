@@ -55,7 +55,7 @@ final class ProductAggregate extends AggregateRoot
         float $royalty,
         ?File $avatar = null,
     ): self {
-        $this->recordThat(new ProductCreated(
+        $event = new ProductCreated(
             productTypeId: $productTypeId,
             manufacturerId: $manufacturerId,
             name: $name,
@@ -66,35 +66,128 @@ final class ProductAggregate extends AggregateRoot
             rebate: $rebate,
             royalty: $royalty,
             avatar: $avatar,
-        ));
+        );
+
+        $this->recordThat($event);
+
+        // Manually apply the event to update aggregate state
+        $this->applyProductCreated($event);
 
         return $this;
     }
 
-    public function update(
-        ?string $productTypeId = null,
-        ?string $manufacturerId = null,
-        ?string $name = null,
-        ?string $sku = null,
-        ?int $units = null,
-        ?int $cost = null,
-        ?int $price = null,
-        ?float $rebate = null,
-        ?float $royalty = null,
-        ?File $avatar = null,
-    ): self {
-        $this->recordThat(new ProductUpdated(
-            productTypeId: $productTypeId,
-            manufacturerId: $manufacturerId,
-            name: $name,
-            sku: $sku,
-            units: $units,
-            cost: $cost,
-            price: $price,
-            rebate: $rebate,
-            royalty: $royalty,
-            avatar: $avatar,
-        ));
+    /**
+     * @param  array{product_type_id?: string|null, manufacturer_id?: string|null, name?: string|null, sku?: string|null, units?: int|null, cost?: int|null, price?: int|null, rebate?: float|null, royalty?: float|null, avatar?: File|null}  $data
+     */
+    public function update(array $data): self
+    {
+        // Note: recordThat() automatically calls apply(), so the aggregate state
+        // should already reflect all previously recorded events.
+
+        // Filter to only include fields that are present in the input and have changed
+        $changes = [];
+
+        if (array_key_exists('product_type_id', $data)) {
+            $newValue = $data['product_type_id'];
+            if ($this->productTypeId !== $newValue) {
+                $changes['product_type_id'] = $newValue;
+            }
+        }
+
+        if (array_key_exists('manufacturer_id', $data)) {
+            $newValue = $data['manufacturer_id'];
+            if ($this->manufacturerId !== $newValue) {
+                $changes['manufacturer_id'] = $newValue;
+            }
+        }
+
+        if (array_key_exists('name', $data)) {
+            $newValue = $data['name'];
+            if ($this->name !== $newValue) {
+                $changes['name'] = $newValue;
+            }
+        }
+
+        if (array_key_exists('sku', $data)) {
+            $newValue = $data['sku'];
+            if ($this->sku !== $newValue) {
+                $changes['sku'] = $newValue;
+            }
+        }
+
+        if (array_key_exists('units', $data)) {
+            $newValue = $data['units'];
+            if ($this->units !== $newValue) {
+                $changes['units'] = $newValue;
+            }
+        }
+
+        if (array_key_exists('cost', $data)) {
+            $newValue = $data['cost'];
+            if ($this->cost !== $newValue) {
+                $changes['cost'] = $newValue;
+            }
+        }
+
+        if (array_key_exists('price', $data)) {
+            $newValue = $data['price'];
+            if ($this->price !== $newValue) {
+                $changes['price'] = $newValue;
+            }
+        }
+
+        if (array_key_exists('rebate', $data)) {
+            $newValue = $data['rebate'];
+            if ($this->rebate !== $newValue) {
+                $changes['rebate'] = $newValue;
+            }
+        }
+
+        if (array_key_exists('royalty', $data)) {
+            $newValue = $data['royalty'];
+            if ($this->royalty !== $newValue) {
+                $changes['royalty'] = $newValue;
+            }
+        }
+
+        if (array_key_exists('avatar', $data)) {
+            // For File objects, compare by their array representation or handle null
+            $currentAvatar = $this->avatar?->toArray();
+            $newAvatar = $data['avatar'] instanceof File ? $data['avatar']->toArray() : null;
+
+            // Compare arrays for equality (deep comparison)
+            $avatarChanged = false;
+            if ($currentAvatar === null && $newAvatar !== null) {
+                $avatarChanged = true;
+            } elseif ($currentAvatar !== null && $newAvatar === null) {
+                $avatarChanged = true;
+            } elseif ($currentAvatar !== null && $newAvatar !== null) {
+                // Compare the arrays - they're different if any key/value differs
+                $avatarChanged = (
+                    ($currentAvatar['path'] ?? null) !== ($newAvatar['path'] ?? null) ||
+                    ($currentAvatar['disk'] ?? null) !== ($newAvatar['disk'] ?? null) ||
+                    ($currentAvatar['mime_type'] ?? null) !== ($newAvatar['mime_type'] ?? null) ||
+                    ($currentAvatar['size'] ?? null) !== ($newAvatar['size'] ?? null) ||
+                    ($currentAvatar['filename'] ?? null) !== ($newAvatar['filename'] ?? null)
+                );
+            }
+
+            if ($avatarChanged) {
+                $changes['avatar'] = $data['avatar'];
+            }
+        }
+
+        // Only record event if there are actual changes
+        if ($changes !== []) {
+            $event = new ProductUpdated(
+                changes: $changes,
+            );
+
+            $this->recordThat($event);
+
+            // Manually apply the event to update aggregate state
+            $this->applyProductUpdated($event);
+        }
 
         return $this;
     }
@@ -129,9 +222,6 @@ final class ProductAggregate extends AggregateRoot
         return $this;
     }
 
-    /**
-     * @phpstan-ignore-next-line
-     */
     private function applyProductCreated(ProductCreated $event): void
     {
         $this->productTypeId = $event->productTypeId;
@@ -146,49 +236,48 @@ final class ProductAggregate extends AggregateRoot
         $this->avatar = $event->avatar;
     }
 
-    /**
-     * @phpstan-ignore-next-line
-     */
     private function applyProductUpdated(ProductUpdated $event): void
     {
-        if ($event->productTypeId !== null) {
-            $this->productTypeId = $event->productTypeId;
+        // Only apply changes that are present in the changes array
+        // This allows null values to clear fields when explicitly set
+        if ($event->hasChange('product_type_id')) {
+            $this->productTypeId = $event->getProductTypeId();
         }
 
-        if ($event->manufacturerId !== null) {
-            $this->manufacturerId = $event->manufacturerId;
+        if ($event->hasChange('manufacturer_id')) {
+            $this->manufacturerId = $event->getManufacturerId();
         }
 
-        if ($event->name !== null) {
-            $this->name = $event->name;
+        if ($event->hasChange('name')) {
+            $this->name = $event->getName();
         }
 
-        if ($event->sku !== null) {
-            $this->sku = $event->sku;
+        if ($event->hasChange('sku')) {
+            $this->sku = $event->getSku();
         }
 
-        if ($event->units !== null) {
-            $this->units = $event->units;
+        if ($event->hasChange('units')) {
+            $this->units = $event->getUnits();
         }
 
-        if ($event->cost !== null) {
-            $this->cost = $event->cost;
+        if ($event->hasChange('cost')) {
+            $this->cost = $event->getCost();
         }
 
-        if ($event->price !== null) {
-            $this->price = $event->price;
+        if ($event->hasChange('price')) {
+            $this->price = $event->getPrice();
         }
 
-        if ($event->rebate !== null) {
-            $this->rebate = $event->rebate;
+        if ($event->hasChange('rebate')) {
+            $this->rebate = $event->getRebate();
         }
 
-        if ($event->royalty !== null) {
-            $this->royalty = $event->royalty;
+        if ($event->hasChange('royalty')) {
+            $this->royalty = $event->getRoyalty();
         }
 
-        if ($event->avatar instanceof File) {
-            $this->avatar = $event->avatar;
+        if ($event->hasChange('avatar')) {
+            $this->avatar = $event->getAvatar();
         }
     }
 

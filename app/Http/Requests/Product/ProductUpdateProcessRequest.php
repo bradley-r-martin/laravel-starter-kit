@@ -7,6 +7,7 @@ namespace App\Http\Requests\Product;
 use App\Aggregates\ProductAggregate;
 use App\Domain\File;
 use App\Models\Product;
+use App\Rules\FileRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -28,16 +29,16 @@ final class ProductUpdateProcessRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_type_id' => ['sometimes', 'required', 'string', 'exists:product_types,id'],
-            'manufacturer_id' => ['sometimes', 'required', 'string', 'exists:manufacturers,id'],
-            'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'sku' => ['sometimes', 'required', 'string', 'max:255'],
-            'units' => ['sometimes', 'required', 'integer', 'min:1'],
-            'cost' => ['sometimes', 'required', 'integer', 'min:0'],
-            'price' => ['sometimes', 'required', 'integer', 'min:0'],
-            'rebate' => ['sometimes', 'required', 'numeric', 'min:0'],
-            'royalty' => ['sometimes', 'required', 'numeric', 'min:0'],
-            'avatar' => ['sometimes', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'product_type_id' => ['sometimes', 'string', 'exists:product_types,id'],
+            'manufacturer_id' => ['sometimes', 'string', 'exists:manufacturers,id'],
+            'name' => ['sometimes', 'string', 'max:255'],
+            'sku' => ['sometimes', 'string', 'max:255'],
+            'units' => ['sometimes', 'integer', 'min:1'],
+            'cost' => ['sometimes', 'integer', 'min:0'],
+            'price' => ['sometimes', 'integer', 'min:0'],
+            'rebate' => ['sometimes', 'numeric', 'min:0'],
+            'royalty' => ['sometimes', 'numeric', 'min:0'],
+            'avatar' => ['sometimes', 'nullable', new FileRule()],
         ];
     }
 
@@ -46,27 +47,32 @@ final class ProductUpdateProcessRequest extends FormRequest
         /** @var Product $product */
         $product = Product::findOrFail($this->route('product'));
 
-        /** @var array{product_type_id?: string|null, manufacturer_id?: string|null, name?: string|null, sku?: string|null, units?: int|null, cost?: int|null, price?: int|null, rebate?: string|null, royalty?: string|null, avatar?: File|null} $data */
         $data = $this->validated();
 
-        if ($this->hasFile('avatar')) {
-            $file = File::fromUploadedFile($this->file('avatar'), 'public');
-            $data['avatar'] = $file;
+        // Cast numeric strings to floats for rebate and royalty
+        if (array_key_exists('rebate', $data)) {
+            // @phpstan-ignore-next-line notIdentical.alwaysTrue
+            $data['rebate'] = $data['rebate'] !== null ? (float) $data['rebate'] : null;
+        }
+        if (array_key_exists('royalty', $data)) {
+            // @phpstan-ignore-next-line notIdentical.alwaysTrue
+            $data['royalty'] = $data['royalty'] !== null ? (float) $data['royalty'] : null;
         }
 
+        // Handle avatar - include it in the array even if null to allow clearing
+        if ($this->has('avatar')) {
+            $avatarInput = $this->input('avatar');
+            if ($avatarInput === null || $avatarInput === '') {
+                $data['avatar'] = null;
+            } else {
+                /** @var array<string, int|string|null>|null $avatarInput */
+                $data['avatar'] = File::fromArray($avatarInput)->persist('public');
+            }
+        }
+
+        /** @var array{product_type_id?: string|null, manufacturer_id?: string|null, name?: string|null, sku?: string|null, units?: int|null, cost?: int|null, price?: int|null, rebate?: float|null, royalty?: float|null, avatar?: File|null} $data */
         ProductAggregate::retrieve($product->id)
-            ->update(
-                productTypeId: $this->string('product_type_id')->toString(),
-                manufacturerId: $this->string('manufacturer_id')->toString(),
-                name: $this->string('name')->toString(),
-                sku: $this->string('sku')->toString(),
-                units: $this->integer('units'),
-                cost: $this->integer('cost'),
-                price: $this->integer('price'),
-                rebate: $this->float('rebate'),
-                royalty: $this->float('royalty'),
-                avatar: $this->file('avatar') ? File::fromUploadedFile($this->file('avatar'), 'public') : null,
-            )
+            ->update($data)
             ->persist();
 
         return redirect()
