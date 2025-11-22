@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Territory;
 
-use App\Aggregates\TerritoryAggregate;
+use App\Actions\TerritoryActions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -44,15 +43,11 @@ final class TerritoryCreateProcessRequest extends FormRequest
         /** @var array{operator_id: string, merchant_account_id?: string|null, name: string} $data */
         $data = $this->validated();
 
-        $territoryId = (string) Str::ulid();
-
-        TerritoryAggregate::retrieve($territoryId)
-            ->create(
-                operatorId: $data['operator_id'],
-                merchantAccountId: $data['merchant_account_id'] ?? null,
-                name: $data['name'],
-            )
-            ->persist();
+        TerritoryActions::create([
+            'operator_id' => $data['operator_id'],
+            'merchant_account_id' => $data['merchant_account_id'] ?? null,
+            'name' => $data['name'],
+        ]);
 
         return redirect()
             ->route('territories.index')

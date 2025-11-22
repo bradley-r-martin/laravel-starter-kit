@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Territory;
 
-use App\Aggregates\TerritoryAggregate;
-use App\Models\MerchantAccount;
-use App\Models\Territory;
+use App\Actions\TerritoryActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
 final class TerritoryUpdateProcessRequest extends FormRequest
@@ -38,35 +35,11 @@ final class TerritoryUpdateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $territoryId = (string) $this->route('territory');
-        /** @var Territory $territory */
-        $territory = Territory::query()->select(['id', 'operator_id'])->findOrFail($territoryId);
 
         /** @var array{operator_id?: string, merchant_account_id?: string|null, name?: string} $data */
         $data = $this->validated();
 
-        $operatorId = $data['operator_id'] ?? $territory->operator_id;
-
-        if (array_key_exists('merchant_account_id', $data) && $data['merchant_account_id'] !== null) {
-            $merchantAccountOperatorId = MerchantAccount::query()
-                ->whereKey($data['merchant_account_id'])
-                ->value('operator_id');
-
-            if ($merchantAccountOperatorId === null || $merchantAccountOperatorId !== $operatorId) {
-                throw ValidationException::withMessages([
-                    'merchant_account_id' => 'The selected merchant account does not belong to the selected operator.',
-                ]);
-            }
-        }
-
-        TerritoryAggregate::retrieve($territory->id)
-            ->update(
-                operatorId: $data['operator_id'] ?? null,
-                merchantAccountIdTouched: array_key_exists('merchant_account_id', $data),
-                merchantAccountId: $data['merchant_account_id'] ?? null,
-                name: $data['name'] ?? null,
-            )
-            ->persist();
+        new TerritoryActions((string) $this->route('territory'))->update($data);
 
         return redirect()
             ->route('territories.index')

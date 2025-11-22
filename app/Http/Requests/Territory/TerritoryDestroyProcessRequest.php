@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Territory;
 
-use App\Aggregates\TerritoryAggregate;
-use App\Models\Territory;
+use App\Actions\TerritoryActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,17 +32,10 @@ final class TerritoryDestroyProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $territoryId = (string) $this->route('territory');
-        $territory = Territory::query()->select(['id'])->findOrFail($territoryId);
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
+        $this->validated();
 
-        TerritoryAggregate::retrieve($territory->id)
-            ->destroy(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new TerritoryActions((string) $this->route('territory'))->destroy();
 
         return redirect()
             ->route('territories.index')
