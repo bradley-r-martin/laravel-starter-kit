@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Actions\ManufacturerActions;
 use App\Actions\OperatorActions;
+use App\Actions\ProductActions;
 use App\Actions\ProductTypeActions;
 use App\Actions\TerritoryActions;
 use App\Models\User;
@@ -36,6 +37,16 @@ final class DatabaseSeeder extends Seeder
 
         ManufacturerActions::create([
             'name' => 'Test Manufacturer',
+        ]);
+
+        ProductActions::create([
+            'product_type_id' => $productType->id,
+            'manufacturer_id' => $manufacturer->id,
+            'name' => 'Test Product',
+            'sku' => 'TEST-001',
+            'units' => 12,
+            'cost' => 100,
+            'price' => 200,
         ]);
 
         User::create([

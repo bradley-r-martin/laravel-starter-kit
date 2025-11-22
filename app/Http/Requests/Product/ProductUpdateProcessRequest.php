@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Product;
 
-use App\Aggregates\ProductAggregate;
+use App\Actions\ProductActions;
 use App\Domain\File;
-use App\Models\Product;
 use App\Rules\FileRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,9 +43,6 @@ final class ProductUpdateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        /** @var Product $product */
-        $product = Product::findOrFail($this->route('product'));
-
         $data = $this->validated();
 
         // Cast numeric strings to floats for rebate and royalty
@@ -71,9 +67,7 @@ final class ProductUpdateProcessRequest extends FormRequest
         }
 
         /** @var array{product_type_id?: string|null, manufacturer_id?: string|null, name?: string|null, sku?: string|null, units?: int|null, cost?: int|null, price?: int|null, rebate?: float|null, royalty?: float|null, avatar?: File|null} $data */
-        ProductAggregate::retrieve($product->id)
-            ->update($data)
-            ->persist();
+        new ProductActions((string) $this->route('product'))->update($data);
 
         return redirect()
             ->route('products.index')

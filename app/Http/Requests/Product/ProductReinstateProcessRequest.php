@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Product;
 
-use App\Aggregates\ProductAggregate;
-use App\Models\Product;
+use App\Actions\ProductActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,17 +32,10 @@ final class ProductReinstateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        /** @var Product $product */
-        $product = Product::findOrFail($this->route('product'));
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
+        $this->validated();
 
-        ProductAggregate::retrieve($product->id)
-            ->reinstate(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new ProductActions((string) $this->route('product'))->reinstate();
 
         return redirect()
             ->route('products.index')
