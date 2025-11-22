@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\ProductType;
 
-use App\Aggregates\ProductTypeAggregate;
+use App\Actions\ProductTypeActions;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ProductTypeCreateProcessRequest extends FormRequest
@@ -36,13 +35,7 @@ final class ProductTypeCreateProcessRequest extends FormRequest
         /** @var array{name: string} $data */
         $data = $this->validated();
 
-        $productTypeId = (string) Str::ulid();
-
-        ProductTypeAggregate::retrieve($productTypeId)
-            ->create(
-                name: $data['name'],
-            )
-            ->persist();
+        ProductTypeActions::create($data);
 
         return redirect()
             ->route('product-types.index')

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Actions\OperatorActions;
+use App\Actions\ProductTypeActions;
 use App\Actions\TerritoryActions;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -25,6 +26,11 @@ final class DatabaseSeeder extends Seeder
         TerritoryActions::create([
             'operator_id' => $operator->id,
             'name' => 'Test Territory',
+        ]);
+
+        ProductTypeActions::create([
+            'name' => 'Test Product Type',
+            'description' => 'Test Product Type Description',
         ]);
 
         User::create([

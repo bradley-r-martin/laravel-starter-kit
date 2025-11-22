@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\ProductType;
 
-use App\Aggregates\ProductTypeAggregate;
-use App\Models\ProductType;
+use App\Actions\ProductTypeActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,17 +32,10 @@ final class ProductTypeUpdateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        /** @var ProductType $productType */
-        $productType = ProductType::findOrFail($this->route('product_type'));
-
         /** @var array{name?: string|null} $data */
         $data = $this->validated();
 
-        ProductTypeAggregate::retrieve($productType->id)
-            ->update(
-                name: $data['name'] ?? null,
-            )
-            ->persist();
+        new ProductTypeActions((string) $this->route('product_type'))->update($data);
 
         return redirect()
             ->route('product-types.index')

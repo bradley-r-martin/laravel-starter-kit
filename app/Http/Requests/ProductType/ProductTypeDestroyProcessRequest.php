@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\ProductType;
 
-use App\Aggregates\ProductTypeAggregate;
-use App\Models\ProductType;
+use App\Actions\ProductTypeActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,17 +32,10 @@ final class ProductTypeDestroyProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $productTypeId = (string) $this->route('product_type');
-        $productType = ProductType::query()->select(['id'])->findOrFail($productTypeId);
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
+        $this->validated();
 
-        ProductTypeAggregate::retrieve($productType->id)
-            ->destroy(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new ProductTypeActions((string) $this->route('product_type'))->destroy();
 
         return redirect()
             ->route('product-types.index')
