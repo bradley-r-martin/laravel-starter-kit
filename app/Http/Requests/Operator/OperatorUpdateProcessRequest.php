@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Operator;
 
-use App\Aggregates\OperatorAggregate;
-use App\Domain\Address;
-use App\Domain\Entity;
-use App\Domain\Phone;
-use App\Models\Operator;
+use App\Actions\OperatorActions;
 use App\Rules\AddressRule;
 use App\Rules\EntityRule;
 use App\Rules\PhoneRule;
@@ -44,43 +40,10 @@ final class OperatorUpdateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $operatorId = (string) $this->route('operator');
-        $operator = Operator::query()->select(['id'])->findOrFail($operatorId);
-
         /** @var array{name?: string, email?: string|null, address?: array{place_id?: string|null, building_name?: string|null, lot_no?: string|null, country?: string|null, level?: string|null, postcode?: string|null, state?: string|null, street_name?: string|null, street_number?: string|null, street_type?: string|null, street_suffix?: string|null, suburb?: string|null, unit?: string|null, latitude?: int|float|string|null, longitude?: int|float|string|null}|null, phone?: array{country_code?: string|null, area_code?: string|null, number?: string|null, extension?: string|null, type?: string|null}|null, entity?: array{id?: string|null, type?: string|null}|null, image?: string|null} $data */
         $data = $this->validated();
 
-        $address = null;
-        if (array_key_exists('address', $data) && $data['address'] !== null) {
-            /** @var array{place_id?: string|null, building_name?: string|null, lot_no?: string|null, country?: string|null, level?: string|null, postcode?: string|null, state?: string|null, street_name?: string|null, street_number?: string|null, street_type?: string|null, street_suffix?: string|null, suburb?: string|null, unit?: string|null, latitude?: int|float|string|null, longitude?: int|float|string|null} $addressData */
-            $addressData = $data['address'];
-            $address = Address::fromArray($addressData);
-        }
-
-        $phone = null;
-        if (array_key_exists('phone', $data) && $data['phone'] !== null) {
-            /** @var array{country_code?: string|null, area_code?: string|null, number?: string|null, extension?: string|null, type?: string|null} $phoneData */
-            $phoneData = $data['phone'];
-            $phone = Phone::fromArray($phoneData);
-        }
-
-        $entity = null;
-        if (array_key_exists('entity', $data) && $data['entity'] !== null) {
-            /** @var array{id?: string|null, type?: string|null} $entityData */
-            $entityData = $data['entity'];
-            $entity = Entity::fromArray($entityData);
-        }
-
-        OperatorAggregate::retrieve($operator->id)
-            ->update(
-                name: $data['name'] ?? null,
-                email: $data['email'] ?? null,
-                address: $address,
-                phone: $phone,
-                entity: $entity,
-                image: $data['image'] ?? null,
-            )
-            ->persist();
+        new OperatorActions((string) $this->route('operator'))->update($data);
 
         return redirect()
             ->route('operators.index')

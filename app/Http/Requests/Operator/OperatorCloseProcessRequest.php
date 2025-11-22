@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Operator;
 
-use App\Aggregates\OperatorAggregate;
-use App\Models\Operator;
+use App\Actions\OperatorActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,16 +32,10 @@ final class OperatorCloseProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $operatorId = (string) $this->route('operator');
-        $operator = Operator::query()->select(['id'])->findOrFail($operatorId);
 
         $this->validated();
 
-        OperatorAggregate::retrieve($operator->id)
-            ->close(
-                reason: $this->string('reason')->toString(),
-            )
-            ->persist();
+        new OperatorActions((string) $this->route('operator'))->close();
 
         return redirect()
             ->route('operators.index')

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Operator;
 
-use App\Aggregates\OperatorAggregate;
-use App\Models\Operator;
+use App\Actions\OperatorActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,17 +32,10 @@ final class OperatorDestroyProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $operatorId = (string) $this->route('operator');
-        $operator = Operator::query()->select(['id'])->findOrFail($operatorId);
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
+        $this->validated();
 
-        OperatorAggregate::retrieve($operator->id)
-            ->destroy(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new OperatorActions((string) $this->route('operator'))->destroy();
 
         return redirect()
             ->route('operators.index')

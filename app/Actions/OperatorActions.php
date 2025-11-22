@@ -8,19 +8,74 @@ use App\Models\Operator;
 
 final class OperatorActions
 {
+    public Operator $operator;
+
+    public function __construct(
+        Operator|string $operator,
+    ) {
+        if (is_string($operator)) {
+            /** @var Operator $operator */
+            $operator = Operator::findOrFail($operator);
+        }
+        $this->operator = $operator;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public static function create(array $data): Operator
     {
         return Operator::create($data);
     }
 
-    public static function update(Operator|string $operator, array $data): Operator
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function update(array $data): Operator
     {
-        if ($operator instanceof Operator) {
-            $operator->update($data);
+        $this->operator->update($data);
 
-            return $operator;
-        }
+        return $this->operator;
+    }
 
-        return Operator::findOrFail($operator)->update($data);
+    public function close(): Operator
+    {
+        $this->operator->update([
+            'closed_at' => now(),
+        ]);
+
+        return $this->operator;
+    }
+
+    public function reopen(): Operator
+    {
+        $this->operator->update([
+            'closed_at' => null,
+        ]);
+
+        return $this->operator;
+    }
+
+    public function suspend(): Operator
+    {
+        $this->operator->update([
+            'suspended_at' => now(),
+        ]);
+
+        return $this->operator;
+    }
+
+    public function unsuspend(): Operator
+    {
+        $this->operator->update([
+            'suspended_at' => null,
+        ]);
+
+        return $this->operator;
+    }
+
+    public function destroy(): void
+    {
+        $this->operator->delete();
     }
 }

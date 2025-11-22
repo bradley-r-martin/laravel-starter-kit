@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\Operator;
+use App\Actions\OperatorActions;
 use App\Models\Territory;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -17,7 +17,7 @@ final class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $operator = Operator::create([
+        $operator = OperatorActions::create([
             'name' => 'Test Operator',
             'email' => 'operator@example.com',
         ]);
