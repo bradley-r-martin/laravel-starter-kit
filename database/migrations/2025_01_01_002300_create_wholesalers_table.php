@@ -20,11 +20,17 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        /* Derived data columns */
+        Schema::table('wholesalers', function (Blueprint $table): void {
+            $table->unsignedInteger('__expenses_count')->default(0)->comment('Number of expenses from this wholesaler');
+        });
+
         /* Performance indexes */
         Schema::table('wholesalers', function (Blueprint $table): void {
             $table->index('name');
             $table->index('closed_at');
         });
+
     }
 
     /**

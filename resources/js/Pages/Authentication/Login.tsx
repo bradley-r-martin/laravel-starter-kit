@@ -8,6 +8,7 @@ import { InertiaView } from '@/Types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Button, Divider, PasswordInput, Stack, TextInput } from '@mantine/core';
 import { KeyRoundIcon } from 'lucide-react';
+import { useEffect } from 'react';
 
 interface LoginProps {}
 
@@ -17,10 +18,12 @@ const Login: InertiaView<LoginProps> = () => {
         password: '',
     });
 
-    // useEffect(() => {
-    //     form.setData('email', 'test@example.com');
-    //     form.setData('password', 'password');
-    // }, []);
+    useEffect(() => {
+        if (window.location.href.includes('localhost:8000')) {
+            form.setData('email', 'test@example.com');
+            form.setData('password', 'password');
+        }
+    }, []);
 
     const { processing } = form;
 

@@ -8,8 +8,9 @@ import ModalHeader from '@/Components/ModalHeader';
 import useInvoiceAnalysis from '@/Hooks/useInvoiceAnalysis';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Alert, Button, FileInput, Select, Stack, Text, TextInput } from '@mantine/core';
+import { Alert, Button, Divider, FileInput, Select, Stack, Text, TextInput } from '@mantine/core';
 import { AlertCircle, FileText, PlusIcon, Upload } from 'lucide-react';
+import { useState } from 'react';
 
 interface Wholesaler {
     id: string;
@@ -44,6 +45,8 @@ export default function Create({ wholesalers }: CreateProps) {
         wholesaler_id: '',
     });
     const { processing } = form;
+    const [showManualEntry, setShowManualEntry] = useState(false);
+    const [analysisData, setAnalysisData] = useState<AnalysisResponse | null>(null);
 
     const {
         error: analysisError,
@@ -52,11 +55,15 @@ export default function Create({ wholesalers }: CreateProps) {
     } = useInvoiceAnalysis<AnalysisResponse>();
 
     const handleFileChange = async (file: File | null) => {
-        if (!file) return;
+        if (!file) {
+            setAnalysisData(null);
+            return;
+        }
 
         try {
             const response = await analyzeInvoice(file);
             if (response?.data) {
+                setAnalysisData(response.data);
                 // Auto-fill the form with analyzed data
                 if (response.data.invoice_no) {
                     form.setData('invoice_no', response.data.invoice_no);
@@ -75,6 +82,19 @@ export default function Create({ wholesalers }: CreateProps) {
     };
 
     const isAnalyzing = analysisStatus === 'analysing' || analysisStatus === 'loading';
+
+    // Determine which fields are missing after analysis
+    const missingFields = {
+        invoice_no: !analysisData?.invoice_no,
+        invoice_date: !analysisData?.invoice_date,
+        wholesaler_id: !analysisData?.wholesaler_id,
+    };
+
+    const hasAnalysisData = analysisStatus === 'complete' && analysisData;
+    const hasMissingFields =
+        hasAnalysisData &&
+        (missingFields.invoice_no || missingFields.invoice_date || missingFields.wholesaler_id);
+    const shouldShowForm = showManualEntry || hasMissingFields;
 
     return (
         <>
@@ -114,9 +134,23 @@ export default function Create({ wholesalers }: CreateProps) {
                                         </Alert>
                                     )}
 
-                                    {analysisStatus === 'complete' && (
+                                    {analysisStatus === 'complete' && !hasMissingFields && (
                                         <Alert color="green" icon={<FileText className="size-4" />}>
-                                            <Text size="sm">Invoice analyzed successfully!</Text>
+                                            <Text size="sm">
+                                                Invoice analyzed successfully! All fields have been
+                                                filled.
+                                            </Text>
+                                        </Alert>
+                                    )}
+
+                                    {hasMissingFields && (
+                                        <Alert
+                                            color="yellow"
+                                            icon={<AlertCircle className="size-4" />}
+                                        >
+                                            <Text size="sm">
+                                                Please complete the missing fields below:
+                                            </Text>
                                         </Alert>
                                     )}
 
@@ -129,36 +163,61 @@ export default function Create({ wholesalers }: CreateProps) {
                                         </Alert>
                                     )}
 
-                                    <Field name="invoice_no">
-                                        <TextInput
-                                            label="Invoice No"
-                                            name="invoice_no"
-                                            placeholder="Enter invoice number"
-                                            required
+                                    {!hasAnalysisData && !showManualEntry && (
+                                        <Divider
+                                            label={
+                                                <Button
+                                                    variant="subtle"
+                                                    size="xs"
+                                                    onClick={() => setShowManualEntry(true)}
+                                                >
+                                                    or enter manually
+                                                </Button>
+                                            }
+                                            labelPosition="center"
                                         />
-                                    </Field>
+                                    )}
 
-                                    <Field name="invoice_date">
-                                        <TextInput
-                                            label="Invoice Date"
-                                            name="invoice_date"
-                                            type="date"
-                                            placeholder="Select invoice date"
-                                        />
-                                    </Field>
+                                    {shouldShowForm && (
+                                        <Stack>
+                                            {(showManualEntry || missingFields.invoice_no) && (
+                                                <Field name="invoice_no">
+                                                    <TextInput
+                                                        label="Invoice No"
+                                                        name="invoice_no"
+                                                        placeholder="Enter invoice number"
+                                                        required
+                                                    />
+                                                </Field>
+                                            )}
 
-                                    <Field name="wholesaler_id" type="select">
-                                        <Select
-                                            label="Wholesaler"
-                                            name="wholesaler_id"
-                                            placeholder="Select wholesaler"
-                                            data={wholesalers.map((wholesaler) => ({
-                                                value: wholesaler.id,
-                                                label: wholesaler.name,
-                                            }))}
-                                            searchable
-                                        />
-                                    </Field>
+                                            {(showManualEntry || missingFields.invoice_date) && (
+                                                <Field name="invoice_date">
+                                                    <TextInput
+                                                        label="Invoice Date"
+                                                        name="invoice_date"
+                                                        type="date"
+                                                        placeholder="Select invoice date"
+                                                    />
+                                                </Field>
+                                            )}
+
+                                            {(showManualEntry || missingFields.wholesaler_id) && (
+                                                <Field name="wholesaler_id" type="select">
+                                                    <Select
+                                                        label="Wholesaler"
+                                                        name="wholesaler_id"
+                                                        placeholder="Select wholesaler"
+                                                        data={wholesalers.map((wholesaler) => ({
+                                                            value: wholesaler.id,
+                                                            label: wholesaler.name,
+                                                        }))}
+                                                        searchable
+                                                    />
+                                                </Field>
+                                            )}
+                                        </Stack>
+                                    )}
                                 </Stack>
                             </ModalContent>
 
