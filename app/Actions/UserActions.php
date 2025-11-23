@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Models\Operator;
+use App\Models\Role;
 use App\Models\User;
 use App\Notifications\UserSuspensionNotification;
 use App\Notifications\UserUnsuspensionNotification;
@@ -36,6 +37,11 @@ final class UserActions
             $data['__operator_name'] = $operator->name;
         }
 
+        // increment role users count
+        if (isset($data['role_id'])) {
+            Role::whereKey($data['role_id'])->increment('__users_count');
+        }
+
         return User::create($data);
     }
 
@@ -49,6 +55,12 @@ final class UserActions
             /** @var Operator $operator */
             $operator = Operator::findOrFail($data['operator_id']);
             $data['__operator_name'] = $operator->name;
+        }
+
+        // decrement old role users count and increment new role users count
+        if (isset($data['role_id']) && $data['role_id'] !== $this->user->role_id) {
+            Role::whereKey($this->user->role_id)->decrement('__users_count');
+            Role::whereKey($data['role_id'])->increment('__users_count');
         }
 
         $this->user->update($data);
