@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Actions\ExpenseActions;
 use App\Actions\ManufacturerActions;
 use App\Actions\OperatorActions;
 use App\Actions\ProductActions;
@@ -42,7 +43,7 @@ final class DatabaseSeeder extends Seeder
             'name' => 'Test Manufacturer',
         ]);
 
-        WholesalerActions::create([
+        $wholesaler = WholesalerActions::create([
             'name' => 'Test Wholesaler',
         ]);
 
@@ -68,6 +69,13 @@ final class DatabaseSeeder extends Seeder
             'name' => 'Test Route',
             'territory_id' => $territory->id,
             'operator_id' => $operator->id,
+        ]);
+
+        ExpenseActions::create([
+            'operator_id' => $operator->id,
+            'invoice_no' => 'TEST-001',
+            'invoice_date' => now(),
+            'wholesaler_id' => $wholesaler->id,
         ]);
 
         $role = RoleActions::create([
