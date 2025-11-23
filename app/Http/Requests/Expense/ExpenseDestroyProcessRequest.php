@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Expense;
 
-use App\Aggregates\ExpenseAggregate;
+use App\Actions\ExpenseActions;
 use App\Models\Expense;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,14 +36,9 @@ final class ExpenseDestroyProcessRequest extends FormRequest
         /** @var Expense $expense */
         $expense = Expense::findOrFail($this->route('expense'));
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
+        $this->validated();
 
-        ExpenseAggregate::retrieve($expense->id)
-            ->destroy(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new ExpenseActions($expense)->destroy();
 
         return redirect()
             ->route('expenses.index')

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Expense;
 
-use App\Aggregates\ExpenseAggregate;
+use App\Actions\ExpenseActions;
 use DateTimeImmutable;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ExpenseCreateProcessRequest extends FormRequest
@@ -48,8 +47,6 @@ final class ExpenseCreateProcessRequest extends FormRequest
             abort(403, 'User must be associated with an operator');
         }
 
-        $expenseId = (string) Str::ulid();
-
         $invoiceDate = null;
         if (isset($data['invoice_date']) && $data['invoice_date']) {
             $invoiceDate = DateTimeImmutable::createFromFormat('Y-m-d', $data['invoice_date']);
@@ -59,14 +56,12 @@ final class ExpenseCreateProcessRequest extends FormRequest
             $invoiceDate = $invoiceDate->setTime(0, 0, 0);
         }
 
-        ExpenseAggregate::retrieve($expenseId)
-            ->create(
-                operatorId: $operator->id,
-                wholesalerId: $data['wholesaler_id'],
-                invoiceNo: $data['invoice_no'],
-                invoiceDate: $invoiceDate,
-            )
-            ->persist();
+        ExpenseActions::create([
+            'operator_id' => $operator->id,
+            'wholesaler_id' => $data['wholesaler_id'],
+            'invoice_no' => $data['invoice_no'],
+            'invoice_date' => $invoiceDate?->format('Y-m-d'),
+        ]);
 
         return redirect()
             ->route('expenses.index')
