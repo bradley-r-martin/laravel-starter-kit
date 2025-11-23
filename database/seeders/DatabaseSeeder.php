@@ -8,6 +8,7 @@ use App\Actions\ManufacturerActions;
 use App\Actions\OperatorActions;
 use App\Actions\ProductActions;
 use App\Actions\ProductTypeActions;
+use App\Actions\RoleActions;
 use App\Actions\TerritoryActions;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -30,12 +31,11 @@ final class DatabaseSeeder extends Seeder
             'name' => 'Test Territory',
         ]);
 
-        ProductTypeActions::create([
+        $productType = ProductTypeActions::create([
             'name' => 'Test Product Type',
-            'description' => 'Test Product Type Description',
         ]);
 
-        ManufacturerActions::create([
+        $manufacturer = ManufacturerActions::create([
             'name' => 'Test Manufacturer',
         ]);
 
@@ -49,8 +49,13 @@ final class DatabaseSeeder extends Seeder
             'price' => 200,
         ]);
 
+        $role = RoleActions::create([
+            'name' => 'Test Role',
+        ]);
+
         User::create([
             'operator_id' => $operator->id,
+            'role_id' => $role->id,
             'first_name' => 'Test',
             'last_name' => 'User',
             'email' => 'test@example.com',

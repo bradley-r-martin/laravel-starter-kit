@@ -98,7 +98,7 @@ function createUser(
 }
 
 /**
- * Create a test role via aggregate
+ * Create a test role
  */
 function createRole(
     string $name = 'Manager',
@@ -106,13 +106,12 @@ function createRole(
     bool $hidden = false,
     ?string $id = null
 ): Role {
-    $roleId = $id ?? (string) Illuminate\Support\Str::ulid();
-
-    App\Aggregates\RoleAggregate::retrieve($roleId)
-        ->create($name, $description, $hidden)
-        ->persist();
-
-    return Role::findOrFail($roleId);
+    return App\Actions\RoleActions::create([
+        'id' => $id,
+        'name' => $name,
+        'description' => $description,
+        'hidden' => $hidden,
+    ]);
 }
 
 /**

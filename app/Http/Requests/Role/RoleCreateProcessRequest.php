@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Role;
 
-use App\Aggregates\RoleAggregate;
+use App\Actions\RoleActions;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 final class RoleCreateProcessRequest extends FormRequest
@@ -40,20 +39,18 @@ final class RoleCreateProcessRequest extends FormRequest
         /** @var array{name: string, description?: string, hidden?: bool, policies?: array<int, string>} $data */
         $data = $this->validated();
 
-        $roleId = (string) Str::ulid();
-
-        $aggregate = RoleAggregate::retrieve($roleId)
-            ->create(
-                name: $data['name'],
-                description: $data['description'] ?? null,
-                hidden: $data['hidden'] ?? false,
-            );
+        $role = RoleActions::create([
+            'name' => $data['name'],
+            'description' => $data['description'] ?? null,
+            'hidden' => $data['hidden'] ?? false,
+        ]);
 
         // Attach selected policies
         if (isset($data['policies'])) {
+            $roleActions = new RoleActions($role);
             foreach ($data['policies'] as $policyString) {
                 [$policy, $ability] = explode('@', $policyString, 2);
-                $aggregate->attachPolicy(
+                $roleActions->attachPolicy(
                     policy: $policy,
                     ability: $ability,
                     description: '',
@@ -61,8 +58,6 @@ final class RoleCreateProcessRequest extends FormRequest
                 );
             }
         }
-
-        $aggregate->persist();
 
         return redirect()
             ->route('roles.index')

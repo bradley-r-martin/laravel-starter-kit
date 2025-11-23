@@ -2,34 +2,32 @@
 
 declare(strict_types=1);
 
-use App\Aggregates\RoleAggregate;
+use App\Actions\RoleActions;
 use App\Models\Policy;
 use App\Models\Role;
 use Illuminate\Support\Facades\File;
 
 beforeEach(function () {
     // Create test role with policies
-    $this->roleId = '01JNTEST1234567890ABCDEF';
+    $role = RoleActions::create([
+        'id' => '01JNTEST1234567890ABCDEF',
+        'name' => 'Admin',
+        'description' => 'Administrator role',
+        'hidden' => false,
+    ]);
 
-    RoleAggregate::retrieve($this->roleId)
-        ->create(
-            name: 'Admin',
-            description: 'Administrator role',
-            hidden: false
-        )
-        ->persist();
+    $this->roleId = $role->id;
 });
 
 it('reports no orphaned policies when all policies exist in code', function () {
     // Create a policy that exists in the codebase (RolePolicy exists)
-    RoleAggregate::retrieve($this->roleId)
+    new RoleActions($this->roleId)
         ->attachPolicy(
             policy: 'App\\Policies\\RolePolicy',
             ability: 'viewAny',
             description: 'View any roles',
             hidden: false
-        )
-        ->persist();
+        );
 
     $this->artisan('policies:prune')
         ->expectsOutput('No orphaned policies found. Database is clean!')
@@ -38,14 +36,13 @@ it('reports no orphaned policies when all policies exist in code', function () {
 
 it('identifies orphaned policies', function () {
     // Create a policy that does NOT exist in the codebase
-    RoleAggregate::retrieve($this->roleId)
+    new RoleActions($this->roleId)
         ->attachPolicy(
             policy: 'App\\Policies\\NonExistentPolicy',
             ability: 'view',
             description: 'Non-existent policy',
             hidden: false
-        )
-        ->persist();
+        );
 
     $this->artisan('policies:prune', ['--dry-run' => true])
         ->expectsOutputToContain('Found 1 orphaned policies')
@@ -56,14 +53,13 @@ it('identifies orphaned policies', function () {
 
 it('deprecates orphaned policies when not in dry-run mode', function () {
     // Create an orphaned policy
-    RoleAggregate::retrieve($this->roleId)
+    new RoleActions($this->roleId)
         ->attachPolicy(
             policy: 'App\\Policies\\OrphanedPolicy',
             ability: 'delete',
             description: 'Orphaned policy',
             hidden: false
-        )
-        ->persist();
+        );
 
     // Verify the policy exists before deprecation
     $policy = Policy::where('policy', 'App\\Policies\\OrphanedPolicy')
@@ -88,7 +84,7 @@ it('deprecates orphaned policies when not in dry-run mode', function () {
 
 it('handles multiple orphaned policies', function () {
     // Create multiple orphaned policies
-    $aggregate = RoleAggregate::retrieve($this->roleId);
+    $aggregate = new RoleActions($this->roleId);
 
     $aggregate
         ->attachPolicy(
@@ -105,8 +101,7 @@ it('handles multiple orphaned policies', function () {
             policy: 'App\\Policies\\OrphanedPolicy3',
             ability: 'delete',
             description: 'Third orphaned policy'
-        )
-        ->persist();
+        );
 
     $this->artisan('policies:prune')
         ->expectsOutputToContain('Found 3 orphaned policies')
@@ -127,7 +122,7 @@ it('handles multiple orphaned policies', function () {
 
 it('only deprecates orphaned policies and keeps valid ones', function () {
     // Create one valid policy and one orphaned policy
-    $aggregate = RoleAggregate::retrieve($this->roleId);
+    $aggregate = new RoleActions($this->roleId);
 
     $aggregate
         ->attachPolicy(
@@ -139,8 +134,7 @@ it('only deprecates orphaned policies and keeps valid ones', function () {
             policy: 'App\\Policies\\OrphanedPolicy',
             ability: 'view',
             description: 'Orphaned policy'
-        )
-        ->persist();
+        );
 
     $this->artisan('policies:prune')
         ->expectsOutputToContain('Found 1 orphaned policies')
@@ -169,15 +163,14 @@ it('discovers all methods in RolePolicy correctly', function () {
         ->assertSuccessful();
 
     // Create policies for all methods except RolePolicy methods
-    $aggregate = RoleAggregate::retrieve($this->roleId);
+    $aggregate = new RoleActions($this->roleId);
 
     $aggregate
         ->attachPolicy(
             policy: 'App\\Policies\\NonExistentPolicy',
             ability: 'someMethod',
             description: 'Should be orphaned'
-        )
-        ->persist();
+        );
 
     $this->artisan('policies:prune')
         ->expectsOutputToContain('Found 1 orphaned policies')
@@ -185,13 +178,12 @@ it('discovers all methods in RolePolicy correctly', function () {
 });
 
 it('displays table with orphaned policy details in dry-run mode', function () {
-    RoleAggregate::retrieve($this->roleId)
+    new RoleActions($this->roleId)
         ->attachPolicy(
             policy: 'App\\Policies\\TestPolicy',
             ability: 'testAbility',
             description: 'Test policy description'
-        )
-        ->persist();
+        );
 
     $this->artisan('policies:prune', ['--dry-run' => true])
         ->expectsOutputToContain('Found 1 orphaned policies')
@@ -226,13 +218,12 @@ it('handles missing Policies directory gracefully', function () {
 
 it('skips policies when role is missing', function () {
     // Create a policy with an orphaned role
-    RoleAggregate::retrieve($this->roleId)
+    new RoleActions($this->roleId)
         ->attachPolicy(
             policy: 'App\\Policies\\OrphanedPolicy',
             ability: 'view',
             description: 'Test orphaned policy'
-        )
-        ->persist();
+        );
 
     // Verify the policy was created
     $policy = Policy::where('policy', 'App\\Policies\\OrphanedPolicy')->first();
@@ -252,28 +243,25 @@ it('works with multiple roles and their policies', function () {
     $secondRoleId = '01JNTEST2345678901BCDEFG';
 
     // Create second role
-    RoleAggregate::retrieve($secondRoleId)
-        ->create(
-            name: 'Editor',
-            description: 'Editor role',
-            hidden: false
-        )
-        ->persist();
+    RoleActions::create([
+        'id' => $secondRoleId,
+        'name' => 'Editor',
+        'description' => 'Editor role',
+        'hidden' => false,
+    ]);
 
     // Add orphaned policies to both roles
-    RoleAggregate::retrieve($this->roleId)
+    new RoleActions($this->roleId)
         ->attachPolicy(
             policy: 'App\\Policies\\OrphanedPolicy1',
             ability: 'view'
-        )
-        ->persist();
+        );
 
-    RoleAggregate::retrieve($secondRoleId)
+    new RoleActions($secondRoleId)
         ->attachPolicy(
             policy: 'App\\Policies\\OrphanedPolicy2',
             ability: 'create'
-        )
-        ->persist();
+        );
 
     $this->artisan('policies:prune')
         ->expectsOutputToContain('Found 2 orphaned policies')

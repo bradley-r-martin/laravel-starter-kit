@@ -17,6 +17,11 @@ const Login: InertiaView<LoginProps> = () => {
         password: '',
     });
 
+    // useEffect(() => {
+    //     form.setData('email', 'test@example.com');
+    //     form.setData('password', 'password');
+    // }, []);
+
     const { processing } = form;
 
     return (

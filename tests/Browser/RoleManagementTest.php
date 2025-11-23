@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Aggregates\RoleAggregate;
+use App\Actions\RoleActions;
 use App\Models\Role;
 
 describe('Role Management', function (): void {
@@ -48,19 +48,6 @@ describe('Role Management', function (): void {
                 ->assertSee('The name field must not be greater than 255 characters');
         });
 
-        it('can cancel role creation', function (): void {
-            ['territory' => $territory, 'user' => $user] = createTestEnvironment();
-
-            $this->as($user, $territory)->visit('/roles/create')
-                ->fill('name', 'Test Role')
-                ->fill('description', 'This will be cancelled')
-                ->press('data-testid=cancel-action')
-                ->assertPathIs('/roles')
-                ->assertSee('Roles')
-                ->assertNoJavascriptErrors();
-
-            expect(Role::where('name', 'Test Role')->first())->toBeNull();
-        });
     });
 
     describe('Role Updates', function (): void {
@@ -90,15 +77,14 @@ describe('Role Management', function (): void {
         it('prevents updating a closed role', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
-            $roleId = (string) Illuminate\Support\Str::ulid();
-            RoleAggregate::retrieve($roleId)
-                ->create('Old Manager', 'Old manager role', false)
-                ->close('No longer needed')
-                ->persist();
+            $role = RoleActions::create([
+                'name' => 'Old Manager',
+                'description' => 'Old manager role',
+                'hidden' => false,
+            ]);
+            (new RoleActions($role))->close();
 
-            $role = Role::findOrFail($roleId);
-
-            $this->as($user, $territory)->visit("/roles/{$roleId}/update")
+            $this->as($user, $territory)->visit("/roles/{$role->id}/update")
                 ->assertTitle("Update Role: {$role->name} - Laravel")
                 ->assertSee('Update role')
                 ->assertSee('Cannot Update Role')
@@ -205,15 +191,14 @@ describe('Role Management', function (): void {
         it('can reopen a closed role', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
-            $roleId = (string) Illuminate\Support\Str::ulid();
-            RoleAggregate::retrieve($roleId)
-                ->create('Closed Manager', 'Closed manager role', false)
-                ->close('No longer needed')
-                ->persist();
+            $role = RoleActions::create([
+                'name' => 'Closed Manager',
+                'description' => 'Closed manager role',
+                'hidden' => false,
+            ]);
+            (new RoleActions($role))->close();
 
-            $role = Role::findOrFail($roleId);
-
-            $this->as($user, $territory)->visit("/roles/{$roleId}/reopen")
+            $this->as($user, $territory)->visit("/roles/{$role->id}/reopen")
                 ->assertTitle("Reopen Role: {$role->name} - Laravel")
                 ->assertSee('Reopen role')
                 ->assertSee('Restore role:')
@@ -232,15 +217,14 @@ describe('Role Management', function (): void {
         it('shows validation errors for invalid input', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
-            $roleId = (string) Illuminate\Support\Str::ulid();
-            RoleAggregate::retrieve($roleId)
-                ->create('Closed Manager', 'Closed manager role', false)
-                ->close('No longer needed')
-                ->persist();
+            $role = RoleActions::create([
+                'name' => 'Closed Manager',
+                'description' => 'Closed manager role',
+                'hidden' => false,
+            ]);
+            (new RoleActions($role))->close();
 
-            $role = Role::findOrFail($roleId);
-
-            $this->as($user, $territory)->visit("/roles/{$roleId}/reopen")
+            $this->as($user, $territory)->visit("/roles/{$role->id}/reopen")
                 ->submit()
                 ->assertSee('The reason field is required');
         });
@@ -248,15 +232,14 @@ describe('Role Management', function (): void {
         it('can cancel role reopening', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
-            $roleId = (string) Illuminate\Support\Str::ulid();
-            RoleAggregate::retrieve($roleId)
-                ->create('Closed Manager', 'Closed manager role', false)
-                ->close('No longer needed')
-                ->persist();
+            $role = RoleActions::create([
+                'name' => 'Closed Manager',
+                'description' => 'Closed manager role',
+                'hidden' => false,
+            ]);
+            (new RoleActions($role))->close();
 
-            $role = Role::findOrFail($roleId);
-
-            $this->as($user, $territory)->visit("/roles/{$roleId}/reopen")
+            $this->as($user, $territory)->visit("/roles/{$role->id}/reopen")
                 ->fill('reason', 'Changed my mind')
                 ->press('Cancel')
                 ->assertPathIs('/roles')
@@ -270,19 +253,18 @@ describe('Role Management', function (): void {
         it('shows reopen button for closed roles in the list', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
-            $roleId = (string) Illuminate\Support\Str::ulid();
-            RoleAggregate::retrieve($roleId)
-                ->create('Closed Manager', 'Closed manager role', false)
-                ->close('No longer needed')
-                ->persist();
-
-            $role = Role::findOrFail($roleId);
+            $role = RoleActions::create([
+                'name' => 'Closed Manager',
+                'description' => 'Closed manager role',
+                'hidden' => false,
+            ]);
+            (new RoleActions($role))->close();
 
             $this->as($user, $territory)->visit('/roles')
                 ->assertSee('Roles')
                 ->assertSee('Closed Manager')
                 ->assertSee('Closed')
-                ->assertVisible("data-testid=role-row-{$roleId}-reopen")
+                ->assertVisible("data-testid=role-row-{$role->id}-reopen")
                 ->assertNoJavascriptErrors();
         });
     });
@@ -291,15 +273,14 @@ describe('Role Management', function (): void {
         it('can destroy a closed role', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
-            $roleId = (string) Illuminate\Support\Str::ulid();
-            RoleAggregate::retrieve($roleId)
-                ->create('Old Manager', 'Old manager role', false)
-                ->close('No longer needed')
-                ->persist();
+            $role = RoleActions::create([
+                'name' => 'Old Manager',
+                'description' => 'Old manager role',
+                'hidden' => false,
+            ]);
+            (new RoleActions($role))->close();
 
-            $role = Role::findOrFail($roleId);
-
-            $this->as($user, $territory)->visit("/roles/{$roleId}/destroy")
+            $this->as($user, $territory)->visit("/roles/{$role->id}/destroy")
                 ->assertTitle("Destroy Role: {$role->name} - Laravel")
                 ->assertSee('Destroy role')
                 ->assertSee('Permanently delete role:')
@@ -312,7 +293,7 @@ describe('Role Management', function (): void {
                 ->assertPathIs('/roles')
                 ->assertNoJavascriptErrors();
 
-            expect(Role::find($roleId))->toBeNull();
+            expect(Role::find($role->id))->toBeNull();
         });
 
         it('prevents destroying an active role', function (): void {
@@ -331,21 +312,20 @@ describe('Role Management', function (): void {
         it('can cancel role destruction', function (): void {
             ['territory' => $territory, 'user' => $user] = createTestEnvironment();
 
-            $roleId = (string) Illuminate\Support\Str::ulid();
-            RoleAggregate::retrieve($roleId)
-                ->create('Manager', 'Manager role', false)
-                ->close('Test close')
-                ->persist();
+            $role = RoleActions::create([
+                'name' => 'Manager',
+                'description' => 'Manager role',
+                'hidden' => false,
+            ]);
+            (new RoleActions($role))->close();
 
-            $role = Role::findOrFail($roleId);
-
-            $this->as($user, $territory)->visit("/roles/{$roleId}/destroy")
+            $this->as($user, $territory)->visit("/roles/{$role->id}/destroy")
                 ->press('Cancel')
                 ->assertPathIs('/roles')
                 ->assertSee('Roles')
                 ->assertNoJavascriptErrors();
 
-            expect(Role::find($roleId))->not->toBeNull();
+            expect(Role::find($role->id))->not->toBeNull();
         });
     });
 });

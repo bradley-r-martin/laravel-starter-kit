@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Aggregates\RoleAggregate;
+use App\Actions\RoleActions;
 use App\Models\Policy;
 use App\Models\Role;
 use Exception;
@@ -176,12 +176,11 @@ final class PolicyPruneCommand extends Command
                     continue;
                 }
 
-                $roleAggregate = RoleAggregate::retrieve((string) $role->id);
-                $roleAggregate->deprecatePolicy(
+                $roleActions = new RoleActions($role);
+                $roleActions->deprecatePolicy(
                     policy: $policy->policy,
                     ability: $policy->ability
                 );
-                $roleAggregate->persist();
 
                 $deprecatedCount++;
             } catch (Exception $e) {

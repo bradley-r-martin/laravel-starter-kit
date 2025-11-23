@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Role;
 
-use App\Aggregates\RoleAggregate;
+use App\Actions\RoleActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -34,14 +34,9 @@ final class RoleReopenProcessRequest extends FormRequest
     {
         $roleId = (string) $this->route('role');
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
+        $this->validated();
 
-        RoleAggregate::retrieve($roleId)
-            ->reopen(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new RoleActions($roleId)->reopen();
 
         return redirect()
             ->route('roles.index')

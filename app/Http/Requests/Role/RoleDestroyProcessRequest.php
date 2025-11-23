@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Role;
 
-use App\Aggregates\RoleAggregate;
+use App\Actions\RoleActions;
 use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,10 +39,8 @@ final class RoleDestroyProcessRequest extends FormRequest
             abort(403, 'Only closed roles can be destroyed. Please close the role first.');
         }
 
-        // Destroy the role via event sourcing
-        RoleAggregate::retrieve($roleId)
-            ->destroy()
-            ->persist();
+        // Destroy the role
+        new RoleActions($roleId)->destroy();
 
         return redirect()
             ->route('roles.index')

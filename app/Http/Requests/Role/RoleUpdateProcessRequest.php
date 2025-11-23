@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Role;
 
-use App\Aggregates\RoleAggregate;
+use App\Actions\RoleActions;
 use App\Models\Policy;
 use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
@@ -54,12 +54,23 @@ final class RoleUpdateProcessRequest extends FormRequest
         /** @var array{name?: string, description?: string, hidden?: bool, policies?: array<int, string>} $data */
         $data = $this->validated();
 
-        $aggregate = RoleAggregate::retrieve($roleId)
-            ->update(
-                name: $data['name'] ?? null,
-                description: $data['description'] ?? null,
-                hidden: $data['hidden'] ?? null
-            );
+        $roleActions = new RoleActions($role);
+
+        // Update basic role attributes
+        $updateData = [];
+        if (array_key_exists('name', $data)) {
+            $updateData['name'] = $data['name'];
+        }
+        if (array_key_exists('description', $data)) {
+            $updateData['description'] = $data['description'];
+        }
+        if (array_key_exists('hidden', $data)) {
+            $updateData['hidden'] = $data['hidden'];
+        }
+
+        if ($updateData !== []) {
+            $roleActions->update($updateData);
+        }
 
         // Handle policy changes
         $newPolicies = $data['policies'] ?? [];
@@ -74,7 +85,7 @@ final class RoleUpdateProcessRequest extends FormRequest
         // Detach removed policies
         foreach ($policiesToDetach as $policyString) {
             [$policy, $ability] = explode('@', (string) $policyString, 2);
-            $aggregate->detachPolicy(
+            $roleActions->detachPolicy(
                 policy: $policy,
                 ability: $ability
             );
@@ -83,15 +94,13 @@ final class RoleUpdateProcessRequest extends FormRequest
         // Attach new policies
         foreach ($policiesToAttach as $policyString) {
             [$policy, $ability] = explode('@', $policyString, 2);
-            $aggregate->attachPolicy(
+            $roleActions->attachPolicy(
                 policy: $policy,
                 ability: $ability,
                 description: '',
                 hidden: false
             );
         }
-
-        $aggregate->persist();
 
         return redirect()
             ->route('roles.index')
