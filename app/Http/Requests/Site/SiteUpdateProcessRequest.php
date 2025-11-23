@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Site;
 
-use App\Aggregates\SiteAggregate;
-use App\Domain\Address;
-use App\Models\Site;
+use App\Actions\SiteActions;
 use App\Rules\AddressRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,41 +35,11 @@ final class SiteUpdateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $siteId = (string) $this->route('site');
-
-        /** @var Site $site */
-        $site = Site::query()
-            ->select(['id', 'closed_at'])
-            ->findOrFail($siteId);
-
-        // Only non-closed sites can be updated
-        if ($site->closed_at !== null) {
-            abort(403, 'Closed sites cannot be updated.');
-        }
-
-        /** @var array{name?: string, address?: array<string, mixed>|null, opening_hours?: array<int|string, mixed>|null} $data */
         $data = $this->validated();
-
-        $address = null;
-        if (isset($data['address'])) {
-            /** @var array<string, string|float|null> $addressData */
-            $addressData = $data['address'];
-            $address = Address::fromArray($addressData);
-        }
-
-        /** @var array<int|string, mixed>|null $openingHours */
-        $openingHours = $data['opening_hours'] ?? null;
-
-        SiteAggregate::retrieve($siteId)
-            ->update(
-                name: $data['name'] ?? null,
-                address: $address,
-                openingHours: $openingHours,
-            )
-            ->persist();
+        new SiteActions((string) $this->route('site'))->update($data);
 
         return redirect()
-            ->route('sites.show', $siteId)
+            ->route('sites.show', (string) $this->route('site'))
             ->with('toast', [
                 'message' => 'Site updated successfully',
                 'type' => 'success',

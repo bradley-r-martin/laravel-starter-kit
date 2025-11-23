@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Site;
 
-use App\Aggregates\SiteAggregate;
-use App\Domain\Address;
+use App\Actions\SiteActions;
 use App\Rules\AddressRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 final class SiteCreateProcessRequest extends FormRequest
@@ -40,43 +38,15 @@ final class SiteCreateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        /** @var array{route_id?: string|null, order?: int, name: string, address?: array<string, mixed>|null, opening_hours?: array<int|string, mixed>|null, manager_code?: string|null} $data */
         $data = $this->validated();
 
         /** @var \App\Models\User $user */
         $user = $this->user();
 
-        $operator = $user->operator;
-        $territory = $user->territory();
+        $data['operator_id'] = $user->operator_id;
+        $data['territory_id'] = $user->territory()->id;
 
-        if (! $operator) {
-            abort(403, 'User must be associated with an operator');
-        }
-
-        $siteId = (string) Str::ulid();
-
-        $address = null;
-        if (isset($data['address'])) {
-            /** @var array<string, string|float|null> $addressData */
-            $addressData = $data['address'];
-            $address = Address::fromArray($addressData);
-        }
-
-        /** @var array<int|string, mixed>|null $openingHours */
-        $openingHours = $data['opening_hours'] ?? null;
-
-        SiteAggregate::retrieve($siteId)
-            ->create(
-                territoryId: $territory->id,
-                operatorId: $operator->id,
-                routeId: $data['route_id'] ?? null,
-                order: $data['order'] ?? 0,
-                name: $data['name'],
-                address: $address,
-                openingHours: $openingHours,
-                managerCode: $data['manager_code'] ?? null,
-            )
-            ->persist();
+        SiteActions::create($data);
 
         return redirect()
             ->route('sites.index')

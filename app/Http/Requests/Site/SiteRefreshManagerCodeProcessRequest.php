@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Site;
 
-use App\Aggregates\SiteAggregate;
-use App\Models\Site;
+use App\Actions\SiteActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,18 +30,10 @@ final class SiteRefreshManagerCodeProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $siteId = (string) $this->route('site');
-
-        Site::query()
-            ->select(['id'])
-            ->findOrFail($siteId);
-
-        SiteAggregate::retrieve($siteId)
-            ->refreshManagerCode()
-            ->persist();
+        new SiteActions((string) $this->route('site'))->refreshManagerCode();
 
         return redirect()
-            ->route('sites.show', $siteId)
+            ->route('sites.show', (string) $this->route('site'))
             ->with('toast', [
                 'message' => 'Manager code refreshed successfully',
                 'type' => 'success',
