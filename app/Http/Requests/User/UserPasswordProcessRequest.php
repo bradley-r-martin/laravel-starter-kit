@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
-use App\Aggregates\UserAggregate;
+use App\Actions\UserActions;
 use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -76,11 +76,7 @@ final class UserPasswordProcessRequest extends FormRequest
         /** @var array{password: string, password_confirmation: string} $data */
         $data = $this->validated();
 
-        UserAggregate::retrieve($user->id)
-            ->changePassword(
-                hashedPassword: Hash::make($data['password']),
-            )
-            ->persist();
+        new UserActions($user)->changePassword(Hash::make($data['password']));
 
         return redirect()
             ->route('users.index')

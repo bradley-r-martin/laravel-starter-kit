@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Authentication;
 
-use App\Aggregates\UserAggregate;
+use App\Actions\UserActions;
 use App\Models\User;
 use DateTimeImmutable;
 use Illuminate\Foundation\Http\FormRequest;
@@ -52,15 +52,12 @@ final class AuthenticationLoginProcessRequest extends FormRequest
         /** @var User $user */
         $user = Auth::getProvider()->retrieveByCredentials(['email' => $email]);
 
-        // Use UserAggregate to handle login
-        UserAggregate::retrieve($user->id)
-            ->login(
-                ipAddress: request()->ip() ?? '',
-                userAgent: request()->userAgent() ?? '',
-                timestamp: new DateTimeImmutable,
-                remember: $remember,
-            )
-            ->persist();
+        // Use UserActions to handle login
+        new UserActions($user)->login(
+            ipAddress: request()->ip() ?? '',
+            userAgent: request()->userAgent() ?? '',
+            timestamp: new DateTimeImmutable
+        );
 
         // Actually log the user in
         Auth::login($user, $remember);

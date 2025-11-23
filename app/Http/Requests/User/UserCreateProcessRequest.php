@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
-use App\Aggregates\UserAggregate;
+use App\Actions\UserActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -43,18 +42,14 @@ final class UserCreateProcessRequest extends FormRequest
         /** @var array{operator_id: string, role_id: string, first_name: string, last_name: string, email: string, password: string} $data */
         $data = $this->validated();
 
-        $userId = (string) Str::ulid();
-
-        UserAggregate::retrieve($userId)
-            ->create(
-                operatorId: $data['operator_id'],
-                roleId: $data['role_id'],
-                firstName: $data['first_name'],
-                lastName: $data['last_name'],
-                email: $data['email'],
-                password: Hash::make($data['password']),
-            )
-            ->persist();
+        UserActions::create([
+            'operator_id' => $data['operator_id'],
+            'role_id' => $data['role_id'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
 
         return redirect()
             ->route('users.index')

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
-use App\Aggregates\UserAggregate;
+use App\Actions\UserActions;
 use App\Domain\File;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
@@ -48,19 +48,22 @@ final class UserUpdateProcessRequest extends FormRequest
         $data = $this->validated();
 
         // Handle avatar file upload
+        $updateData = [];
+        if (isset($data['first_name'])) {
+            $updateData['first_name'] = $data['first_name'];
+        }
+        if (isset($data['last_name'])) {
+            $updateData['last_name'] = $data['last_name'];
+        }
+        if (isset($data['email'])) {
+            $updateData['email'] = $data['email'];
+        }
         if ($this->hasFile('avatar')) {
             $file = File::fromUploadedFile($this->file('avatar'), 'public');
-            $data['avatar'] = $file;
+            $updateData['avatar'] = json_encode($file->toArray());
         }
 
-        UserAggregate::retrieve($user->id)
-            ->update(
-                firstName: $data['first_name'] ?? null,
-                lastName: $data['last_name'] ?? null,
-                email: $data['email'] ?? null,
-                avatar: $data['avatar'] ?? ($this->has('avatar') ? new File() : null),
-            )
-            ->persist();
+        new UserActions($user)->update($updateData);
 
         return redirect()
             ->route('users.index')

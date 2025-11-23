@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
-use App\Aggregates\UserAggregate;
-use App\Models\User;
+use App\Actions\UserActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -34,18 +33,11 @@ final class UserSuspendProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $userId = (string) $this->route('user');
-        $user = User::query()->select(['id'])->findOrFail($userId);
-
         /** @var array{reason: string, notify?: bool} $data */
         $data = $this->validated();
 
-        UserAggregate::retrieve($user->id)
-            ->suspend(
-                reason: $data['reason'],
-                notify: $data['notify'] ?? false,
-            )
-            ->persist();
+        new UserActions((string) $this->route('user'))
+            ->suspend($data['notify'] ?? false, $data['reason']);
 
         return redirect()
             ->route('users.index')

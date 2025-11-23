@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
-use App\Aggregates\UserAggregate;
+use App\Actions\UserActions;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,14 +41,9 @@ final class UserDestroyProcessRequest extends FormRequest
             abort(403, 'User must be closed before destruction');
         }
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
+        $this->validated();
 
-        UserAggregate::retrieve($user->id)
-            ->destroy(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new UserActions($user)->destroy();
 
         return redirect()
             ->route('users.index')

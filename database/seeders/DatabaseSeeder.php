@@ -10,7 +10,7 @@ use App\Actions\ProductActions;
 use App\Actions\ProductTypeActions;
 use App\Actions\RoleActions;
 use App\Actions\TerritoryActions;
-use App\Models\User;
+use App\Actions\UserActions;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -53,7 +53,7 @@ final class DatabaseSeeder extends Seeder
             'name' => 'Test Role',
         ]);
 
-        User::create([
+        UserActions::create([
             'operator_id' => $operator->id,
             'role_id' => $role->id,
             'first_name' => 'Test',

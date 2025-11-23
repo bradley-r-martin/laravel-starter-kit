@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Authentication;
 
-use App\Aggregates\UserAggregate;
 use App\Models\User;
-use DateTimeImmutable;
+use App\Notifications\PasswordRecoveryNotification;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Password;
 use Symfony\Component\HttpFoundation\Response;
 
 final class AuthenticationRecoveryProcessRequest extends FormRequest
@@ -39,16 +39,11 @@ final class AuthenticationRecoveryProcessRequest extends FormRequest
         // Find user by email
         $user = User::query()->where('email', $email)->first();
 
-        // Only record the event if the user exists
+        // Only send notification if the user exists
         if ($user) {
-            UserAggregate::retrieve($user->id)
-                ->requestRecovery(
-                    email: $email,
-                    ipAddress: request()->ip() ?? '',
-                    userAgent: request()->userAgent() ?? '',
-                    timestamp: new DateTimeImmutable,
-                )
-                ->persist();
+            // Generate recovery token and send notification
+            $token = Password::createToken($user);
+            $user->notify(new PasswordRecoveryNotification($token));
         }
 
         // Always return the same response to prevent email enumeration

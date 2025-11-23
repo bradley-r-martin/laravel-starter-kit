@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
-use App\Aggregates\UserAggregate;
-use App\Models\User;
+use App\Actions\UserActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,17 +32,9 @@ final class UserReopenProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $userId = (string) $this->route('user');
-        $user = User::query()->select(['id'])->findOrFail($userId);
+        $this->validated();
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
-
-        UserAggregate::retrieve($user->id)
-            ->reopen(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new UserActions((string) $this->route('user'))->reopen();
 
         return redirect()
             ->route('users.index')
