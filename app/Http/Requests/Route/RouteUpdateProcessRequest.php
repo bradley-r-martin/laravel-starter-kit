@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Route;
 
-use App\Aggregates\RouteAggregate;
-use App\Domain\Schedule;
-use App\Models\Route;
+use App\Actions\RouteActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -35,32 +33,8 @@ final class RouteUpdateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $routeId = (string) $this->route('route');
-
-        /** @var Route $route */
-        $route = Route::query()
-            ->select(['id', 'closed_at'])
-            ->findOrFail($routeId);
-
-        // Only non-closed routes can be updated
-        if ($route->closed_at !== null) {
-            abort(403, 'Closed routes cannot be updated.');
-        }
-
-        /** @var array{name?: string, schedule?: string|null} $data */
         $data = $this->validated();
-
-        $schedule = null;
-        if (isset($data['schedule']) && $data['schedule'] !== '') {
-            $schedule = Schedule::fromString($data['schedule']);
-        }
-
-        RouteAggregate::retrieve($routeId)
-            ->update(
-                name: $data['name'] ?? null,
-                schedule: $schedule,
-            )
-            ->persist();
+        new RouteActions((string) $this->route('route'))->update($data);
 
         return redirect()
             ->route('routes.index')

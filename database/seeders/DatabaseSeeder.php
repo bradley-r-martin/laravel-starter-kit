@@ -9,6 +9,8 @@ use App\Actions\OperatorActions;
 use App\Actions\ProductActions;
 use App\Actions\ProductTypeActions;
 use App\Actions\RoleActions;
+use App\Actions\RouteActions;
+use App\Actions\SnackwareActions;
 use App\Actions\TerritoryActions;
 use App\Actions\UserActions;
 use App\Actions\WholesalerActions;
@@ -27,7 +29,7 @@ final class DatabaseSeeder extends Seeder
             'email' => 'operator@example.com',
         ]);
 
-        TerritoryActions::create([
+        $territory = TerritoryActions::create([
             'operator_id' => $operator->id,
             'name' => 'Test Territory',
         ]);
@@ -52,6 +54,20 @@ final class DatabaseSeeder extends Seeder
             'units' => 12,
             'cost' => 100,
             'price' => 200,
+        ]);
+
+        SnackwareActions::create([
+            'name' => 'Test Snackware',
+            'operator_id' => $operator->id,
+            'territory_id' => $territory->id,
+            'price' => 100,
+            'type' => 'box',
+        ]);
+
+        RouteActions::create([
+            'name' => 'Test Route',
+            'territory_id' => $territory->id,
+            'operator_id' => $operator->id,
         ]);
 
         $role = RoleActions::create([
