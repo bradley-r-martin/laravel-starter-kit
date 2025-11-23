@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Authentication\AuthenticationTerritoryController;
+use App\Http\Controllers\Expense\ExpenseAnalyzeController;
 use App\Http\Controllers\Expense\ExpenseCreateController;
 use App\Http\Controllers\Expense\ExpenseDestroyController;
 use App\Http\Controllers\Expense\ExpenseDetailController;
@@ -276,7 +277,8 @@ Route::middleware('territory')->group(function () {
         Route::delete('/{expense}/destroy', [ExpenseDestroyController::class, 'process'])->name('destroy');
     });
 
-    Route::post('/file-upload', [FileUploadController::class, 'process'])->name('file-upload');
+    Route::post('/api/invoice-analysis', [ExpenseAnalyzeController::class, 'process'])->name('api.invoice-analysis');
+    Route::post('/api/upload', [FileUploadController::class, 'process'])->name('api.upload');
 
     Route::get('/dashboard', function () {
         return inertia('Dashboard');

@@ -19,14 +19,10 @@ use RuntimeException;
  */
 final readonly class InvoiceTextractService
 {
-    /**
-     * @phpstan-ignore-next-line
-     */
     private TextractClient $textractClient;
 
     public function __construct()
     {
-        /** @phpstan-ignore-next-line */
         $this->textractClient = new TextractClient([
             'version' => 'latest',
             'region' => config('services.aws.region', 'us-east-1'),
@@ -77,7 +73,6 @@ final readonly class InvoiceTextractService
             /** @var array<mixed> $allResults */
             $allResults = [];
             foreach ($documents as $document) {
-                /** @phpstan-ignore-next-line */
                 $result = $this->textractClient->analyzeExpense([
                     'Document' => $document,
                 ]);
@@ -85,9 +80,7 @@ final readonly class InvoiceTextractService
             }
 
             return $this->extractExpenseData($allResults);
-            /** @phpstan-ignore-next-line */
         } catch (AwsException $e) {
-            /** @phpstan-ignore-next-line */
             $message = $e->getMessage();
             throw new RuntimeException('Failed to analyze invoice with Textract: '.$message, 0, $e);
         }
@@ -153,11 +146,7 @@ final readonly class InvoiceTextractService
         // Process each page result
         foreach ($textractResults as $result) {
             // Convert Result object to array for storage and access
-            /** @phpstan-ignore-next-line */
             $resultArray = $result instanceof Result ? $result->toArray() : (is_array($result) ? $result : []);
-            if (! is_array($resultArray)) {
-                $resultArray = [];
-            }
             $rawData[] = $resultArray;
             if (! isset($resultArray['ExpenseDocuments'])) {
                 continue;

@@ -90,7 +90,7 @@ const Navigation: FunctionComponent<NavigationProps> = () => {
                     <Navbar.Item>
                         <Navbar.Item.Indicator active={component.startsWith('Expense')} />
                         <Navbar.Item.Link
-                            href={'/'}
+                            href={'/expenses'}
                             leftSection={<ReceiptIcon className="size-5" />}
                         >
                             Expenses

@@ -11,6 +11,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.4.0",
+        "aws/aws-sdk-php": "^3.363",
         "inertiajs/inertia-laravel": "^2.0",
         "inertiaui/modal": "^0.21.1",
         "laravel-notification-channels/webpush": "^10.2",

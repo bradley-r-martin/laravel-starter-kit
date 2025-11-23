@@ -5,7 +5,7 @@ export type InvoiceImage = { name: string; blob: Blob };
 
 class InvoiceAnalysisService {
     private readonly SUPPORTED_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
-    private readonly API_ENDPOINT = '/api/expenses/analysis';
+    private readonly API_ENDPOINT = '/api/invoice-analysis';
 
     public async analyze<Response = unknown>(
         file: File
