@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Wholesaler;
 
-use App\Aggregates\WholesalerAggregate;
+use App\Actions\WholesalerActions;
 use App\Models\Wholesaler;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,11 +39,12 @@ final class WholesalerUpdateProcessRequest extends FormRequest
         /** @var array{name?: string|null} $data */
         $data = $this->validated();
 
-        WholesalerAggregate::retrieve($wholesaler->id)
-            ->update(
-                name: $data['name'] ?? null,
-            )
-            ->persist();
+        $updateData = [];
+        if (isset($data['name'])) {
+            $updateData['name'] = $data['name'];
+        }
+
+        new WholesalerActions($wholesaler)->update($updateData);
 
         return redirect()
             ->route('wholesalers.index')

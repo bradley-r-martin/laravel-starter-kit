@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Wholesaler;
 
-use App\Aggregates\WholesalerAggregate;
+use App\Actions\WholesalerActions;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 final class WholesalerCreateProcessRequest extends FormRequest
@@ -36,13 +35,9 @@ final class WholesalerCreateProcessRequest extends FormRequest
         /** @var array{name: string} $data */
         $data = $this->validated();
 
-        $wholesalerId = (string) Str::ulid();
-
-        WholesalerAggregate::retrieve($wholesalerId)
-            ->create(
-                name: $data['name'],
-            )
-            ->persist();
+        WholesalerActions::create([
+            'name' => $data['name'],
+        ]);
 
         return redirect()
             ->route('wholesalers.index')

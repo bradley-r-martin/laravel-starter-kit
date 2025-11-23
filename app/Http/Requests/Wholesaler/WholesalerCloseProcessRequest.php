@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Wholesaler;
 
-use App\Aggregates\WholesalerAggregate;
-use App\Models\Wholesaler;
+use App\Actions\WholesalerActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,17 +32,9 @@ final class WholesalerCloseProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $wholesalerId = (string) $this->route('wholesaler');
-        $wholesaler = Wholesaler::query()->select(['id'])->findOrFail($wholesalerId);
+        $this->validated();
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
-
-        WholesalerAggregate::retrieve($wholesaler->id)
-            ->close(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new WholesalerActions((string) $this->route('wholesaler'))->close();
 
         return redirect()
             ->route('wholesalers.index')

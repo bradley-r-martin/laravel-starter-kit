@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Wholesaler;
 
-use App\Aggregates\WholesalerAggregate;
+use App\Actions\WholesalerActions;
 use App\Models\Wholesaler;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,14 +36,9 @@ final class WholesalerDestroyProcessRequest extends FormRequest
         $wholesalerId = (string) $this->route('wholesaler');
         $wholesaler = Wholesaler::query()->select(['id'])->findOrFail($wholesalerId);
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
+        $this->validated();
 
-        WholesalerAggregate::retrieve($wholesaler->id)
-            ->destroy(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new WholesalerActions($wholesaler)->destroy();
 
         return redirect()
             ->route('wholesalers.index')
