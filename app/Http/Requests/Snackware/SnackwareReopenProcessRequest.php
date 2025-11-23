@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Snackware;
 
-use App\Aggregates\SnackwareAggregate;
+use App\Actions\SnackwareActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -32,16 +32,9 @@ final class SnackwareReopenProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $snackwareId = (string) $this->route('snackware');
+        $this->validated();
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
-
-        SnackwareAggregate::retrieve($snackwareId)
-            ->reopen(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new SnackwareActions((string) $this->route('snackware'))->reopen();
 
         return redirect()
             ->route('snackwares.index')

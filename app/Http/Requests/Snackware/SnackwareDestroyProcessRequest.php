@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Snackware;
 
-use App\Aggregates\SnackwareAggregate;
+use App\Actions\SnackwareActions;
 use App\Models\Snackware;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,15 +41,9 @@ final class SnackwareDestroyProcessRequest extends FormRequest
             abort(403, 'Only closed snackwares can be destroyed. Please close the snackware first.');
         }
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
+        $this->validated();
 
-        // Destroy the snackware via event sourcing
-        SnackwareAggregate::retrieve($snackwareId)
-            ->destroy(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new SnackwareActions($snackware)->destroy();
 
         return redirect()
             ->route('snackwares.index')

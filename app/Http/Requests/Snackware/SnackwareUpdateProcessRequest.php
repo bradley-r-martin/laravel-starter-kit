@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Snackware;
 
-use App\Aggregates\SnackwareAggregate;
+use App\Actions\SnackwareActions;
 use App\Models\Snackware;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,14 +51,21 @@ final class SnackwareUpdateProcessRequest extends FormRequest
         /** @var array{name?: string, type?: string, icon?: string|null, price?: int} $data */
         $data = $this->validated();
 
-        SnackwareAggregate::retrieve($snackwareId)
-            ->update(
-                name: $data['name'] ?? null,
-                type: $data['type'] ?? null,
-                icon: $data['icon'] ?? null,
-                price: $data['price'] ?? null,
-            )
-            ->persist();
+        $updateData = [];
+        if (isset($data['name'])) {
+            $updateData['name'] = $data['name'];
+        }
+        if (isset($data['type'])) {
+            $updateData['type'] = $data['type'];
+        }
+        if (array_key_exists('icon', $data)) {
+            $updateData['icon'] = $data['icon'];
+        }
+        if (isset($data['price'])) {
+            $updateData['price'] = $data['price'];
+        }
+
+        new SnackwareActions($snackware)->update($updateData);
 
         return redirect()
             ->route('snackwares.index')

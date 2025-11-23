@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Snackware;
 
-use App\Aggregates\SnackwareAggregate;
+use App\Actions\SnackwareActions;
 use App\Models\Snackware;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,14 +40,9 @@ final class SnackwareCloseProcessRequest extends FormRequest
             abort(403, 'Cannot close a snackware that has placements. Please remove all placements before closing.');
         }
 
-        /** @var array{reason: string} $data */
-        $data = $this->validated();
+        $this->validated();
 
-        SnackwareAggregate::retrieve($snackwareId)
-            ->close(
-                reason: $data['reason'],
-            )
-            ->persist();
+        new SnackwareActions($snackware)->close();
 
         return redirect()
             ->route('snackwares.index')

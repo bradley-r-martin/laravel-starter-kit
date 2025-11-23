@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Snackware;
 
-use App\Aggregates\SnackwareAggregate;
+use App\Actions\SnackwareActions;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 final class SnackwareCreateProcessRequest extends FormRequest
@@ -49,18 +48,14 @@ final class SnackwareCreateProcessRequest extends FormRequest
             abort(403, 'User must be associated with an operator');
         }
 
-        $snackwareId = (string) Str::ulid();
-
-        SnackwareAggregate::retrieve($snackwareId)
-            ->create(
-                territoryId: $territory->id,
-                operatorId: $operator->id,
-                name: $data['name'],
-                type: $data['type'] ?? 'box',
-                icon: $data['icon'] ?? null,
-                price: $data['price'] ?? 0,
-            )
-            ->persist();
+        SnackwareActions::create([
+            'territory_id' => $territory->id,
+            'operator_id' => $operator->id,
+            'name' => $data['name'],
+            'type' => $data['type'] ?? 'box',
+            'icon' => $data['icon'] ?? null,
+            'price' => $data['price'] ?? 0,
+        ]);
 
         return redirect()
             ->route('snackwares.index')

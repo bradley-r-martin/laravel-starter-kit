@@ -11,6 +11,7 @@ use App\Actions\ProductTypeActions;
 use App\Actions\RoleActions;
 use App\Actions\TerritoryActions;
 use App\Actions\UserActions;
+use App\Actions\WholesalerActions;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -37,6 +38,10 @@ final class DatabaseSeeder extends Seeder
 
         $manufacturer = ManufacturerActions::create([
             'name' => 'Test Manufacturer',
+        ]);
+
+        WholesalerActions::create([
+            'name' => 'Test Wholesaler',
         ]);
 
         ProductActions::create([
