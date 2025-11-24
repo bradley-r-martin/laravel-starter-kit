@@ -61,26 +61,33 @@ final class ExpenseAnalyzeRequest extends FormRequest
             // Store uploaded images temporarily and get their paths
             $storedPaths = [];
             $imagePaths = [];
+            $uploadedFiles = [];
+
             foreach ($data['images'] as $image) {
-                // Store in temporary location
-                $path = $image->store('temp/invoices', 'local');
+                // Store in temporary location on public disk
+                $path = $image->store('temp', 'public');
                 if ($path === false) {
                     throw new RuntimeException('Failed to store uploaded image');
                 }
                 $storedPaths[] = $path;
-                // Get the absolute path for the file
-                $absolutePath = Storage::disk('local')->path($path);
+
+                // Store file info for response
+                $uploadedFiles[] = [
+                    'path' => $path,
+                    'disk' => 'public',
+                    'mime_type' => $image->getClientMimeType(),
+                    'size' => $image->getSize(),
+                    'filename' => $image->getClientOriginalName(),
+                ];
+
+                // Get the absolute path for analysis
+                $absolutePath = Storage::disk('public')->path($path);
                 $imagePaths[] = $absolutePath;
             }
 
             // Analyze the invoice using Textract
             $textractService = new InvoiceTextractService;
             $analysisResult = $textractService->analyzeInvoice($imagePaths);
-
-            // Clean up temporary files
-            foreach ($storedPaths as $path) {
-                Storage::disk('local')->delete($path);
-            }
 
             // Find matching wholesaler if we have a name
             $wholesalerId = null;
@@ -102,6 +109,7 @@ final class ExpenseAnalyzeRequest extends FormRequest
                 'wholesaler_id' => $wholesalerId,
                 'wholesaler_name' => $analysisResult['wholesaler_name'],
                 'expense_items' => $analysisResult['expense_items'],
+                'pages' => $uploadedFiles,
             ]);
         } catch (Exception $e) {
             Log::error('Invoice analysis failed', [

@@ -6,11 +6,15 @@ import DescriptionList from '@/Components/DescriptionList';
 import Navatar from '@/Components/Navatar';
 import Navigate from '@/Components/Navigate';
 import { Page } from '@/Components/Page';
-import { InertiaView } from '@/Types';
-import { Badge, Button, Stack, Table } from '@mantine/core';
-import { ArrowLeftIcon, MailWarning } from 'lucide-react';
+import { InertiaView, UploadedFile } from '@/Types';
+import { Badge, Button, Stack } from '@mantine/core';
+import { ArrowLeftIcon, ImageIcon, ShieldAlert } from 'lucide-react';
 
-interface ExpenseItem {
+import ExpenseDetailsWorksheet from '@/Features/Expenses/Views/ExpenseDetailsWorksheetView';
+import { PhotoProvider, PhotoView } from 'react-photo-view';
+import 'react-photo-view/dist/react-photo-view.css';
+
+export interface ExpenseItem {
     id: string;
     item: string | null;
     quantity: number;
@@ -19,15 +23,19 @@ interface ExpenseItem {
     rebate: number;
     royalty: number;
     price: number;
-    product: { id: string; name: string } | null;
+    product_id: string | null;
+    product_units: number;
+    product_rrp: number;
+    product_royalty: number;
+    product_rebate: number;
     __product_name: string | null;
 }
 
-interface Expense {
+export interface Expense {
     id: string;
     invoice_no: string;
     invoice_date: string | null;
-    pages: any;
+    pages: UploadedFile[] | null;
     completed_at: string | null;
     closed_at: string | null;
     created_at: string;
@@ -87,47 +95,7 @@ const View: InertiaView<ViewProps> = (props) => {
 
             <Page.Content split>
                 <Page.Content.Main>
-                    <Stack>
-                        {expense.expense_items && expense.expense_items.length > 0 && (
-                            <div>
-                                <h3 className="mb-4 text-lg font-semibold">Expense Items</h3>
-                                <Table>
-                                    <Table.Thead>
-                                        <Table.Tr>
-                                            <Table.Th>Item</Table.Th>
-                                            <Table.Th>Quantity</Table.Th>
-                                            <Table.Th>Cost</Table.Th>
-                                            <Table.Th>Rebate</Table.Th>
-                                            <Table.Th>Royalty</Table.Th>
-                                            <Table.Th>Price</Table.Th>
-                                        </Table.Tr>
-                                    </Table.Thead>
-                                    <Table.Tbody>
-                                        {expense.expense_items.map((item) => (
-                                            <Table.Tr key={item.id}>
-                                                <Table.Td>
-                                                    {item.__product_name || item.item || '—'}
-                                                </Table.Td>
-                                                <Table.Td>{item.quantity}</Table.Td>
-                                                <Table.Td>
-                                                    <Cast.Currency>{item.cost}</Cast.Currency>
-                                                </Table.Td>
-                                                <Table.Td>
-                                                    <Cast.Currency>{item.rebate}</Cast.Currency>
-                                                </Table.Td>
-                                                <Table.Td>
-                                                    <Cast.Currency>{item.royalty}</Cast.Currency>
-                                                </Table.Td>
-                                                <Table.Td>
-                                                    <Cast.Currency>{item.price}</Cast.Currency>
-                                                </Table.Td>
-                                            </Table.Tr>
-                                        ))}
-                                    </Table.Tbody>
-                                </Table>
-                            </div>
-                        )}
-                    </Stack>
+                    <ExpenseDetailsWorksheet />
                 </Page.Content.Main>
                 <Page.Content.Aside>
                     <div className="flex text-center *:flex-1">
@@ -150,49 +118,81 @@ const View: InertiaView<ViewProps> = (props) => {
                             <div className="text-xs uppercase">Total Royalty</div>
                         </div>
                     </div>
+                    <Stack gap={0}>
+                        <ActionWell className="rounded-b-none border-b-0 bg-zinc-100 shadow-inner *:p-4">
+                            <div className="flex items-center justify-center space-x-4 overflow-hidden">
+                                {(!expense.pages || expense.pages.length === 0) && (
+                                    <div className="flex min-h-32 flex-col items-center justify-center gap-2">
+                                        <ImageIcon className="size-4 text-slate-400" />
+                                        <div className="max-w-xs text-xs text-slate-400">
+                                            No invoice availble for preview
+                                        </div>
+                                    </div>
+                                )}
+                                <PhotoProvider>
+                                    {expense.pages?.map((page, index) => (
+                                        <div className="size-32 max-h-full max-w-full" key={index}>
+                                            <PhotoView src={`/storage/${page.path}`}>
+                                                <img
+                                                    src={`/storage/${page.path}`}
+                                                    alt={`Page ${index + 1}`}
+                                                    className="h-full w-full cursor-zoom-in overflow-hidden rounded object-contain drop-shadow"
+                                                />
+                                            </PhotoView>
+                                        </div>
+                                    ))}
+                                </PhotoProvider>
+                            </div>
+                        </ActionWell>
 
-                    <div className="mx-auto flex items-center space-x-2 text-amber-600">
-                        <MailWarning className="size-5 shrink-0 text-amber-500" />
-                        <div className="max-w-72 text-xs">
-                            {itemsLeft} {itemsLeft > 1 ? 'items need' : 'item needs'} to be assigned
-                            to {itemsLeft > 1 ? 'products' : 'a product'}.
-                        </div>
-                    </div>
-
-                    <ActionWell>
-                        <ActionWell.Row>
-                            <Navigate type="modal" href={route('expenses.destroy', expense.id)}>
-                                <Button
-                                    disabled={!!expense.completed_at || !completable}
-                                    variant="filled"
-                                    color="blue"
-                                >
-                                    Mark as complete
-                                </Button>
-                            </Navigate>
-                        </ActionWell.Row>
-                        <ActionWell.Row>
-                            <Navigate type="modal" href={route('expenses.destroy', expense.id)}>
-                                <Button
-                                    variant="light"
-                                    color="zinc"
-                                    disabled={!!expense.completed_at}
-                                >
-                                    Change details
-                                </Button>
-                            </Navigate>
-                            <ActionWell.Divider />
-                            <Navigate type="modal" href={route('expenses.destroy', expense.id)}>
-                                <Button
-                                    variant="light"
-                                    color="zinc"
-                                    disabled={!!expense.completed_at}
-                                >
-                                    Cancel expense
-                                </Button>
-                            </Navigate>
-                        </ActionWell.Row>
-                    </ActionWell>
+                        <ActionWell className="rounded-t-none">
+                            <ActionWell.Row>
+                                <Stack>
+                                    <Navigate
+                                        type="modal"
+                                        href={route('expenses.destroy', expense.id)}
+                                    >
+                                        <Button
+                                            disabled={!!expense.completed_at || !completable}
+                                            variant="filled"
+                                            color="blue"
+                                        >
+                                            Mark as complete
+                                        </Button>
+                                    </Navigate>
+                                    <div className="mx-auto flex items-center space-x-2 text-amber-600">
+                                        <ShieldAlert className="size-5 shrink-0 text-amber-500" />
+                                        <div className="max-w-72 text-xs">
+                                            {itemsLeft}{' '}
+                                            {itemsLeft > 1 ? 'items need' : 'item needs'} to be
+                                            assigned to {itemsLeft > 1 ? 'products' : 'a product'}.
+                                        </div>
+                                    </div>
+                                </Stack>
+                            </ActionWell.Row>
+                            <ActionWell.Row>
+                                <Navigate type="modal" href={route('expenses.destroy', expense.id)}>
+                                    <Button
+                                        variant="light"
+                                        color="zinc"
+                                        disabled={!!expense.completed_at}
+                                    >
+                                        Change details
+                                    </Button>
+                                </Navigate>
+                                <ActionWell.Divider />
+                                <Navigate type="modal" href={route('expenses.destroy', expense.id)}>
+                                    <Button
+                                        variant="light"
+                                        color="zinc"
+                                        disabled={!!expense.completed_at}
+                                    >
+                                        Cancel expense
+                                    </Button>
+                                </Navigate>
+                            </ActionWell.Row>
+                        </ActionWell>
+                    </Stack>
 
                     <Stack>
                         <DescriptionList>

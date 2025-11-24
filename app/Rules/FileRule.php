@@ -10,29 +10,35 @@ use Illuminate\Support\Facades\Validator;
 
 final class FileRule implements ValidationRule
 {
-    /**
-     * @param  array<string, mixed>|null  $value
-     */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if ($value === null) {
             return;
         }
 
+        if (! is_array($value)) {
+            $fail("The {$attribute} must be a valid file object.");
+
+            return;
+        }
+
+        // Use a simple key for validation to avoid dot notation issues
         $validator = Validator::make(
-            [$attribute => $value],
+            ['file' => $value],
             [
-                $attribute => ['array'],
-                "{$attribute}.path" => ['required', 'string'],
-                "{$attribute}.disk" => ['required', 'string'],
-                "{$attribute}.mime_type" => ['nullable', 'string'],
-                "{$attribute}.size" => ['nullable', 'integer'],
-                "{$attribute}.filename" => ['nullable', 'string'],
+                'file' => ['array'],
+                'file.path' => ['required', 'string'],
+                'file.disk' => ['required', 'string'],
+                'file.mime_type' => ['nullable', 'string'],
+                'file.size' => ['nullable', 'integer'],
+                'file.filename' => ['nullable', 'string'],
             ]
         );
 
         if ($validator->fails()) {
             foreach ($validator->errors()->all() as $message) {
+                // Replace 'file' with the actual attribute name in error messages
+                $message = str_replace('file', $attribute, $message);
                 $fail($message);
             }
         }

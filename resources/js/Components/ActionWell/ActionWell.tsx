@@ -17,7 +17,7 @@ const ActionWell: FunctionComponent<ActionWellProps> & Composition = (props) => 
     return (
         <div
             className={twMerge(
-                'divide-y divide-zinc-950/10 rounded-lg border border-zinc-950/10 bg-white/50 text-sm *:p-3 lg:bg-zinc-950/1',
+                'divide-y divide-zinc-950/10 rounded-lg border border-zinc-950/10 bg-zinc-950/1 text-sm *:p-3',
                 className
             )}
             {...restProps}

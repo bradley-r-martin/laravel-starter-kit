@@ -6,6 +6,7 @@ namespace App\Http\Requests\Expense;
 
 use App\Models\Expense;
 use App\Models\ExpenseItem;
+use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -65,6 +66,12 @@ final class ExpenseDetailViewRequest extends FormRequest
                         '__product_name' => $item->__product_name,
                     ]),
                 ],
+                'products' => Product::query()
+                    ->get()
+                    ->map(fn (Product $product): array => [
+                        'id' => $product->id,
+                        'name' => $product->name,
+                    ]),
             ])
             ->toResponse($this);
     }

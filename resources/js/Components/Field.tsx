@@ -17,18 +17,30 @@ interface FieldProps {
         | 'transfer'
         | 'phone'
         | 'address';
+    live?: boolean;
     name: string;
     children: React.ReactNode;
 }
 
 const Field: FunctionComponent<FieldProps> = (props) => {
-    const { name, children, type = 'text', ...restProps } = props;
+    const { name, children, type = 'text', live = false, ...restProps } = props;
     const { inertiaFormInstance } = useFormContext();
     return (
         <Slot
             children={children}
             {...merge(restProps, {
                 value: inertiaFormInstance.data[name],
+                onBlur: (event: React.FocusEvent<HTMLInputElement>) => {
+                    if (live) {
+                        // if (event.target.value !== inertiaFormInstance.data[name]) {
+                        // Find the closest form and submit
+                        const formElement = event.target.closest('form');
+                        if (formElement) {
+                            formElement.requestSubmit();
+                        }
+                        // }
+                    }
+                },
                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
                     switch (type) {
                         case 'file':

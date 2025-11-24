@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Domain\File;
 use App\Models\Expense;
+use App\Models\ExpenseItem;
 use App\Models\Wholesaler;
 
 final class ExpenseActions
@@ -33,9 +35,53 @@ final class ExpenseActions
             $data['__wholesaler_name'] = $wholesaler->name;
         }
 
+        // Process pages if they are present
+        if (isset($data['pages']) && is_array($data['pages'])) {
+            $persistedPages = [];
+            foreach ($data['pages'] as $page) {
+                if (is_array($page)) {
+                    // Convert array to File object and persist it
+                    /** @var array<string, int|string|null> $page */
+                    $file = File::fromArray($page);
+                    $persistedFile = $file->persist('public', 'expenses');
+                    $persistedPages[] = $persistedFile->toArray();
+                }
+            }
+            $data['pages'] = $persistedPages;
+        }
+
+        // Extract expense items before creating expense
+        $expenseItems = $data['expense_items'] ?? [];
+        unset($data['expense_items']);
+
         Wholesaler::whereKey($data['wholesaler_id'])->increment('__expenses_count');
 
-        return Expense::create($data);
+        $expense = Expense::create($data);
+
+        // Create expense items if they exist
+        if (! empty($expenseItems) && is_array($expenseItems)) {
+            foreach ($expenseItems as $item) {
+                if (is_array($item)) {
+                    ExpenseItem::create([
+                        'expense_id' => $expense->id,
+                        'wholesaler_id' => $data['wholesaler_id'],
+                        'operator_id' => $data['operator_id'],
+                        'item' => $item['item'] ?? null,
+                        'quantity' => $item['quantity'] ?? 0,
+                        'units' => $item['units'] ?? 1,
+                        'cost' => $item['cost'] ?? 0,
+                        'rebate' => $item['rebate'] ?? 0,
+                        'royalty' => $item['royalty'] ?? 0,
+                        'price' => $item['price'] ?? 0,
+                    ]);
+                }
+            }
+
+            // Update expense totals
+            self::updateExpenseTotals($expense);
+        }
+
+        return $expense;
     }
 
     public function destroy(): void
@@ -43,5 +89,25 @@ final class ExpenseActions
 
         Wholesaler::whereKey($this->expense->wholesaler_id)->decrement('__expenses_count');
         $this->expense->delete();
+    }
+
+    /**
+     * Update the expense totals based on expense items
+     */
+    private static function updateExpenseTotals(Expense $expense): void
+    {
+        $totals = ExpenseItem::where('expense_id', $expense->id)
+            ->selectRaw('
+                SUM(cost) as total_cost,
+                SUM(rebate) as total_rebate,
+                SUM(royalty) as total_royalty
+            ')
+            ->first();
+
+        $expense->update([
+            '__cost' => $totals->total_cost ?? 0,
+            '__rebate' => $totals->total_rebate ?? 0,
+            '__royalty' => $totals->total_royalty ?? 0,
+        ]);
     }
 }

@@ -35,6 +35,13 @@ interface AnalysisResponse {
         royalty: number;
         price: number;
     }>;
+    pages?: Array<{
+        path: string;
+        disk: string;
+        mime_type: string;
+        size: number;
+        filename: string;
+    }>;
 }
 
 export default function Create({ wholesalers }: CreateProps) {
@@ -43,6 +50,22 @@ export default function Create({ wholesalers }: CreateProps) {
         invoice_no: '',
         invoice_date: null as string | null,
         wholesaler_id: '',
+        pages: [] as Array<{
+            path: string;
+            disk: string;
+            mime_type: string;
+            size: number;
+            filename: string;
+        }>,
+        expense_items: [] as Array<{
+            item: string | null;
+            quantity: number;
+            units: number;
+            cost: number;
+            rebate: number;
+            royalty: number;
+            price: number;
+        }>,
     });
     const { processing } = form;
     const [showManualEntry, setShowManualEntry] = useState(false);
@@ -57,6 +80,8 @@ export default function Create({ wholesalers }: CreateProps) {
     const handleFileChange = async (file: File | null) => {
         if (!file) {
             setAnalysisData(null);
+            form.setData('pages', []);
+            form.setData('expense_items', []);
             return;
         }
 
@@ -73,6 +98,12 @@ export default function Create({ wholesalers }: CreateProps) {
                 }
                 if (response.data.wholesaler_id) {
                     form.setData('wholesaler_id', response.data.wholesaler_id);
+                }
+                if (response.data.pages) {
+                    form.setData('pages', response.data.pages);
+                }
+                if (response.data.expense_items) {
+                    form.setData('expense_items', response.data.expense_items);
                 }
             }
         } catch (error) {

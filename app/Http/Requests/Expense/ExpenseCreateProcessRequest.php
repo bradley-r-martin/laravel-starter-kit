@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Expense;
 
 use App\Actions\ExpenseActions;
-use DateTimeImmutable;
+use App\Rules\FileRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -30,38 +30,30 @@ final class ExpenseCreateProcessRequest extends FormRequest
             'invoice_no' => ['required', 'string', 'max:255'],
             'invoice_date' => ['nullable', 'date'],
             'wholesaler_id' => ['required', 'string', 'exists:wholesalers,id'],
+            'pages' => ['nullable', 'array'],
+            'pages.*' => ['nullable', new FileRule()],
+            'expense_items' => ['nullable', 'array'],
+            'expense_items.*.item' => ['nullable', 'string'],
+            'expense_items.*.quantity' => ['required', 'integer', 'min:0'],
+            'expense_items.*.units' => ['required', 'integer', 'min:1'],
+            'expense_items.*.cost' => ['required', 'integer', 'min:0'],
+            'expense_items.*.rebate' => ['required', 'integer', 'min:0'],
+            'expense_items.*.royalty' => ['required', 'integer', 'min:0'],
+            'expense_items.*.price' => ['required', 'integer', 'min:0'],
         ];
     }
 
     public function respond(): Response
     {
-        /** @var array{invoice_no: string, invoice_date?: string|null, wholesaler_id: string} $data */
+        /** @var array{invoice_no: string, invoice_date?: string|null, wholesaler_id: string, pages?: array<mixed>, expense_items?: array<mixed>} $data */
         $data = $this->validated();
 
         /** @var \App\Models\User $user */
         $user = $this->user();
 
-        $operator = $user->operator;
+        $data['operator_id'] = $user->operator_id;
 
-        if (! $operator) {
-            abort(403, 'User must be associated with an operator');
-        }
-
-        $invoiceDate = null;
-        if (isset($data['invoice_date']) && $data['invoice_date']) {
-            $invoiceDate = DateTimeImmutable::createFromFormat('Y-m-d', $data['invoice_date']);
-            if ($invoiceDate === false) {
-                abort(422, 'Invalid invoice date format');
-            }
-            $invoiceDate = $invoiceDate->setTime(0, 0, 0);
-        }
-
-        ExpenseActions::create([
-            'operator_id' => $operator->id,
-            'wholesaler_id' => $data['wholesaler_id'],
-            'invoice_no' => $data['invoice_no'],
-            'invoice_date' => $invoiceDate?->format('Y-m-d'),
-        ]);
+        ExpenseActions::create($data);
 
         return redirect()
             ->route('expenses.index')

@@ -111,3 +111,43 @@
 .mobile-menu-backdrop {
     animation: fadeIn 0.2s ease-out;
 }
+
+.\*\:disabled-bg > *,
+.disabled-bg {
+    opacity: 1;
+    background-size: 7px 7px;
+
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.1) 0,
+        rgba(0, 0, 0, 0.1) 0.7000000000000001px,
+        rgba(0, 0, 0, 0) 0,
+        rgba(0, 0, 0, 0) 50%
+    );
+}
+
+.\*\:refunded-bg > *,
+.refunded-bg {
+    opacity: 1;
+    background-size: 7px 7px;
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.1) 0,
+        rgba(0, 0, 0, 0.1) 0.7000000000000001px,
+        rgba(53, 230, 100, 0.1) 0,
+        rgba(53, 230, 100, 0.1) 50%
+    );
+}
+
+.\*\:striped-amber-bg > *,
+.striped-amber-bg {
+    opacity: 1;
+    background-size: 7px 7px;
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(206, 20, 20, 0.1) 0,
+        rgba(0, 0, 0, 0.1) 0.7000000000000001px,
+        rgba(230, 162, 53, 0.1) 0,
+        rgba(230, 162, 53, 0.1) 50%
+    );
+}
