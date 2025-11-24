@@ -23,11 +23,9 @@ export interface ExpenseItem {
     rebate: number;
     royalty: number;
     price: number;
+
     product_id: string | null;
-    product_units: number;
-    product_rrp: number;
-    product_royalty: number;
-    product_rebate: number;
+
     __product_name: string | null;
 }
 
@@ -55,8 +53,8 @@ interface ViewProps {
 const View: InertiaView<ViewProps> = (props) => {
     const { expense } = props;
 
-    const completable = expense.expense_items.every((item) => item.product);
-    const itemsLeft = expense.expense_items.filter((item) => !item.product).length;
+    const completable = expense.expense_items.every((item) => item.product_id);
+    const itemsLeft = expense.expense_items.filter((item) => !item.product_id).length;
 
     return (
         <Page>

@@ -27,17 +27,33 @@ final class ExpenseItemActions
      */
     public function update(array $data): ExpenseItem
     {
+
         // Handle product assignment/change
         if (array_key_exists('product_id', $data)) {
+            $product = Product::find($data['product_id']);
+
             $newProductId = $data['product_id'];
 
             if ($newProductId !== null) {
                 /** @var Product $product */
-                $product = Product::findOrFail($newProductId);
+                $product = Product::find($newProductId);
                 $data['__product_name'] = $product->name;
             } else {
                 $data['__product_name'] = null;
+                $data['price'] = 0;
+                $data['quantity'] = 0;
+                $data['rebate'] = 0;
+                $data['royalty'] = 0;
             }
+        }
+
+        if (array_key_exists('product_id', $data) && $data['product_id'] !== null) {
+            /** @var Product $product */
+            $product = Product::find($data['product_id']);
+            $data['price'] = $product->price;
+            $data['quantity'] = $product->units * $this->expenseItem->units;
+            $data['rebate'] = $product->rebate * $data['quantity'];
+            $data['royalty'] = $product->royalty * $data['quantity'];
         }
 
         $this->expenseItem->update($data);
@@ -50,6 +66,17 @@ final class ExpenseItemActions
         return $this->expenseItem;
     }
 
+    public function destroy(): void
+    {
+        /** @var Expense $expense */
+        $expense = $this->expenseItem->expense;
+
+        $this->expenseItem->delete();
+
+        // Update expense totals after item deletion
+        $this->updateExpenseTotalsForExpense($expense);
+    }
+
     /**
      * Update the expense totals based on expense items
      */
@@ -58,6 +85,14 @@ final class ExpenseItemActions
         /** @var Expense $expense */
         $expense = $this->expenseItem->expense;
 
+        $this->updateExpenseTotalsForExpense($expense);
+    }
+
+    /**
+     * Update the expense totals for a given expense
+     */
+    private function updateExpenseTotalsForExpense(Expense $expense): void
+    {
         $totals = ExpenseItem::where('expense_id', $expense->id)
             ->selectRaw('
                 SUM(cost) as total_cost,

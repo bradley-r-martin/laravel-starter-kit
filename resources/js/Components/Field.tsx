@@ -24,14 +24,16 @@ interface FieldProps {
 
 const Field: FunctionComponent<FieldProps> = (props) => {
     const { name, children, type = 'text', live = false, ...restProps } = props;
-    const { inertiaFormInstance } = useFormContext();
+    const { inertiaFormInstance, submit } = useFormContext();
     return (
         <Slot
             children={children}
             {...merge(restProps, {
                 value: inertiaFormInstance.data[name],
+
                 onBlur: (event: React.FocusEvent<HTMLInputElement>) => {
                     if (live) {
+                        submit(event);
                         // if (event.target.value !== inertiaFormInstance.data[name]) {
                         // Find the closest form and submit
                         const formElement = event.target.closest('form');
@@ -66,6 +68,9 @@ const Field: FunctionComponent<FieldProps> = (props) => {
                         default:
                             inertiaFormInstance.setData(name, e);
                             break;
+                    }
+                    if (live && type === 'select') {
+                        submit(e);
                     }
                 },
                 error: inertiaFormInstance.errors[name],

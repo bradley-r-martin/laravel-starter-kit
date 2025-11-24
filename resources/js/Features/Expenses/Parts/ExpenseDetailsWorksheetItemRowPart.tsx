@@ -1,5 +1,5 @@
 import Table from '@/Components/Table/Table';
-import { ActionIcon, NumberInput, Select } from '@mantine/core';
+import { ActionIcon, NumberInput, Select, Tooltip } from '@mantine/core';
 
 import { FunctionComponent } from 'react';
 
@@ -10,6 +10,7 @@ import Cast from '@/Components/Cast';
 import Data from '@/Components/Data/Data';
 import Field from '@/Components/Field';
 import Form from '@/Components/Form';
+import Navigate from '@/Components/Navigate';
 import { useForm } from '@inertiajs/react';
 
 interface ExpenseItemRowProps {
@@ -19,19 +20,18 @@ interface ExpenseItemRowProps {
     isCompleted: boolean;
 }
 
-const ExpenseItemRow: FunctionComponent<ExpenseItemRowProps> = ({
-    item,
-    index,
-    expenseId,
-    isCompleted,
-}) => {
-    const form = useForm({});
+const ExpenseItemRow: FunctionComponent<ExpenseItemRowProps> = ({ item, index, isCompleted }) => {
+    const form = useForm({
+        product_id: item.product_id,
+        units: item.units,
+        cost: item.cost,
+    });
 
     return (
         <Table.Tbody.Tr
             key={item.id}
             layoutId={String(item.id)}
-            className={`group ${!item.product_id ? 'striped-amber-bg' : ''}`}
+            className={`group ${!item.product_id ? '' : ''}`}
         >
             <Table.Tbody.Td p={0} className="text-center font-bold text-slate-600">
                 <div
@@ -40,21 +40,27 @@ const ExpenseItemRow: FunctionComponent<ExpenseItemRowProps> = ({
                 >
                     {index + 1}
                 </div>
-                <div className={`text-sm lg:hidden ${isCompleted ? '' : 'lg:group-hover:flex'}`}>
-                    <ActionIcon
-                        variant="subtle"
-                        color="gray"
-                        size="lg"
-                        radius={0}
-                        styles={{
-                            root: {
-                                height: '36px',
-                            },
-                        }}
-                    >
-                        <TrashIcon className="size-4" />
-                    </ActionIcon>
-                </div>
+                {!isCompleted && (
+                    <div className="text-sm lg:hidden lg:group-hover:flex">
+                        <Tooltip label="Remove item">
+                            <Navigate type="modal" href={route('expense-items.destroy', item.id)}>
+                                <ActionIcon
+                                    variant="subtle"
+                                    color="gray"
+                                    size="lg"
+                                    radius={0}
+                                    styles={{
+                                        root: {
+                                            height: '36px',
+                                        },
+                                    }}
+                                >
+                                    <TrashIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+                    </div>
+                )}
             </Table.Tbody.Td>
             <Table.Tbody.Td p={0} data-title="Product" className="col-span-2">
                 <Form
@@ -71,7 +77,7 @@ const ExpenseItemRow: FunctionComponent<ExpenseItemRowProps> = ({
                         >
                             <Select
                                 variant="transparent"
-                                placeholder={item.name as string}
+                                placeholder={item.item as string}
                                 searchable
                                 clearable
                                 styles={{ root: { width: '100%' } }}
@@ -87,14 +93,21 @@ const ExpenseItemRow: FunctionComponent<ExpenseItemRowProps> = ({
                                 }
                                 rightSection={isCompleted ? <span /> : undefined}
                                 disabled={isCompleted}
+                                autoSelectOnBlur
                             />
                         </Data>
                     </Field>
                 </Form>
             </Table.Tbody.Td>
             <Table.Tbody.Td p={0} data-title="QTY" className="col-span-2">
-                <Form form={form}>
-                    <Field name="units">
+                <Form
+                    form={form}
+                    action={{
+                        url: route('expense-items.update', item.id),
+                        method: 'patch',
+                    }}
+                >
+                    <Field name="units" type="number" live>
                         <NumberInput
                             disabled={isCompleted}
                             variant="transparent"
@@ -110,9 +123,15 @@ const ExpenseItemRow: FunctionComponent<ExpenseItemRowProps> = ({
                     </Field>
                 </Form>
             </Table.Tbody.Td>
-            <Table.Tbody.Td p={0} data-title="Price" className="col-span-2">
-                <Form form={form}>
-                    <Field name="wholesale_cost">
+            <Table.Tbody.Td p={0} data-title="Cost" className="col-span-2">
+                <Form
+                    form={form}
+                    action={{
+                        url: route('expense-items.update', item.id),
+                        method: 'patch',
+                    }}
+                >
+                    <Field name="cost" type="number" live>
                         <NumberInput
                             disabled={isCompleted}
                             variant="transparent"
@@ -131,21 +150,21 @@ const ExpenseItemRow: FunctionComponent<ExpenseItemRowProps> = ({
                 </Form>
             </Table.Tbody.Td>
             <Table.Tbody.Td p={0} data-title="Units" className="disabled-bg">
-                <div className="p-2 px-3 text-sm">{item.product_units}</div>
+                <div className="p-2 px-3 text-sm">{item.product_id ? item.quantity : ''}</div>
             </Table.Tbody.Td>
             <Table.Tbody.Td p={0} data-title="RRP" className="disabled-bg">
                 <div className="p-2 px-3 text-sm">
-                    <Cast.Currency>{item.product_rrp}</Cast.Currency>
+                    {item.product_id ? <Cast.Currency>{item.price}</Cast.Currency> : ''}
                 </div>
             </Table.Tbody.Td>
             <Table.Tbody.Td p={0} data-title="Royalty" className="disabled-bg">
                 <div className="p-2 px-3 text-sm">
-                    <Cast.Currency>{item.product_royalty}</Cast.Currency>
+                    {item.product_id ? <Cast.Currency>{item.royalty}</Cast.Currency> : ''}
                 </div>
             </Table.Tbody.Td>
             <Table.Tbody.Td p={0} data-title="Rebate" className="disabled-bg">
                 <div className="p-2 px-3 text-sm">
-                    <Cast.Currency>{item.product_rebate}</Cast.Currency>
+                    {item.product_id ? <Cast.Currency>{item.rebate}</Cast.Currency> : ''}
                 </div>
             </Table.Tbody.Td>
         </Table.Tbody.Tr>

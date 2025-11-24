@@ -27,8 +27,8 @@ final class ExpenseItemUpdateProcessRequest extends FormRequest
     {
         return [
             'product_id' => ['sometimes', 'nullable', 'string', 'exists:products,id'],
-            'quantity' => ['sometimes', 'integer', 'min:0'],
-            'price' => ['sometimes', 'integer', 'min:0'],
+            'units' => ['sometimes', 'integer', 'min:0'],
+            'cost' => ['sometimes', 'integer', 'min:0'],
         ];
     }
 

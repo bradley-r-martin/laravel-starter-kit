@@ -51,18 +51,17 @@ final class ExpenseDetailViewRequest extends FormRequest
                     '__rebate' => $expense->__rebate,
                     '__royalty' => $expense->__royalty,
                     'expense_items' => $expense->expenseItems->map(fn (ExpenseItem $item): array => [
+
                         'id' => $item->id,
                         'item' => $item->item,
-                        'quantity' => $item->quantity,
+                        'product_id' => $item->product_id,
                         'units' => $item->units,
                         'cost' => $item->cost,
                         'rebate' => $item->rebate,
                         'royalty' => $item->royalty,
+                        'quantity' => $item->quantity,
                         'price' => $item->price,
-                        'product' => $item->product ? [
-                            'id' => $item->product->id,
-                            'name' => $item->product->name,
-                        ] : null,
+
                         '__product_name' => $item->__product_name,
                     ]),
                 ],

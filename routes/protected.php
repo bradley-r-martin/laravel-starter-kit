@@ -8,6 +8,7 @@ use App\Http\Controllers\Expense\ExpenseCreateController;
 use App\Http\Controllers\Expense\ExpenseDestroyController;
 use App\Http\Controllers\Expense\ExpenseDetailController;
 use App\Http\Controllers\Expense\ExpenseListController;
+use App\Http\Controllers\ExpenseItem\ExpenseItemDestroyController;
 use App\Http\Controllers\ExpenseItem\ExpenseItemUpdateController;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\Manufacturer\ManufacturerCloseController;
@@ -280,6 +281,8 @@ Route::middleware('territory')->group(function () {
 
     Route::prefix('expense-items')->name('expense-items.')->group(function () {
         Route::patch('/{expense_item}', [ExpenseItemUpdateController::class, 'process'])->name('update');
+        Route::get('/{expense_item}/destroy', [ExpenseItemDestroyController::class, 'view'])->name('destroy');
+        Route::delete('/{expense_item}/destroy', [ExpenseItemDestroyController::class, 'process'])->name('destroy');
     });
 
     Route::post('/api/invoice-analysis', [ExpenseAnalyzeController::class, 'process'])->name('api.invoice-analysis');

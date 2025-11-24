@@ -25,14 +25,17 @@ const Form: FunctionComponent<FormProps> = (props) => {
         : undefined;
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+        let disabledAndHiddenFields: string[] = [];
 
-        const formElement = e.currentTarget;
+        if (e) {
+            e.preventDefault();
+            const formElement = e.currentTarget;
 
-        // Get all disabled and hidden input names from the form
-        const disabledAndHiddenFields = Array.from(
-            formElement.querySelectorAll('input[disabled], input[type="hidden"]')
-        ).map((input) => (input as HTMLInputElement).name);
+            // Get all disabled and hidden input names from the form
+            disabledAndHiddenFields = Array.from(
+                formElement.querySelectorAll('input[disabled], input[type="hidden"]')
+            ).map((input) => (input as HTMLInputElement).name);
+        }
 
         const dirtyFieldNames = Object.keys(original).filter(
             (key) => form.data[key] !== original[key]
@@ -54,6 +57,7 @@ const Form: FunctionComponent<FormProps> = (props) => {
                     url: action.url,
                 },
                 {
+                    preserveScroll: true,
                     headers: extraHeaders,
                     onError: (errors) => {
                         onError?.(errors);
@@ -67,7 +71,7 @@ const Form: FunctionComponent<FormProps> = (props) => {
     };
 
     return (
-        <FormContext.Provider value={{ inertiaFormInstance: form }}>
+        <FormContext.Provider value={{ inertiaFormInstance: form, submit: onSubmit }}>
             <form method="post" onSubmit={onSubmit} {...restProps}>
                 {children}
             </form>
