@@ -169,7 +169,7 @@ const View: InertiaView<ViewProps> = (props) => {
                                 </Stack>
                             </ActionWell.Row>
                             <ActionWell.Row>
-                                <Navigate type="modal" href={route('expenses.destroy', expense.id)}>
+                                <Navigate type="modal" href={route('expenses.update', expense.id)}>
                                     <Button
                                         variant="light"
                                         color="zinc"

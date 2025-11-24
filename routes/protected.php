@@ -8,6 +8,7 @@ use App\Http\Controllers\Expense\ExpenseCreateController;
 use App\Http\Controllers\Expense\ExpenseDestroyController;
 use App\Http\Controllers\Expense\ExpenseDetailController;
 use App\Http\Controllers\Expense\ExpenseListController;
+use App\Http\Controllers\Expense\ExpenseUpdateController;
 use App\Http\Controllers\ExpenseItem\ExpenseItemDestroyController;
 use App\Http\Controllers\ExpenseItem\ExpenseItemUpdateController;
 use App\Http\Controllers\FileUploadController;
@@ -275,6 +276,8 @@ Route::middleware('territory')->group(function () {
         Route::get('/create', [ExpenseCreateController::class, 'view'])->name('create');
         Route::post('/create', [ExpenseCreateController::class, 'process'])->name('store');
         Route::get('/{expense}', [ExpenseDetailController::class, 'view'])->name('show');
+        Route::get('/{expense}/update', [ExpenseUpdateController::class, 'view'])->name('update');
+        Route::patch('/{expense}/update', [ExpenseUpdateController::class, 'process'])->name('update');
         Route::get('/{expense}/destroy', [ExpenseDestroyController::class, 'view'])->name('destroy');
         Route::delete('/{expense}/destroy', [ExpenseDestroyController::class, 'process'])->name('destroy');
     });

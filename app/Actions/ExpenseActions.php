@@ -84,6 +84,37 @@ final class ExpenseActions
         return $expense;
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function update(array $data): Expense
+    {
+        // Handle wholesaler assignment/change
+        if (array_key_exists('wholesaler_id', $data)) {
+            $oldWholesalerId = $this->expense->wholesaler_id;
+            $newWholesalerId = $data['wholesaler_id'];
+
+            if ($newWholesalerId !== null) {
+                /** @var Wholesaler $wholesaler */
+                $wholesaler = Wholesaler::findOrFail($newWholesalerId);
+                $data['__wholesaler_name'] = $wholesaler->name;
+
+                // Update wholesaler counts if wholesaler changed
+                if ($oldWholesalerId !== $newWholesalerId) {
+                    if ($oldWholesalerId) {
+                        Wholesaler::whereKey($oldWholesalerId)->decrement('__expenses_count');
+                    }
+                    Wholesaler::whereKey($newWholesalerId)->increment('__expenses_count');
+                }
+            }
+        }
+
+        $this->expense->update($data);
+        $this->expense->refresh();
+
+        return $this->expense;
+    }
+
     public function destroy(): void
     {
 
