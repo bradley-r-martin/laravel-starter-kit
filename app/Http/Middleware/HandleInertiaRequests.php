@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Models\Policy;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -42,6 +43,11 @@ final class HandleInertiaRequests extends Middleware
             'version' => parent::version($request),
             'user' => $request->user(),
             'toast' => $request->session()->get('toast'),
+            'policies' => $request->user()?->policies()
+                ->get()
+                ->map(fn (Policy $policy): string => $policy->policy.'@'.$policy->ability)
+                ->values()
+                ->toArray() ?? [],
         ];
     }
 }
