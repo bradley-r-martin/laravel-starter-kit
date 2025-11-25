@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Models\Territory;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,7 +21,10 @@ final class EnsureTerritorySelected
         $cookie = $request->cookie('selected_territory');
         $sessionValue = $request->session()->get('selected_territory');
 
-        if (! $cookie && ! $sessionValue) {
+        /** @var Territory|null $territory */
+        $territory = Territory::find($cookie ?? $sessionValue);
+
+        if (! $territory) {
             return redirect()->route('territory');
         }
 
