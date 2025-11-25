@@ -146,19 +146,30 @@ const View: InertiaView<ViewProps> = (props) => {
                         <ActionWell className="rounded-t-none">
                             <ActionWell.Row>
                                 <Stack>
-                                    <Navigate
-                                        type="modal"
-                                        href={route('expenses.complete', expense.id)}
-                                    >
-                                        <Button
-                                            disabled={!!expense.completed_at || !completable}
-                                            variant="filled"
-                                            color="blue"
+                                    {!expense.completed_at ? (
+                                        <Navigate
+                                            type="modal"
+                                            href={route('expenses.complete', expense.id)}
                                         >
-                                            Mark as complete
-                                        </Button>
-                                    </Navigate>
-                                    {itemsLeft > 0 && (
+                                            <Button
+                                                disabled={!completable}
+                                                variant="filled"
+                                                color="blue"
+                                            >
+                                                Mark as complete
+                                            </Button>
+                                        </Navigate>
+                                    ) : (
+                                        <Navigate
+                                            type="modal"
+                                            href={route('expenses.reopen', expense.id)}
+                                        >
+                                            <Button variant="filled" color="green">
+                                                Reopen expense
+                                            </Button>
+                                        </Navigate>
+                                    )}
+                                    {itemsLeft > 0 && !expense.completed_at && (
                                         <div className="mx-auto flex items-center space-x-2 text-amber-600">
                                             <ShieldAlert className="size-5 shrink-0 text-amber-500" />
                                             <div className="max-w-72 text-xs">
