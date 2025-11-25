@@ -31,23 +31,13 @@ final class ExpenseListViewRequest extends FormRequest
     public function respond(): Response
     {
         $expenses = Expense::query()
-            ->with(['operator', 'wholesaler'])
+            ->owned()
             ->filterSortBy($this->string('expenses_sort')->toString())
             ->filterBySearch($this->string('expenses_search')->toString())
             ->filterByStatus($this->string('expenses_status')->toString())
             ->paginate(10, ['*'], 'expenses_page')
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Expense $expense}> $expenses */
-            ->through(fn (Expense $expense): array => [
-                'id' => $expense->id,
-                'invoice_no' => $expense->invoice_no,
-                'invoice_date' => $expense->invoice_date,
-                'completed_at' => $expense->completed_at,
-                '__wholesaler_name' => $expense->__wholesaler_name,
-                '__cost' => $expense->__cost,
-                '__rebate' => $expense->__rebate,
-                '__royalty' => $expense->__royalty,
-                'created_at' => $expense->created_at,
-            ]);
+            ->through(fn (Expense $expense): array => $expense->toArray());
 
         return inertia()
             ->render('Expense/List', [

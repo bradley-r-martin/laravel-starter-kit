@@ -21,18 +21,27 @@ final class Expense extends Model
      * @param  Builder<self>  $query
      * @return Builder<self>
      */
+    public function scopeOwned(Builder $query): Builder
+    {
+        return $query->where('operator_id', auth()->user()?->operator_id);
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopeFilterSortBy(Builder $query, string $sort): Builder
     {
         return match ($sort) {
+            'invoice_date' => $query->orderBy('invoice_date', 'desc'),
             'invoice_no' => $query->orderBy('invoice_no', 'asc'),
-            'invoice_date' => $query->orderBy('invoice_date', 'asc'),
             'wholesaler' => $query->orderBy('__wholesaler_name', 'asc'),
             'cost' => $query->orderBy('__cost', 'asc'),
             'rebate' => $query->orderBy('__rebate', 'asc'),
             'royalty' => $query->orderBy('__royalty', 'asc'),
             'completed_at' => $query->orderBy('completed_at', 'asc'),
             'created_at' => $query->orderBy('created_at', 'asc'),
-            default => $query->orderBy('invoice_no', 'asc'),
+            default => $query->orderBy('invoice_date', 'desc'),
         };
     }
 

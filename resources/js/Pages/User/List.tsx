@@ -27,12 +27,13 @@ interface User {
     first_name: string;
     last_name: string;
     email: string;
-    role_name: string | null;
-    operator_name: string | null;
-    last_login_at: string | null;
+
     closed_at: string | null;
     suspended_at: string | null;
     created_at: string;
+    __role_name: string | null;
+    __operator_name: string | null;
+    __last_login_at: string | null;
 }
 
 interface ListProps {
@@ -69,7 +70,7 @@ const List: InertiaView<ListProps> = (props) => {
             dataSpan: 'hidden',
             render: (user) => (
                 <Text c="dimmed" size="sm">
-                    {user.role_name || '—'}
+                    {user.__role_name}
                 </Text>
             ),
         },
@@ -79,7 +80,7 @@ const List: InertiaView<ListProps> = (props) => {
             dataSpan: 'hidden',
             render: (user) => (
                 <Text c="dimmed" size="sm">
-                    {user.operator_name || '—'}
+                    {user.__operator_name}
                 </Text>
             ),
         },
@@ -91,7 +92,7 @@ const List: InertiaView<ListProps> = (props) => {
                 <Text size="sm" c="dimmed">
                     <Cast.Datetime
                         format="DD/MM/YYYY HH:mm"
-                        children={user.last_login_at}
+                        children={user.__last_login_at}
                         fallback="—"
                     />
                 </Text>

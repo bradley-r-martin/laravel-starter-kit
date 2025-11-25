@@ -14,6 +14,7 @@ arch('models')
         'Spatie',
         'Carbon',
         'NotificationChannels\WebPush',
+        'auth',
     ]);
 
 arch('controllers')

@@ -33,6 +33,26 @@ return [
 
     'connections' => [
 
+        'legacy-system' => [
+            'driver' => 'mysql',
+            'url' => env('REMOTE_DB_URL'),
+            'host' => env('REMOTE_DB_HOST'),
+            'port' => env('REMOTE_DB_PORT', '3306'),
+            'database' => env('REMOTE_DB_DATABASE', 'vapor'),
+            'username' => env('REMOTE_DB_USERNAME', 'vapor'),
+            'password' => env('REMOTE_DB_PASSWORD', ''),
+            'unix_socket' => env('REMOTE_DB_SOCKET', ''),
+            'charset' => env('REMOTE_DB_CHARSET', 'utf8mb4'),
+            'collation' => env('REMOTE_DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),

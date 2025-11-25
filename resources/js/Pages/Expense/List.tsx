@@ -35,8 +35,8 @@ const List: InertiaView<ListProps> = (props) => {
     const { expenses } = props;
 
     const sortOptions = [
-        { value: 'invoice_no', label: 'Invoice No', icon: HashIcon },
         { value: 'invoice_date', label: 'Invoice Date', icon: CalendarIcon },
+        { value: 'invoice_no', label: 'Invoice No', icon: HashIcon },
         { value: 'wholesaler', label: 'Wholesaler', icon: FileTextIcon },
         { value: 'cost', label: 'Cost', icon: CircleDotIcon },
         { value: 'rebate', label: 'Rebate', icon: CircleDotIcon },

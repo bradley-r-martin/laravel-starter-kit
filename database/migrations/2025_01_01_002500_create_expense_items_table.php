@@ -26,10 +26,6 @@ return new class extends Migration
             $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete();
             $table->ulid('expense_id');
             $table->foreign('expense_id')->references('id')->on('expenses')->cascadeOnDelete();
-            $table->ulid('wholesaler_id');
-            $table->foreign('wholesaler_id')->references('id')->on('wholesalers')->cascadeOnDelete();
-            $table->ulid('operator_id');
-            $table->foreign('operator_id')->references('id')->on('operators')->cascadeOnDelete();
             $table->timestamp('refreshed_at')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
@@ -43,8 +39,6 @@ return new class extends Migration
         Schema::table('expense_items', function (Blueprint $table): void {
             $table->index('product_id');
             $table->index('expense_id');
-            $table->index('wholesaler_id');
-            $table->index('operator_id');
             $table->index('refreshed_at');
             $table->index('completed_at');
         });

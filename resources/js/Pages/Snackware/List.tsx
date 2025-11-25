@@ -32,10 +32,12 @@ interface Snackware {
     type: string;
     icon: string | null;
     price: number;
-    territory: Territory | null;
-    operator: Operator | null;
     closed_at: string | null;
     created_at: string;
+    __product_count: number;
+    __wholesale_from: number;
+    __wholesale_to: number;
+    __placements_count: number;
 }
 
 interface ListProps {
@@ -69,22 +71,23 @@ const List: InertiaView<ListProps> = (props) => {
             ),
         },
         {
-            header: 'Territory',
+            header: 'Products',
             accessor: 'territory',
             dataSpan: 'hidden',
             render: (snackware) => (
                 <Text size="sm" c="dimmed">
-                    {snackware.territory?.name || '—'}
+                    {snackware.__product_count}
                 </Text>
             ),
         },
         {
-            header: 'Operator',
+            header: 'Range',
             accessor: 'operator',
             dataSpan: 'hidden',
             render: (snackware) => (
                 <Text size="sm" c="dimmed">
-                    {snackware.operator?.name || '—'}
+                    <Cast.Currency children={snackware.__wholesale_from} fallback="—" /> -{' '}
+                    <Cast.Currency children={snackware.__wholesale_to} fallback="—" />
                 </Text>
             ),
         },

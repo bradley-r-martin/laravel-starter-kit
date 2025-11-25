@@ -41,23 +41,7 @@ final class SnackwareListViewRequest extends FormRequest
             ->when($status !== '', fn (Builder $query): Builder => $query->filterByStatus($status))
             ->paginate(10, ['*'], 'snackwares_page')
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Snackware $snackware}> $snackwares */
-            ->through(fn (Snackware $snackware): array => [
-                'id' => $snackware->id,
-                'name' => $snackware->name,
-                'type' => $snackware->type,
-                'icon' => $snackware->icon,
-                'price' => $snackware->price,
-                'territory' => $snackware->territory ? [
-                    'id' => $snackware->territory->id,
-                    'name' => $snackware->territory->name,
-                ] : null,
-                'operator' => $snackware->operator ? [
-                    'id' => $snackware->operator->id,
-                    'name' => $snackware->operator->name,
-                ] : null,
-                'closed_at' => $snackware->closed_at,
-                'created_at' => $snackware->created_at,
-            ]);
+            ->through(fn (Snackware $snackware): array => $snackware->toArray());
 
         return inertia()
             ->render('Snackware/List', [

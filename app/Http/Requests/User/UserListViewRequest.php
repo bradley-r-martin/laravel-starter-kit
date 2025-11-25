@@ -38,18 +38,7 @@ final class UserListViewRequest extends FormRequest
             ->filterByStatus($this->string('users_status')->toString())
             ->paginate(10, ['*'], 'users_page')
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{User $user}> $users */
-            ->through(fn (User $user): array => [
-                'id' => $user->id,
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'email' => $user->email,
-                'role_name' => $user->role?->name,
-                'operator_name' => $user->__operator_name,
-                'last_login_at' => $user->__last_login_at,
-                'closed_at' => $user->closed_at,
-                'suspended_at' => $user->suspended_at,
-                'created_at' => $user->created_at,
-            ]);
+            ->through(fn (User $user): array => $user->toArray());
 
         return inertia()
             ->render('User/List', [
