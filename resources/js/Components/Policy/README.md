@@ -34,28 +34,28 @@ Supports complex conditions with both `allowed` and `disallowed` props.
 
 ### PolicyAllowed Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `policy` | `string \| string[]` | required | Policy or array of policies to check |
-| `matchAll` | `boolean` | `false` | If true, all policies must match (AND logic). If false, any policy can match (OR logic) |
-| `children` | `ReactNode` | required | Content to render when condition is met |
+| Prop       | Type                 | Default  | Description                                                                             |
+| ---------- | -------------------- | -------- | --------------------------------------------------------------------------------------- |
+| `policy`   | `string \| string[]` | required | Policy or array of policies to check                                                    |
+| `matchAll` | `boolean`            | `false`  | If true, all policies must match (AND logic). If false, any policy can match (OR logic) |
+| `children` | `ReactNode`          | required | Content to render when condition is met                                                 |
 
 ### PolicyDisallowed Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `policy` | `string \| string[]` | required | Policy or array of policies to check |
-| `matchAll` | `boolean` | `false` | If true, none of the policies should match. If false, at least one policy should not match |
-| `children` | `ReactNode` | required | Content to render when condition is met |
+| Prop       | Type                 | Default  | Description                                                                                |
+| ---------- | -------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `policy`   | `string \| string[]` | required | Policy or array of policies to check                                                       |
+| `matchAll` | `boolean`            | `false`  | If true, none of the policies should match. If false, at least one policy should not match |
+| `children` | `ReactNode`          | required | Content to render when condition is met                                                    |
 
 ### Policy Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `allowed` | `string \| string[]` | optional | Policy or array of policies that must be allowed |
+| Prop         | Type                 | Default  | Description                                          |
+| ------------ | -------------------- | -------- | ---------------------------------------------------- |
+| `allowed`    | `string \| string[]` | optional | Policy or array of policies that must be allowed     |
 | `disallowed` | `string \| string[]` | optional | Policy or array of policies that must not be allowed |
-| `matchAll` | `boolean` | `true` | Controls matching logic for arrays |
-| `children` | `ReactNode` | required | Content to render when all conditions are met |
+| `matchAll`   | `boolean`            | `true`   | Controls matching logic for arrays                   |
+| `children`   | `ReactNode`          | required | Content to render when all conditions are met        |
 
 ## Usage Examples
 
@@ -77,10 +77,7 @@ Supports complex conditions with both `allowed` and `disallowed` props.
 
 ```tsx
 // Show if user has ANY of the specified policies (default behavior)
-<Policy.Allowed policy={[
-    'App\\Policies\\RolePolicy@viewAny',
-    'App\\Policies\\RolePolicy@create'
-]}>
+<Policy.Allowed policy={['App\\Policies\\RolePolicy@viewAny', 'App\\Policies\\RolePolicy@create']}>
     <button>Manage Roles</button>
 </Policy.Allowed>
 ```
@@ -89,11 +86,8 @@ Supports complex conditions with both `allowed` and `disallowed` props.
 
 ```tsx
 // Show only if user has ALL of the specified policies
-<Policy.Allowed 
-    policy={[
-        'App\\Policies\\RolePolicy@viewAny',
-        'App\\Policies\\RolePolicy@create'
-    ]} 
+<Policy.Allowed
+    policy={['App\\Policies\\RolePolicy@viewAny', 'App\\Policies\\RolePolicy@create']}
     matchAll
 >
     <button>Advanced Role Management</button>
@@ -104,7 +98,7 @@ Supports complex conditions with both `allowed` and `disallowed` props.
 
 ```tsx
 // Show only if user can view BUT cannot delete
-<Policy 
+<Policy
     allowed="App\\Policies\\RolePolicy@viewAny"
     disallowed="App\\Policies\\RolePolicy@delete"
 >
@@ -112,7 +106,7 @@ Supports complex conditions with both `allowed` and `disallowed` props.
 </Policy>
 
 // Show if user has viewAny AND create, but NOT delete
-<Policy 
+<Policy
     allowed={['App\\Policies\\RolePolicy@viewAny', 'App\\Policies\\RolePolicy@create']}
     disallowed="App\\Policies\\RolePolicy@delete"
     matchAll
@@ -148,15 +142,15 @@ return (
 <Policy.Allowed policy="App\\Policies\\RolePolicy@viewAny">
     <div>
         <h2>Roles Management</h2>
-        
+
         <Policy.Allowed policy="App\\Policies\\RolePolicy@create">
             <button>Create New Role</button>
         </Policy.Allowed>
-        
+
         <Policy.Allowed policy="App\\Policies\\RolePolicy@update">
             <button>Edit Roles</button>
         </Policy.Allowed>
-        
+
         <Policy.Allowed policy="App\\Policies\\RolePolicy@delete">
             <button>Delete Roles</button>
         </Policy.Allowed>
@@ -218,4 +212,3 @@ const { policies } = usePage<{ policies?: string[] }>().props;
 - `PolicyDisallowed.tsx` - Sub-component for disallowed checks
 - `utils.ts` - Shared helper functions
 - `app/Http/Middleware/HandleInertiaRequests.php` - Backend middleware that shares policies
-

@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Models\Role;
+use App\Models\Expense;
 use App\Models\User;
 use App\Traits\AuthorizesPolicy;
 
-final class RolePolicy
+final class ExpensePolicy
 {
     use AuthorizesPolicy;
 
     /**
-     * Determine whether the user can view any roles.
+     * Determine whether the user can view any expenses.
      */
     public function viewAny(User $user): bool
     {
@@ -21,7 +21,7 @@ final class RolePolicy
     }
 
     /**
-     * Determine whether the user can view the role.
+     * Determine whether the user can view the expense.
      */
     public function view(User $user): bool
     {
@@ -29,7 +29,7 @@ final class RolePolicy
     }
 
     /**
-     * Determine whether the user can create roles.
+     * Determine whether the user can create expenses.
      */
     public function create(User $user): bool
     {
@@ -37,7 +37,7 @@ final class RolePolicy
     }
 
     /**
-     * Determine whether the user can update the role.
+     * Determine whether the user can update the expense.
      */
     public function update(User $user): bool
     {
@@ -45,7 +45,7 @@ final class RolePolicy
     }
 
     /**
-     * Determine whether the user can delete the role.
+     * Determine whether the user can delete the expense.
      */
     public function delete(User $user): bool
     {
@@ -53,7 +53,7 @@ final class RolePolicy
     }
 
     /**
-     * Determine whether the user can restore the role.
+     * Determine whether the user can restore the expense.
      */
     public function restore(User $user): bool
     {
@@ -61,7 +61,7 @@ final class RolePolicy
     }
 
     /**
-     * Determine whether the user can permanently delete the role.
+     * Determine whether the user can permanently delete the expense.
      */
     public function forceDelete(User $user): bool
     {
@@ -69,31 +69,15 @@ final class RolePolicy
     }
 
     /**
-     * Determine whether the user can attach policies to the role.
+     * Determine whether the user can complete the expense.
      */
-    public function attachPolicy(User $user): bool
+    public function complete(User $user): bool
     {
         return $this->isAuthorized($user);
     }
 
     /**
-     * Determine whether the user can detach policies from the role.
-     */
-    public function detachPolicy(User $user): bool
-    {
-        return $this->isAuthorized($user);
-    }
-
-    /**
-     * Determine whether the user can close the role.
-     */
-    public function close(User $user): bool
-    {
-        return $this->isAuthorized($user);
-    }
-
-    /**
-     * Determine whether the user can reopen the role.
+     * Determine whether the user can reopen the expense.
      */
     public function reopen(User $user): bool
     {
