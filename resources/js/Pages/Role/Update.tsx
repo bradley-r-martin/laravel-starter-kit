@@ -93,7 +93,18 @@ export default function Update({ role }: Props) {
 
                                 <Field name="policies" type="transfer">
                                     <Data parameter="availablePolicies" property="items">
-                                        <TransferInput label="Policies" className="max-h-[300px]" />
+                                        <TransferInput
+                                            label="Policies"
+                                            className="max-h-[300px]"
+                                            renderItem={(item) => (
+                                                <span className="flex flex-col items-start space-x-2">
+                                                    <span>{item.label}</span>
+                                                    <span className="text-xs text-zinc-500">
+                                                        {item.group}
+                                                    </span>
+                                                </span>
+                                            )}
+                                        />
                                     </Data>
                                 </Field>
                             </ModalContent>

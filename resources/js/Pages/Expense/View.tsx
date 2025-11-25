@@ -10,6 +10,7 @@ import { InertiaView, UploadedFile } from '@/Types';
 import { Badge, Button, Stack } from '@mantine/core';
 import { ArrowLeftIcon, ImageIcon, ShieldAlert } from 'lucide-react';
 
+import { Policy } from '@/Components/Policy';
 import ExpenseDetailsWorksheet from '@/Features/Expenses/Views/ExpenseDetailsWorksheetView';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
@@ -147,27 +148,35 @@ const View: InertiaView<ViewProps> = (props) => {
                             <ActionWell.Row>
                                 <Stack>
                                     {!expense.completed_at ? (
-                                        <Navigate
-                                            type="modal"
-                                            href={route('expenses.complete', expense.id)}
+                                        <Policy.Allowed
+                                            policy={['App\\Policies\\ExpensePolicy@complete']}
                                         >
-                                            <Button
-                                                disabled={!completable}
-                                                variant="filled"
-                                                color="blue"
+                                            <Navigate
+                                                type="modal"
+                                                href={route('expenses.complete', expense.id)}
                                             >
-                                                Mark as complete
-                                            </Button>
-                                        </Navigate>
+                                                <Button
+                                                    disabled={!completable}
+                                                    variant="filled"
+                                                    color="blue"
+                                                >
+                                                    Mark as complete
+                                                </Button>
+                                            </Navigate>
+                                        </Policy.Allowed>
                                     ) : (
-                                        <Navigate
-                                            type="modal"
-                                            href={route('expenses.reopen', expense.id)}
+                                        <Policy.Allowed
+                                            policy={['App\\Policies\\ExpensePolicy@reopen']}
                                         >
-                                            <Button variant="filled" color="green">
-                                                Reopen expense
-                                            </Button>
-                                        </Navigate>
+                                            <Navigate
+                                                type="modal"
+                                                href={route('expenses.reopen', expense.id)}
+                                            >
+                                                <Button variant="filled" color="green">
+                                                    Reopen expense
+                                                </Button>
+                                            </Navigate>
+                                        </Policy.Allowed>
                                     )}
                                     {itemsLeft > 0 && !expense.completed_at && (
                                         <div className="mx-auto flex items-center space-x-2 text-amber-600">
@@ -182,27 +191,56 @@ const View: InertiaView<ViewProps> = (props) => {
                                     )}
                                 </Stack>
                             </ActionWell.Row>
-                            <ActionWell.Row>
-                                <Navigate type="modal" href={route('expenses.update', expense.id)}>
-                                    <Button
-                                        variant="light"
-                                        color="zinc"
-                                        disabled={!!expense.completed_at}
+                            <Policy.Allowed
+                                policy={[
+                                    'App\\Policies\\ExpensePolicy@update',
+                                    'App\\Policies\\ExpensePolicy@delete',
+                                ]}
+                            >
+                                <ActionWell.Row>
+                                    <Policy.Allowed
+                                        policy={['App\\Policies\\ExpensePolicy@update']}
                                     >
-                                        Change details
-                                    </Button>
-                                </Navigate>
-                                <ActionWell.Divider />
-                                <Navigate type="modal" href={route('expenses.destroy', expense.id)}>
-                                    <Button
-                                        variant="light"
-                                        color="zinc"
-                                        disabled={!!expense.completed_at}
+                                        <Navigate
+                                            type="modal"
+                                            href={route('expenses.update', expense.id)}
+                                        >
+                                            <Button
+                                                variant="light"
+                                                color="zinc"
+                                                disabled={!!expense.completed_at}
+                                            >
+                                                Change details
+                                            </Button>
+                                        </Navigate>
+                                    </Policy.Allowed>
+                                    <Policy.Allowed
+                                        policy={[
+                                            'App\\Policies\\ExpensePolicy@update',
+                                            'App\\Policies\\ExpensePolicy@delete',
+                                        ]}
+                                        matchAll
                                     >
-                                        Cancel expense
-                                    </Button>
-                                </Navigate>
-                            </ActionWell.Row>
+                                        <ActionWell.Divider />
+                                    </Policy.Allowed>
+                                    <Policy.Allowed
+                                        policy={['App\\Policies\\ExpensePolicy@delete']}
+                                    >
+                                        <Navigate
+                                            type="modal"
+                                            href={route('expenses.destroy', expense.id)}
+                                        >
+                                            <Button
+                                                variant="light"
+                                                color="zinc"
+                                                disabled={!!expense.completed_at}
+                                            >
+                                                Cancel expense
+                                            </Button>
+                                        </Navigate>
+                                    </Policy.Allowed>
+                                </ActionWell.Row>
+                            </Policy.Allowed>
                         </ActionWell>
                     </Stack>
 
