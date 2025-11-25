@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Authentication\AuthenticationTerritoryController;
 use App\Http\Controllers\Expense\ExpenseAnalyzeController;
+use App\Http\Controllers\Expense\ExpenseCompleteController;
 use App\Http\Controllers\Expense\ExpenseCreateController;
 use App\Http\Controllers\Expense\ExpenseDestroyController;
 use App\Http\Controllers\Expense\ExpenseDetailController;
@@ -278,6 +279,8 @@ Route::middleware('territory')->group(function () {
         Route::get('/{expense}', [ExpenseDetailController::class, 'view'])->name('show');
         Route::get('/{expense}/update', [ExpenseUpdateController::class, 'view'])->name('update');
         Route::patch('/{expense}/update', [ExpenseUpdateController::class, 'process'])->name('update');
+        Route::get('/{expense}/complete', [ExpenseCompleteController::class, 'view'])->name('complete');
+        Route::post('/{expense}/complete', [ExpenseCompleteController::class, 'process'])->name('complete');
         Route::get('/{expense}/destroy', [ExpenseDestroyController::class, 'view'])->name('destroy');
         Route::delete('/{expense}/destroy', [ExpenseDestroyController::class, 'process'])->name('destroy');
     });

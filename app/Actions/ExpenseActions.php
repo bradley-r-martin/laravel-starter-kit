@@ -115,6 +115,16 @@ final class ExpenseActions
         return $this->expense;
     }
 
+    public function complete(): Expense
+    {
+        $this->expense->update([
+            'completed_at' => now(),
+        ]);
+        $this->expense->refresh();
+
+        return $this->expense;
+    }
+
     public function destroy(): void
     {
 

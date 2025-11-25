@@ -47,7 +47,7 @@ final class ExpenseItemActions
             }
         }
 
-        if (array_key_exists('product_id', $data) && $data['product_id'] !== null) {
+        if ((array_key_exists('product_id', $data) && $data['product_id'] !== null)) {
             /** @var Product $product */
             $product = Product::find($data['product_id']);
             $data['price'] = $product->price;

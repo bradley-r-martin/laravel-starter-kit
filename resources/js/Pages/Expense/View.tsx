@@ -148,7 +148,7 @@ const View: InertiaView<ViewProps> = (props) => {
                                 <Stack>
                                     <Navigate
                                         type="modal"
-                                        href={route('expenses.destroy', expense.id)}
+                                        href={route('expenses.complete', expense.id)}
                                     >
                                         <Button
                                             disabled={!!expense.completed_at || !completable}
@@ -158,14 +158,17 @@ const View: InertiaView<ViewProps> = (props) => {
                                             Mark as complete
                                         </Button>
                                     </Navigate>
-                                    <div className="mx-auto flex items-center space-x-2 text-amber-600">
-                                        <ShieldAlert className="size-5 shrink-0 text-amber-500" />
-                                        <div className="max-w-72 text-xs">
-                                            {itemsLeft}{' '}
-                                            {itemsLeft > 1 ? 'items need' : 'item needs'} to be
-                                            assigned to {itemsLeft > 1 ? 'products' : 'a product'}.
+                                    {itemsLeft > 0 && (
+                                        <div className="mx-auto flex items-center space-x-2 text-amber-600">
+                                            <ShieldAlert className="size-5 shrink-0 text-amber-500" />
+                                            <div className="max-w-72 text-xs">
+                                                {itemsLeft}{' '}
+                                                {itemsLeft > 1 ? 'items need' : 'item needs'} to be
+                                                assigned to{' '}
+                                                {itemsLeft > 1 ? 'products' : 'a product'}.
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </Stack>
                             </ActionWell.Row>
                             <ActionWell.Row>
