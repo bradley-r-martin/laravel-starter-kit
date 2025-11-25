@@ -43,9 +43,9 @@ final class Expense extends Model
     public function scopeFilterByStatus(Builder $query, string $status): Builder
     {
         return match ($status) {
-            'closed' => $query->whereNotNull('closed_at'),
-            'completed' => $query->whereNotNull('completed_at')->whereNull('closed_at'),
-            default => $query->whereNull('closed_at')
+            'pending' => $query->whereNull('completed_at'),
+            'completed' => $query->whereNotNull('completed_at'),
+            default => $query->whereNull('completed_at')
         };
     }
 
@@ -96,7 +96,6 @@ final class Expense extends Model
         return [
             'invoice_date' => 'datetime',
             'completed_at' => 'datetime',
-            'closed_at' => 'datetime',
             'pages' => 'array',
         ];
     }

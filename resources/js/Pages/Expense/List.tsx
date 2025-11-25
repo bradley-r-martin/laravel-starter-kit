@@ -13,7 +13,6 @@ import {
     HashIcon,
     PencilIcon,
     PlusIcon,
-    TrashIcon,
 } from 'lucide-react';
 
 interface Expense {
@@ -21,7 +20,6 @@ interface Expense {
     invoice_no: string;
     invoice_date: string | null;
     completed_at: string | null;
-    closed_at: string | null;
     __wholesaler_name: string | null;
     __cost: number;
     __rebate: number;
@@ -113,19 +111,14 @@ const List: InertiaView<ListProps> = (props) => {
             dataSpan: 'hidden',
             render: (expense) => (
                 <Group gap="xs">
-                    {expense.closed_at && (
-                        <Badge variant="light" color="red">
-                            Closed
-                        </Badge>
-                    )}
-                    {expense.completed_at && !expense.closed_at && (
+                    {expense.completed_at && (
                         <Badge variant="light" color="green">
                             Completed
                         </Badge>
                     )}
-                    {!expense.completed_at && !expense.closed_at && (
-                        <Badge variant="light" color="blue">
-                            Active
+                    {!expense.completed_at && (
+                        <Badge variant="light" color="orange">
+                            Pending
                         </Badge>
                     )}
                 </Group>
@@ -152,21 +145,6 @@ const List: InertiaView<ListProps> = (props) => {
                         </ActionIcon>
                     </Navigate>
                 </Tooltip>
-                {expense.closed_at && (
-                    <Tooltip label="Destroy Expense" position="left">
-                        <Navigate type="modal" href={route('expenses.destroy', expense.id)}>
-                            <ActionIcon
-                                data-testid={`expense-row-${expense.id}-destroy`}
-                                variant="subtle"
-                                color="red"
-                                size="md"
-                                radius="xl"
-                            >
-                                <TrashIcon className="size-4" />
-                            </ActionIcon>
-                        </Navigate>
-                    </Tooltip>
-                )}
             </Group>
         ),
     };
@@ -202,9 +180,8 @@ const List: InertiaView<ListProps> = (props) => {
                     <Filters.Sort data={sortOptions} attribute="expenses" />
                     <Filters.Status
                         data={[
-                            { value: 'active', label: 'Active' },
+                            { value: 'pending', label: 'Pending' },
                             { value: 'completed', label: 'Completed' },
-                            { value: 'closed', label: 'Closed' },
                         ]}
                         attribute="expenses"
                         className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"

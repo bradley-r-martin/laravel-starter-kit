@@ -42,7 +42,6 @@ final class ExpenseListViewRequest extends FormRequest
                 'invoice_no' => $expense->invoice_no,
                 'invoice_date' => $expense->invoice_date,
                 'completed_at' => $expense->completed_at,
-                'closed_at' => $expense->closed_at,
                 '__wholesaler_name' => $expense->__wholesaler_name,
                 '__cost' => $expense->__cost,
                 '__rebate' => $expense->__rebate,

@@ -36,7 +36,6 @@ export interface Expense {
     invoice_date: string | null;
     pages: UploadedFile[] | null;
     completed_at: string | null;
-    closed_at: string | null;
     created_at: string;
     updated_at: string;
     operator: { id: string; name: string } | null;
@@ -74,7 +73,7 @@ const View: InertiaView<ViewProps> = (props) => {
                 </Navigate>
                 <Page.Header.Title>{expense.invoice_no}</Page.Header.Title>
                 <Page.Header.Description className="flex items-center gap-2 pt-2 text-xs">
-                    {expense.completed_at && !expense.closed_at && (
+                    {expense.completed_at && (
                         <Badge color="green" variant="outline" size="sm" radius="xl">
                             Completed
                         </Badge>

@@ -23,6 +23,36 @@ final class ExpenseItemActions
     }
 
     /**
+     * Create a new expense item
+     *
+     * @param  array<string, mixed>  $data
+     */
+    public static function store(array $data): ExpenseItem
+    {
+        /** @var Expense $expense */
+        $expense = Expense::findOrFail($data['expense_id']);
+
+        $expenseItem = ExpenseItem::create([
+            'expense_id' => $data['expense_id'],
+            'wholesaler_id' => $expense->wholesaler_id,
+            'operator_id' => $expense->operator_id,
+            'item' => null,
+            'units' => 1,
+            'cost' => 0,
+            'rebate' => 0,
+            'royalty' => 0,
+            'quantity' => 0,
+            'price' => 0,
+            'product_id' => null,
+        ]);
+
+        // Update expense totals after item creation
+        self::updateExpenseTotalsForExpense($expense);
+
+        return $expenseItem;
+    }
+
+    /**
      * @param  array<string, mixed>  $data
      */
     public function update(array $data): ExpenseItem
@@ -74,24 +104,13 @@ final class ExpenseItemActions
         $this->expenseItem->delete();
 
         // Update expense totals after item deletion
-        $this->updateExpenseTotalsForExpense($expense);
-    }
-
-    /**
-     * Update the expense totals based on expense items
-     */
-    private function updateExpenseTotals(): void
-    {
-        /** @var Expense $expense */
-        $expense = $this->expenseItem->expense;
-
-        $this->updateExpenseTotalsForExpense($expense);
+        self::updateExpenseTotalsForExpense($expense);
     }
 
     /**
      * Update the expense totals for a given expense
      */
-    private function updateExpenseTotalsForExpense(Expense $expense): void
+    private static function updateExpenseTotalsForExpense(Expense $expense): void
     {
         $totals = ExpenseItem::where('expense_id', $expense->id)
             ->selectRaw('
@@ -106,5 +125,16 @@ final class ExpenseItemActions
             '__rebate' => $totals->total_rebate ?? 0,
             '__royalty' => $totals->total_royalty ?? 0,
         ]);
+    }
+
+    /**
+     * Update the expense totals based on expense items
+     */
+    private function updateExpenseTotals(): void
+    {
+        /** @var Expense $expense */
+        $expense = $this->expenseItem->expense;
+
+        self::updateExpenseTotalsForExpense($expense);
     }
 }

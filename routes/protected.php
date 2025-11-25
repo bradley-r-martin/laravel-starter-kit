@@ -12,6 +12,7 @@ use App\Http\Controllers\Expense\ExpenseListController;
 use App\Http\Controllers\Expense\ExpenseReopenController;
 use App\Http\Controllers\Expense\ExpenseUpdateController;
 use App\Http\Controllers\ExpenseItem\ExpenseItemDestroyController;
+use App\Http\Controllers\ExpenseItem\ExpenseItemStoreController;
 use App\Http\Controllers\ExpenseItem\ExpenseItemUpdateController;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\Manufacturer\ManufacturerCloseController;
@@ -289,6 +290,7 @@ Route::middleware('territory')->group(function () {
     });
 
     Route::prefix('expense-items')->name('expense-items.')->group(function () {
+        Route::post('/', [ExpenseItemStoreController::class, 'process'])->name('store');
         Route::patch('/{expense_item}', [ExpenseItemUpdateController::class, 'process'])->name('update');
         Route::get('/{expense_item}/destroy', [ExpenseItemDestroyController::class, 'view'])->name('destroy');
         Route::delete('/{expense_item}/destroy', [ExpenseItemDestroyController::class, 'process'])->name('destroy');

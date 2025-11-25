@@ -23,7 +23,6 @@ return new class extends Migration
             $table->foreign('operator_id')->references('id')->on('operators')->cascadeOnDelete();
             $table->json('pages')->nullable();
             $table->timestamp('completed_at')->nullable();
-            $table->timestamp('closed_at')->nullable();
             $table->timestamps();
         });
 
@@ -42,7 +41,6 @@ return new class extends Migration
             $table->index('wholesaler_id');
             $table->index('operator_id');
             $table->index('completed_at');
-            $table->index('closed_at');
         });
     }
 

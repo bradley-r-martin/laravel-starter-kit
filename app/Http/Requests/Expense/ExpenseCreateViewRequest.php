@@ -31,7 +31,6 @@ final class ExpenseCreateViewRequest extends FormRequest
     public function respond(): Response
     {
         $wholesalers = Wholesaler::query()
-            ->whereNull('closed_at')
             ->orderBy('name')
             ->get()
             ->map(fn (Wholesaler $wholesaler): array => [

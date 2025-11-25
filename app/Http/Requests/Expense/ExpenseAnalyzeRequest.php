@@ -93,7 +93,6 @@ final class ExpenseAnalyzeRequest extends FormRequest
             $wholesalerId = null;
             if ($analysisResult['wholesaler_name']) {
                 $wholesaler = Wholesaler::query()
-                    ->whereNull('closed_at')
                     ->where('name', 'LIKE', '%'.$analysisResult['wholesaler_name'].'%')
                     ->first();
 

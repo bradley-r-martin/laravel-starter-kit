@@ -1,6 +1,7 @@
 import { usePage } from '@inertiajs/react';
 import { Button } from '@mantine/core';
 
+import Navigate from '@/Components/Navigate';
 import Table from '@/Components/Table/Table';
 import { Expense } from '@/Pages/Expense/View';
 import { Grid2X2PlusIcon } from 'lucide-react';
@@ -32,18 +33,23 @@ const ExpenseDetailsWorksheet: FunctionComponent = () => {
                 <Table.Tfoot>
                     <Table.Tr className="border-t border-slate-300">
                         <Table.Td colSpan={8} p={0}>
-                            <Button
-                                onClick={() => {}}
-                                fullWidth
-                                size="sm"
-                                justify="left"
-                                variant="subtle"
-                                color="gray"
-                                radius={0}
-                                leftSection={<Grid2X2PlusIcon />}
+                            <Navigate
+                                type="page"
+                                method="post"
+                                href={route('expense-items.store', { expense_id: expense.id })}
                             >
-                                Add expense row
-                            </Button>
+                                <Button
+                                    fullWidth
+                                    size="sm"
+                                    justify="left"
+                                    variant="subtle"
+                                    color="gray"
+                                    radius={0}
+                                    leftSection={<Grid2X2PlusIcon className="size-4" />}
+                                >
+                                    Add expense row
+                                </Button>
+                            </Navigate>
                         </Table.Td>
                     </Table.Tr>
                 </Table.Tfoot>

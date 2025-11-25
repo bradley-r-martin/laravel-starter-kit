@@ -36,7 +36,6 @@ final class ExpenseUpdateViewRequest extends FormRequest
             ->findOrFail($expenseId);
 
         $wholesalers = Wholesaler::query()
-            ->whereNull('closed_at')
             ->orderBy('name')
             ->get()
             ->map(fn (Wholesaler $wholesaler): array => [

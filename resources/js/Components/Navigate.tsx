@@ -15,6 +15,7 @@ type NavigateType = 'modal' | 'page' | 'manual';
 
 type NavigateProps = ComponentPropsWithoutRef<'a'> & {
     type: NavigateType;
+    method?: 'get' | 'post' | 'put' | 'delete' | 'patch';
 };
 
 const Navigate = forwardRef<HTMLElement, NavigateProps>((props, ref) => {
