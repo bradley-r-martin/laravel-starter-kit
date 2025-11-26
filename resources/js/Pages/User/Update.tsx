@@ -8,7 +8,7 @@ import { ModalContent } from '@/Components/ModalContent';
 import ModalHeader from '@/Components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Button, Stack, TextInput } from '@mantine/core';
+import { Button, Group, Stack, TextInput } from '@mantine/core';
 import { UserCogIcon } from 'lucide-react';
 
 interface User {
@@ -70,13 +70,15 @@ export default function Update({ user }: UpdateProps) {
                                     <Field name="avatar" type="file">
                                         <AvatarInput label="Avatar" name="avatar" />
                                     </Field>
-                                    <Field name="first_name">
-                                        <TextInput label="First Name" name="first_name" />
-                                    </Field>
+                                    <Group grow>
+                                        <Field name="first_name">
+                                            <TextInput label="First Name" name="first_name" />
+                                        </Field>
 
-                                    <Field name="last_name">
-                                        <TextInput label="Last Name" name="last_name" />
-                                    </Field>
+                                        <Field name="last_name">
+                                            <TextInput label="Last Name" name="last_name" />
+                                        </Field>
+                                    </Group>
 
                                     <Field name="email">
                                         <TextInput label="Email" name="email" type="email" />

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Models\Manufacturer;
+use App\Models\Product;
+use Exception;
 
 final class ManufacturerActions
 {
@@ -35,6 +37,13 @@ final class ManufacturerActions
     {
         $this->manufacturer->update($data);
 
+        // Derived data column updates
+        if (array_key_exists('name', $data)) {
+            Product::where('manufacturer_id', $this->manufacturer->id)->update([
+                '__manufacturer_name' => $this->manufacturer->name,
+            ]);
+        }
+
         return $this->manufacturer;
     }
 
@@ -58,6 +67,9 @@ final class ManufacturerActions
 
     public function destroy(): void
     {
+        if (Product::where('manufacturer_id', $this->manufacturer->id)->exists()) {
+            throw new Exception('Manufacturer cannot be destroyed as it has products');
+        }
         $this->manufacturer->delete();
     }
 }

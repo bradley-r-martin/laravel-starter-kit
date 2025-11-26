@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Models\Product;
 use App\Models\ProductType;
+use Exception;
 
 final class ProductTypeActions
 {
@@ -35,6 +37,13 @@ final class ProductTypeActions
     {
         $this->productType->update($data);
 
+        // Derived data column updates
+        if (array_key_exists('name', $data)) {
+            Product::where('product_type_id', $this->productType->id)->update([
+                '__product_type_name' => $this->productType->name,
+            ]);
+        }
+
         return $this->productType;
     }
 
@@ -58,6 +67,9 @@ final class ProductTypeActions
 
     public function destroy(): void
     {
+        if (Product::where('product_type_id', $this->productType->id)->exists()) {
+            throw new Exception('Product type cannot be destroyed as it has products');
+        }
         $this->productType->delete();
     }
 }

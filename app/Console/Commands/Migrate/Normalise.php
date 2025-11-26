@@ -105,6 +105,29 @@ final class Normalise extends Command
 
     }
 
+    public function roles(): void
+    {
+        progress(
+            label: 'Normalising roles',
+            steps: $this->data->roles,
+            callback: function (array $role, mixed $progress): void {
+                $progress->hint("Normalising role {$role['name']}...");
+
+                $users = $this->data->users->where('role_id', $role['id']);
+                $this->normalised->roles->push(fluent([
+                    'id' => ($role['id']),
+                    'name' => $role['name'],
+                    'description' => $role['description'],
+                    'closed_at' => $role['status'] === 'closed' ? $role['updated_at'] : null,
+                    'created_at' => $role['created_at'],
+                    'updated_at' => $role['updated_at'],
+                    '__users_count' => $users->count(),
+                ]));
+            }
+        );
+
+    }
+
     public function users(): void
     {
         /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $users */

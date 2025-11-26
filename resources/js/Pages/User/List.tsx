@@ -4,7 +4,8 @@ import Navigate from '@/Components/Navigate';
 import Filters from '@/Components/QueryControls/Filters';
 import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
-import { InertiaView, Paginated } from '@/Types';
+import { InertiaView, Paginated, UploadedFile } from '@/Types';
+import { Asset } from '@/Utilities/Asset';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import {
     BanIcon,
@@ -27,6 +28,7 @@ interface User {
     first_name: string;
     last_name: string;
     email: string;
+    avatar: UploadedFile | null;
 
     closed_at: string | null;
     suspended_at: string | null;
@@ -56,7 +58,9 @@ const List: InertiaView<ListProps> = (props) => {
         {
             header: 'Name',
             accessor: 'name',
-            render: (user) => <Navatar name={`${user.first_name} ${user.last_name}`} />,
+            render: (user) => (
+                <Navatar name={`${user.first_name} ${user.last_name}`} src={Asset(user.avatar)} />
+            ),
         },
         {
             header: 'Email',

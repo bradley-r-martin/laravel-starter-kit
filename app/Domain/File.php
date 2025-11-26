@@ -120,6 +120,14 @@ final class File
         return $persistedFile ?? $this;
     }
 
+    public function delete(): void
+    {
+        if ($this->path === null || $this->path === '' || $this->path === '0' || str_starts_with($this->path, 'temp/')) {
+            return;
+        }
+        Storage::disk($this->disk)->delete($this->path);
+    }
+
     /**
      * @return array<string, string|int|null>
      */

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\User;
 
 use App\Actions\UserActions;
+use App\Rules\FileRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -34,6 +35,7 @@ final class UserCreateProcessRequest extends FormRequest
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', Password::defaults()],
+            'avatar' => ['sometimes', 'nullable', new FileRule()],
         ];
     }
 

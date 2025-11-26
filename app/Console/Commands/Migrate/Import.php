@@ -16,6 +16,7 @@ use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\QrCode;
 use App\Models\Resupply;
+use App\Models\Role;
 use App\Models\Route;
 use App\Models\Site;
 use App\Models\Snackware;
@@ -151,6 +152,23 @@ final class Import extends Command
                 MerchantAccount::updateOrCreate(
                     ['id' => $account['id']],
                     $account
+                );
+            }
+        );
+    }
+
+    public function roles(): void
+    {
+        $roles = $this->normalised->roles;
+        progress(
+            label: 'Importing roles',
+            steps: $roles,
+            callback: function (array $role, mixed $progress): void {
+                $name = (string) ($role['name'] ?? '');
+                $progress->hint("Importing role {$name}...");
+                Role::updateOrCreate(
+                    ['id' => $role['id']],
+                    $role
                 );
             }
         );

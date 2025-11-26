@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Models\Policy;
 use App\Models\Role;
+use App\Models\User;
 
 final class RoleActions
 {
@@ -35,6 +36,13 @@ final class RoleActions
     public function update(array $data): Role
     {
         $this->role->update($data);
+
+        // Derived data column updates
+        if (array_key_exists('name', $data)) {
+            User::where('role_id', $this->role->id)->update([
+                '__role_name' => $this->role->name,
+            ]);
+        }
 
         return $this->role;
     }

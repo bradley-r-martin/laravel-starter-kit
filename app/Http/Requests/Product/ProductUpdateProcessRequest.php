@@ -45,27 +45,6 @@ final class ProductUpdateProcessRequest extends FormRequest
     {
         $data = $this->validated();
 
-        // Cast numeric strings to floats for rebate and royalty
-        if (array_key_exists('rebate', $data)) {
-            // @phpstan-ignore-next-line notIdentical.alwaysTrue
-            $data['rebate'] = $data['rebate'] !== null ? (float) $data['rebate'] : null;
-        }
-        if (array_key_exists('royalty', $data)) {
-            // @phpstan-ignore-next-line notIdentical.alwaysTrue
-            $data['royalty'] = $data['royalty'] !== null ? (float) $data['royalty'] : null;
-        }
-
-        // Handle avatar - include it in the array even if null to allow clearing
-        if ($this->has('avatar')) {
-            $avatarInput = $this->input('avatar');
-            if ($avatarInput === null || $avatarInput === '') {
-                $data['avatar'] = null;
-            } else {
-                /** @var array<string, int|string|null>|null $avatarInput */
-                $data['avatar'] = File::fromArray($avatarInput)->persist('public');
-            }
-        }
-
         /** @var array{product_type_id?: string|null, manufacturer_id?: string|null, name?: string|null, sku?: string|null, units?: int|null, cost?: int|null, price?: int|null, rebate?: float|null, royalty?: float|null, avatar?: File|null} $data */
         new ProductActions((string) $this->route('product'))->update($data);
 

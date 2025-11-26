@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Requests\Product;
 
 use App\Actions\ProductActions;
-use App\Domain\File;
 use App\Rules\FileRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,27 +42,9 @@ final class ProductCreateProcessRequest extends FormRequest
 
     public function respond(): Response
     {
-        $this->validated();
+        $data = $this->validated();
 
-        $avatar = null;
-        if ($this->filled('avatar')) {
-            /** @var array<string, int|string|null>|null $avatarInput */
-            $avatarInput = $this->input('avatar');
-            $avatar = File::fromArray($avatarInput)->persist();
-        }
-
-        ProductActions::create([
-            'product_type_id' => $this->string('product_type_id')->toString(),
-            'manufacturer_id' => $this->string('manufacturer_id')->toString(),
-            'name' => $this->string('name')->toString(),
-            'sku' => $this->string('sku')->toString(),
-            'units' => $this->integer('units'),
-            'cost' => $this->integer('cost'),
-            'price' => $this->integer('price'),
-            'rebate' => $this->float('rebate'),
-            'royalty' => $this->float('royalty'),
-            'avatar' => $avatar,
-        ]);
+        ProductActions::create($data);
 
         return redirect()
             ->route('products.index')

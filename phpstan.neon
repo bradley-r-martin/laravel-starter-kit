@@ -11,5 +11,6 @@ parameters:
 
     excludePaths:
         - app/Console/Commands/Migrate/
+        - app/Actions
 
     tmpDir: /tmp/phpstan

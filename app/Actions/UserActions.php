@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Domain\File;
 use App\Models\Operator;
 use App\Models\Role;
 use App\Models\User;
@@ -19,27 +20,28 @@ final class UserActions
         User|string $user,
     ) {
         if (is_string($user)) {
-            /** @var User $user */
             $user = User::findOrFail($user);
         }
         $this->user = $user;
     }
 
-    /**
-     * @param  array<string, mixed>  $data
-     */
     public static function create(array $data): User
     {
-        // Add denormalized fields
-        if (isset($data['operator_id'])) {
-            /** @var Operator $operator */
-            $operator = Operator::findOrFail($data['operator_id']);
-            $data['__operator_name'] = $operator->name;
+
+        // Handle operator
+        if (array_key_exists('operator_id', $data)) {
+            $data['__operator_name'] = Operator::find($data['operator_id'])?->name;
         }
 
-        // increment role users count
-        if (isset($data['role_id'])) {
+        // Handle role
+        if (array_key_exists('role_id', $data)) {
+            $data['__role_name'] = Role::find($data['role_id'])?->name;
             Role::whereKey($data['role_id'])->increment('__users_count');
+        }
+
+        // Handle avatar
+        if (array_key_exists('avatar', $data)) {
+            $data['avatar'] = File::fromArray($data['avatar'])->persist();
         }
 
         return User::create($data);
@@ -50,17 +52,28 @@ final class UserActions
      */
     public function update(array $data): User
     {
-        // Update denormalized operator name if operator_id changed
-        if (isset($data['operator_id']) && $data['operator_id'] !== $this->user->operator_id) {
-            /** @var Operator $operator */
-            $operator = Operator::findOrFail($data['operator_id']);
-            $data['__operator_name'] = $operator->name;
+
+        // Handle operator
+        if (array_key_exists('operator_id', $data)) {
+            $data['__operator_name'] = Operator::find($data['operator_id'])?->name;
         }
 
-        // decrement old role users count and increment new role users count
-        if (isset($data['role_id']) && $data['role_id'] !== $this->user->role_id) {
-            Role::whereKey($this->user->role_id)->decrement('__users_count');
+        // Handle role
+        if (array_key_exists('role_id', $data)) {
+            $data['__role_name'] = Role::find($data['role_id'])?->name;
             Role::whereKey($data['role_id'])->increment('__users_count');
+            Role::whereKey($this->user->role_id)->decrement('__users_count');
+        }
+
+        // Handle avatar
+        if (array_key_exists('avatar', $data)) {
+            if ($this->user->avatar) {
+                $this->user->avatar->delete();
+            }
+            if ($data['avatar'] !== null) {
+
+                $data['avatar'] = File::fromArray($data['avatar'])->persist();
+            }
         }
 
         $this->user->update($data);
@@ -74,7 +87,10 @@ final class UserActions
             'suspended_at' => now(),
         ]);
 
-        if ($notify && $reason) {
+        // Derived data column updates
+        Role::whereKey($this->user->role_id)->decrement('__users_count');
+
+        if ($notify) {
             $this->user->notify(new UserSuspensionNotification($reason));
         }
 
@@ -87,7 +103,10 @@ final class UserActions
             'suspended_at' => null,
         ]);
 
-        if ($notify && $reason) {
+        // Derived data column updates
+        Role::whereKey($this->user->role_id)->increment('__users_count');
+
+        if ($notify) {
             $this->user->notify(new UserUnsuspensionNotification($reason));
         }
 
@@ -100,6 +119,9 @@ final class UserActions
             'closed_at' => now(),
         ]);
 
+        // Derived data column updates
+        Role::whereKey($this->user->role_id)->decrement('__users_count');
+
         return $this->user;
     }
 
@@ -108,6 +130,9 @@ final class UserActions
         $this->user->update([
             'closed_at' => null,
         ]);
+
+        // Derived data column updates
+        Role::whereKey($this->user->role_id)->increment('__users_count');
 
         return $this->user;
     }
