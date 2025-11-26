@@ -666,6 +666,8 @@ final class Normalise extends Command
             callback: function (array $expense, mixed $progress) use ($wholesalers, $normalisedExpenses): void {
                 $progress->hint("Normalising expense {$expense['invoice_no']}...");
                 $wholesaler = $wholesalers->get($expense['wholesaler_id']);
+                $expense_items = $this->data->expense_items->where('expense_id', $expense['id']);
+
                 $normalisedExpenses->push(fluent([
                     'id' => ($expense['id']),
                     'wholesaler_id' => ($expense['wholesaler_id']),
@@ -676,6 +678,10 @@ final class Normalise extends Command
                     'created_at' => $expense['created_at'],
                     'updated_at' => $expense['updated_at'],
                     '__wholesaler_name' => $wholesaler['name'],
+                    '__rebate' => $expense_items->sum('product_rebate'),
+                    '__royalty' => $expense_items->sum('product_royalty'),
+                    '__cost' => $expense_items->sum('wholesale_cost'),
+
                 ]));
             }
         );

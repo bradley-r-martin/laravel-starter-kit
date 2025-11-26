@@ -75,16 +75,7 @@ const List: InertiaView<ListProps> = (props) => {
             dataSpan: 'hidden',
             render: (expense) => <Navatar name={expense.__wholesaler_name || '—'} />,
         },
-        {
-            header: 'Cost',
-            accessor: 'cost',
-            dataSpan: 'hidden',
-            render: (expense) => (
-                <Text size="sm" c="dimmed">
-                    <Cast.Currency>{expense.__cost}</Cast.Currency>
-                </Text>
-            ),
-        },
+
         {
             header: 'Rebate',
             accessor: 'rebate',
@@ -102,6 +93,16 @@ const List: InertiaView<ListProps> = (props) => {
             render: (expense) => (
                 <Text size="sm" c="dimmed">
                     <Cast.Currency>{expense.__royalty}</Cast.Currency>
+                </Text>
+            ),
+        },
+        {
+            header: 'Cost',
+            accessor: 'cost',
+            dataSpan: 'hidden',
+            render: (expense) => (
+                <Text size="sm" c="dimmed">
+                    <Cast.Currency>{expense.__cost}</Cast.Currency>
                 </Text>
             ),
         },

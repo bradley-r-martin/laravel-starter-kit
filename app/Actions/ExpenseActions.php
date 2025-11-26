@@ -64,8 +64,6 @@ final class ExpenseActions
                 if (is_array($item)) {
                     ExpenseItem::create([
                         'expense_id' => $expense->id,
-                        'wholesaler_id' => $data['wholesaler_id'],
-                        'operator_id' => $data['operator_id'],
                         'item' => $item['item'] ?? null,
                         'quantity' => $item['quantity'] ?? 0,
                         'units' => $item['units'] ?? 1,

@@ -10,6 +10,7 @@ import Cast from '@/Components/Cast';
 import Data from '@/Components/Data/Data';
 import Field from '@/Components/Field';
 import Form from '@/Components/Form';
+import CurrencyInput from '@/Components/Inputs/CurrencyInput/CurrencyInput';
 import Navigate from '@/Components/Navigate';
 import { useForm } from '@inertiajs/react';
 
@@ -132,20 +133,23 @@ const ExpenseItemRow: FunctionComponent<ExpenseItemRowProps> = ({ item, index, i
                     }}
                 >
                     <Field name="cost" type="number" live>
-                        <NumberInput
-                            disabled={isCompleted}
-                            variant="transparent"
-                            prefix="$"
-                            decimalScale={2}
-                            decimalSeparator="."
-                            min={0}
-                            hideControls
-                            radius={0}
-                            classNames={{
-                                wrapper: 'focus-within:bg-white',
-                                input: 'disabled:!bg-white disabled:!opacity-100 disabled:!cursor-default placeholder:!text-amber-600 !border !border-transparent hover:!outline-1 hover:!outline-slate-950/40 hover:!outline-offset-[-2px] hover:focus:!outline-none disabled:hover:outline-none  focus:!bg-blue-500/5 !shadow-none !drop-shadow-none focus:!shadow-inner focus:placeholder:!text-slate-600 focus:!bg-blue-500/5 focus:!drop-shadow focus:!border focus:!border-blue-500 focus:!ring-blue-500/20',
-                            }}
-                        />
+                        <CurrencyInput>
+                            <NumberInput
+                                disabled={isCompleted}
+                                variant="transparent"
+                                prefix="$"
+                                decimalScale={2}
+                                decimalSeparator="."
+                                thousandSeparator=","
+                                min={0}
+                                hideControls
+                                radius={0}
+                                classNames={{
+                                    wrapper: 'focus-within:bg-white',
+                                    input: 'disabled:!bg-white disabled:!opacity-100 disabled:!cursor-default placeholder:!text-amber-600 !border !border-transparent hover:!outline-1 hover:!outline-slate-950/40 hover:!outline-offset-[-2px] hover:focus:!outline-none disabled:hover:outline-none  focus:!bg-blue-500/5 !shadow-none !drop-shadow-none focus:!shadow-inner focus:placeholder:!text-slate-600 focus:!bg-blue-500/5 focus:!drop-shadow focus:!border focus:!border-blue-500 focus:!ring-blue-500/20',
+                                }}
+                            />
+                        </CurrencyInput>
                     </Field>
                 </Form>
             </Table.Tbody.Td>

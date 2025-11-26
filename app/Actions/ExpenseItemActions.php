@@ -34,8 +34,6 @@ final class ExpenseItemActions
 
         $expenseItem = ExpenseItem::create([
             'expense_id' => $data['expense_id'],
-            'wholesaler_id' => $expense->wholesaler_id,
-            'operator_id' => $expense->operator_id,
             'item' => null,
             'units' => 1,
             'cost' => 0,
