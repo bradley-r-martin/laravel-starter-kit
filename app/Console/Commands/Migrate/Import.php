@@ -52,7 +52,7 @@ final class Import extends Command
         'wholesalers',
         'products',
         'snackware',
-        // 'snackware_products',
+        'snackware_products',
         'expenses',
         'expense_items',
         'runs',
@@ -465,20 +465,17 @@ final class Import extends Command
 
     public function snackware_products(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $snackwareProducts */
-        $snackwareProducts = $this->normalised->snackware_products;
-
         progress(
             label: 'Importing snackware products',
-            steps: $snackwareProducts,
-            callback: function (array $snackwareProduct, mixed $progress): void {
+            steps: $this->normalised->snackware_products,
+            callback: function (array $snackware_product, mixed $progress): void {
                 $progress->hint('Importing snackware product relationship...');
                 DB::table('product_snackware')->updateOrInsert(
                     [
-                        'snackware_id' => $snackwareProduct['snackware_id'],
-                        'product_id' => $snackwareProduct['product_id'],
+                        'snackware_id' => $snackware_product['snackware_id'],
+                        'product_id' => $snackware_product['product_id'],
                     ],
-                    $snackwareProduct
+                    $snackware_product
                 );
             }
         );

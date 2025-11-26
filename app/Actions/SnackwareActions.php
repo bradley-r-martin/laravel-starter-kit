@@ -60,4 +60,20 @@ final class SnackwareActions
     {
         $this->snackware->delete();
     }
+
+    public function attachProduct(string $productId): self
+    {
+        if (! $this->snackware->products()->where('product_id', $productId)->exists()) {
+            $this->snackware->products()->attach($productId);
+        }
+
+        return $this;
+    }
+
+    public function detachProduct(string $productId): self
+    {
+        $this->snackware->products()->detach($productId);
+
+        return $this;
+    }
 }

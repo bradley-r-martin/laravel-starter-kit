@@ -52,6 +52,17 @@ final class Normalise extends Command
                 File::put(storage_path('app/migrate/normalised/'.$table.'.json'), $this->normalised->{$table}->toJson(JSON_PRETTY_PRINT));
             }
         });
+
+        // Recalculate snackware __product_count based on final normalised snackware_products
+        // This ensures counts are correct even if snackware() ran before snackware_products()
+        if (method_exists($this, 'snackware') && $this->normalised->snackware->isNotEmpty()) {
+            $snackwareProductsBySnackware = $this->normalised->snackware_products->groupBy('snackware_id');
+            $this->normalised->snackware->each(function (Fluent $snackware) use ($snackwareProductsBySnackware): void {
+                $productCount = $snackwareProductsBySnackware->get($snackware->id)?->count() ?? 0;
+                $snackware->__product_count = $productCount;
+            });
+            File::put(storage_path('app/migrate/normalised/snackware.json'), $this->normalised->snackware->toJson(JSON_PRETTY_PRINT));
+        }
     }
 
     public function operators(): void
@@ -346,6 +357,22 @@ final class Normalise extends Command
                 ]));
             }
         );
+
+        $this->normalised->products->push(fluent([
+            'id' => '01K1F5J88D0J9DZK63T1AMNH52',
+            'manufacturer_id' => '01J0NV0YQBRD1DK70RMRVXTKKV',
+            'product_type_id' => '01K1F5HGTW2B4N29ZK2P31KK0Z',
+            'name' => 'Unspecified',
+            'sku' => 'Unspecified',
+            'units' => 0,
+            'price' => 0,
+            'cost' => 0,
+            'rebate' => 0,
+            'royalty' => 1,
+            'closed_at' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]));
     }
 
     public function product_types(): void
@@ -384,6 +411,14 @@ final class Normalise extends Command
                 ]));
             }
         );
+        $this->normalised->product_types->push(fluent([
+            'id' => '01K1F5HGTW2B4N29ZK2P31KK0Z',
+            'name' => 'Unspecified',
+            'short_name' => 'Unspecified',
+            'closed_at' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]));
     }
 
     public function manufacturers(): void
@@ -658,27 +693,31 @@ final class Normalise extends Command
         ]));
     }
 
-    public function _snackware_products(): void
+    public function snackware_products(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $dataSnackwareProducts */
-        $dataSnackwareProducts = $this->data->snackware_products;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $dataSnackware */
-        $dataSnackware = $this->data->snackware;
 
-        $this->normalised->snackware_products = $dataSnackwareProducts->map(fn (array $snackware_product): \Illuminate\Support\Fluent => fluent([
-            'snackware_id' => ($snackware_product['snackware_id']),
-            'product_id' => ($snackware_product['product_id']),
-        ]));
+        progress(
+            label: 'Normalising snackware products',
+            steps: $this->data->snackware_products,
+            callback: function (array $snackware_product, mixed $progress) {
+                $progress->hint("Normalising snackware product {$snackware_product['snackware_id']}...");
+                if (! $this->data->products->get($snackware_product['product_id'])) {
+                    return null;
+                }
+                if (! $this->data->snackware->get($snackware_product['snackware_id'])) {
+                    return null;
+                }
+                $this->normalised->snackware_products->push(fluent([
+                    'snackware_id' => ($snackware_product['snackware_id']),
+                    'product_id' => ($snackware_product['product_id']),
+                ]));
+            }
+        );
 
-        // attach the unspecified product to snackware that has no products
-        $snackware_products = $dataSnackwareProducts->pluck('snackware_id');
-        $snackware_without_products = $dataSnackware->whereNotIn('id', $snackware_products);
+        $snackware_without_products = $this->data->snackware->whereNotIn('id', $this->normalised->snackware_products->pluck('snackware_id'));
 
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedSnackwareProducts */
-        $normalisedSnackwareProducts = $this->normalised->snackware_products;
-
-        $snackware_without_products->each(function (array $snackware, mixed $key) use ($normalisedSnackwareProducts): void {
-            $normalisedSnackwareProducts->push(fluent([
+        $snackware_without_products->each(function (array $snackware, mixed $key): void {
+            $this->normalised->snackware_products->push(fluent([
                 'snackware_id' => ($snackware['id']),
                 'product_id' => '01K1F5J88D0J9DZK63T1AMNH52',
             ]));

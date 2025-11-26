@@ -1,13 +1,17 @@
 import { Actions } from '@/Components/Actions';
+import Cast from '@/Components/Cast';
+import Data from '@/Components/Data/Data';
 import Field from '@/Components/Field';
 import Form from '@/Components/Form';
 import FormErrorSound from '@/Components/FormErrorSound';
+import CurrencyInput from '@/Components/Inputs/CurrencyInput/CurrencyInput';
+import { TransferInput } from '@/Components/Inputs/TransferInput';
 import { Modal } from '@/Components/Modal';
 import { ModalContent } from '@/Components/ModalContent';
 import ModalHeader from '@/Components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Alert, Button, NumberInput, Stack, TextInput } from '@mantine/core';
+import { Alert, Button, Group, NumberInput, Stack, TextInput } from '@mantine/core';
 import { AlertCircleIcon, PackageIcon } from 'lucide-react';
 
 interface Snackware {
@@ -17,6 +21,7 @@ interface Snackware {
     icon: string | null;
     price: number;
     closed_at: string | null;
+    products: string[];
 }
 
 interface Props {
@@ -32,6 +37,7 @@ export default function Update({ snackware }: Props) {
         type: snackware.type || 'box',
         icon: snackware.icon || null,
         price: snackware.price || 0,
+        products: snackware.products || ([] as string[]),
     });
 
     const { processing } = form;
@@ -39,7 +45,7 @@ export default function Update({ snackware }: Props) {
     return (
         <>
             <Head title={`Update Snackware: ${snackware.name}`} />
-            <Modal>
+            <Modal size="lg">
                 <Modal.Body>
                     <ModalHeader
                         hero
@@ -80,21 +86,49 @@ export default function Update({ snackware }: Props) {
                                         <TextInput label="Name" name="name" disabled={isClosed} />
                                     </Field>
 
-                                    <Field name="type">
-                                        <TextInput label="Type" name="type" disabled={isClosed} />
-                                    </Field>
+                                    <Group grow>
+                                        <Field name="type">
+                                            <TextInput
+                                                label="Type"
+                                                name="type"
+                                                disabled={isClosed}
+                                            />
+                                        </Field>
 
-                                    <Field name="icon">
-                                        <TextInput label="Icon" name="icon" disabled={isClosed} />
-                                    </Field>
+                                        <Field name="price">
+                                            <CurrencyInput>
+                                                <NumberInput
+                                                    label="Price (cents)"
+                                                    name="price"
+                                                    min={0}
+                                                    disabled={isClosed}
+                                                    prefix="$"
+                                                    decimalScale={2}
+                                                    decimalSeparator="."
+                                                    thousandSeparator=","
+                                                />
+                                            </CurrencyInput>
+                                        </Field>
+                                    </Group>
 
-                                    <Field name="price">
-                                        <NumberInput
-                                            label="Price (cents)"
-                                            name="price"
-                                            min={0}
-                                            disabled={isClosed}
-                                        />
+                                    <Field name="products" type="transfer">
+                                        <Data parameter="availableProducts" property="items">
+                                            <TransferInput
+                                                label="Products"
+                                                className="max-h-[300px]"
+                                                disabled={isClosed}
+                                                renderItem={(item) => (
+                                                    <span className="flex w-full flex-1 items-center justify-between space-x-2">
+                                                        <span>{item.label}</span>
+                                                        <span className="text-xs text-zinc-500">
+                                                            <Cast.Currency>
+                                                                {item.price}
+                                                            </Cast.Currency>
+                                                        </span>
+                                                    </span>
+                                                )}
+                                            />
+                                        </Data>
                                     </Field>
                                 </Stack>
                             </ModalContent>

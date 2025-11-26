@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Snackware;
 
+use App\Models\Product;
 use App\Models\Snackware;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +36,23 @@ final class SnackwareUpdateViewRequest extends FormRequest
         /** @var Snackware $snackware */
         $snackware = Snackware::query()
             ->select(['id', 'name', 'type', 'icon', 'price', 'closed_at'])
+            ->with('products:id')
             ->findOrFail($snackwareId);
+
+        $availableProducts = Product::query()
+            ->whereNull('closed_at')
+            ->orderBy('__product_type_name')
+            ->orderBy('name')
+            ->get()
+            ->map(fn (Product $product): array => [
+                'value' => $product->id,
+                'label' => $product->name,
+                ...$product->toArray(),
+            ])
+            ->values();
+
+        // Get current products attached to this snackware
+        $currentProducts = $snackware->products->map(fn (Product $product): string => $product->id)->toArray();
 
         return inertia()
             ->modal('Snackware/Update', [
@@ -46,7 +63,9 @@ final class SnackwareUpdateViewRequest extends FormRequest
                     'icon' => $snackware->icon,
                     'price' => $snackware->price,
                     'closed_at' => $snackware->closed_at,
+                    'products' => $currentProducts,
                 ],
+                'availableProducts' => $availableProducts,
             ])
             ->baseRoute('snackwares.index')
             ->toResponse($this);

@@ -30,12 +30,14 @@ final class SnackwareCreateProcessRequest extends FormRequest
             'type' => 'sometimes|string|max:255',
             'icon' => 'nullable|string|max:255',
             'price' => 'sometimes|integer|min:0',
+            'products' => 'sometimes|array',
+            'products.*' => 'string',
         ];
     }
 
     public function respond(): Response
     {
-        /** @var array{name: string, type?: string, icon?: string|null, price?: int} $data */
+        /** @var array{name: string, type?: string, icon?: string|null, price?: int, products?: array<int, string>} $data */
         $data = $this->validated();
 
         /** @var \App\Models\User $user */
@@ -48,7 +50,7 @@ final class SnackwareCreateProcessRequest extends FormRequest
             abort(403, 'User must be associated with an operator');
         }
 
-        SnackwareActions::create([
+        $snackware = SnackwareActions::create([
             'territory_id' => $territory->id,
             'operator_id' => $operator->id,
             'name' => $data['name'],
@@ -56,6 +58,14 @@ final class SnackwareCreateProcessRequest extends FormRequest
             'icon' => $data['icon'] ?? null,
             'price' => $data['price'] ?? 0,
         ]);
+
+        // Attach selected products
+        if (isset($data['products'])) {
+            $snackwareActions = new SnackwareActions($snackware);
+            foreach ($data['products'] as $productId) {
+                $snackwareActions->attachProduct($productId);
+            }
+        }
 
         return redirect()
             ->route('snackwares.index')

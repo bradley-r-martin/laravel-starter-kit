@@ -1,7 +1,9 @@
 import { Actions } from '@/Components/Actions';
+import Data from '@/Components/Data/Data';
 import Field from '@/Components/Field';
 import Form from '@/Components/Form';
 import FormErrorSound from '@/Components/FormErrorSound';
+import { TransferInput } from '@/Components/Inputs/TransferInput';
 import { Modal } from '@/Components/Modal';
 import { ModalContent } from '@/Components/ModalContent';
 import ModalHeader from '@/Components/ModalHeader';
@@ -19,6 +21,7 @@ export default function Create({}: CreateProps) {
         type: 'box',
         icon: null as string | null,
         price: 0,
+        products: [] as string[],
     });
     const { processing } = form;
 
@@ -75,6 +78,23 @@ export default function Create({}: CreateProps) {
                                             placeholder="Enter price in cents"
                                             min={0}
                                         />
+                                    </Field>
+
+                                    <Field name="products" type="transfer">
+                                        <Data parameter="availableProducts" property="items">
+                                            <TransferInput
+                                                label="Products"
+                                                className="max-h-[300px]"
+                                                renderItem={(item) => (
+                                                    <span className="flex flex-col items-start space-x-2">
+                                                        <span>{item.label}</span>
+                                                        <span className="text-xs text-zinc-500">
+                                                            {item.group}
+                                                        </span>
+                                                    </span>
+                                                )}
+                                            />
+                                        </Data>
                                     </Field>
                                 </Stack>
                             </ModalContent>
