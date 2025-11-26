@@ -96,6 +96,7 @@ final class Download extends Command
                         });
                         break;
                     case 'snackware':
+                    case 'runs':
                         $data = $data->map(function (stdClass $item): stdClass {
                             $item->id = mb_strtoupper((string) $item->id);
                             $item->territory_id = mb_strtoupper((string) $item->territory_id);

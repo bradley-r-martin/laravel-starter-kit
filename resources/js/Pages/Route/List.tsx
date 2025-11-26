@@ -21,10 +21,9 @@ interface Operator {
 interface Route {
     id: string;
     name: string;
-    territory: Territory | null;
-    operator: Operator | null;
     closed_at: string | null;
     created_at: string;
+    __sites_count: number;
 }
 
 interface ListProps {
@@ -46,25 +45,16 @@ const List: InertiaView<ListProps> = (props) => {
             render: (route) => <Navatar name={route.name} />,
         },
         {
-            header: 'Territory',
-            accessor: 'territory',
+            header: 'Sites',
+            accessor: 'sites_count',
             dataSpan: 'hidden',
             render: (route) => (
                 <Text size="sm" c="dimmed">
-                    {route.territory?.name || '—'}
+                    {route.__sites_count}
                 </Text>
             ),
         },
-        {
-            header: 'Operator',
-            accessor: 'operator',
-            dataSpan: 'hidden',
-            render: (route) => (
-                <Text size="sm" c="dimmed">
-                    {route.operator?.name || '—'}
-                </Text>
-            ),
-        },
+
         {
             header: 'Status',
             accessor: 'status',

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Requests\Route;
 
 use App\Models\Route;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,33 +30,17 @@ final class RouteListViewRequest extends FormRequest
 
     public function respond(): Response
     {
-        $status = $this->string('routes_status')->toString();
+        $this->string('routes_status')->toString();
 
         $routes = Route::query()
             ->owned()
-            ->with(['territory:id,name', 'operator:id,name'])
             ->filterBySearch($this->string('routes_search')->toString())
-            ->when($status !== '', fn (Builder $query): Builder => $query->where(fn (Builder $q) => $q
-                ->when($status === 'closed', fn (Builder $q) => $q->whereNotNull('closed_at'))
-                ->when($status === 'active', fn (Builder $q) => $q->whereNull('closed_at'))
-            ))
+            ->filterSortBy($this->string('routes_sort')->toString())
+
             ->orderBy('name')
             ->paginate(10, ['*'], 'routes_page')
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Route $route}> $routes */
-            ->through(fn (Route $route): array => [
-                'id' => $route->id,
-                'name' => $route->name,
-                'territory' => $route->territory ? [
-                    'id' => $route->territory->id,
-                    'name' => $route->territory->name,
-                ] : null,
-                'operator' => $route->operator ? [
-                    'id' => $route->operator->id,
-                    'name' => $route->operator->name,
-                ] : null,
-                'closed_at' => $route->closed_at,
-                'created_at' => $route->created_at,
-            ]);
+            ->through(fn (Route $route): array => $route->toArray());
 
         return inertia()
             ->render('Route/List', [

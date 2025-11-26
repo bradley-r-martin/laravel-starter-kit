@@ -17,7 +17,6 @@ use App\Models\ProductType;
 use App\Models\QrCode;
 use App\Models\Resupply;
 use App\Models\Route;
-use App\Models\Run;
 use App\Models\Site;
 use App\Models\Snackware;
 use App\Models\Territory;
@@ -33,31 +32,6 @@ use function Laravel\Prompts\progress;
 
 final class Import extends Command
 {
-    /**
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $operators
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $territories
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $merchant_accounts
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $users
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $sites
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $placements
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $snackware
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $runs
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $routes
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $products
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $product_types
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $manufacturers
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $wholesalers
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $transactions
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $resupplies
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $contacts
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $customers
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $placement_proportions
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $q_r_codes
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $snackware_products
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $expenses
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $expense_items
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $reconciliations
-     */
     public \Illuminate\Support\Fluent $normalised;
 
     public \Illuminate\Support\Collection $tables;
@@ -80,6 +54,7 @@ final class Import extends Command
         // 'snackware_products',
         'expenses',
         'expense_items',
+        'runs',
     ];
 
     public function handle(): void
@@ -148,9 +123,7 @@ final class Import extends Command
 
     public function territories(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $territories */
         $territories = $this->normalised->territories;
-
         progress(
             label: 'Importing territories',
             steps: $territories,
@@ -167,7 +140,6 @@ final class Import extends Command
 
     public function merchant_accounts(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $merchantAccounts */
         $merchantAccounts = $this->normalised->merchant_accounts;
 
         progress(
@@ -262,7 +234,7 @@ final class Import extends Command
 
     public function runs(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $runs */
+        /* Runs table from legacy system is now routes table */
         $runs = $this->normalised->runs;
 
         progress(
@@ -271,28 +243,9 @@ final class Import extends Command
             callback: function (array $run, mixed $progress): void {
                 $name = (string) ($run['name'] ?? '');
                 $progress->hint("Importing run {$name}...");
-                Run::updateOrCreate(
+                Route::updateOrCreate(
                     ['id' => $run['id']],
                     $run
-                );
-            }
-        );
-    }
-
-    public function routes(): void
-    {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $routes */
-        $routes = $this->normalised->routes;
-
-        progress(
-            label: 'Importing routes',
-            steps: $routes,
-            callback: function (array $route, mixed $progress): void {
-                $name = (string) ($route['name'] ?? '');
-                $progress->hint("Importing route {$name}...");
-                Route::updateOrCreate(
-                    ['id' => $route['id']],
-                    $route
                 );
             }
         );

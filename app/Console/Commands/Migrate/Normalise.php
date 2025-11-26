@@ -15,56 +15,8 @@ final class Normalise extends Command
 {
     public \Illuminate\Support\Collection $tables;
 
-    /**
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $operators
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $territories
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $users
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $roles
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $sites
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $placements
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $snackware
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $snackware_products
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $runs
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $products
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $product_types
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $manufacturers
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $wholesalers
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $transactions
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $resupplies
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $reconciliations
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $contacts
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $customers
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $q_r_codes
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $expenses
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $expense_items
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>> $placement_proportions
-     */
     public \Illuminate\Support\Fluent $data;
 
-    /**
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $operators
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $territories
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $users
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $sites
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $placements
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $snackware
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $snackware_products
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $runs
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $routes
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $products
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $product_types
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $manufacturers
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $wholesalers
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $transactions
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $resupplies
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $reconciliations
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $contacts
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $customers
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $q_r_codes
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $expenses
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $expense_items
-     * @phpstan-property \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $placement_proportions
-     */
     public \Illuminate\Support\Fluent $normalised;
 
     protected $signature = 'migrate:normalise';
@@ -281,26 +233,31 @@ final class Normalise extends Command
         );
     }
 
-    public function _runs(): void
+    public function runs(): void
     {
-        $territories = $this->data->territories->keyBy('id');
-        $this->normalised->runs = $this->data->runs->map(function (array $run) use ($territories): \Illuminate\Support\Fluent {
-            $territory = $territories->get($run['territory_id']);
+        /* Runs table from legacy system is now routes table */
+        progress(
+            label: 'Normalising runs',
+            steps: $this->data->runs,
+            callback: function (array $run, mixed $progress): void {
+                $progress->hint("Normalising route {$run['name']}...");
 
-            // Strip out "#number" or "R-number" prefixes from run name
-            $name = preg_replace('/^(#\d+\s*|R-\d+\s*)/', '', (string) $run['name']);
-
-            return fluent([
-                'id' => ($run['id']),
-                'name' => $name,
-                'territory_id' => ($run['territory_id']),
-                'operator_id' => ($territory['operator_id']),
-                'schedule' => $run['schedule'],
-                'closed_at' => $run['status'] === 'closed' ? $run['updated_at'] : null,
-                'created_at' => $run['created_at'],
-                'updated_at' => $run['updated_at'],
-            ]);
-        });
+                $territory = $this->data->territories->get($run['territory_id']);
+                if (! $territory) {
+                    // Skip runs where the territory does not exist
+                    return;
+                }
+                $this->normalised->runs->push(fluent([
+                    'id' => ($run['id']),
+                    'name' => $run['name'],
+                    'territory_id' => ($run['territory_id']),
+                    'schedule' => $run['schedule'],
+                    'closed_at' => $run['status'] === 'closed' ? $run['updated_at'] : null,
+                    'created_at' => $run['created_at'],
+                    'updated_at' => $run['updated_at'],
+                ]));
+            }
+        );
     }
 
     public function products(): void
