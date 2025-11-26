@@ -26,9 +26,13 @@ final class TerritoryActions
      */
     public static function create(array $data): Territory
     {
-        // Add denormalized operator name if operator_id is provided
-        if (isset($data['operator_id'])) {
-            $data['__operator_name'] = Operator::query()->whereKey($data['operator_id'])->value('name');
+
+        // Handle operator
+        if (array_key_exists('operator_id', $data)) {
+            $data['__operator_name'] = Operator::find($data['operator_id'])?->name;
+
+            // Derived data column updates
+            Operator::whereKey($data['operator_id'])->increment('__territories_count');
         }
 
         return Territory::create($data);
@@ -39,9 +43,13 @@ final class TerritoryActions
      */
     public function update(array $data): Territory
     {
-        // Add denormalized operator name if operator_id is being updated
-        if (isset($data['operator_id'])) {
-            $data['__operator_name'] = Operator::query()->whereKey($data['operator_id'])->value('name');
+        // Handle operator
+        if (array_key_exists('operator_id', $data)) {
+            $data['__operator_name'] = Operator::find($data['operator_id'])?->name;
+
+            // Derived data column updates
+            Operator::whereKey($this->territory->operator_id)->decrement('__territories_count');
+            Operator::whereKey($data['operator_id'])->increment('__territories_count');
         }
 
         $this->territory->update($data);
@@ -55,6 +63,9 @@ final class TerritoryActions
             'closed_at' => now(),
         ]);
 
+        // Derived data column updates
+        Operator::whereKey($this->territory->operator_id)->decrement('__territories_count');
+
         return $this->territory;
     }
 
@@ -63,6 +74,9 @@ final class TerritoryActions
         $this->territory->update([
             'closed_at' => null,
         ]);
+
+        // Derived data column updates
+        Operator::whereKey($this->territory->operator_id)->increment('__territories_count');
 
         return $this->territory;
     }

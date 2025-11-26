@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Models\Operator;
+use App\Models\Territory;
+use App\Models\User;
 
 final class OperatorActions
 {
@@ -34,6 +36,16 @@ final class OperatorActions
     public function update(array $data): Operator
     {
         $this->operator->update($data);
+
+        // Derived data column updates
+        if (array_key_exists('name', $data)) {
+            User::where('operator_id', $this->operator->id)->update([
+                '__operator_name' => $this->operator->name,
+            ]);
+            Territory::where('operator_id', $this->operator->id)->update([
+                '__operator_name' => $this->operator->name,
+            ]);
+        }
 
         return $this->operator;
     }

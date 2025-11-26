@@ -36,6 +36,7 @@ interface User {
     __role_name: string | null;
     __operator_name: string | null;
     __last_login_at: string | null;
+    __last_active_at: string | null;
 }
 
 interface ListProps {
@@ -97,6 +98,20 @@ const List: InertiaView<ListProps> = (props) => {
                     <Cast.Datetime
                         format="DD/MM/YYYY HH:mm"
                         children={user.__last_login_at}
+                        fallback="—"
+                    />
+                </Text>
+            ),
+        },
+        {
+            header: 'Last Active',
+            accessor: 'last-activity',
+            dataSpan: 'hidden',
+            render: (user) => (
+                <Text size="sm" c="dimmed">
+                    <Cast.Datetime
+                        format="DD/MM/YYYY HH:mm"
+                        children={user.__last_active_at}
                         fallback="—"
                     />
                 </Text>

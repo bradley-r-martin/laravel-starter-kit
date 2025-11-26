@@ -58,14 +58,27 @@ final class Normalise extends Command
     {
         /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $operators */
         $operators = $this->data->operators;
+        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $territories */
+        $territories = $this->data->territories;
         /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedOperators */
         $normalisedOperators = $this->normalised->operators;
 
         progress(
             label: 'Normalising operators',
             steps: $operators,
-            callback: function (array $operator, mixed $progress) use ($normalisedOperators): void {
+            callback: function (array $operator, mixed $progress) use ($territories, $normalisedOperators): void {
                 $progress->hint("Normalising operator {$operator['name']}...");
+
+                // Count only active territories (not closed/suspended)
+                // Based on TerritoryActions: __territories_count is decremented when territories are closed
+                $activeTerritories = $territories
+                    ->where('operator_id', $operator['id'])
+                    ->filter(function (array $territory): bool {
+                        $status = $territory['status'] ?? null;
+
+                        return $status !== 'closed' && $status !== 'suspended';
+                    });
+
                 $normalisedOperators->push(fluent([
                     'id' => ($operator['id']),
                     'name' => $operator['name'],
@@ -75,6 +88,7 @@ final class Normalise extends Command
                     'closed_at' => $operator['status'] === 'closed' ? $operator['updated_at'] : null,
                     'created_at' => $operator['created_at'],
                     'updated_at' => $operator['updated_at'],
+                    '__territories_count' => $activeTerritories->count(),
                 ]));
             }
         );
@@ -84,14 +98,17 @@ final class Normalise extends Command
     {
         /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $territories */
         $territories = $this->data->territories;
+        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $operators */
+        $operators = $this->data->operators;
         /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedTerritories */
         $normalisedTerritories = $this->normalised->territories;
 
         progress(
             label: 'Normalising territories',
             steps: $territories,
-            callback: function (array $territory, mixed $progress) use ($normalisedTerritories): void {
+            callback: function (array $territory, mixed $progress) use ($operators, $normalisedTerritories): void {
                 $progress->hint("Normalising territory {$territory['name']}...");
+                $operator = $operators->get($territory['operator_id']);
                 $normalisedTerritories->push(fluent([
                     'id' => ($territory['id']),
                     'name' => $territory['name'],
@@ -99,6 +116,7 @@ final class Normalise extends Command
                     'closed_at' => $territory['status'] === 'suspended' ? $territory['updated_at'] : null,
                     'created_at' => $territory['created_at'],
                     'updated_at' => $territory['updated_at'],
+                    '__operator_name' => $operator['name'] ?? null,
                 ]));
             }
         );
@@ -113,7 +131,15 @@ final class Normalise extends Command
             callback: function (array $role, mixed $progress): void {
                 $progress->hint("Normalising role {$role['name']}...");
 
-                $users = $this->data->users->where('role_id', $role['id']);
+                // Count only active users (not closed, not suspended)
+                // Based on UserActions: __users_count is decremented when users are closed or suspended
+                $users = $this->data->users
+                    ->where('role_id', $role['id'])
+                    ->filter(function (array $user): bool {
+                        $status = $user['status'] ?? null;
+
+                        return $status !== 'closed' && $status !== 'suspended';
+                    });
                 $this->normalised->roles->push(fluent([
                     'id' => ($role['id']),
                     'name' => $role['name'],
@@ -336,7 +362,17 @@ final class Normalise extends Command
             steps: $productTypes,
             callback: function (array $product_type, mixed $progress) use ($products, $normalisedProductTypes): void {
                 $progress->hint("Normalising product type {$product_type['name']}...");
-                $productsList = $products->where('product_type_id', $product_type['id'])->whereNull('closed_at');
+
+                // Count only active products (not closed)
+                // Based on ProductActions: __products_count is decremented when products are closed
+                $productsList = $products
+                    ->where('product_type_id', $product_type['id'])
+                    ->filter(function (array $product): bool {
+                        $status = $product['status'] ?? null;
+
+                        return $status !== 'closed';
+                    });
+
                 $normalisedProductTypes->push(fluent([
                     'id' => ($product_type['id']),
                     'name' => $product_type['name'],
@@ -364,7 +400,17 @@ final class Normalise extends Command
             steps: $manufacturers,
             callback: function (array $manufacturer, mixed $progress) use ($products, $normalisedManufacturers): void {
                 $progress->hint("Normalising manufacturer {$manufacturer['name']}...");
-                $productsList = $products->where('manufacturer_id', $manufacturer['id'])->whereNull('closed_at');
+
+                // Count only active products (not closed)
+                // Based on ProductActions: __products_count is decremented when products are closed
+                $productsList = $products
+                    ->where('manufacturer_id', $manufacturer['id'])
+                    ->filter(function (array $product): bool {
+                        $status = $product['status'] ?? null;
+
+                        return $status !== 'closed';
+                    });
+
                 $normalisedManufacturers->push(fluent([
                     'id' => ($manufacturer['id']),
                     'name' => $manufacturer['name'],
@@ -381,20 +427,28 @@ final class Normalise extends Command
     {
         /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $wholesalers */
         $wholesalers = $this->data->wholesalers;
+        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $expenses */
+        $expenses = $this->data->expenses;
         /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedWholesalers */
         $normalisedWholesalers = $this->normalised->wholesalers;
 
         progress(
             label: 'Normalising wholesalers',
             steps: $wholesalers,
-            callback: function (array $wholesaler, mixed $progress) use ($normalisedWholesalers): void {
+            callback: function (array $wholesaler, mixed $progress) use ($expenses, $normalisedWholesalers): void {
                 $progress->hint("Normalising wholesaler {$wholesaler['name']}...");
+
+                // Count expenses for this wholesaler
+                // Based on ExpenseActions: __expenses_count is incremented/decremented when expenses are created/destroyed
+                $expensesCount = $expenses->where('wholesaler_id', $wholesaler['id'])->count();
+
                 $normalisedWholesalers->push(fluent([
                     'id' => ($wholesaler['id']),
                     'name' => $wholesaler['name'],
                     'closed_at' => $wholesaler['status'] === 'inactive' ? $wholesaler['updated_at'] : null,
                     'created_at' => $wholesaler['created_at'],
                     'updated_at' => $wholesaler['updated_at'],
+                    '__expenses_count' => $expensesCount,
                 ]));
             }
         );
