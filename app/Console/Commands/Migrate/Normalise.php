@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Console\Commands\Migrate;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use SplFileInfo;
 
@@ -13,11 +15,11 @@ use function Laravel\Prompts\progress;
 
 final class Normalise extends Command
 {
-    public \Illuminate\Support\Collection $tables;
+    public Collection $tables;
 
-    public \Illuminate\Support\Fluent $data;
+    public Fluent $data;
 
-    public \Illuminate\Support\Fluent $normalised;
+    public Fluent $normalised;
 
     protected $signature = 'migrate:normalise';
 
@@ -67,11 +69,11 @@ final class Normalise extends Command
 
     public function operators(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $operators */
+        /** @var Collection<int, array<string, mixed>> $operators */
         $operators = $this->data->operators;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $territories */
+        /** @var Collection<int, array<string, mixed>> $territories */
         $territories = $this->data->territories;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedOperators */
+        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedOperators */
         $normalisedOperators = $this->normalised->operators;
 
         progress(
@@ -107,11 +109,11 @@ final class Normalise extends Command
 
     public function territories(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $territories */
+        /** @var Collection<int, array<string, mixed>> $territories */
         $territories = $this->data->territories;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $operators */
+        /** @var Collection<int, array<string, mixed>> $operators */
         $operators = $this->data->operators;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedTerritories */
+        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedTerritories */
         $normalisedTerritories = $this->normalised->territories;
 
         progress(
@@ -167,13 +169,13 @@ final class Normalise extends Command
 
     public function users(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $users */
+        /** @var Collection<int, array<string, mixed>> $users */
         $users = $this->data->users;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $operators */
+        /** @var Collection<int, array<string, mixed>> $operators */
         $operators = $this->data->operators;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $roles */
+        /** @var Collection<int, array<string, mixed>> $roles */
         $roles = $this->data->roles;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedUsers */
+        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedUsers */
         $normalisedUsers = $this->normalised->users;
 
         progress(
@@ -208,7 +210,7 @@ final class Normalise extends Command
     public function _sites(): void
     {
         $territories = $this->data->territories->keyBy('id');
-        $this->normalised->sites = $this->data->sites->map(function (array $site, mixed $key) use ($territories): \Illuminate\Support\Fluent {
+        $this->normalised->sites = $this->data->sites->map(function (array $site, mixed $key) use ($territories): Fluent {
             $territory = $territories->get($site['territory_id']);
 
             return fluent([
@@ -235,7 +237,7 @@ final class Normalise extends Command
     {
         $sites = $this->data->sites->keyBy('id');
         $territories = $this->data->territories->keyBy('id');
-        $this->normalised->placements = $this->data->placements->map(function (array $placement) use ($sites, $territories): \Illuminate\Support\Fluent {
+        $this->normalised->placements = $this->data->placements->map(function (array $placement) use ($sites, $territories): Fluent {
             $site = $sites->get($placement['site_id']);
             $territory = $territories->get($site['territory_id']);
 
@@ -256,15 +258,15 @@ final class Normalise extends Command
 
     public function snackware(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $snackwareData */
+        /** @var Collection<int, array<string, mixed>> $snackwareData */
         $snackwareData = $this->data->snackware;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $territories */
+        /** @var Collection<int, array<string, mixed>> $territories */
         $territories = $this->data->territories;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $snackwareProducts */
+        /** @var Collection<int, array<string, mixed>> $snackwareProducts */
         $snackwareProducts = $this->data->snackware_products;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $products */
+        /** @var Collection<int, array<string, mixed>> $products */
         $products = $this->data->products;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedSnackware */
+        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedSnackware */
         $normalisedSnackware = $this->normalised->snackware;
 
         progress(
@@ -275,6 +277,10 @@ final class Normalise extends Command
                 $territory = $territories->get($snackware['territory_id']);
                 $snackware_products = $snackwareProducts->where('snackware_id', $snackware['id']);
                 $productsList = $products->whereIn('id', $snackware_products->pluck('product_id'));
+
+                // Calculate __cost_per_unit for each product and get min/max
+                $costPerUnitValues = $productsList->map(fn (array $product): int => $product['units'] > 0 ? (int) ($product['wholesale_cost'] / $product['units']) : 0);
+
                 $normalisedSnackware->push(fluent([
                     'id' => ($snackware['id']),
                     'territory_id' => ($snackware['territory_id']),
@@ -286,8 +292,8 @@ final class Normalise extends Command
                     'created_at' => $snackware['created_at'],
                     'updated_at' => $snackware['updated_at'],
                     '__product_count' => $productsList->count(),
-                    '__wholesale_from' => $productsList->min('retail_price') ?? 0,
-                    '__wholesale_to' => $productsList->max('retail_price') ?? 0,
+                    '__wholesale_from' => $costPerUnitValues->min() ?? 0,
+                    '__wholesale_to' => $costPerUnitValues->max() ?? 0,
                 ]));
             }
         );
@@ -322,13 +328,13 @@ final class Normalise extends Command
 
     public function products(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $products */
+        /** @var Collection<int, array<string, mixed>> $products */
         $products = $this->data->products;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $manufacturers */
+        /** @var Collection<int, array<string, mixed>> $manufacturers */
         $manufacturers = $this->data->manufacturers;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $productTypes */
+        /** @var Collection<int, array<string, mixed>> $productTypes */
         $productTypes = $this->data->product_types;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedProducts */
+        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedProducts */
         $normalisedProducts = $this->normalised->products;
 
         progress(
@@ -352,6 +358,7 @@ final class Normalise extends Command
                     'closed_at' => $product['status'] === 'closed' ? $product['updated_at'] : null,
                     'created_at' => $product['created_at'],
                     'updated_at' => $product['updated_at'],
+                    '__cost_per_unit' => $product['units'] > 0 ? (int) ($product['wholesale_cost'] / $product['units']) : 0,
                     '__manufacturer_name' => $manufacturer['name'],
                     '__product_type_name' => $product_type['name'],
                 ]));
@@ -372,16 +379,17 @@ final class Normalise extends Command
             'closed_at' => null,
             'created_at' => now(),
             'updated_at' => now(),
+            '__cost_per_unit' => 0,
         ]));
     }
 
     public function product_types(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $productTypes */
+        /** @var Collection<int, array<string, mixed>> $productTypes */
         $productTypes = $this->data->product_types;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $products */
+        /** @var Collection<int, array<string, mixed>> $products */
         $products = $this->data->products;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedProductTypes */
+        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedProductTypes */
         $normalisedProductTypes = $this->normalised->product_types;
 
         progress(
@@ -423,11 +431,11 @@ final class Normalise extends Command
 
     public function manufacturers(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $manufacturers */
+        /** @var Collection<int, array<string, mixed>> $manufacturers */
         $manufacturers = $this->data->manufacturers;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $products */
+        /** @var Collection<int, array<string, mixed>> $products */
         $products = $this->data->products;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedManufacturers */
+        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedManufacturers */
         $normalisedManufacturers = $this->normalised->manufacturers;
 
         progress(
@@ -460,11 +468,11 @@ final class Normalise extends Command
 
     public function wholesalers(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $wholesalers */
+        /** @var Collection<int, array<string, mixed>> $wholesalers */
         $wholesalers = $this->data->wholesalers;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $expenses */
+        /** @var Collection<int, array<string, mixed>> $expenses */
         $expenses = $this->data->expenses;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedWholesalers */
+        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedWholesalers */
         $normalisedWholesalers = $this->normalised->wholesalers;
 
         progress(
@@ -495,7 +503,7 @@ final class Normalise extends Command
         $sites = $this->data->sites->keyBy('id');
         $placements = $this->data->placements->keyBy('id');
         $resupplies = $this->data->resupplies->keyBy('id');
-        $this->normalised->transactions = $this->data->transactions->map(function (array $transaction) use ($territories, $placements, $sites, $resupplies): \Illuminate\Support\Fluent {
+        $this->normalised->transactions = $this->data->transactions->map(function (array $transaction) use ($territories, $placements, $sites, $resupplies): Fluent {
             $placement = $placements->get($transaction['placement_id']);
             $site = $sites->get(optional($placement)['site_id']);
             $territory = $territories->get(optional($site)['territory_id']);
@@ -530,7 +538,7 @@ final class Normalise extends Command
         $sites = $this->data->sites->keyBy('id');
         $placements = $this->data->placements->keyBy('id');
         $reconciliations = $this->data->reconciliations->keyBy('id');
-        $this->normalised->resupplies = $this->data->resupplies->map(function (array $resupply) use ($territories, $sites, $placements, $reconciliations): \Illuminate\Support\Fluent {
+        $this->normalised->resupplies = $this->data->resupplies->map(function (array $resupply) use ($territories, $sites, $placements, $reconciliations): Fluent {
             $placement = $placements->get(($resupply['placement_id']));
             $site = $sites->get($placement['site_id']);
             $territory = $territories->get(($site['territory_id']));
@@ -563,7 +571,7 @@ final class Normalise extends Command
         $resupplies = $this->data->resupplies->groupBy('reconciliation_id');
         $placements = $this->data->placements->keyBy('id');
         $sites = $this->data->sites->keyBy('id');
-        $this->normalised->reconciliations = $this->data->reconciliations->map(function (array $reconciliation) use ($runs, $territories, $resupplies, $placements, $sites): \Illuminate\Support\Fluent {
+        $this->normalised->reconciliations = $this->data->reconciliations->map(function (array $reconciliation) use ($runs, $territories, $resupplies, $placements, $sites): Fluent {
 
             $run = $runs->get($reconciliation['run_id']);
             $territory = $territories->get(optional($run)['territory_id']);
@@ -595,7 +603,7 @@ final class Normalise extends Command
     {
         $sites = $this->data->sites->keyBy('id');
         $territories = $this->data->territories->keyBy('id');
-        $this->normalised->contacts = $this->data->contacts->map(function (array $contact) use ($sites, $territories): \Illuminate\Support\Fluent {
+        $this->normalised->contacts = $this->data->contacts->map(function (array $contact) use ($sites, $territories): Fluent {
             $site = $sites->get($contact['site_id']);
             $territory = $territories->get($site['territory_id']);
 
@@ -634,7 +642,7 @@ final class Normalise extends Command
 
     public function _customers(): void
     {
-        $this->normalised->customers = $this->data->customers->map(fn (array $customer): \Illuminate\Support\Fluent => fluent([
+        $this->normalised->customers = $this->data->customers->map(fn (array $customer): Fluent => fluent([
             'id' => ($customer['id']),
             'first_name' => $customer['first_name'],
             'last_name' => $customer['last_name'],
@@ -652,7 +660,7 @@ final class Normalise extends Command
         $snackware_products = $this->data->snackware_products->groupBy('snackware_id');
         $placements = $this->data->placements->keyBy('id');
         $snackware = $this->data->snackware->keyBy('id');
-        $this->normalised->placement_proportions = $this->data->placement_proportions->map(function (array $placement_proportion) use ($snackware_products, $placements, $snackware): \Illuminate\Support\Fluent {
+        $this->normalised->placement_proportions = $this->data->placement_proportions->map(function (array $placement_proportion) use ($snackware_products, $placements, $snackware): Fluent {
             $placement = $placements->get($placement_proportion['placement_id']);
             $snackware = $snackware->get($placement['snackware_id']);
             $products = $snackware_products->get($snackware['id']) ?? collect([]);
@@ -682,7 +690,7 @@ final class Normalise extends Command
 
     public function _q_r_codes(): void
     {
-        $this->normalised->q_r_codes = $this->data->q_r_codes->map(fn (array $q_r_code): \Illuminate\Support\Fluent => fluent([
+        $this->normalised->q_r_codes = $this->data->q_r_codes->map(fn (array $q_r_code): Fluent => fluent([
             'id' => ($q_r_code['id']),
             'operator_id' => ($q_r_code['operator_id']),
             'code' => $q_r_code['code'],
@@ -726,11 +734,11 @@ final class Normalise extends Command
 
     public function expenses(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $expenses */
+        /** @var Collection<int, array<string, mixed>> $expenses */
         $expenses = $this->data->expenses;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $wholesalers */
+        /** @var Collection<int, array<string, mixed>> $wholesalers */
         $wholesalers = $this->data->wholesalers;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedExpenses */
+        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedExpenses */
         $normalisedExpenses = $this->normalised->expenses;
 
         progress(
@@ -762,11 +770,11 @@ final class Normalise extends Command
 
     public function expense_items(): void
     {
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $expenseItems */
+        /** @var Collection<int, array<string, mixed>> $expenseItems */
         $expenseItems = $this->data->expense_items;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>> $products */
+        /** @var Collection<int, array<string, mixed>> $products */
         $products = $this->data->products;
-        /** @var \Illuminate\Support\Collection<int, array<string, mixed>|\Illuminate\Support\Fluent> $normalisedExpenseItems */
+        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedExpenseItems */
         $normalisedExpenseItems = $this->normalised->expense_items;
 
         progress(

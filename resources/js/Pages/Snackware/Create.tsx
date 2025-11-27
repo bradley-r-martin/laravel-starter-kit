@@ -86,10 +86,10 @@ export default function Create({}: CreateProps) {
                                                 label="Products"
                                                 className="max-h-[300px]"
                                                 renderItem={(item) => (
-                                                    <span className="flex flex-col items-start space-x-2">
+                                                    <span className="flex items-center justify-between space-x-2">
                                                         <span>{item.label}</span>
                                                         <span className="text-xs text-zinc-500">
-                                                            {item.group}
+                                                            {item.__cost_per_unit}
                                                         </span>
                                                     </span>
                                                 )}

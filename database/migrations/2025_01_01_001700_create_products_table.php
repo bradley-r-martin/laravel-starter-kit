@@ -35,6 +35,7 @@ return new class extends Migration
 
         /* Derived data columns */
         Schema::table('products', function (Blueprint $table): void {
+            $table->unsignedBigInteger('__cost_per_unit')->default(0)->comment('Cost per unit for this product');
             $table->string('__product_type_name')->nullable()->comment('Name from the associated product_type record');
             $table->string('__manufacturer_name')->nullable()->comment('Name from the associated manufacturer record');
         });

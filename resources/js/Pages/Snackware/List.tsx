@@ -81,7 +81,7 @@ const List: InertiaView<ListProps> = (props) => {
             ),
         },
         {
-            header: 'Range',
+            header: 'Wholesale cost',
             accessor: 'operator',
             dataSpan: 'hidden',
             render: (snackware) => (

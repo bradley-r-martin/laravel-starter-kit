@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Models\Product;
 use App\Models\Snackware;
 
 final class SnackwareActions
@@ -33,6 +34,20 @@ final class SnackwareActions
      */
     public function update(array $data): Snackware
     {
+
+        // Handle product changes
+        if (array_key_exists('products', $data)) {
+            $this->snackware->products()->sync($data['products']);
+
+            // Derived data column updates
+            $data['__product_count'] = count($data['products']);
+            $data['__wholesale_from'] = Product::whereIn('id', $data['products'])->min('__cost_per_unit');
+            $data['__wholesale_to'] = Product::whereIn('id', $data['products'])->max('__cost_per_unit');
+
+            // Remove products from data
+            unset($data['products']);
+        }
+
         $this->snackware->update($data);
 
         return $this->snackware;
@@ -59,21 +74,5 @@ final class SnackwareActions
     public function destroy(): void
     {
         $this->snackware->delete();
-    }
-
-    public function attachProduct(string $productId): self
-    {
-        if (! $this->snackware->products()->where('product_id', $productId)->exists()) {
-            $this->snackware->products()->attach($productId);
-        }
-
-        return $this;
-    }
-
-    public function detachProduct(string $productId): self
-    {
-        $this->snackware->products()->detach($productId);
-
-        return $this;
     }
 }

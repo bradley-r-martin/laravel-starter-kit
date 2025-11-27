@@ -122,7 +122,7 @@ export default function Update({ snackware }: Props) {
                                                         <span>{item.label}</span>
                                                         <span className="text-xs text-zinc-500">
                                                             <Cast.Currency>
-                                                                {item.price}
+                                                                {item.__cost_per_unit}
                                                             </Cast.Currency>
                                                         </span>
                                                     </span>

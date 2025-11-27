@@ -8,6 +8,7 @@ use App\Domain\File;
 use App\Models\Manufacturer;
 use App\Models\Product;
 use App\Models\ProductType;
+use App\Models\Snackware;
 
 final class ProductActions
 {
@@ -46,6 +47,9 @@ final class ProductActions
             $data['avatar'] = File::fromArray($data['avatar'])->persist();
         }
 
+        // Derived data column updates
+        $data['__cost_per_unit'] = $data['cost'] / $data['units'];
+
         return Product::create($data);
     }
 
@@ -80,7 +84,22 @@ final class ProductActions
             }
         }
 
+        if (array_key_exists('cost', $data) || array_key_exists('units', $data)) {
+            $data['__cost_per_unit'] = ($data['cost'] ?? $this->product->cost) / ($data['units'] ?? $this->product->units);
+        }
+
         $this->product->update($data);
+
+        // Derived data column updates
+        if (array_key_exists('cost', $data) || array_key_exists('units', $data)) {
+            $this->product->snackware()->each(function (Snackware $snackware): void {
+                $productIds = $snackware->products()->pluck('id');
+                $snackware->update([
+                    '__wholesale_from' => Product::whereIn('id', $productIds)->min('__cost_per_unit') ?? 0,
+                    '__wholesale_to' => Product::whereIn('id', $productIds)->max('__cost_per_unit') ?? 0,
+                ]);
+            });
+        }
 
         return $this->product;
     }

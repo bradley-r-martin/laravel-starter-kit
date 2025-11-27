@@ -38,6 +38,7 @@ interface Product {
     closed_at: string | null;
     __product_type_name: string;
     __manufacturer_name: string;
+    __cost_per_unit: number;
 }
 
 interface ListProps {
@@ -105,6 +106,16 @@ const List: InertiaView<ListProps> = (props) => {
             render: (product) => (
                 <Text size="sm" c="dimmed">
                     <Cast.Currency children={product.cost} fallback="—" />
+                </Text>
+            ),
+        },
+        {
+            header: 'Cost per unit',
+            accessor: 'cost_per_unit',
+            dataSpan: 'hidden',
+            render: (product) => (
+                <Text size="sm" c="dimmed">
+                    <Cast.Currency children={product.__cost_per_unit} fallback="—" />
                 </Text>
             ),
         },
