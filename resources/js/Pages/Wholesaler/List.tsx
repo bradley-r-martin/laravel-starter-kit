@@ -5,7 +5,7 @@ import Filters from '@/Components/QueryControls/Filters';
 import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
-import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
+import { Badge, Button, Group, Text } from '@mantine/core';
 import {
     CalendarIcon,
     CircleDotIcon,
@@ -71,87 +71,6 @@ const List: InertiaView<ListProps> = (props) => {
         },
     ];
 
-    const actionsColumn: ResourceColumn<Wholesaler> = {
-        header: 'Actions',
-        accessor: 'actions',
-        width: '180px',
-        render: (wholesaler) => (
-            <Group gap="xs" justify="end">
-                {!wholesaler.closed_at && (
-                    <>
-                        <Tooltip label="Edit Wholesaler" position="left">
-                            <Navigate
-                                type="modal"
-                                href={route('wholesalers.update', wholesaler.id)}
-                            >
-                                <ActionIcon
-                                    data-testid={`wholesaler-row-${wholesaler.id}-edit`}
-                                    variant="subtle"
-                                    color="blue"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <PencilIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Close Wholesaler" position="left">
-                            <Navigate type="modal" href={route('wholesalers.close', wholesaler.id)}>
-                                <ActionIcon
-                                    data-testid={`wholesaler-row-${wholesaler.id}-close`}
-                                    variant="subtle"
-                                    color="red"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <XIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-                {wholesaler.closed_at && (
-                    <>
-                        <Tooltip label="Reopen Wholesaler" position="left">
-                            <Navigate
-                                type="modal"
-                                href={route('wholesalers.reopen', wholesaler.id)}
-                            >
-                                <ActionIcon
-                                    data-testid={`wholesaler-row-${wholesaler.id}-reopen`}
-                                    variant="subtle"
-                                    color="green"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <RotateCcwIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Destroy Wholesaler" position="left">
-                            <Navigate
-                                type="modal"
-                                href={route('wholesalers.destroy', wholesaler.id)}
-                            >
-                                <ActionIcon
-                                    data-testid={`wholesaler-row-${wholesaler.id}-destroy`}
-                                    variant="subtle"
-                                    color="red"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <TrashIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-            </Group>
-        ),
-    };
-
     return (
         <ResourceList
             headTitle="Wholesalers"
@@ -160,7 +79,41 @@ const List: InertiaView<ListProps> = (props) => {
             resource={{ singular: 'wholesaler', plural: 'wholesalers' }}
             rowKey={(wholesaler) => wholesaler.id}
             columns={columns}
-            actionsColumn={actionsColumn}
+            actionsColumnProps={{ width: '180px' }}
+            actions={(wholesaler: Models.Wholesaler) => [
+                {
+                    visible: !wholesaler.closed_at,
+                    icon: PencilIcon,
+                    tooltip: 'Edit Wholesaler',
+                    href: route('wholesalers.update', wholesaler.id),
+                    type: 'modal',
+                    color: 'blue',
+                },
+                {
+                    visible: !wholesaler.closed_at,
+                    icon: XIcon,
+                    tooltip: 'Close Wholesaler',
+                    href: route('wholesalers.close', wholesaler.id),
+                    type: 'modal',
+                    color: 'red',
+                },
+                {
+                    visible: !!wholesaler.closed_at,
+                    icon: RotateCcwIcon,
+                    tooltip: 'Reopen Wholesaler',
+                    href: route('wholesalers.reopen', wholesaler.id),
+                    type: 'modal',
+                    color: 'green',
+                },
+                {
+                    visible: !!wholesaler.closed_at,
+                    icon: TrashIcon,
+                    tooltip: 'Destroy Wholesaler',
+                    href: route('wholesalers.destroy', wholesaler.id),
+                    type: 'modal',
+                    color: 'red',
+                },
+            ]}
             emptyState={{
                 title: 'No wholesalers found',
                 subtitle: 'Create a new wholesaler to get started.',

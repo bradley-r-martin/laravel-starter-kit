@@ -6,7 +6,7 @@ import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
 import { Asset } from '@/Utilities/Asset';
-import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
+import { Badge, Button, Group, Text } from '@mantine/core';
 import {
     BadgePercent,
     BoxesIcon,
@@ -154,78 +154,6 @@ const List: InertiaView<ListProps> = (props) => {
         },
     ];
 
-    const actionsColumn: ResourceColumn<Product> = {
-        header: 'Actions',
-        accessor: 'actions',
-        width: '180px',
-        render: (product) => (
-            <Group gap="xs" justify="end">
-                {!product.closed_at && (
-                    <>
-                        <Tooltip label="Edit Product" position="left">
-                            <Navigate type="modal" href={route('products.update', product.id)}>
-                                <ActionIcon
-                                    data-testid={`product-row-${product.id}-edit`}
-                                    variant="subtle"
-                                    color="blue"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <PencilIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Close Product" position="left">
-                            <Navigate type="modal" href={route('products.close', product.id)}>
-                                <ActionIcon
-                                    data-testid={`product-row-${product.id}-close`}
-                                    variant="subtle"
-                                    color="red"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <XIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-                {product.closed_at && (
-                    <>
-                        <Tooltip label="Reinstate Product" position="left">
-                            <Navigate type="modal" href={route('products.reinstate', product.id)}>
-                                <ActionIcon
-                                    data-testid={`product-row-${product.id}-reinstate`}
-                                    variant="subtle"
-                                    color="green"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <RotateCcwIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Destroy Product" position="left">
-                            <Navigate type="modal" href={route('products.destroy', product.id)}>
-                                <ActionIcon
-                                    data-testid={`product-row-${product.id}-destroy`}
-                                    variant="subtle"
-                                    color="red"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <TrashIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-            </Group>
-        ),
-    };
-
     return (
         <ResourceList
             headTitle="Products"
@@ -234,7 +162,41 @@ const List: InertiaView<ListProps> = (props) => {
             resource={{ singular: 'product', plural: 'products' }}
             rowKey={(product) => product.id}
             columns={columns}
-            actionsColumn={actionsColumn}
+            actionsColumnProps={{ width: '180px' }}
+            actions={(product: Models.Product) => [
+                {
+                    visible: !product.closed_at,
+                    icon: PencilIcon,
+                    tooltip: 'Edit Product',
+                    href: route('products.update', product.id),
+                    type: 'modal',
+                    color: 'blue',
+                },
+                {
+                    visible: !product.closed_at,
+                    icon: XIcon,
+                    tooltip: 'Close Product',
+                    href: route('products.close', product.id),
+                    type: 'modal',
+                    color: 'red',
+                },
+                {
+                    visible: !!product.closed_at,
+                    icon: RotateCcwIcon,
+                    tooltip: 'Reinstate Product',
+                    href: route('products.reinstate', product.id),
+                    type: 'modal',
+                    color: 'green',
+                },
+                {
+                    visible: !!product.closed_at,
+                    icon: TrashIcon,
+                    tooltip: 'Destroy Product',
+                    href: route('products.destroy', product.id),
+                    type: 'modal',
+                    color: 'red',
+                },
+            ]}
             emptyState={{
                 title: 'No products found',
                 subtitle: 'Create a new product to get started.',

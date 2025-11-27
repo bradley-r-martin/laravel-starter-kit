@@ -5,7 +5,7 @@ import Filters from '@/Components/QueryControls/Filters';
 import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
-import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
+import { Badge, Button, Group, Text } from '@mantine/core';
 import { CalendarIcon, PencilIcon, PlusIcon } from 'lucide-react';
 
 interface ListProps {
@@ -68,33 +68,6 @@ const List: InertiaView<ListProps> = (props) => {
         },
     ];
 
-    const actionsColumn: ResourceColumn<Route> = {
-        header: 'Actions',
-        accessor: 'actions',
-        width: '120px',
-        render: (row) => (
-            <Group gap="xs" justify="end">
-                {!row.closed_at && (
-                    <>
-                        <Tooltip label="Edit Route" position="left">
-                            <Navigate type="modal" href={route('routes.update', row.id)}>
-                                <ActionIcon
-                                    data-testid={`route-row-${row.id}-edit`}
-                                    variant="subtle"
-                                    color="blue"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <PencilIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-            </Group>
-        ),
-    };
-
     return (
         <ResourceList
             headTitle="Routes"
@@ -103,7 +76,17 @@ const List: InertiaView<ListProps> = (props) => {
             resource={{ singular: 'route', plural: 'routes' }}
             rowKey={(route) => route.id}
             columns={columns}
-            actionsColumn={actionsColumn}
+            actionsColumnProps={{ width: '120px' }}
+            actions={(route: Models.Route) => [
+                {
+                    visible: !route.closed_at,
+                    icon: PencilIcon,
+                    tooltip: 'Edit Route',
+                    href: route('routes.update', route.id),
+                    type: 'modal',
+                    color: 'blue',
+                },
+            ]}
             emptyState={{
                 title: 'No routes found',
                 subtitle: 'Create a new route to get started.',

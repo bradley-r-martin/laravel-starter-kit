@@ -5,7 +5,7 @@ import Filters from '@/Components/QueryControls/Filters';
 import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
-import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
+import { Badge, Button, Group, Text } from '@mantine/core';
 import {
     CalendarIcon,
     PencilIcon,
@@ -92,78 +92,6 @@ const List: InertiaView<ListProps> = (props) => {
         },
     ];
 
-    const actionsColumn: ResourceColumn<Role> = {
-        header: 'Actions',
-        accessor: 'actions',
-        width: '120px',
-        render: (role) => (
-            <Group gap="xs" justify="end">
-                {!role.closed_at && (
-                    <>
-                        <Tooltip label="Edit Role" position="left">
-                            <Navigate type="modal" href={route('roles.update', role.id)}>
-                                <ActionIcon
-                                    data-testid={`role-row-${role.id}-edit`}
-                                    variant="subtle"
-                                    color="blue"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <PencilIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Close Role" position="left">
-                            <Navigate type="modal" href={route('roles.close', role.id)}>
-                                <ActionIcon
-                                    data-testid={`role-row-${role.id}-close`}
-                                    variant="subtle"
-                                    color="orange"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <XIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-                {role.closed_at && (
-                    <>
-                        <Tooltip label="Reopen Role" position="left">
-                            <Navigate type="modal" href={route('roles.reopen', role.id)}>
-                                <ActionIcon
-                                    data-testid={`role-row-${role.id}-reopen`}
-                                    variant="subtle"
-                                    color="green"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <RotateCcwIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Destroy Role" position="left">
-                            <Navigate type="modal" href={route('roles.destroy', role.id)}>
-                                <ActionIcon
-                                    data-testid={`role-row-${role.id}-destroy`}
-                                    variant="subtle"
-                                    color="red"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <TrashIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-            </Group>
-        ),
-    };
-
     return (
         <ResourceList
             headTitle="Roles"
@@ -172,7 +100,41 @@ const List: InertiaView<ListProps> = (props) => {
             resource={{ singular: 'role', plural: 'roles' }}
             rowKey={(role) => role.id}
             columns={columns}
-            actionsColumn={actionsColumn}
+            actionsColumnProps={{ width: '120px' }}
+            actions={(role: Models.Role) => [
+                {
+                    visible: !role.closed_at,
+                    icon: PencilIcon,
+                    tooltip: 'Edit Role',
+                    href: route('roles.update', role.id),
+                    type: 'modal',
+                    color: 'blue',
+                },
+                {
+                    visible: !role.closed_at,
+                    icon: XIcon,
+                    tooltip: 'Close Role',
+                    href: route('roles.close', role.id),
+                    type: 'modal',
+                    color: 'orange',
+                },
+                {
+                    visible: !!role.closed_at,
+                    icon: RotateCcwIcon,
+                    tooltip: 'Reopen Role',
+                    href: route('roles.reopen', role.id),
+                    type: 'modal',
+                    color: 'green',
+                },
+                {
+                    visible: !!role.closed_at,
+                    icon: TrashIcon,
+                    tooltip: 'Destroy Role',
+                    href: route('roles.destroy', role.id),
+                    type: 'modal',
+                    color: 'red',
+                },
+            ]}
             emptyState={{
                 title: 'No roles found',
                 subtitle: 'Create a new role to get started.',

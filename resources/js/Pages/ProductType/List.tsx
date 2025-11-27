@@ -5,7 +5,7 @@ import Filters from '@/Components/QueryControls/Filters';
 import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
-import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
+import { Badge, Button, Group, Text } from '@mantine/core';
 import {
     BoxesIcon,
     CalendarIcon,
@@ -81,90 +81,6 @@ const List: InertiaView<ListProps> = (props) => {
         },
     ];
 
-    const actionsColumn: ResourceColumn<ProductType> = {
-        header: 'Actions',
-        accessor: 'actions',
-        width: '180px',
-        render: (productType) => (
-            <Group gap="xs" justify="end">
-                {!productType.closed_at && (
-                    <>
-                        <Tooltip label="Edit Product Type" position="left">
-                            <Navigate
-                                type="modal"
-                                href={route('product-types.update', productType.id)}
-                            >
-                                <ActionIcon
-                                    data-testid={`product-type-row-${productType.id}-edit`}
-                                    variant="subtle"
-                                    color="blue"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <PencilIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Close Product Type" position="left">
-                            <Navigate
-                                type="modal"
-                                href={route('product-types.close', productType.id)}
-                            >
-                                <ActionIcon
-                                    data-testid={`product-type-row-${productType.id}-close`}
-                                    variant="subtle"
-                                    color="red"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <XIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-                {productType.closed_at && (
-                    <>
-                        <Tooltip label="Reopen Product Type" position="left">
-                            <Navigate
-                                type="modal"
-                                href={route('product-types.reopen', productType.id)}
-                            >
-                                <ActionIcon
-                                    data-testid={`product-type-row-${productType.id}-reopen`}
-                                    variant="subtle"
-                                    color="green"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <RotateCcwIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Destroy Product Type" position="left">
-                            <Navigate
-                                type="modal"
-                                href={route('product-types.destroy', productType.id)}
-                            >
-                                <ActionIcon
-                                    data-testid={`product-type-row-${productType.id}-destroy`}
-                                    variant="subtle"
-                                    color="red"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <TrashIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-            </Group>
-        ),
-    };
-
     return (
         <ResourceList
             headTitle="Product Types"
@@ -173,7 +89,41 @@ const List: InertiaView<ListProps> = (props) => {
             resource={{ singular: 'product-type', plural: 'product types' }}
             rowKey={(productType) => productType.id}
             columns={columns}
-            actionsColumn={actionsColumn}
+            actionsColumnProps={{ width: '180px' }}
+            actions={(productType: Models.ProductType) => [
+                {
+                    visible: !productType.closed_at,
+                    icon: PencilIcon,
+                    tooltip: 'Edit Product Type',
+                    href: route('product-types.update', productType.id),
+                    type: 'modal',
+                    color: 'blue',
+                },
+                {
+                    visible: !productType.closed_at,
+                    icon: XIcon,
+                    tooltip: 'Close Product Type',
+                    href: route('product-types.close', productType.id),
+                    type: 'modal',
+                    color: 'red',
+                },
+                {
+                    visible: !!productType.closed_at,
+                    icon: RotateCcwIcon,
+                    tooltip: 'Reopen Product Type',
+                    href: route('product-types.reopen', productType.id),
+                    type: 'modal',
+                    color: 'green',
+                },
+                {
+                    visible: !!productType.closed_at,
+                    icon: TrashIcon,
+                    tooltip: 'Destroy Product Type',
+                    href: route('product-types.destroy', productType.id),
+                    type: 'modal',
+                    color: 'red',
+                },
+            ]}
             emptyState={{
                 title: 'No product types found',
                 subtitle: 'Create a new product type to get started.',

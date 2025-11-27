@@ -5,7 +5,7 @@ import Filters from '@/Components/QueryControls/Filters';
 import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
-import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
+import { Badge, Button, Group, Text } from '@mantine/core';
 import { CalendarIcon, EyeIcon, PlusIcon } from 'lucide-react';
 
 interface ListProps {
@@ -103,29 +103,6 @@ const List: InertiaView<ListProps> = (props) => {
         },
     ];
 
-    const actionsColumn: ResourceColumn<Site> = {
-        header: 'Actions',
-        accessor: 'actions',
-        width: '120px',
-        render: (site) => (
-            <Group gap="xs" justify="end">
-                <Tooltip label="View Site" position="left">
-                    <Navigate type="page" href={route('sites.show', site.id)}>
-                        <ActionIcon
-                            data-testid={`site-row-${site.id}-view`}
-                            variant="subtle"
-                            color="blue"
-                            size="md"
-                            radius="xl"
-                        >
-                            <EyeIcon className="size-4" />
-                        </ActionIcon>
-                    </Navigate>
-                </Tooltip>
-            </Group>
-        ),
-    };
-
     return (
         <ResourceList
             headTitle="Sites"
@@ -134,7 +111,17 @@ const List: InertiaView<ListProps> = (props) => {
             resource={{ singular: 'site', plural: 'sites' }}
             rowKey={(site) => site.id}
             columns={columns}
-            actionsColumn={actionsColumn}
+            actionsColumnProps={{ width: '120px' }}
+            actions={(site: Models.Site) => [
+                {
+                    visible: true,
+                    icon: EyeIcon,
+                    tooltip: 'View Site',
+                    href: route('sites.show', site.id),
+                    type: 'page',
+                    color: 'blue',
+                },
+            ]}
             emptyState={{
                 title: 'No sites found',
                 subtitle: 'Create a new site to get started.',

@@ -6,7 +6,7 @@ import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
 import { Asset } from '@/Utilities/Asset';
-import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
+import {  Badge, Button, Group, Text } from '@mantine/core';
 import {
     BanIcon,
     Building2Icon,
@@ -137,121 +137,6 @@ const List: InertiaView<ListProps> = (props) => {
         },
     ];
 
-    const actionsColumn: ResourceColumn<User> = {
-        header: 'Actions',
-        accessor: 'actions',
-        width: '180px',
-        render: (user) => (
-            <Group gap="xs" justify="end">
-                {!user.closed_at && !user.suspended_at && (
-                    <>
-                        <Tooltip label="Edit User" position="left">
-                            <Navigate type="modal" href={route('users.update', user.id)}>
-                                <ActionIcon
-                                    data-testid={`user-row-${user.id}-edit`}
-                                    variant="subtle"
-                                    color="blue"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <PencilIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Change Password" position="left">
-                            <Navigate type="modal" href={route('users.password', user.id)}>
-                                <ActionIcon
-                                    data-testid={`user-row-${user.id}-password`}
-                                    variant="subtle"
-                                    color="yellow"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <KeyIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Suspend User" position="left">
-                            <Navigate type="modal" href={route('users.suspend', user.id)}>
-                                <ActionIcon
-                                    data-testid={`user-row-${user.id}-suspend`}
-                                    variant="subtle"
-                                    color="orange"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <BanIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Close Account" position="left">
-                            <Navigate type="modal" href={route('users.close', user.id)}>
-                                <ActionIcon
-                                    data-testid={`user-row-${user.id}-close`}
-                                    variant="subtle"
-                                    color="red"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <XIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-                {!user.closed_at && user.suspended_at && (
-                    <Tooltip label="Unsuspend User" position="left">
-                        <Navigate type="modal" href={route('users.unsuspend', user.id)}>
-                            <ActionIcon
-                                data-testid={`user-row-${user.id}-unsuspend`}
-                                variant="subtle"
-                                color="green"
-                                size="md"
-                                radius="xl"
-                            >
-                                <CheckCircleIcon className="size-4" />
-                            </ActionIcon>
-                        </Navigate>
-                    </Tooltip>
-                )}
-                {user.closed_at && (
-                    <>
-                        <Tooltip label="Reopen Account" position="left">
-                            <Navigate type="modal" href={route('users.reopen', user.id)}>
-                                <ActionIcon
-                                    data-testid={`user-row-${user.id}-reopen`}
-                                    variant="subtle"
-                                    color="green"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <RotateCcwIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Destroy Account" position="left">
-                            <Navigate type="modal" href={route('users.destroy', user.id)}>
-                                <ActionIcon
-                                    data-testid={`user-row-${user.id}-destroy`}
-                                    variant="subtle"
-                                    color="red"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <TrashIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-            </Group>
-        ),
-    };
-
     return (
         <ResourceList
             headTitle="Users"
@@ -260,7 +145,65 @@ const List: InertiaView<ListProps> = (props) => {
             resource={{ singular: 'user', plural: 'users' }}
             rowKey={(user) => user.id}
             columns={columns}
-            actionsColumn={actionsColumn}
+            actionsColumnProps={{ width: '180px' }}
+            actions={(user: Models.User)=>[
+                {
+                    visible: !user.closed_at && !user.suspended_at,
+                    icon: PencilIcon,
+                    tooltip: 'Edit User',
+                    href: route('users.update', user.id),
+                    type: 'modal',
+                    color: 'blue',
+                },
+                {
+                    visible: !user.closed_at && !user.suspended_at,
+                    icon: KeyIcon,
+                    tooltip: 'Change Password',
+                    href: route('users.password', user.id),
+                    type: 'modal',
+                    color: 'yellow',
+                },
+                {
+                    visible: !user.closed_at && !user.suspended_at,
+                    icon: BanIcon,
+                    tooltip: 'Suspend User',
+                    href: route('users.suspend', user.id),
+                    type: 'modal',
+                    color: 'orange',
+                },
+                {
+                    visible: !user.closed_at && !user.suspended_at,
+                    icon: XIcon,
+                    tooltip: 'Close Account',
+                    href: route('users.close', user.id),
+                    type: 'modal',
+                    color: 'red',
+                },
+                {
+                    visible: !user.closed_at && !!user.suspended_at,
+                    icon: CheckCircleIcon,
+                    tooltip: 'Unsuspend User',
+                    href: route('users.unsuspend', user.id),
+                    type: 'modal',
+                    color: 'green',
+                },
+                {
+                    visible: !!user.closed_at,
+                    icon: RotateCcwIcon,
+                    tooltip: 'Reopen Account',
+                    href: route('users.reopen', user.id),
+                    type: 'modal',
+                    color: 'green',
+                },
+                {
+                    visible: !!user.closed_at,
+                    icon: TrashIcon,
+                    tooltip: 'Destroy Account',
+                    href: route('users.destroy', user.id),
+                    type: 'modal',
+                    color: 'red',
+                }
+            ]}
             emptyState={{
                 title: 'No users found',
                 subtitle: 'Create a new user to get started.',

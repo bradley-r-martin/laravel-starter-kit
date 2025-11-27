@@ -5,7 +5,7 @@ import Filters from '@/Components/QueryControls/Filters';
 import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
-import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
+import { Badge, Button, Group, Text } from '@mantine/core';
 import {
     BanIcon,
     CalendarIcon,
@@ -112,107 +112,6 @@ const List: InertiaView<ListProps> = ({ operators }) => {
         },
     ];
 
-    const actionsColumn: ResourceColumn<Operator> = {
-        header: 'Actions',
-        accessor: 'actions',
-        width: '180px',
-        render: (operator) => (
-            <Group gap="xs" justify="end">
-                {!operator.closed_at && !operator.suspended_at && (
-                    <>
-                        <Tooltip label="Edit Operator" position="left">
-                            <Navigate type="modal" href={route('operators.update', operator.id)}>
-                                <ActionIcon
-                                    data-testid={`operator-row-${operator.id}-edit`}
-                                    variant="subtle"
-                                    color="blue"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <PencilIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Suspend Operator" position="left">
-                            <Navigate type="modal" href={route('operators.suspend', operator.id)}>
-                                <ActionIcon
-                                    data-testid={`operator-row-${operator.id}-suspend`}
-                                    variant="subtle"
-                                    color="orange"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <BanIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Close Operator" position="left">
-                            <Navigate type="modal" href={route('operators.close', operator.id)}>
-                                <ActionIcon
-                                    data-testid={`operator-row-${operator.id}-close`}
-                                    variant="subtle"
-                                    color="red"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <XIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-                {!operator.closed_at && operator.suspended_at && (
-                    <Tooltip label="Unsuspend Operator" position="left">
-                        <Navigate type="modal" href={route('operators.unsuspend', operator.id)}>
-                            <ActionIcon
-                                data-testid={`operator-row-${operator.id}-unsuspend`}
-                                variant="subtle"
-                                color="green"
-                                size="md"
-                                radius="xl"
-                            >
-                                <CheckCircleIcon className="size-4" />
-                            </ActionIcon>
-                        </Navigate>
-                    </Tooltip>
-                )}
-                {operator.closed_at && (
-                    <>
-                        <Tooltip label="Reopen Operator" position="left">
-                            <Navigate type="modal" href={route('operators.reopen', operator.id)}>
-                                <ActionIcon
-                                    data-testid={`operator-row-${operator.id}-reopen`}
-                                    variant="subtle"
-                                    color="green"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <RotateCcwIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Destroy Operator" position="left">
-                            <Navigate type="modal" href={route('operators.destroy', operator.id)}>
-                                <ActionIcon
-                                    data-testid={`operator-row-${operator.id}-destroy`}
-                                    variant="subtle"
-                                    color="red"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <TrashIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-            </Group>
-        ),
-    };
-
     return (
         <ResourceList
             headTitle="Operators"
@@ -221,7 +120,57 @@ const List: InertiaView<ListProps> = ({ operators }) => {
             resource={{ singular: 'operator', plural: 'operators' }}
             rowKey={(operator) => operator.id}
             columns={columns}
-            actionsColumn={actionsColumn}
+            actionsColumnProps={{ width: '180px' }}
+            actions={(operator: Models.Operator) => [
+                {
+                    visible: !operator.closed_at && !operator.suspended_at,
+                    icon: PencilIcon,
+                    tooltip: 'Edit Operator',
+                    href: route('operators.update', operator.id),
+                    type: 'modal',
+                    color: 'blue',
+                },
+                {
+                    visible: !operator.closed_at && !operator.suspended_at,
+                    icon: BanIcon,
+                    tooltip: 'Suspend Operator',
+                    href: route('operators.suspend', operator.id),
+                    type: 'modal',
+                    color: 'orange',
+                },
+                {
+                    visible: !operator.closed_at && !operator.suspended_at,
+                    icon: XIcon,
+                    tooltip: 'Close Operator',
+                    href: route('operators.close', operator.id),
+                    type: 'modal',
+                    color: 'red',
+                },
+                {
+                    visible: !operator.closed_at && !!operator.suspended_at,
+                    icon: CheckCircleIcon,
+                    tooltip: 'Unsuspend Operator',
+                    href: route('operators.unsuspend', operator.id),
+                    type: 'modal',
+                    color: 'green',
+                },
+                {
+                    visible: !!operator.closed_at,
+                    icon: RotateCcwIcon,
+                    tooltip: 'Reopen Operator',
+                    href: route('operators.reopen', operator.id),
+                    type: 'modal',
+                    color: 'green',
+                },
+                {
+                    visible: !!operator.closed_at,
+                    icon: TrashIcon,
+                    tooltip: 'Destroy Operator',
+                    href: route('operators.destroy', operator.id),
+                    type: 'modal',
+                    color: 'red',
+                },
+            ]}
             emptyState={{
                 title: 'No operators found',
                 subtitle: 'Create a new operator to get started.',

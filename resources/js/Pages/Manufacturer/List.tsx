@@ -5,7 +5,7 @@ import Filters from '@/Components/QueryControls/Filters';
 import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
-import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
+import { Badge, Button, Group, Text } from '@mantine/core';
 import {
     BoxesIcon,
     CalendarIcon,
@@ -83,90 +83,6 @@ const List: InertiaView<ListProps> = (props) => {
         },
     ];
 
-    const actionsColumn: ResourceColumn<Manufacturer> = {
-        header: 'Actions',
-        accessor: 'actions',
-        width: '180px',
-        render: (manufacturer) => (
-            <Group gap="xs" justify="end">
-                {!manufacturer.closed_at && (
-                    <>
-                        <Tooltip label="Edit Manufacturer" position="left">
-                            <Navigate
-                                type="modal"
-                                href={route('manufacturers.update', manufacturer.id)}
-                            >
-                                <ActionIcon
-                                    data-testid={`manufacturer-row-${manufacturer.id}-edit`}
-                                    variant="subtle"
-                                    color="blue"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <PencilIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Close Manufacturer" position="left">
-                            <Navigate
-                                type="modal"
-                                href={route('manufacturers.close', manufacturer.id)}
-                            >
-                                <ActionIcon
-                                    data-testid={`manufacturer-row-${manufacturer.id}-close`}
-                                    variant="subtle"
-                                    color="red"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <XIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-                {manufacturer.closed_at && (
-                    <>
-                        <Tooltip label="Reopen Manufacturer" position="left">
-                            <Navigate
-                                type="modal"
-                                href={route('manufacturers.reopen', manufacturer.id)}
-                            >
-                                <ActionIcon
-                                    data-testid={`manufacturer-row-${manufacturer.id}-reopen`}
-                                    variant="subtle"
-                                    color="green"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <RotateCcwIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-
-                        <Tooltip label="Destroy Manufacturer" position="left">
-                            <Navigate
-                                type="modal"
-                                href={route('manufacturers.destroy', manufacturer.id)}
-                            >
-                                <ActionIcon
-                                    data-testid={`manufacturer-row-${manufacturer.id}-destroy`}
-                                    variant="subtle"
-                                    color="red"
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <TrashIcon className="size-4" />
-                                </ActionIcon>
-                            </Navigate>
-                        </Tooltip>
-                    </>
-                )}
-            </Group>
-        ),
-    };
-
     return (
         <ResourceList
             headTitle="Manufacturers"
@@ -175,7 +91,41 @@ const List: InertiaView<ListProps> = (props) => {
             resource={{ singular: 'manufacturer', plural: 'manufacturers' }}
             rowKey={(manufacturer) => manufacturer.id}
             columns={columns}
-            actionsColumn={actionsColumn}
+            actionsColumnProps={{ width: '180px' }}
+            actions={(manufacturer: Models.Manufacturer) => [
+                {
+                    visible: !manufacturer.closed_at,
+                    icon: PencilIcon,
+                    tooltip: 'Edit Manufacturer',
+                    href: route('manufacturers.update', manufacturer.id),
+                    type: 'modal',
+                    color: 'blue',
+                },
+                {
+                    visible: !manufacturer.closed_at,
+                    icon: XIcon,
+                    tooltip: 'Close Manufacturer',
+                    href: route('manufacturers.close', manufacturer.id),
+                    type: 'modal',
+                    color: 'red',
+                },
+                {
+                    visible: !!manufacturer.closed_at,
+                    icon: RotateCcwIcon,
+                    tooltip: 'Reopen Manufacturer',
+                    href: route('manufacturers.reopen', manufacturer.id),
+                    type: 'modal',
+                    color: 'green',
+                },
+                {
+                    visible: !!manufacturer.closed_at,
+                    icon: TrashIcon,
+                    tooltip: 'Destroy Manufacturer',
+                    href: route('manufacturers.destroy', manufacturer.id),
+                    type: 'modal',
+                    color: 'red',
+                },
+            ]}
             emptyState={{
                 title: 'No manufacturers found',
                 subtitle: 'Create a new manufacturer to get started.',

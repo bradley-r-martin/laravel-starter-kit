@@ -5,7 +5,7 @@ import Filters from '@/Components/QueryControls/Filters';
 import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
-import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
+import { Badge, Button, Group, Text } from '@mantine/core';
 import {
     CalendarIcon,
     CircleDotIcon,
@@ -115,29 +115,6 @@ const List: InertiaView<ListProps> = (props) => {
         },
     ];
 
-    const actionsColumn: ResourceColumn<Expense> = {
-        header: 'Actions',
-        accessor: 'actions',
-        width: '180px',
-        render: (expense) => (
-            <Group gap="xs" justify="end">
-                <Tooltip label="View Expense" position="left">
-                    <Navigate type="page" href={route('expenses.show', expense.id)}>
-                        <ActionIcon
-                            data-testid={`expense-row-${expense.id}-view`}
-                            variant="subtle"
-                            color="blue"
-                            size="md"
-                            radius="xl"
-                        >
-                            <PencilIcon className="size-4" />
-                        </ActionIcon>
-                    </Navigate>
-                </Tooltip>
-            </Group>
-        ),
-    };
-
     return (
         <ResourceList
             headTitle="Expenses"
@@ -146,7 +123,17 @@ const List: InertiaView<ListProps> = (props) => {
             resource={{ singular: 'expense', plural: 'expenses' }}
             rowKey={(expense) => expense.id}
             columns={columns}
-            actionsColumn={actionsColumn}
+            actionsColumnProps={{ width: '180px' }}
+            actions={(expense: Models.Expense) => [
+                {
+                    visible: true,
+                    icon: PencilIcon,
+                    tooltip: 'View Expense',
+                    href: route('expenses.show', expense.id),
+                    type: 'page',
+                    color: 'blue',
+                },
+            ]}
             emptyState={{
                 title: 'No expenses found',
                 subtitle: 'Create a new expense to get started.',

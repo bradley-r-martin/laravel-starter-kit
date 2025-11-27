@@ -4,7 +4,21 @@ import Table from '@/Components/Table/Table';
 import Header from '@/Parts/Header';
 import { Paginated } from '@/Types';
 import { Head } from '@inertiajs/react';
+import { ActionIcon, Tooltip } from '@mantine/core';
 import { ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react';
+import Navigate from '../Navigate';
+
+
+export interface ResourceAction {
+    visible?: boolean;
+    icon?: any;
+    tooltip?: string;
+    label?: string;
+    href: string;
+    type: 'modal' | 'page';
+    color: string;
+}
+
 
 interface ResourceIdentifiers {
     singular: string;
@@ -23,6 +37,16 @@ export interface ResourceColumn<TItem> {
     cellStyle?: CSSProperties;
 }
 
+export interface ActionsColumnProps {
+    width?: string | number;
+    header?: ReactNode;
+    headerClassName?: string;
+    headerStyle?: CSSProperties;
+    cellClassName?: string;
+    cellStyle?: CSSProperties;
+    dataSpan?: string;
+}
+
 export interface ResourceListProps<TItem> {
     headTitle: string;
     title: string;
@@ -31,6 +55,8 @@ export interface ResourceListProps<TItem> {
     rowKey: (item: TItem) => string | number;
     columns: ResourceColumn<TItem>[];
     actionsColumn?: ResourceColumn<TItem>;
+    actionsColumnProps?: ActionsColumnProps;
+    actions?: (item: TItem) => ResourceAction[];
     emptyState: {
         title: string;
         subtitle: string;
@@ -54,6 +80,7 @@ const ResourceList = <TItem,>({
     rowKey,
     columns,
     actionsColumn,
+    actionsColumnProps,
     emptyState,
     filters,
     headerAction,
@@ -62,6 +89,7 @@ const ResourceList = <TItem,>({
     paginationAttribute,
     getRowTestId,
     tableProps,
+    actions,
 }: ResourceListProps<TItem>) => {
     const count = items.data.length;
     const resolvedPaginationAttribute = paginationAttribute ?? resource.plural;
@@ -75,6 +103,17 @@ const ResourceList = <TItem,>({
     const containerClasses = [defaultContainerClassName, containerClassName]
         .filter(Boolean)
         .join(' ');
+
+    // Support both old actionsColumn and new actionsColumnProps for backward compatibility
+    const shouldShowActions = actions && (actionsColumn || actionsColumnProps);
+    const actionsHeader = actionsColumn?.header ?? actionsColumnProps?.header ?? 'Actions';
+    const actionsAccessor = actionsColumn?.accessor ?? 'actions';
+    const actionsWidth = actionsColumn?.width ?? actionsColumnProps?.width;
+    const actionsHeaderClassName = actionsColumn?.headerClassName ?? actionsColumnProps?.headerClassName;
+    const actionsHeaderStyle = actionsColumn?.headerStyle ?? actionsColumnProps?.headerStyle;
+    const actionsCellClassName = actionsColumn?.cellClassName ?? actionsColumnProps?.cellClassName;
+    const actionsCellStyle = actionsColumn?.cellStyle ?? actionsColumnProps?.cellStyle;
+    const actionsDataSpan = actionsColumn?.dataSpan ?? actionsColumnProps?.dataSpan;
 
     return (
         <>
@@ -104,16 +143,16 @@ const ResourceList = <TItem,>({
                                         {column.header}
                                     </Table.Th>
                                 ))}
-                                {actionsColumn && (
+                                {shouldShowActions && (
                                     <Table.Th
-                                        key={actionsColumn.accessor}
-                                        className={actionsColumn.headerClassName}
+                                        key={actionsAccessor}
+                                        className={actionsHeaderClassName}
                                         style={{
-                                            width: actionsColumn.width,
-                                            ...(actionsColumn.headerStyle ?? {}),
+                                            width: actionsWidth,
+                                            ...(actionsHeaderStyle ?? {}),
                                         }}
                                     >
-                                        {actionsColumn.header}
+                                        {actionsHeader}
                                     </Table.Th>
                                 )}
                             </Table.Thead.Tr>
@@ -138,15 +177,30 @@ const ResourceList = <TItem,>({
                                                 {column.render(item)}
                                             </Table.Tbody.Td>
                                         ))}
-                                        {actionsColumn && (
+                                        {shouldShowActions && (
                                             <Table.Tbody.Td
-                                                key={actionsColumn.accessor}
-                                                data-span={actionsColumn.dataSpan}
-                                                data-testid={`${rowTestId}-${actionsColumn.accessor}`}
-                                                className={actionsColumn.cellClassName}
-                                                style={actionsColumn.cellStyle}
+                                                key={actionsAccessor}
+                                                data-span={actionsDataSpan}
+                                                data-testid={`${rowTestId}-${actionsAccessor}`}
+                                                className={actionsCellClassName}
+                                                style={actionsCellStyle}
                                             >
-                                                {actionsColumn.render(item)}
+                                                {actions?.(item).map((action) => {
+                                                    if (!action.visible) return null;
+                                                    const Icon = action.icon;
+                                                    return (<Tooltip label={action.tooltip} position="left">
+                                                        <Navigate type={action.type} href={action.href}>
+                                                            <ActionIcon
+                                                                variant="subtle"
+                                                                color={action.color}
+                                                                size="md"
+                                                                radius="xl"
+                                                            >
+                                                              <Icon className="size-4" />  
+                                                            </ActionIcon>
+                                                        </Navigate>
+                                                    </Tooltip>)
+                                                })}
                                             </Table.Tbody.Td>
                                         )}
                                     </Table.Tbody.Tr>

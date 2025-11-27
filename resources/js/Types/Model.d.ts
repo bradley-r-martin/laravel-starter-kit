@@ -18,11 +18,11 @@ declare namespace Domain {
     };
 
     export type File = {
-        path?: string;
-        disk?: string;
-        mime_type?: string;
-        size?: number;
-        filename?: string;
+        path: string;
+        disk: string;
+        mime_type: string;
+        size: number;
+        filename: string;
     };
 
     export type Phone = {
