@@ -12,13 +12,8 @@ import { Alert, Button, Divider, FileInput, Select, Stack, Text, TextInput } fro
 import { AlertCircle, FileText, PlusIcon, Upload } from 'lucide-react';
 import { useState } from 'react';
 
-interface Wholesaler {
-    id: string;
-    name: string;
-}
-
 interface CreateProps {
-    wholesalers: Wholesaler[];
+    wholesalers: Models.Wholesaler[];
 }
 
 interface AnalysisResponse {

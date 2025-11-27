@@ -3,7 +3,6 @@ import { ActionIcon, NumberInput, Select, Tooltip } from '@mantine/core';
 
 import { FunctionComponent } from 'react';
 
-import { ExpenseItem } from '@/Pages/Expense/View';
 import { FileWarning, TrashIcon } from 'lucide-react';
 
 import Cast from '@/Components/Cast';
@@ -15,7 +14,7 @@ import Navigate from '@/Components/Navigate';
 import { useForm } from '@inertiajs/react';
 
 interface ExpenseItemRowProps {
-    item: ExpenseItem;
+    item: Models.ExpenseItem & { __product_name?: string | null };
     index: number;
     expenseId: string;
     isCompleted: boolean;

@@ -17,32 +17,8 @@ import {
     XIcon,
 } from 'lucide-react';
 
-interface Territory {
-    id: string;
-    name: string;
-}
-
-interface Operator {
-    id: string;
-    name: string;
-}
-
-interface Snackware {
-    id: string;
-    name: string;
-    type: string;
-    icon: string | null;
-    price: number;
-    closed_at: string | null;
-    created_at: string;
-    __product_count: number;
-    __wholesale_from: number;
-    __wholesale_to: number;
-    __placements_count: number;
-}
-
 interface ListProps {
-    snackwares: Paginated<Snackware>;
+    snackwares: Paginated<Models.Snackware>;
 }
 
 const List: InertiaView<ListProps> = (props) => {
@@ -54,7 +30,7 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    const columns: ResourceColumn<Snackware>[] = [
+    const columns: ResourceColumn<Models.Snackware>[] = [
         {
             header: 'Name',
             accessor: 'name',

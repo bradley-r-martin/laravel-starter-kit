@@ -19,17 +19,8 @@ import {
     XIcon,
 } from 'lucide-react';
 
-interface Territory {
-    id: string;
-    name: string;
-    last_transaction_at: string | null;
-    closed_at: string | null;
-    created_at: string;
-    __operator_name: string;
-}
-
 interface ListProps {
-    territories: Paginated<Territory>;
+    territories: Paginated<Models.Territory>;
 }
 
 const List: InertiaView<ListProps> = ({ territories }) => {
@@ -41,7 +32,7 @@ const List: InertiaView<ListProps> = ({ territories }) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    const columns: ResourceColumn<Territory>[] = [
+    const columns: ResourceColumn<Models.Territory>[] = [
         {
             header: 'Name',
             accessor: 'name',

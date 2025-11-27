@@ -10,21 +10,9 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Select, Stack, TextInput } from '@mantine/core';
 import { PencilIcon } from 'lucide-react';
 
-interface Wholesaler {
-    id: string;
-    name: string;
-}
-
-interface Expense {
-    id: string;
-    invoice_no: string;
-    invoice_date: string | null;
-    wholesaler_id: string | null;
-}
-
 interface UpdateProps {
-    expense: Expense;
-    wholesalers: Wholesaler[];
+    expense: Models.Expense;
+    wholesalers: Models.Wholesaler[];
 }
 
 export default function Update({ expense, wholesalers }: UpdateProps) {

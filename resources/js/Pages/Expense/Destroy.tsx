@@ -10,13 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Stack, Textarea } from '@mantine/core';
 import { TrashIcon } from 'lucide-react';
 
-interface Expense {
-    id: string;
-    invoice_no: string;
-}
-
 interface DestroyProps {
-    expense: Expense;
+    expense: Models.Expense;
 }
 
 export default function Destroy({ expense }: DestroyProps) {

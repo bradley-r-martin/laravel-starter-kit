@@ -8,34 +8,12 @@ import { InertiaView, Paginated } from '@/Types';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import { CalendarIcon, EyeIcon, PlusIcon } from 'lucide-react';
 
-interface Territory {
-    id: string;
-    name: string;
-}
-
-interface Operator {
-    id: string;
-    name: string;
-}
-
-interface Route {
-    id: string;
-    name: string;
-}
-
-interface Site {
-    id: string;
-    name: string;
-    territory: Territory | null;
-    operator: Operator | null;
-    route: Route | null;
-    manager_code: string | null;
-    closed_at: string | null;
-    created_at: string;
-}
-
 interface ListProps {
-    sites: Paginated<Site>;
+    sites: Paginated<Models.Site & {
+        territory?: Models.Territory | null;
+        operator?: Models.Operator | null;
+        route?: Models.Route | null;
+    }>;
 }
 
 const List: InertiaView<ListProps> = (props) => {
@@ -45,7 +23,7 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    const columns: ResourceColumn<Site>[] = [
+    const columns: ResourceColumn<Models.Site>[] = [
         {
             header: 'Name',
             accessor: 'name',

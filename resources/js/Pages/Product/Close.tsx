@@ -10,13 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Stack, Textarea } from '@mantine/core';
 import { XIcon } from 'lucide-react';
 
-interface Product {
-    id: string;
-    name: string;
-}
-
 interface CloseProps {
-    product: Product;
+    product: Models.Product;
 }
 
 export default function Close({ product }: CloseProps) {

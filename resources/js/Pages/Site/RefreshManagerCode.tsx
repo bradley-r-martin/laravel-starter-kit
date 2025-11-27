@@ -9,14 +9,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button, Stack, Text } from '@mantine/core';
 import { AlertCircleIcon, RefreshCcw } from 'lucide-react';
 
-interface Site {
-    id: string;
-    name: string;
-    manager_code: string | null;
-}
-
 interface Props {
-    site: Site;
+    site: Models.Site;
 }
 
 export default function RefreshManagerCode({ site }: Props) {

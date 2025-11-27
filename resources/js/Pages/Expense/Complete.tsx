@@ -9,13 +9,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button, Stack } from '@mantine/core';
 import { CheckCircleIcon } from 'lucide-react';
 
-interface Expense {
-    id: string;
-    invoice_no: string;
-}
-
 interface CompleteProps {
-    expense: Expense;
+    expense: Models.Expense;
 }
 
 export default function Complete({ expense }: CompleteProps) {

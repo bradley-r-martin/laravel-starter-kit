@@ -9,25 +9,8 @@ import { InertiaView } from '@/Types';
 import { ActionIcon, Badge, Button, Progress, Stack, Tooltip } from '@mantine/core';
 import { ArrowLeftIcon, RefreshCcw } from 'lucide-react';
 
-interface Site {
-    id: string;
-    name: string;
-    address: Domain.Address | null;
-    closed_at: string | null;
-    created_at: string;
-    manager_code: string;
-    __realised_revenue: number;
-    __deferred_revenue: number;
-    __route_name: string;
-    __shrinkage_value: number;
-    __shrinkage_percentage: number;
-    __stock_damaged_value: number;
-    __card_revenue: number;
-    __cash_revenue: number;
-}
-
 interface DetailProps {
-    site: Site;
+    site: Models.Site;
 }
 
 const Detail: InertiaView<DetailProps> = (props) => {

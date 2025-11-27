@@ -10,13 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Stack, TextInput } from '@mantine/core';
 import { PencilIcon } from 'lucide-react';
 
-interface Manufacturer {
-    id: string;
-    name: string;
-}
-
 interface UpdateProps {
-    manufacturer: Manufacturer;
+    manufacturer: Models.Manufacturer;
 }
 
 export default function Update({ manufacturer }: UpdateProps) {

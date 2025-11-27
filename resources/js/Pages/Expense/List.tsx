@@ -15,20 +15,8 @@ import {
     PlusIcon,
 } from 'lucide-react';
 
-interface Expense {
-    id: string;
-    invoice_no: string;
-    invoice_date: string | null;
-    completed_at: string | null;
-    __wholesaler_name: string | null;
-    __cost: number;
-    __rebate: number;
-    __royalty: number;
-    created_at: string;
-}
-
 interface ListProps {
-    expenses: Paginated<Expense>;
+    expenses: Paginated<Models.Expense>;
 }
 
 const List: InertiaView<ListProps> = (props) => {
@@ -45,7 +33,7 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'created_at', label: 'Created At', icon: CircleDotIcon },
     ];
 
-    const columns: ResourceColumn<Expense>[] = [
+    const columns: ResourceColumn<Models.Expense>[] = [
         {
             header: 'Invoice',
             accessor: 'invoice_no',

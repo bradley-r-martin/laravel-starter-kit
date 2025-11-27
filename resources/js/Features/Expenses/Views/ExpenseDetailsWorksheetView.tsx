@@ -3,14 +3,19 @@ import { Button } from '@mantine/core';
 
 import Navigate from '@/Components/Navigate';
 import Table from '@/Components/Table/Table';
-import { Expense } from '@/Pages/Expense/View';
 import { Grid2X2PlusIcon } from 'lucide-react';
 import { FunctionComponent } from 'react';
 import ExpenseItemRow from '../Parts/ExpenseDetailsWorksheetItemRowPart';
 import ExpenseTableHeaders from '../Parts/ExpenseDetailsWorksheetTableHeadersPart';
 
 const ExpenseDetailsWorksheet: FunctionComponent = () => {
-    const { expense } = usePage<{ expense: Expense }>().props;
+    const { expense } = usePage<{
+        expense: Models.Expense & {
+            pages?: any[] | null;
+            operator?: { id: string; name: string } | null;
+            expense_items?: (Models.ExpenseItem & { __product_name?: string | null })[];
+        };
+    }>().props;
     const isCompleted = !!expense.completed_at;
 
     return (

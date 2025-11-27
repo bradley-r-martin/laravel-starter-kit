@@ -11,13 +11,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, NumberInput, Select, Stack, TextInput } from '@mantine/core';
 import { BuildingIcon } from 'lucide-react';
 
-interface Route {
-    id: string;
-    name: string;
-}
-
 interface CreateProps {
-    routes: Route[];
+    routes: Models.Route[];
 }
 
 export default function Create({ routes }: CreateProps) {

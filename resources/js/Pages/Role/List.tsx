@@ -17,18 +17,8 @@ import {
     XIcon,
 } from 'lucide-react';
 
-interface Role {
-    id: string;
-    name: string;
-    description: string | null;
-    hidden: boolean;
-    closed_at: string | null;
-    users_count: number;
-    created_at: string;
-}
-
 interface ListProps {
-    roles: Paginated<Role>;
+    roles: Paginated<Models.Role & { users_count?: number }>;
 }
 
 const List: InertiaView<ListProps> = (props) => {
@@ -39,7 +29,7 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    const columns: ResourceColumn<Role>[] = [
+    const columns: ResourceColumn<Models.Role>[] = [
         {
             header: 'Name',
             accessor: 'name',

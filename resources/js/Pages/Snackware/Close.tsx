@@ -10,15 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button, Textarea } from '@mantine/core';
 import { AlertCircleIcon, PackageXIcon } from 'lucide-react';
 
-interface Snackware {
-    id: string;
-    name: string;
-    placements_count: number;
-    closed_at: string | null;
-}
-
 interface Props {
-    snackware: Snackware;
+    snackware: Models.Snackware & { placements_count?: number };
 }
 
 export default function Close({ snackware }: Props) {

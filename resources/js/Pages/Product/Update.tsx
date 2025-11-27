@@ -13,33 +13,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Group, NumberInput, Select, Stack, TextInput } from '@mantine/core';
 import { PencilIcon } from 'lucide-react';
 
-interface ProductType {
-    id: string;
-    name: string;
-    icon: string | null;
-}
-
-interface Manufacturer {
-    id: string;
-    name: string;
-}
-
-interface Product {
-    id: string;
-    name: string;
-    sku: string;
-    product_type_id: string;
-    manufacturer_id: string;
-    units: number;
-    cost: number;
-    price: number;
-    rebate: string;
-    royalty: string;
-    avatar: string | null;
-}
-
 interface UpdateProps {
-    product: Product;
+    product: Models.Product;
 }
 
 export default function Update({ product }: UpdateProps) {

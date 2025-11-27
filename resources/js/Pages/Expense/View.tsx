@@ -15,39 +15,12 @@ import ExpenseDetailsWorksheet from '@/Features/Expenses/Views/ExpenseDetailsWor
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
 
-export interface ExpenseItem {
-    id: string;
-    item: string | null;
-    quantity: number;
-    units: number;
-    cost: number;
-    rebate: number;
-    royalty: number;
-    price: number;
-
-    product_id: string | null;
-
-    __product_name: string | null;
-}
-
-export interface Expense {
-    id: string;
-    invoice_no: string;
-    invoice_date: string | null;
-    pages: UploadedFile[] | null;
-    completed_at: string | null;
-    created_at: string;
-    updated_at: string;
-    operator: { id: string; name: string } | null;
-    __wholesaler_name: string | null;
-    __cost: number;
-    __rebate: number;
-    __royalty: number;
-    expense_items: ExpenseItem[];
-}
-
 interface ViewProps {
-    expense: Expense;
+    expense: Models.Expense & {
+        pages?: UploadedFile[] | null;
+        operator?: { id: string; name: string } | null;
+        expense_items?: (Models.ExpenseItem & { __product_name?: string | null })[];
+    };
 }
 
 const View: InertiaView<ViewProps> = (props) => {

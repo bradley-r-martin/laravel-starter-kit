@@ -9,14 +9,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button, Stack } from '@mantine/core';
 import { AlertTriangleIcon, TrashIcon } from 'lucide-react';
 
-interface ExpenseItem {
-    id: string;
-    item: string | null;
-    expense_id: string;
-}
-
 interface DestroyProps {
-    expenseItem: ExpenseItem;
+    expenseItem: Models.ExpenseItem;
 }
 
 export default function Destroy({ expenseItem }: DestroyProps) {

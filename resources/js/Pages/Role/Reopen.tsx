@@ -10,15 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Textarea } from '@mantine/core';
 import { ShieldCheckIcon } from 'lucide-react';
 
-interface Role {
-    id: string;
-    name: string;
-    description: string;
-    closed_at: string | null;
-}
-
 interface Props {
-    role: Role;
+    role: Models.Role;
 }
 
 export default function Reopen({ role }: Props) {

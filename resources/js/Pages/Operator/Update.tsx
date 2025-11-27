@@ -12,16 +12,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Stack, TextInput } from '@mantine/core';
 import { PencilIcon } from 'lucide-react';
 
-interface Operator {
-    id: string;
-    name: string;
-    email: string | null;
-    phone: PhoneInputValue | null;
-    address: Domain.Address | null;
-}
-
 interface UpdateProps {
-    operator: Operator;
+    operator: Models.Operator;
 }
 
 export default function Update({ operator }: UpdateProps) {

@@ -13,16 +13,6 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Group, NumberInput, Select, Stack, TextInput } from '@mantine/core';
 import { PlusIcon } from 'lucide-react';
 
-interface ProductType {
-    id: string;
-    name: string;
-    icon: string | null;
-}
-
-interface Manufacturer {
-    id: string;
-    name: string;
-}
 
 export default function Create() {
     const modal = useModal();
@@ -78,7 +68,7 @@ export default function Create() {
                                         <Field name="product_type_id" type="select">
                                             <Data
                                                 parameter="product_types"
-                                                map={(i: ProductType) => ({
+                                                map={(i: Models.ProductType) => ({
                                                     value: i.id,
                                                     label: i.name,
                                                 })}
@@ -94,7 +84,7 @@ export default function Create() {
                                         <Field name="manufacturer_id" type="select">
                                             <Data
                                                 parameter="manufacturers"
-                                                map={(i: Manufacturer) => ({
+                                                map={(i: Models.Manufacturer) => ({
                                                     value: i.id,
                                                     label: i.name,
                                                 })}

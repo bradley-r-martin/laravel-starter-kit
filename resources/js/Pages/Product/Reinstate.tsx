@@ -10,13 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Stack, Textarea } from '@mantine/core';
 import { RotateCcwIcon } from 'lucide-react';
 
-interface Product {
-    id: string;
-    name: string;
-}
-
 interface ReinstateProps {
-    product: Product;
+    product: Models.Product;
 }
 
 export default function Reinstate({ product }: ReinstateProps) {

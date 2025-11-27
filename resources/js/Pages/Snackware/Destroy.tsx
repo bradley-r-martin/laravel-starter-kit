@@ -10,14 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button, Textarea } from '@mantine/core';
 import { AlertCircleIcon, AlertTriangleIcon, PackageXIcon } from 'lucide-react';
 
-interface Snackware {
-    id: string;
-    name: string;
-    closed_at: string | null;
-}
-
 interface Props {
-    snackware: Snackware;
+    snackware: Models.Snackware;
 }
 
 export default function Destroy({ snackware }: Props) {

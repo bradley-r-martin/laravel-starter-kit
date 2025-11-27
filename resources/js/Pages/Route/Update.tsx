@@ -10,15 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button, Stack, TextInput } from '@mantine/core';
 import { AlertCircleIcon, RouteIcon } from 'lucide-react';
 
-interface Route {
-    id: string;
-    name: string;
-    schedule: string | null;
-    closed_at: string | null;
-}
-
 interface Props {
-    route: Route;
+    route: Models.Route;
 }
 
 export default function Update({ route }: Props) {

@@ -10,13 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button, Textarea } from '@mantine/core';
 import { AlertTriangleIcon, TrashIcon } from 'lucide-react';
 
-interface Manufacturer {
-    id: string;
-    name: string;
-}
-
 interface Props {
-    manufacturer: Manufacturer;
+    manufacturer: Models.Manufacturer;
 }
 
 export default function Destroy({ manufacturer }: Props) {

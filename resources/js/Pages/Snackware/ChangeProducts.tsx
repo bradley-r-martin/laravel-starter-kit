@@ -15,13 +15,6 @@ import { Alert, Button, Stack } from '@mantine/core';
 import { AlertCircleIcon, PackageIcon } from 'lucide-react';
 import { useMemo } from 'react';
 
-interface Snackware {
-    id: string;
-    name: string;
-    closed_at: string | null;
-    products: string[];
-}
-
 interface AvailableProduct {
     value: string;
     label: string;
@@ -29,7 +22,7 @@ interface AvailableProduct {
 }
 
 interface Props {
-    snackware: Snackware;
+    snackware: Models.Snackware & { products?: string[] };
     availableProducts?: AvailableProduct[];
 }
 

@@ -9,15 +9,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button } from '@mantine/core';
 import { AlertCircleIcon, AlertTriangleIcon, ShieldOffIcon } from 'lucide-react';
 
-interface Role {
-    id: string;
-    name: string;
-    description: string | null;
-    closed_at: string | null;
-}
-
 interface Props {
-    role: Role;
+    role: Models.Role;
 }
 
 export default function Destroy({ role }: Props) {

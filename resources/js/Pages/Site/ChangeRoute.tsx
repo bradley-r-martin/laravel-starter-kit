@@ -10,21 +10,9 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Select, Stack } from '@mantine/core';
 import { RouteIcon } from 'lucide-react';
 
-interface Site {
-    id: string;
-    name: string;
-    route_id: string | null;
-    __route_name: string | null;
-}
-
-interface Route {
-    id: string;
-    name: string;
-}
-
 interface Props {
-    site: Site;
-    routes: Route[];
+    site: Models.Site;
+    routes: Models.Route[];
 }
 
 export default function ChangeRoute({ site, routes }: Props) {

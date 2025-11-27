@@ -11,17 +11,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button, Group, NumberInput, Select, Stack, TextInput } from '@mantine/core';
 import { AlertCircleIcon, PackageIcon } from 'lucide-react';
 
-interface Snackware {
-    id: string;
-    name: string;
-    type: string;
-    icon: string | null;
-    price: number;
-    closed_at: string | null;
-}
-
 interface Props {
-    snackware: Snackware;
+    snackware: Models.Snackware;
 }
 
 export default function Update({ snackware }: Props) {

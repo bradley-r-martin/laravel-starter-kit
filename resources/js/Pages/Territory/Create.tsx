@@ -11,20 +11,10 @@ import { Button, Select, Stack, TextInput } from '@mantine/core';
 import { MapPinPlusIcon } from 'lucide-react';
 import { useMemo } from 'react';
 
-interface Operator {
-    id: string;
-    name: string;
-}
-
-interface MerchantAccount {
-    id: string;
-    provider: string;
-    operator_id: string;
-}
 
 interface CreateProps {
-    operators: Operator[];
-    merchant_accounts: MerchantAccount[];
+    operators: Models.Operator[];
+    merchant_accounts: Models.MerchantAccount[];
 }
 
 export default function Create({ operators, merchant_accounts }: CreateProps) {

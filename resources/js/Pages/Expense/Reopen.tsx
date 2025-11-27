@@ -10,14 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Textarea } from '@mantine/core';
 import { CheckCircleIcon } from 'lucide-react';
 
-interface Expense {
-    id: string;
-    invoice_no: string;
-    completed_at: string | null;
-}
-
 interface ReopenProps {
-    expense: Expense;
+    expense: Models.Expense;
 }
 
 export default function Reopen({ expense }: ReopenProps) {

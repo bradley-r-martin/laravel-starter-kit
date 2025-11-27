@@ -10,13 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Textarea } from '@mantine/core';
 import { XIcon } from 'lucide-react';
 
-interface Territory {
-    id: string;
-    name: string;
-}
-
 interface Props {
-    territory: Territory;
+    territory: Models.Territory;
 }
 
 export default function Close({ territory }: Props) {

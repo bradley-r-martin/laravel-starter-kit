@@ -11,16 +11,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button, Stack, TextInput } from '@mantine/core';
 import { AlertCircleIcon, BuildingIcon } from 'lucide-react';
 
-interface Site {
-    id: string;
-    name: string;
-    address: Domain.Address | null;
-    opening_hours: any[] | null;
-    closed_at: string | null;
-}
-
 interface Props {
-    site: Site;
+    site: Models.Site;
 }
 
 export default function Update({ site }: Props) {

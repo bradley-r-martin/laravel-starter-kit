@@ -18,16 +18,8 @@ import {
     XIcon,
 } from 'lucide-react';
 
-interface Manufacturer {
-    id: string;
-    name: string;
-    closed_at: string | null;
-    created_at: string;
-    products_count: number;
-}
-
 interface ListProps {
-    manufacturers: Paginated<Manufacturer>;
+    manufacturers: Paginated<Models.Manufacturer & { products_count?: number }>;
 }
 
 const List: InertiaView<ListProps> = (props) => {
@@ -40,7 +32,7 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'status', label: 'Status', icon: CircleDotIcon },
     ];
 
-    const columns: ResourceColumn<Manufacturer>[] = [
+    const columns: ResourceColumn<Models.Manufacturer>[] = [
         {
             header: 'Name',
             accessor: 'name',

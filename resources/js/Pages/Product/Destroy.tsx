@@ -10,13 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Stack, Textarea } from '@mantine/core';
 import { TrashIcon } from 'lucide-react';
 
-interface Product {
-    id: string;
-    name: string;
-}
-
 interface DestroyProps {
-    product: Product;
+    product: Models.Product;
 }
 
 export default function Destroy({ product }: DestroyProps) {

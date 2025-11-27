@@ -20,19 +20,8 @@ import {
     XIcon,
 } from 'lucide-react';
 
-interface Operator {
-    id: string;
-    name: string;
-    email: string | null;
-    territories_count: number;
-    last_transaction_at: string | null;
-    closed_at: string | null;
-    suspended_at: string | null;
-    created_at: string;
-}
-
 interface ListProps {
-    operators: Paginated<Operator>;
+    operators: Paginated<Models.Operator & { territories_count?: number }>;
 }
 
 const List: InertiaView<ListProps> = ({ operators }) => {
@@ -43,7 +32,7 @@ const List: InertiaView<ListProps> = ({ operators }) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    const columns: ResourceColumn<Operator>[] = [
+    const columns: ResourceColumn<Models.Operator>[] = [
         {
             header: 'Name',
             accessor: 'name',

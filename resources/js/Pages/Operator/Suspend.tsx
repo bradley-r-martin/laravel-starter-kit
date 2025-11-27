@@ -10,14 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Textarea } from '@mantine/core';
 import { BanIcon } from 'lucide-react';
 
-interface Operator {
-    id: string;
-    name: string;
-    suspended_at: string | null;
-}
-
 interface Props {
-    operator: Operator;
+    operator: Models.Operator;
 }
 
 export default function Suspend({ operator }: Props) {

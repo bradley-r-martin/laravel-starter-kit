@@ -17,16 +17,8 @@ import {
     XIcon,
 } from 'lucide-react';
 
-interface ProductType {
-    id: string;
-    name: string;
-    closed_at: string | null;
-    created_at: string;
-    products_count: number;
-}
-
 interface ListProps {
-    product_types: Paginated<ProductType>;
+    product_types: Paginated<Models.ProductType & { products_count?: number }>;
 }
 
 const List: InertiaView<ListProps> = (props) => {
@@ -38,7 +30,7 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    const columns: ResourceColumn<ProductType>[] = [
+    const columns: ResourceColumn<Models.ProductType>[] = [
         {
             header: 'Name',
             accessor: 'name',

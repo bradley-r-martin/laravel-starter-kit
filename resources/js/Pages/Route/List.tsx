@@ -8,26 +8,8 @@ import { InertiaView, Paginated } from '@/Types';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import { CalendarIcon, PencilIcon, PlusIcon } from 'lucide-react';
 
-interface Territory {
-    id: string;
-    name: string;
-}
-
-interface Operator {
-    id: string;
-    name: string;
-}
-
-interface Route {
-    id: string;
-    name: string;
-    closed_at: string | null;
-    created_at: string;
-    __sites_count: number;
-}
-
 interface ListProps {
-    routes: Paginated<Route>;
+    routes: Paginated<Models.Route>;
 }
 
 const List: InertiaView<ListProps> = (props) => {
@@ -37,7 +19,7 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    const columns: ResourceColumn<Route>[] = [
+    const columns: ResourceColumn<Models.Route>[] = [
         {
             header: 'Name',
             accessor: 'name',

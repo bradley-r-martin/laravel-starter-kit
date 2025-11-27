@@ -10,16 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button, Textarea } from '@mantine/core';
 import { AlertCircleIcon, ShieldXIcon } from 'lucide-react';
 
-interface Role {
-    id: string;
-    name: string;
-    description: string | null;
-    users_count: number;
-    closed_at: string | null;
-}
-
 interface Props {
-    role: Role;
+    role: Models.Role & { users_count?: number };
 }
 
 export default function Close({ role }: Props) {

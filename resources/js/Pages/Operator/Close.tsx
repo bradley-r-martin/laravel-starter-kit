@@ -10,13 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Textarea } from '@mantine/core';
 import { XIcon } from 'lucide-react';
 
-interface Operator {
-    id: string;
-    name: string;
-}
-
 interface Props {
-    operator: Operator;
+    operator: Models.Operator;
 }
 
 export default function Close({ operator }: Props) {

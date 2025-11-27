@@ -12,17 +12,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button, Checkbox, Textarea, TextInput } from '@mantine/core';
 import { AlertCircleIcon, ShieldIcon } from 'lucide-react';
 
-interface Role {
-    id: string;
-    name: string;
-    description: string | null;
-    hidden: boolean;
-    closed_at: string | null;
-    policies: string[];
-}
-
 interface Props {
-    role: Role;
+    role: Models.Role & { policies?: string[] };
 }
 
 export default function Update({ role }: Props) {

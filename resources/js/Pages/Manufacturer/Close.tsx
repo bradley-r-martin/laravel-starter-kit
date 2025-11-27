@@ -10,13 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Textarea } from '@mantine/core';
 import { XIcon } from 'lucide-react';
 
-interface Manufacturer {
-    id: string;
-    name: string;
-}
-
 interface Props {
-    manufacturer: Manufacturer;
+    manufacturer: Models.Manufacturer;
 }
 
 export default function Close({ manufacturer }: Props) {
