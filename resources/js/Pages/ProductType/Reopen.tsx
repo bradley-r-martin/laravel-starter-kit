@@ -75,7 +75,7 @@ export default function Reopen({ product_type }: Props) {
                                     Cancel
                                 </Button>
                                 <Button type="submit" loading={processing} color="green">
-                                    Reopen product type
+                                    Reopen
                                 </Button>
                             </Actions>
                         </Form>

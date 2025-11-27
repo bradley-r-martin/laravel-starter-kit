@@ -58,7 +58,7 @@ export default function Create() {
                                     Cancel
                                 </Button>
                                 <Button type="submit" loading={processing}>
-                                    {processing ? 'Creating...' : 'Create Product Type'}
+                                    Create
                                 </Button>
                             </Actions>
                         </Form>

@@ -8,6 +8,7 @@ import { InertiaView, Paginated } from '@/Types';
 import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import {
     CalendarIcon,
+    Package,
     PencilIcon,
     PlusIcon,
     RotateCcwIcon,
@@ -135,7 +136,7 @@ const List: InertiaView<ListProps> = (props) => {
     const actionsColumn: ResourceColumn<Snackware> = {
         header: 'Actions',
         accessor: 'actions',
-        width: '120px',
+        width: '140px',
         render: (snackware) => (
             <Group gap="xs" justify="end">
                 {!snackware.closed_at && (
@@ -150,6 +151,23 @@ const List: InertiaView<ListProps> = (props) => {
                                     radius="xl"
                                 >
                                     <PencilIcon className="size-4" />
+                                </ActionIcon>
+                            </Navigate>
+                        </Tooltip>
+
+                        <Tooltip label="Change Products" position="left">
+                            <Navigate
+                                type="modal"
+                                href={route('snackwares.change-products', snackware.id)}
+                            >
+                                <ActionIcon
+                                    data-testid={`snackware-row-${snackware.id}-change-products`}
+                                    variant="subtle"
+                                    color="violet"
+                                    size="md"
+                                    radius="xl"
+                                >
+                                    <Package className="size-4" />
                                 </ActionIcon>
                             </Navigate>
                         </Tooltip>

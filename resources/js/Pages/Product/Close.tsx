@@ -76,7 +76,7 @@ export default function Close({ product }: CloseProps) {
                                     Cancel
                                 </Button>
                                 <Button type="submit" loading={processing} color="red">
-                                    {processing ? 'Closing...' : 'Close Product'}
+                                    Close
                                 </Button>
                             </Actions>
                         </Form>

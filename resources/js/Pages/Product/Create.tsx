@@ -1,16 +1,17 @@
 import { Actions } from '@/Components/Actions';
+import Data from '@/Components/Data/Data';
 import Field from '@/Components/Field';
 import Form from '@/Components/Form';
 import FormErrorSound from '@/Components/FormErrorSound';
 import AvatarInput from '@/Components/Inputs/AvatarInput';
+import CurrencyInput from '@/Components/Inputs/CurrencyInput/CurrencyInput';
 import { Modal } from '@/Components/Modal';
 import { ModalContent } from '@/Components/ModalContent';
 import ModalHeader from '@/Components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Button, NumberInput, Select, Stack, Stepper, TextInput } from '@mantine/core';
+import { Button, Group, NumberInput, Select, Stack, TextInput } from '@mantine/core';
 import { PlusIcon } from 'lucide-react';
-import { useState } from 'react';
 
 interface ProductType {
     id: string;
@@ -23,12 +24,7 @@ interface Manufacturer {
     name: string;
 }
 
-interface CreateProps {
-    product_types: ProductType[];
-    manufacturers: Manufacturer[];
-}
-
-export default function Create({ product_types, manufacturers }: CreateProps) {
+export default function Create() {
     const modal = useModal();
     const form = useForm({
         product_type_id: '',
@@ -38,20 +34,16 @@ export default function Create({ product_types, manufacturers }: CreateProps) {
         units: '',
         cost: 0,
         price: 0,
-        rebate: '',
-        royalty: '',
+        rebate: 0,
+        royalty: 0,
         avatar: null,
     });
     const { processing } = form;
 
-    const [active, setActive] = useState(0);
-    const nextStep = () => setActive((current) => (current < 2 ? current + 1 : current));
-    const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
-
     return (
         <>
             <Head title="Create Product" />
-            <Modal size="lg">
+            <Modal>
                 <Modal.Body>
                     <ModalHeader
                         hero
@@ -68,139 +60,139 @@ export default function Create({ product_types, manufacturers }: CreateProps) {
                             onSuccess={() => modal?.close()}
                         >
                             <ModalContent>
-                                <Stepper
-                                    size="xs"
-                                    color="zinc"
-                                    active={active}
-                                    onStepClick={setActive}
-                                >
-                                    <Stepper.Step label="Details">
-                                        <Stack>
-                                            <Field name="avatar" type="file">
-                                                <AvatarInput label="Image" name="avatar" />
-                                            </Field>
-                                            <Field name="name">
-                                                <TextInput
-                                                    label="Name"
-                                                    name="name"
-                                                    placeholder="Enter product name"
-                                                />
-                                            </Field>
-                                            <Field name="sku">
-                                                <TextInput
-                                                    label="SKU"
-                                                    name="sku"
-                                                    placeholder="Enter product SKU"
-                                                />
-                                            </Field>
+                                <Stack>
+                                    <Field name="avatar" type="file">
+                                        <AvatarInput label="Image" name="avatar" />
+                                    </Field>
+                                    <Group wrap="nowrap">
+                                        <Field name="name">
+                                            <TextInput label="Name" name="name" className="w-2/3" />
+                                        </Field>
 
-                                            <Field name="product_type_id" type="select">
+                                        <Field name="sku">
+                                            <TextInput label="SKU" name="sku" className="w-1/3" />
+                                        </Field>
+                                    </Group>
+
+                                    <Group grow>
+                                        <Field name="product_type_id" type="select">
+                                            <Data
+                                                parameter="product_types"
+                                                map={(i: ProductType) => ({
+                                                    value: i.id,
+                                                    label: i.name,
+                                                })}
+                                            >
                                                 <Select
                                                     label="Product Type"
                                                     name="product_type_id"
-                                                    placeholder="Select product type"
-                                                    data={product_types.map((type) => ({
-                                                        value: type.id,
-                                                        label: type.name,
-                                                    }))}
                                                     searchable
                                                 />
-                                            </Field>
+                                            </Data>
+                                        </Field>
 
-                                            <Field name="manufacturer_id" type="select">
+                                        <Field name="manufacturer_id" type="select">
+                                            <Data
+                                                parameter="manufacturers"
+                                                map={(i: Manufacturer) => ({
+                                                    value: i.id,
+                                                    label: i.name,
+                                                })}
+                                            >
                                                 <Select
                                                     label="Manufacturer"
                                                     name="manufacturer_id"
-                                                    placeholder="Select manufacturer"
-                                                    data={manufacturers.map((manufacturer) => ({
-                                                        value: manufacturer.id,
-                                                        label: manufacturer.name,
-                                                    }))}
                                                     searchable
                                                 />
-                                            </Field>
-                                        </Stack>
-                                    </Stepper.Step>
-                                    <Stepper.Step label="Pricing">
-                                        <Stack>
-                                            <Field name="units" type="number">
-                                                <NumberInput
-                                                    label="Units"
-                                                    name="units"
-                                                    placeholder="Enter number of units (default: 1)"
-                                                    min={1}
-                                                />
-                                            </Field>
+                                            </Data>
+                                        </Field>
+                                    </Group>
 
-                                            <Field name="cost" type="number">
+                                    <Group wrap="nowrap">
+                                        <Field name="units" type="number">
+                                            <NumberInput
+                                                label="Units"
+                                                name="units"
+                                                min={1}
+                                                className="w-1/5"
+                                            />
+                                        </Field>
+                                        <Field name="cost" type="number">
+                                            <CurrencyInput>
                                                 <NumberInput
-                                                    label="Cost (cents)"
+                                                    label="Cost"
                                                     name="cost"
-                                                    placeholder="Enter cost in cents"
                                                     min={0}
+                                                    prefix="$"
+                                                    decimalScale={2}
+                                                    decimalSeparator="."
+                                                    thousandSeparator=","
+                                                    hideControls
+                                                    className="w-2/5"
                                                 />
-                                            </Field>
+                                            </CurrencyInput>
+                                        </Field>
 
-                                            <Field name="price" type="number">
+                                        <Field name="price" type="number">
+                                            <CurrencyInput>
                                                 <NumberInput
-                                                    label="Price (cents)"
+                                                    label="Price"
                                                     name="price"
-                                                    placeholder="Enter price in cents"
                                                     min={0}
+                                                    prefix="$"
+                                                    decimalScale={2}
+                                                    decimalSeparator="."
+                                                    thousandSeparator=","
+                                                    hideControls
+                                                    className="w-2/5"
                                                 />
-                                            </Field>
+                                            </CurrencyInput>
+                                        </Field>
+                                    </Group>
 
-                                            <Field name="rebate" type="number">
-                                                <NumberInput
-                                                    label="Rebate"
-                                                    name="rebate"
-                                                    placeholder="Enter rebate (default: 0.00)"
-                                                />
-                                            </Field>
+                                    <Group grow>
+                                        <Field name="rebate" type="number">
+                                            <NumberInput
+                                                label="Rebate"
+                                                name="rebate"
+                                                suffix="%"
+                                                decimalScale={2}
+                                                decimalSeparator="."
+                                                min={0}
+                                                max={100}
+                                                hideControls
+                                            />
+                                        </Field>
 
-                                            <Field name="royalty" type="number">
-                                                <NumberInput
-                                                    label="Royalty"
-                                                    name="royalty"
-                                                    placeholder="Enter royalty (default: 0.00)"
-                                                />
-                                            </Field>
-                                        </Stack>
-                                    </Stepper.Step>
-                                </Stepper>
+                                        <Field name="royalty" type="number">
+                                            <NumberInput
+                                                label="Royalty"
+                                                name="royalty"
+                                                suffix="%"
+                                                decimalScale={2}
+                                                decimalSeparator="."
+                                                min={0}
+                                                max={100}
+                                                hideControls
+                                            />
+                                        </Field>
+                                    </Group>
+                                </Stack>
                             </ModalContent>
 
                             <Actions>
-                                {active === 0 && (
-                                    <Button
-                                        onClick={() => modal?.close()}
-                                        type="button"
-                                        variant="subtle"
-                                        color="zinc"
-                                    >
-                                        Cancel
-                                    </Button>
-                                )}
-                                {active === 1 && (
-                                    <Button
-                                        type="button"
-                                        variant="subtle"
-                                        color="zinc"
-                                        onClick={prevStep}
-                                    >
-                                        Back
-                                    </Button>
-                                )}
-                                {active === 0 && (
-                                    <Button type="button" onClick={nextStep}>
-                                        Next
-                                    </Button>
-                                )}
-                                {active === 1 && (
-                                    <Button type="submit" loading={processing}>
-                                        Create
-                                    </Button>
-                                )}
+                                <Button
+                                    onClick={() => modal?.close()}
+                                    type="button"
+                                    variant="subtle"
+                                    color="zinc"
+                                >
+                                    Cancel
+                                </Button>
+
+                                <Button type="submit" loading={processing}>
+                                    Create
+                                </Button>
                             </Actions>
                         </Form>
                     </FormErrorSound>

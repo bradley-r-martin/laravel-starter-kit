@@ -74,7 +74,7 @@ export default function Update({ product_type }: UpdateProps) {
                                     Cancel
                                 </Button>
                                 <Button type="submit" loading={processing}>
-                                    {processing ? 'Updating...' : 'Update Product Type'}
+                                    Update
                                 </Button>
                             </Actions>
                         </Form>

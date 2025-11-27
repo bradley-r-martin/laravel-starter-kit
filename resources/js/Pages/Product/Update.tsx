@@ -1,14 +1,16 @@
 import { Actions } from '@/Components/Actions';
+import Data from '@/Components/Data/Data';
 import Field from '@/Components/Field';
 import Form from '@/Components/Form';
 import FormErrorSound from '@/Components/FormErrorSound';
 import AvatarInput from '@/Components/Inputs/AvatarInput';
+import CurrencyInput from '@/Components/Inputs/CurrencyInput/CurrencyInput';
 import { Modal } from '@/Components/Modal';
 import { ModalContent } from '@/Components/ModalContent';
 import ModalHeader from '@/Components/ModalHeader';
 import { Head, useForm } from '@inertiajs/react';
 import { useModal } from '@inertiaui/modal-react';
-import { Button, NumberInput, Select, Stack, TextInput } from '@mantine/core';
+import { Button, Group, NumberInput, Select, Stack, TextInput } from '@mantine/core';
 import { PencilIcon } from 'lucide-react';
 
 interface ProductType {
@@ -38,11 +40,9 @@ interface Product {
 
 interface UpdateProps {
     product: Product;
-    product_types: ProductType[];
-    manufacturers: Manufacturer[];
 }
 
-export default function Update({ product, product_types, manufacturers }: UpdateProps) {
+export default function Update({ product }: UpdateProps) {
     const modal = useModal();
     const form = useForm({
         product_type_id: product.product_type_id,
@@ -89,90 +89,119 @@ export default function Update({ product, product_types, manufacturers }: Update
                                     <Field name="avatar" type="file">
                                         <AvatarInput label="Image" name="avatar" />
                                     </Field>
-                                    <Field name="name">
-                                        <TextInput
-                                            label="Name"
-                                            name="name"
-                                            placeholder="Enter product name"
-                                        />
-                                    </Field>
+                                    <Group wrap="nowrap">
+                                        <Field name="name">
+                                            <TextInput label="Name" name="name" className="w-2/3" />
+                                        </Field>
 
-                                    <Field name="sku">
-                                        <TextInput
-                                            label="SKU"
-                                            name="sku"
-                                            placeholder="Enter product SKU"
-                                        />
-                                    </Field>
+                                        <Field name="sku">
+                                            <TextInput label="SKU" name="sku" className="w-1/3" />
+                                        </Field>
+                                    </Group>
 
-                                    <Field name="product_type_id" type="select">
-                                        <Select
-                                            label="Product Type"
-                                            name="product_type_id"
-                                            placeholder="Select product type"
-                                            data={product_types.map((type) => ({
-                                                value: type.id,
-                                                label: type.name,
-                                            }))}
-                                            searchable
-                                        />
-                                    </Field>
+                                    <Group grow>
+                                        <Field name="product_type_id" type="select">
+                                            <Data
+                                                parameter="product_types"
+                                                map={(i: ProductType) => ({
+                                                    value: i.id,
+                                                    label: i.name,
+                                                })}
+                                            >
+                                                <Select
+                                                    label="Product Type"
+                                                    name="product_type_id"
+                                                    searchable
+                                                />
+                                            </Data>
+                                        </Field>
 
-                                    <Field name="manufacturer_id" type="select">
-                                        <Select
-                                            label="Manufacturer"
-                                            name="manufacturer_id"
-                                            placeholder="Select manufacturer"
-                                            data={manufacturers.map((manufacturer) => ({
-                                                value: manufacturer.id,
-                                                label: manufacturer.name,
-                                            }))}
-                                            searchable
-                                        />
-                                    </Field>
+                                        <Field name="manufacturer_id" type="select">
+                                            <Data
+                                                parameter="manufacturers"
+                                                map={(i: Manufacturer) => ({
+                                                    value: i.id,
+                                                    label: i.name,
+                                                })}
+                                            >
+                                                <Select
+                                                    label="Manufacturer"
+                                                    name="manufacturer_id"
+                                                    searchable
+                                                />
+                                            </Data>
+                                        </Field>
+                                    </Group>
 
-                                    <Field name="units" type="number">
-                                        <NumberInput
-                                            label="Units"
-                                            name="units"
-                                            placeholder="Enter number of units"
-                                            min={1}
-                                        />
-                                    </Field>
+                                    <Group wrap="nowrap">
+                                        <Field name="units" type="number">
+                                            <NumberInput
+                                                label="Units"
+                                                name="units"
+                                                min={1}
+                                                className="w-1/5"
+                                            />
+                                        </Field>
+                                        <Field name="cost" type="number">
+                                            <CurrencyInput>
+                                                <NumberInput
+                                                    label="Cost"
+                                                    name="cost"
+                                                    min={0}
+                                                    prefix="$"
+                                                    decimalScale={2}
+                                                    decimalSeparator="."
+                                                    thousandSeparator=","
+                                                    hideControls
+                                                    className="w-2/5"
+                                                />
+                                            </CurrencyInput>
+                                        </Field>
 
-                                    <Field name="cost" type="number">
-                                        <NumberInput
-                                            label="Cost (cents)"
-                                            name="cost"
-                                            placeholder="Enter cost in cents"
-                                            min={0}
-                                        />
-                                    </Field>
+                                        <Field name="price" type="number">
+                                            <CurrencyInput>
+                                                <NumberInput
+                                                    label="Price"
+                                                    name="price"
+                                                    min={0}
+                                                    prefix="$"
+                                                    decimalScale={2}
+                                                    decimalSeparator="."
+                                                    thousandSeparator=","
+                                                    hideControls
+                                                    className="w-2/5"
+                                                />
+                                            </CurrencyInput>
+                                        </Field>
+                                    </Group>
 
-                                    <Field name="price" type="number">
-                                        <NumberInput
-                                            label="Price (cents)"
-                                            name="price"
-                                            placeholder="Enter price in cents"
-                                            min={0}
-                                        />
-                                    </Field>
+                                    <Group grow>
+                                        <Field name="rebate" type="number">
+                                            <NumberInput
+                                                label="Rebate"
+                                                name="rebate"
+                                                suffix="%"
+                                                decimalScale={2}
+                                                decimalSeparator="."
+                                                min={0}
+                                                max={100}
+                                                hideControls
+                                            />
+                                        </Field>
 
-                                    <Field name="rebate" type="number">
-                                        <TextInput
-                                            label="Rebate"
-                                            name="rebate"
-                                            placeholder="Enter rebate (e.g. 0.05)"
-                                        />
-                                    </Field>
-
-                                    <Field name="royalty" type="number">
-                                        <TextInput
-                                            label="Royalty"
-                                            name="royalty"
-                                            placeholder="Enter royalty (e.g. 0.10)"
-                                        />
-                                    </Field>
+                                        <Field name="royalty" type="number">
+                                            <NumberInput
+                                                label="Royalty"
+                                                name="royalty"
+                                                suffix="%"
+                                                decimalScale={2}
+                                                decimalSeparator="."
+                                                min={0}
+                                                max={100}
+                                                hideControls
+                                            />
+                                        </Field>
+                                    </Group>
                                 </Stack>
                             </ModalContent>
 
@@ -186,7 +215,7 @@ export default function Update({ product, product_types, manufacturers }: Update
                                     Cancel
                                 </Button>
                                 <Button type="submit" loading={processing}>
-                                    {processing ? 'Updating...' : 'Update Product'}
+                                    Update
                                 </Button>
                             </Actions>
                         </Form>

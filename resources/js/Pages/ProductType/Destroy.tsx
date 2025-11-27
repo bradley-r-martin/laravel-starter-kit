@@ -83,7 +83,7 @@ export default function Destroy({ product_type }: Props) {
                                     Cancel
                                 </Button>
                                 <Button type="submit" loading={processing} color="red">
-                                    Permanently destroy
+                                    Destroy
                                 </Button>
                             </Actions>
                         </Form>

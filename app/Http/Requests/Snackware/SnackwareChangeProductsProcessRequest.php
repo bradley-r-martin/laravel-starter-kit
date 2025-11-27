@@ -8,7 +8,7 @@ use App\Actions\SnackwareActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
-final class SnackwareUpdateProcessRequest extends FormRequest
+final class SnackwareChangeProductsProcessRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,25 +26,22 @@ final class SnackwareUpdateProcessRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|required|string|max:255',
-            'type' => 'sometimes|string|max:255',
-            'icon' => 'nullable|string|max:255',
-            'price' => 'sometimes|integer|min:0',
+            'products' => 'required|array',
+            'products.*' => 'string',
         ];
     }
 
     public function respond(): Response
     {
-
-        /** @var array{name?: string, type?: string, icon?: string|null, price?: int} $data */
+        /** @var array{products: array<int, string>} $data */
         $data = $this->validated();
 
-        new SnackwareActions((string) $this->route('snackware'))->update($data);
+        new SnackwareActions((string) $this->route('snackware'))->changeProducts($data);
 
         return redirect()
             ->route('snackwares.index')
             ->with('toast', [
-                'message' => 'Snackware updated successfully',
+                'message' => 'Products changed successfully',
                 'type' => 'success',
             ]);
     }

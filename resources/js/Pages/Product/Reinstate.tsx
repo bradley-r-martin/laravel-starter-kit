@@ -76,7 +76,7 @@ export default function Reinstate({ product }: ReinstateProps) {
                                     Cancel
                                 </Button>
                                 <Button type="submit" loading={processing} color="green">
-                                    {processing ? 'Reinstating...' : 'Reinstate Product'}
+                                    Reinstate
                                 </Button>
                             </Actions>
                         </Form>

@@ -13,7 +13,7 @@ export interface TransferItem {
 
 export interface TransferInputProps {
     error?: string;
-    label?: string;
+    label?: string | React.ReactNode;
     items?: any[];
     value?: string[];
     onChange?: (value: string[]) => void;
@@ -84,7 +84,17 @@ const TransferInput: FunctionComponent<TransferInputProps> = (props) => {
     };
 
     return (
-        <Input.Wrapper label={label} error={restProps.error} className="h-full flex-1">
+        <Input.Wrapper
+            label={label}
+            error={restProps.error}
+            className="h-full flex-1"
+            styles={{
+                label: {
+                    display: 'flex',
+                    width: '100%',
+                },
+            }}
+        >
             <div
                 ref={mainDivRef}
                 tabIndex={0}

@@ -76,7 +76,7 @@ export default function Destroy({ product }: DestroyProps) {
                                     Cancel
                                 </Button>
                                 <Button type="submit" loading={processing} color="red">
-                                    {processing ? 'Destroying...' : 'Destroy Product'}
+                                    Destroy
                                 </Button>
                             </Actions>
                         </Form>

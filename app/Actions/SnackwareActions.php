@@ -34,20 +34,6 @@ final class SnackwareActions
      */
     public function update(array $data): Snackware
     {
-
-        // Handle product changes
-        if (array_key_exists('products', $data)) {
-            $this->snackware->products()->sync($data['products']);
-
-            // Derived data column updates
-            $data['__product_count'] = count($data['products']);
-            $data['__wholesale_from'] = Product::whereIn('id', $data['products'])->min('__cost_per_unit');
-            $data['__wholesale_to'] = Product::whereIn('id', $data['products'])->max('__cost_per_unit');
-
-            // Remove products from data
-            unset($data['products']);
-        }
-
         $this->snackware->update($data);
 
         return $this->snackware;
@@ -66,6 +52,25 @@ final class SnackwareActions
     {
         $this->snackware->update([
             'closed_at' => null,
+        ]);
+
+        return $this->snackware;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function changeProducts(array $data): Snackware
+    {
+        $products = $data['products'] ?? [];
+
+        $this->snackware->products()->sync($products);
+
+        // Derived data column updates
+        $this->snackware->update([
+            '__product_count' => count($products),
+            '__wholesale_from' => Product::whereIn('id', $products)->min('__cost_per_unit'),
+            '__wholesale_to' => Product::whereIn('id', $products)->max('__cost_per_unit'),
         ]);
 
         return $this->snackware;

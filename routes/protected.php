@@ -66,6 +66,7 @@ use App\Http\Controllers\Site\SiteListController;
 use App\Http\Controllers\Site\SiteRefreshManagerCodeController;
 use App\Http\Controllers\Site\SiteReopenController;
 use App\Http\Controllers\Site\SiteUpdateController;
+use App\Http\Controllers\Snackware\SnackwareChangeProductsController;
 use App\Http\Controllers\Snackware\SnackwareCloseController;
 use App\Http\Controllers\Snackware\SnackwareCreateController;
 use App\Http\Controllers\Snackware\SnackwareDestroyController;
@@ -159,6 +160,8 @@ Route::middleware('territory')->group(function () {
         Route::post('/create', [SnackwareCreateController::class, 'process'])->name('store');
         Route::get('/{snackware}/update', [SnackwareUpdateController::class, 'view'])->name('update');
         Route::put('/{snackware}/update', [SnackwareUpdateController::class, 'process'])->name('update');
+        Route::get('/{snackware}/change-products', [SnackwareChangeProductsController::class, 'view'])->name('change-products');
+        Route::post('/{snackware}/change-products', [SnackwareChangeProductsController::class, 'process'])->name('change-products');
         Route::get('/{snackware}/close', [SnackwareCloseController::class, 'view'])->name('close');
         Route::post('/{snackware}/close', [SnackwareCloseController::class, 'process'])->name('close');
         Route::get('/{snackware}/reopen', [SnackwareReopenController::class, 'view'])->name('reopen');

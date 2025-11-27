@@ -7,17 +7,18 @@ interface NavatarProps {
     src?: string | null;
     icon?: ReactNode;
     color?: string;
+    size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 
 const Navatar: FunctionComponent<NavatarProps> = (props) => {
-    const { name, src, icon, color = 'initials', subtitle } = props;
+    const { name, src, icon, color = 'initials', subtitle, size = 'sm' } = props;
     return (
-        <Group>
+        <Group wrap="nowrap">
             <Avatar color={color} radius="sm" size="sm" name={name || ''} src={src}>
                 {icon}
             </Avatar>
-            <Stack gap={0} className="select-none">
-                <Text fw={500} size="sm">
+            <Stack gap={0} className="flex-1 truncate select-none">
+                <Text fw={500} size={size}>
                     {name || ''}
                 </Text>
                 {subtitle && (

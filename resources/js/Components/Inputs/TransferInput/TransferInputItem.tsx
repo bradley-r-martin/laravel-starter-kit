@@ -41,6 +41,29 @@ const TransferInputItem: FunctionComponent<TransferInputItemProps> = ({
                 color="zinc"
                 justify="flex-start"
                 size="xs"
+                radius="sm"
+                styles={{
+                    root: {
+                        maxHeight: 'auto',
+                        height: 'auto',
+                        display: 'flex',
+                        overflow: 'hidden',
+                        flex: 1,
+                        padding: 3,
+                    },
+                    inner: {
+                        maxWidth: '100%',
+                        width: '100%',
+                        overflow: 'hidden',
+                        flex: 1,
+                    },
+                    label: {
+                        maxWidth: '100%',
+                        width: '100%',
+                        overflow: 'hidden',
+                        flex: 1,
+                    },
+                }}
                 classNames={{
                     root: 'hover:!bg-blue-500/10',
                 }}
