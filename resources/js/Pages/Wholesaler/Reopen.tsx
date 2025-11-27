@@ -10,13 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Textarea } from '@mantine/core';
 import { RotateCcwIcon } from 'lucide-react';
 
-interface Wholesaler {
-    id: string;
-    name: string;
-}
-
 interface Props {
-    wholesaler: Wholesaler;
+    wholesaler: Models.Wholesaler;
 }
 
 export default function Reopen({ wholesaler }: Props) {

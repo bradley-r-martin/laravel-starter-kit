@@ -10,16 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Checkbox, Textarea } from '@mantine/core';
 import { UserPlusIcon } from 'lucide-react';
 
-interface User {
-    id: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    suspended_at: string | null;
-}
-
 interface Props {
-    user: User;
+    user: Models.User;
 }
 
 export default function Unsuspend({ user }: Props) {

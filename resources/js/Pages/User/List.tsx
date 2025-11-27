@@ -23,24 +23,8 @@ import {
     XIcon,
 } from 'lucide-react';
 
-interface User {
-    id: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    avatar: UploadedFile | null;
-
-    closed_at: string | null;
-    suspended_at: string | null;
-    created_at: string;
-    __role_name: string | null;
-    __operator_name: string | null;
-    __last_login_at: string | null;
-    __last_active_at: string | null;
-}
-
 interface ListProps {
-    users: Paginated<User>;
+    users: Paginated<Models.User>;
 }
 
 const List: InertiaView<ListProps> = (props) => {
@@ -55,7 +39,7 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    const columns: ResourceColumn<User>[] = [
+    const columns: ResourceColumn<Models.User>[] = [
         {
             header: 'Name',
             accessor: 'name',

@@ -11,22 +11,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Group, Stack, TextInput } from '@mantine/core';
 import { UserCogIcon } from 'lucide-react';
 
-interface User {
-    id: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    avatar: {
-        path: string;
-        disk: string;
-        mime_type: string;
-        size: number;
-        filename: string;
-    } | null;
-}
-
 interface UpdateProps {
-    user: User;
+    user: Models.User;
 }
 
 export default function Update({ user }: UpdateProps) {

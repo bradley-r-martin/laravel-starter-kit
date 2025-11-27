@@ -10,13 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Stack, TextInput } from '@mantine/core';
 import { PencilIcon } from 'lucide-react';
 
-interface Wholesaler {
-    id: string;
-    name: string;
-}
-
 interface UpdateProps {
-    wholesaler: Wholesaler;
+    wholesaler: Models.Wholesaler;
 }
 
 export default function Update({ wholesaler }: UpdateProps) {

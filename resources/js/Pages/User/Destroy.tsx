@@ -10,16 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Alert, Button, Textarea } from '@mantine/core';
 import { AlertTriangleIcon, UserXIcon } from 'lucide-react';
 
-interface User {
-    id: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    closed_at: string | null;
-}
-
 interface Props {
-    user: User;
+    user: Models.User;
 }
 
 export default function Destroy({ user }: Props) {

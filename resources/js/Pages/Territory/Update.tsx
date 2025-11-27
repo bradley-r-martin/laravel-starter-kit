@@ -11,28 +11,10 @@ import { Button, Select, Stack, TextInput } from '@mantine/core';
 import { PencilIcon } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 
-interface Operator {
-    id: string;
-    name: string;
-}
-
-interface MerchantAccount {
-    id: string;
-    provider: string;
-    operator_id: string;
-}
-
-interface Territory {
-    id: string;
-    name: string;
-    operator_id: string;
-    merchant_account_id: string | null;
-}
-
 interface UpdateProps {
-    territory: Territory;
-    operators: Operator[];
-    merchant_accounts: MerchantAccount[];
+    territory: Models.Territory;
+    operators: Models.Operator[];
+    merchant_accounts: Models.MerchantAccount[];
 }
 
 export default function Update({ territory, operators, merchant_accounts }: UpdateProps) {

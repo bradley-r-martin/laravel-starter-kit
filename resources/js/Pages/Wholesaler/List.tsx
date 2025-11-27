@@ -17,15 +17,8 @@ import {
     XIcon,
 } from 'lucide-react';
 
-interface Wholesaler {
-    id: string;
-    name: string;
-    closed_at: string | null;
-    created_at: string;
-}
-
 interface ListProps {
-    wholesalers: Paginated<Wholesaler>;
+    wholesalers: Paginated<Models.Wholesaler>;
 }
 
 const List: InertiaView<ListProps> = (props) => {
@@ -37,7 +30,7 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    const columns: ResourceColumn<Wholesaler>[] = [
+    const columns: ResourceColumn<Models.Wholesaler>[] = [
         {
             header: 'Name',
             accessor: 'name',

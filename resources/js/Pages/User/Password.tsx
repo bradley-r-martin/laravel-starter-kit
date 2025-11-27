@@ -10,15 +10,8 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, PasswordInput, Stack } from '@mantine/core';
 import { KeyRoundIcon } from 'lucide-react';
 
-interface User {
-    id: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-}
-
 interface Props {
-    user: User;
+    user: Models.User;
     is_current_user: boolean;
 }
 
