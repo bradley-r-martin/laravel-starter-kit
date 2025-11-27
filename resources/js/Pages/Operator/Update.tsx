@@ -3,7 +3,7 @@ import Field from '@/Components/Field';
 import Form from '@/Components/Form';
 import FormErrorSound from '@/Components/FormErrorSound';
 import AddressInput from '@/Components/Inputs/AddressInput';
-import { PhoneInput, PhoneInputValue } from '@/Components/Inputs/PhoneInput';
+import { PhoneInput } from '@/Components/Inputs/PhoneInput';
 import { Modal } from '@/Components/Modal';
 import { ModalContent } from '@/Components/ModalContent';
 import ModalHeader from '@/Components/ModalHeader';

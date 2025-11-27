@@ -11,7 +11,6 @@ import { Button, Select, Stack, TextInput } from '@mantine/core';
 import { MapPinPlusIcon } from 'lucide-react';
 import { useMemo } from 'react';
 
-
 interface CreateProps {
     operators: Models.Operator[];
     merchant_accounts: Models.MerchantAccount[];

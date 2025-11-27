@@ -13,7 +13,6 @@ import { useModal } from '@inertiaui/modal-react';
 import { Button, Group, NumberInput, Select, Stack, TextInput } from '@mantine/core';
 import { PlusIcon } from 'lucide-react';
 
-
 export default function Create() {
     const modal = useModal();
     const form = useForm({

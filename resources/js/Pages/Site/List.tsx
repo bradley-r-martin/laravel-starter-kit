@@ -9,11 +9,13 @@ import { ActionIcon, Badge, Button, Group, Text, Tooltip } from '@mantine/core';
 import { CalendarIcon, EyeIcon, PlusIcon } from 'lucide-react';
 
 interface ListProps {
-    sites: Paginated<Models.Site & {
-        territory?: Models.Territory | null;
-        operator?: Models.Operator | null;
-        route?: Models.Route | null;
-    }>;
+    sites: Paginated<
+        Models.Site & {
+            territory?: Models.Territory | null;
+            operator?: Models.Operator | null;
+            route?: Models.Route | null;
+        }
+    >;
 }
 
 const List: InertiaView<ListProps> = (props) => {
