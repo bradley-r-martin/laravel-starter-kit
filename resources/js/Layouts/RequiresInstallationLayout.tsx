@@ -9,7 +9,7 @@ interface RequiresInstallationLayoutProps {
 const RequiresInstallationLayout: FunctionComponent<RequiresInstallationLayoutProps> = (props) => {
     const { children } = props;
 
-    const requiresInstallation = isIOS() && !isStandalone();
+    const requiresInstallation = false; // isIOS() && !isStandalone();
 
     if (!requiresInstallation) return children;
 
