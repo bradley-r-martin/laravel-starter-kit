@@ -22,7 +22,7 @@ export default function useQueryControlReload(
             data: {
                 [`${attribute}_${parameter}`]: value,
             },
-            preserveUrl: isStandalone(),
+        //    preserveUrl: isStandalone(),
             ...options,
             onFinish: () => setReloading(false),
         });

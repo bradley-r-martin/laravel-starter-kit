@@ -34,7 +34,7 @@ final class ProductListViewRequest extends FormRequest
             ->filterSortBy($this->string('products_sort')->toString())
             ->filterBySearch($this->string('products_search')->toString())
             ->filterByStatus($this->string('products_status')->toString())
-            ->paginate(10, ['*'], 'products_page')
+            ->paginate(20, ['*'], 'products_page')
             /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<array{Product $product}> $products */
             ->through(fn (Product $product): array => [
                 'id' => $product->id,

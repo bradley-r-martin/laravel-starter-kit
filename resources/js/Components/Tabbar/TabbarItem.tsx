@@ -44,7 +44,6 @@ const TabbarItem = (props: TabbarItemProps) => {
     const handleClick = () => {
         if (props?.href) {
             router.visit(props?.href, {
-                preserveUrl: true,
                 onStart: () => setLoading(true),
                 onSuccess: () => setLoading(false),
             });
