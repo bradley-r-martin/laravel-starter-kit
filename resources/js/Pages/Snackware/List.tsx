@@ -2,7 +2,8 @@ import Cast from '@/Components/Cast';
 import Navatar from '@/Components/Navatar';
 import Navigate from '@/Components/Navigate';
 import Filters from '@/Components/QueryControls/Filters';
-import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
+import ResourceList from '@/Components/ResourceList';
+import ResourceListAction from '@/Components/ResourceList/ResourceListAction';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
 import { Badge, Button, Group, Text } from '@mantine/core';
@@ -30,143 +31,14 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    const columns: ResourceColumn<Models.Snackware>[] = [
-        {
-            header: 'Name',
-            accessor: 'name',
-            dataSpan: '1',
-            //  cellClassName: 'col-span-full',
-            render: (snackware) => <Navatar name={snackware.name} />,
-        },
-        {
-            header: 'Type',
-            accessor: 'type',
-            //  cellClassName: 'col-span-1/2 bg-red-500',
-            render: (snackware) => (
-                <Badge variant="light" color="blue">
-                    {snackware.type}
-                </Badge>
-            ),
-        },
-        {
-            header: 'Products',
-            accessor: 'territory',
-            dataSpan: 'hidden',
-            render: (snackware) => (
-                <Text size="sm" c="dimmed">
-                    {snackware.__product_count}
-                </Text>
-            ),
-        },
-        {
-            header: 'Wholesale cost',
-            accessor: 'operator',
-            dataSpan: 'hidden',
-            render: (snackware) => (
-                <Text size="sm" c="dimmed">
-                    <Cast.Currency children={snackware.__wholesale_from} fallback="—" /> -{' '}
-                    <Cast.Currency children={snackware.__wholesale_to} fallback="—" />
-                </Text>
-            ),
-        },
-        {
-            header: 'Price',
-            accessor: 'price',
-            dataSpan: 'hidden',
-            render: (snackware) => <Text size="sm">${(snackware.price / 100).toFixed(2)}</Text>,
-        },
-        {
-            header: 'Status',
-            accessor: 'status',
-            dataSpan: 'hidden',
-            render: (snackware) => (
-                <Group gap="xs">
-                    {snackware.closed_at && (
-                        <Badge variant="light" color="red">
-                            Closed
-                        </Badge>
-                    )}
-                    {!snackware.closed_at && (
-                        <Badge variant="light" color="green">
-                            Active
-                        </Badge>
-                    )}
-                </Group>
-            ),
-        },
-        {
-            header: 'Created',
-            accessor: 'created',
-            dataSpan: 'hidden',
-            render: (snackware) => (
-                <Text size="sm" c="dimmed">
-                    <Cast.Datetime
-                        format="DD/MM/YYYY"
-                        children={snackware.created_at}
-                        fallback="—"
-                    />
-                </Text>
-            ),
-        },
-    ];
-
     return (
-        <ResourceList
-            headTitle="Snackwares"
-            title="Snackwares"
-            items={snackwares}
-            resource={{ singular: 'snackware', plural: 'snackwares' }}
-            rowKey={(snackware) => snackware.id}
-            columns={columns}
-            actionsColumnProps={{ width: '140px', cellClassName: 'col-span-full' }}
-            actions={(snackware: Models.Snackware) => [
-                {
-                    visible: !snackware.closed_at,
-                    icon: PencilIcon,
-                    tooltip: 'Edit Snackware',
-                    href: route('snackwares.update', snackware.id),
-                    type: 'modal',
-                    color: 'blue',
-                },
-                {
-                    visible: !snackware.closed_at,
-                    icon: Package,
-                    tooltip: 'Change Products',
-                    href: route('snackwares.change-products', snackware.id),
-                    type: 'modal',
-                    color: 'violet',
-                },
-                {
-                    visible: !snackware.closed_at,
-                    icon: XIcon,
-                    tooltip: 'Close Snackware',
-                    href: route('snackwares.close', snackware.id),
-                    type: 'modal',
-                    color: 'orange',
-                },
-                {
-                    visible: !!snackware.closed_at,
-                    icon: RotateCcwIcon,
-                    tooltip: 'Reopen Snackware',
-                    href: route('snackwares.reopen', snackware.id),
-                    type: 'modal',
-                    color: 'green',
-                },
-                {
-                    visible: !!snackware.closed_at,
-                    icon: TrashIcon,
-                    tooltip: 'Destroy Snackware',
-                    href: route('snackwares.destroy', snackware.id),
-                    type: 'modal',
-                    color: 'red',
-                },
-            ]}
-            emptyState={{
-                title: 'No snackwares found',
-                subtitle: 'Create a new snackware to get started.',
-            }}
-            headerAction={
-                <Group gap="xs">
+        <ResourceList<Models.Snackware>
+            data={snackwares}
+            resource="snackwares"
+            headerProps={{
+                title: 'Snackwares',
+                subtitle: `Showing ${snackwares.total} snackwares`,
+                action: (
                     <Navigate type="modal" href={route('snackwares.create')}>
                         <Button
                             size="xs"
@@ -177,24 +49,191 @@ const List: InertiaView<ListProps> = (props) => {
                             Create
                         </Button>
                     </Navigate>
-                </Group>
-            }
-            filters={
-                <Filters>
-                    <Filters.Search attribute="snackwares" className="order-1" />
-                    <Filters.Sort data={sortOptions} attribute="snackwares" />
-                    <Filters.Status
-                        data={[
-                            { value: 'active', label: 'Active' },
-                            { value: 'closed', label: 'Closed' },
-                        ]}
-                        attribute="snackwares"
-                        className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
-                    />
-                </Filters>
-            }
-            paginationAttribute="snackwares"
-            getRowTestId={(snackware) => `snackware-row-${snackware.id}`}
+                ),
+                filters: (
+                    <Filters>
+                        <Filters.Search attribute="snackwares" className="order-1" />
+                        <Filters.Sort data={sortOptions} attribute="snackwares" />
+                        <Filters.Status
+                            data={[
+                                { value: 'active', label: 'Active' },
+                                { value: 'closed', label: 'Closed' },
+                            ]}
+                            attribute="snackwares"
+                            className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
+                        />
+                    </Filters>
+                ),
+            }}
+            columns={[
+                {
+                    name: 'Snackware',
+                    cellProps: {
+                        className: 'col-span-full p-3!',
+                    },
+                    cell: (snackware) => <Navatar name={snackware.name} />,
+                },
+                {
+                    name: 'Type',
+                    cell: (snackware) => (
+                        <Badge variant="light" color="blue">
+                            {snackware.type}
+                        </Badge>
+                    ),
+                },
+                {
+                    name: 'Products',
+                    cell: (snackware) => (
+                        <Text size="sm" c="dimmed">
+                            {snackware.__product_count}
+                        </Text>
+                    ),
+                },
+                {
+                    name: 'Wholesale cost',
+                    cell: (snackware) => (
+                        <Text size="sm" c="dimmed">
+                            <Cast.Currency children={snackware.__wholesale_from} fallback="—" /> -{' '}
+                            <Cast.Currency children={snackware.__wholesale_to} fallback="—" />
+                        </Text>
+                    ),
+                },
+                {
+                    name: 'Price',
+                    cell: (snackware) => <Text size="sm">${(snackware.price / 100).toFixed(2)}</Text>,
+                },
+                {
+                    name: 'Status',
+                    cell: (snackware) => (
+                        <Group gap="xs">
+                            {snackware.closed_at && (
+                                <Badge variant="light" color="red">
+                                    Closed
+                                </Badge>
+                            )}
+                            {!snackware.closed_at && (
+                                <Badge variant="light" color="green">
+                                    Active
+                                </Badge>
+                            )}
+                        </Group>
+                    ),
+                },
+                {
+                    name: 'Created',
+                    cell: (snackware) => (
+                        <Text size="sm" c="dimmed">
+                            <Cast.Datetime
+                                format="DD/MM/YYYY"
+                                children={snackware.created_at}
+                                fallback="—"
+                            />
+                        </Text>
+                    ),
+                },
+                {
+                    name: 'Actions',
+                    cellProps: {
+                        'data-title': '',
+                        className: 'col-span-full',
+                        onClick: (e: React.MouseEvent<HTMLTableCellElement>) => e.stopPropagation(),
+                    },
+                    cell: (snackware: Models.Snackware) => (
+                        <span className="flex items-center justify-end gap-2">
+                            <ResourceListAction
+                                visible={!snackware.closed_at}
+                                href={route('snackwares.update', snackware.id)}
+                                type="modal"
+                                color="blue"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Edit',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <PencilIcon className="size-4" />,
+                                    tooltip: 'Edit Snackware',
+                                }}
+                            />
+                            <ResourceListAction
+                                visible={!snackware.closed_at}
+                                href={route('snackwares.change-products', snackware.id)}
+                                type="modal"
+                                color="violet"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Change Products',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <Package className="size-4" />,
+                                    tooltip: 'Change Products',
+                                }}
+                            />
+                            <ResourceListAction
+                                visible={!snackware.closed_at}
+                                href={route('snackwares.close', snackware.id)}
+                                type="modal"
+                                color="orange"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Close',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <XIcon className="size-4" />,
+                                    tooltip: 'Close Snackware',
+                                }}
+                            />
+                            <ResourceListAction
+                                visible={!!snackware.closed_at}
+                                href={route('snackwares.reopen', snackware.id)}
+                                type="modal"
+                                color="green"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Reopen',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <RotateCcwIcon className="size-4" />,
+                                    tooltip: 'Reopen Snackware',
+                                }}
+                            />
+                            <ResourceListAction
+                                visible={!!snackware.closed_at}
+                                href={route('snackwares.destroy', snackware.id)}
+                                type="modal"
+                                color="red"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Destroy',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <TrashIcon className="size-4" />,
+                                    tooltip: 'Destroy Snackware',
+                                }}
+                            />
+                        </span>
+                    ),
+                },
+            ]}
         />
     );
 };

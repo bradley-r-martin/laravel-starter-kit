@@ -2,7 +2,8 @@ import Cast from '@/Components/Cast';
 import Navatar from '@/Components/Navatar';
 import Navigate from '@/Components/Navigate';
 import Filters from '@/Components/QueryControls/Filters';
-import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
+import ResourceList from '@/Components/ResourceList';
+import ResourceListAction from '@/Components/ResourceList/ResourceListAction';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
 import { Badge, Button, Group, Text } from '@mantine/core';
@@ -19,80 +20,14 @@ const List: InertiaView<ListProps> = (props) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    const columns: ResourceColumn<Models.Route>[] = [
-        {
-            header: 'Name',
-            accessor: 'name',
-            dataSpan: '1',
-            render: (route) => <Navatar name={route.name} />,
-        },
-        {
-            header: 'Sites',
-            accessor: 'sites_count',
-            dataSpan: 'hidden',
-            render: (route) => (
-                <Text size="sm" c="dimmed">
-                    {route.__sites_count}
-                </Text>
-            ),
-        },
-
-        {
-            header: 'Status',
-            accessor: 'status',
-            dataSpan: 'hidden',
-            render: (route) => (
-                <Group gap="xs">
-                    {route.closed_at && (
-                        <Badge variant="light" color="red">
-                            Closed
-                        </Badge>
-                    )}
-                    {!route.closed_at && (
-                        <Badge variant="light" color="green">
-                            Active
-                        </Badge>
-                    )}
-                </Group>
-            ),
-        },
-        {
-            header: 'Created',
-            accessor: 'created',
-            dataSpan: 'hidden',
-            render: (route) => (
-                <Text size="sm" c="dimmed">
-                    <Cast.Datetime format="DD/MM/YYYY" children={route.created_at} fallback="—" />
-                </Text>
-            ),
-        },
-    ];
-
     return (
-        <ResourceList
-            headTitle="Routes"
-            title="Routes"
-            items={routes}
-            resource={{ singular: 'route', plural: 'routes' }}
-            rowKey={(route) => route.id}
-            columns={columns}
-            actionsColumnProps={{ width: '120px' }}
-            actions={(route: Models.Route) => [
-                {
-                    visible: !route.closed_at,
-                    icon: PencilIcon,
-                    tooltip: 'Edit Route',
-                    href: route('routes.update', route.id),
-                    type: 'modal',
-                    color: 'blue',
-                },
-            ]}
-            emptyState={{
-                title: 'No routes found',
-                subtitle: 'Create a new route to get started.',
-            }}
-            headerAction={
-                <Group gap="xs">
+        <ResourceList<Models.Route>
+            data={routes}
+            resource="routes"
+            headerProps={{
+                title: 'Routes',
+                subtitle: `Showing ${routes.total} routes`,
+                action: (
                     <Navigate type="modal" href={route('routes.create')}>
                         <Button
                             size="xs"
@@ -103,24 +38,94 @@ const List: InertiaView<ListProps> = (props) => {
                             Create
                         </Button>
                     </Navigate>
-                </Group>
-            }
-            filters={
-                <Filters>
-                    <Filters.Search attribute="routes" className="order-1" />
-                    <Filters.Sort data={sortOptions} attribute="routes" />
-                    <Filters.Status
-                        data={[
-                            { value: 'active', label: 'Active' },
-                            { value: 'closed', label: 'Closed' },
-                        ]}
-                        attribute="routes"
-                        className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
-                    />
-                </Filters>
-            }
-            paginationAttribute="routes"
-            getRowTestId={(route) => `route-row-${route.id}`}
+                ),
+                filters: (
+                    <Filters>
+                        <Filters.Search attribute="routes" className="order-1" />
+                        <Filters.Sort data={sortOptions} attribute="routes" />
+                        <Filters.Status
+                            data={[
+                                { value: 'active', label: 'Active' },
+                                { value: 'closed', label: 'Closed' },
+                            ]}
+                            attribute="routes"
+                            className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
+                        />
+                    </Filters>
+                ),
+            }}
+            columns={[
+                {
+                    name: 'Route',
+                    cellProps: {
+                        className: 'col-span-full p-3!',
+                    },
+                    cell: (route) => <Navatar name={route.name} />,
+                },
+                {
+                    name: 'Sites',
+                    cell: (route) => (
+                        <Text size="sm" c="dimmed">
+                            {route.__sites_count}
+                        </Text>
+                    ),
+                },
+                {
+                    name: 'Status',
+                    cell: (route) => (
+                        <Group gap="xs">
+                            {route.closed_at && (
+                                <Badge variant="light" color="red">
+                                    Closed
+                                </Badge>
+                            )}
+                            {!route.closed_at && (
+                                <Badge variant="light" color="green">
+                                    Active
+                                </Badge>
+                            )}
+                        </Group>
+                    ),
+                },
+                {
+                    name: 'Created',
+                    cell: (route) => (
+                        <Text size="sm" c="dimmed">
+                            <Cast.Datetime format="DD/MM/YYYY" children={route.created_at} fallback="—" />
+                        </Text>
+                    ),
+                },
+                {
+                    name: 'Actions',
+                    cellProps: {
+                        'data-title': '',
+                        className: 'col-span-full',
+                        onClick: (e: React.MouseEvent<HTMLTableCellElement>) => e.stopPropagation(),
+                    },
+                    cell: (route: Models.Route) => (
+                        <span className="flex items-center justify-end gap-2">
+                            <ResourceListAction
+                                visible={!route.closed_at}
+                                href={route('routes.update', route.id)}
+                                type="modal"
+                                color="blue"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Edit',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <PencilIcon className="size-4" />,
+                                    tooltip: 'Edit Route',
+                                }}
+                            />
+                        </span>
+                    ),
+                },
+            ]}
         />
     );
 };

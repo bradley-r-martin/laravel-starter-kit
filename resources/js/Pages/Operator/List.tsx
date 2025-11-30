@@ -2,7 +2,8 @@ import Cast from '@/Components/Cast';
 import Navatar from '@/Components/Navatar';
 import Navigate from '@/Components/Navigate';
 import Filters from '@/Components/QueryControls/Filters';
-import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
+import ResourceList from '@/Components/ResourceList';
+import ResourceListAction from '@/Components/ResourceList/ResourceListAction';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
 import { Badge, Button, Group, Text } from '@mantine/core';
@@ -32,151 +33,14 @@ const List: InertiaView<ListProps> = ({ operators }) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    const columns: ResourceColumn<Models.Operator>[] = [
-        {
-            header: 'Name',
-            accessor: 'name',
-            render: (operator) => <Navatar name={operator.name} />,
-        },
-        {
-            header: 'Email',
-            accessor: 'email',
-            dataSpan: 'hidden',
-            render: (operator) => (
-                <Text size="sm" c="dimmed">
-                    {operator.email ?? '—'}
-                </Text>
-            ),
-        },
-        {
-            header: 'Territories',
-            accessor: 'territories_count',
-            dataSpan: 'hidden',
-            render: (operator) => (
-                <Badge variant="light" color="blue">
-                    {operator.territories_count}
-                </Badge>
-            ),
-        },
-        {
-            header: 'Last Transaction',
-            accessor: 'last_transaction_at',
-            dataSpan: 'hidden',
-            render: (operator) => (
-                <Text size="sm" c="dimmed">
-                    <Cast.Datetime
-                        format="DD/MM/YYYY"
-                        children={operator.last_transaction_at}
-                        fallback="—"
-                    />
-                </Text>
-            ),
-        },
-        {
-            header: 'Status',
-            accessor: 'status',
-            dataSpan: 'hidden',
-            render: (operator) => (
-                <Group gap="xs">
-                    {operator.suspended_at && (
-                        <Badge variant="light" color="orange">
-                            Suspended
-                        </Badge>
-                    )}
-                    {operator.closed_at && (
-                        <Badge variant="light" color="red">
-                            Closed
-                        </Badge>
-                    )}
-                    {!operator.suspended_at && !operator.closed_at && (
-                        <Badge variant="light" color="green">
-                            Active
-                        </Badge>
-                    )}
-                </Group>
-            ),
-        },
-        {
-            header: 'Created',
-            accessor: 'created_at',
-            dataSpan: 'hidden',
-            render: (operator) => (
-                <Text size="sm" c="dimmed">
-                    <Cast.Datetime
-                        format="DD/MM/YYYY"
-                        children={operator.created_at}
-                        fallback="—"
-                    />
-                </Text>
-            ),
-        },
-    ];
-
     return (
-        <ResourceList
-            headTitle="Operators"
-            title="Operators"
-            items={operators}
-            resource={{ singular: 'operator', plural: 'operators' }}
-            rowKey={(operator) => operator.id}
-            columns={columns}
-            actionsColumnProps={{ width: '180px' }}
-            actions={(operator: Models.Operator) => [
-                {
-                    visible: !operator.closed_at && !operator.suspended_at,
-                    icon: PencilIcon,
-                    tooltip: 'Edit Operator',
-                    href: route('operators.update', operator.id),
-                    type: 'modal',
-                    color: 'blue',
-                },
-                {
-                    visible: !operator.closed_at && !operator.suspended_at,
-                    icon: BanIcon,
-                    tooltip: 'Suspend Operator',
-                    href: route('operators.suspend', operator.id),
-                    type: 'modal',
-                    color: 'orange',
-                },
-                {
-                    visible: !operator.closed_at && !operator.suspended_at,
-                    icon: XIcon,
-                    tooltip: 'Close Operator',
-                    href: route('operators.close', operator.id),
-                    type: 'modal',
-                    color: 'red',
-                },
-                {
-                    visible: !operator.closed_at && !!operator.suspended_at,
-                    icon: CheckCircleIcon,
-                    tooltip: 'Unsuspend Operator',
-                    href: route('operators.unsuspend', operator.id),
-                    type: 'modal',
-                    color: 'green',
-                },
-                {
-                    visible: !!operator.closed_at,
-                    icon: RotateCcwIcon,
-                    tooltip: 'Reopen Operator',
-                    href: route('operators.reopen', operator.id),
-                    type: 'modal',
-                    color: 'green',
-                },
-                {
-                    visible: !!operator.closed_at,
-                    icon: TrashIcon,
-                    tooltip: 'Destroy Operator',
-                    href: route('operators.destroy', operator.id),
-                    type: 'modal',
-                    color: 'red',
-                },
-            ]}
-            emptyState={{
-                title: 'No operators found',
-                subtitle: 'Create a new operator to get started.',
-            }}
-            headerAction={
-                <Group gap="xs">
+        <ResourceList<Models.Operator>
+            data={operators}
+            resource="operators"
+            headerProps={{
+                title: 'Operators',
+                subtitle: `Showing ${operators.total} operators`,
+                action: (
                     <Navigate type="modal" href={route('operators.create')}>
                         <Button
                             size="xs"
@@ -187,25 +51,214 @@ const List: InertiaView<ListProps> = ({ operators }) => {
                             Create
                         </Button>
                     </Navigate>
-                </Group>
-            }
-            filters={
-                <Filters>
-                    <Filters.Search attribute="operators" className="order-1" />
-                    <Filters.Sort data={sortOptions} attribute="operators" />
-                    <Filters.Status
-                        data={[
-                            { value: 'active', label: 'Active' },
-                            { value: 'suspended', label: 'Suspended' },
-                            { value: 'closed', label: 'Closed' },
-                        ]}
-                        attribute="operators"
-                        className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
-                    />
-                </Filters>
-            }
-            paginationAttribute="operators"
-            getRowTestId={(operator) => `operator-row-${operator.id}`}
+                ),
+                filters: (
+                    <Filters>
+                        <Filters.Search attribute="operators" className="order-1" />
+                        <Filters.Sort data={sortOptions} attribute="operators" />
+                        <Filters.Status
+                            data={[
+                                { value: 'active', label: 'Active' },
+                                { value: 'suspended', label: 'Suspended' },
+                                { value: 'closed', label: 'Closed' },
+                            ]}
+                            attribute="operators"
+                            className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
+                        />
+                    </Filters>
+                ),
+            }}
+            columns={[
+                {
+                    name: 'Operator',
+                    cellProps: {
+                        className: 'col-span-full p-3!',
+                    },
+                    cell: (operator) => <Navatar name={operator.name} />,
+                },
+                {
+                    name: 'Email',
+                    cell: (operator) => (
+                        <Text size="sm" c="dimmed">
+                            {operator.email ?? '—'}
+                        </Text>
+                    ),
+                },
+                {
+                    name: 'Territories',
+                    cell: (operator) => (
+                        <Badge variant="light" color="blue">
+                            {operator.territories_count}
+                        </Badge>
+                    ),
+                },
+                {
+                    name: 'Last Transaction',
+                    cell: (operator) => (
+                        <Text size="sm" c="dimmed">
+                            <Cast.Datetime
+                                format="DD/MM/YYYY"
+                                children={operator.last_transaction_at}
+                                fallback="—"
+                            />
+                        </Text>
+                    ),
+                },
+                {
+                    name: 'Status',
+                    cell: (operator) => (
+                        <Group gap="xs">
+                            {operator.suspended_at && (
+                                <Badge variant="light" color="orange">
+                                    Suspended
+                                </Badge>
+                            )}
+                            {operator.closed_at && (
+                                <Badge variant="light" color="red">
+                                    Closed
+                                </Badge>
+                            )}
+                            {!operator.suspended_at && !operator.closed_at && (
+                                <Badge variant="light" color="green">
+                                    Active
+                                </Badge>
+                            )}
+                        </Group>
+                    ),
+                },
+                {
+                    name: 'Created',
+                    cell: (operator) => (
+                        <Text size="sm" c="dimmed">
+                            <Cast.Datetime
+                                format="DD/MM/YYYY"
+                                children={operator.created_at}
+                                fallback="—"
+                            />
+                        </Text>
+                    ),
+                },
+                {
+                    name: 'Actions',
+                    cellProps: {
+                        'data-title': '',
+                        className: 'col-span-full',
+                        onClick: (e: React.MouseEvent<HTMLTableCellElement>) => e.stopPropagation(),
+                    },
+                    cell: (operator: Models.Operator) => (
+                        <span className="flex items-center justify-end gap-2">
+                            <ResourceListAction
+                                visible={!operator.closed_at && !operator.suspended_at}
+                                href={route('operators.update', operator.id)}
+                                type="modal"
+                                color="blue"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Edit',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <PencilIcon className="size-4" />,
+                                    tooltip: 'Edit Operator',
+                                }}
+                            />
+                            <ResourceListAction
+                                visible={!operator.closed_at && !operator.suspended_at}
+                                href={route('operators.suspend', operator.id)}
+                                type="modal"
+                                color="orange"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Suspend',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <BanIcon className="size-4" />,
+                                    tooltip: 'Suspend Operator',
+                                }}
+                            />
+                            <ResourceListAction
+                                visible={!operator.closed_at && !operator.suspended_at}
+                                href={route('operators.close', operator.id)}
+                                type="modal"
+                                color="red"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Close',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <XIcon className="size-4" />,
+                                    tooltip: 'Close Operator',
+                                }}
+                            />
+                            <ResourceListAction
+                                visible={!operator.closed_at && !!operator.suspended_at}
+                                href={route('operators.unsuspend', operator.id)}
+                                type="modal"
+                                color="green"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Unsuspend',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <CheckCircleIcon className="size-4" />,
+                                    tooltip: 'Unsuspend Operator',
+                                }}
+                            />
+                            <ResourceListAction
+                                visible={!!operator.closed_at}
+                                href={route('operators.reopen', operator.id)}
+                                type="modal"
+                                color="green"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Reopen',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <RotateCcwIcon className="size-4" />,
+                                    tooltip: 'Reopen Operator',
+                                }}
+                            />
+                            <ResourceListAction
+                                visible={!!operator.closed_at}
+                                href={route('operators.destroy', operator.id)}
+                                type="modal"
+                                color="red"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Destroy',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <TrashIcon className="size-4" />,
+                                    tooltip: 'Destroy Operator',
+                                }}
+                            />
+                        </span>
+                    ),
+                },
+            ]}
         />
     );
 };

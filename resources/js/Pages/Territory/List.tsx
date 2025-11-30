@@ -2,7 +2,8 @@ import Cast from '@/Components/Cast';
 import Navatar from '@/Components/Navatar';
 import Navigate from '@/Components/Navigate';
 import Filters from '@/Components/QueryControls/Filters';
-import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
+import ResourceList from '@/Components/ResourceList';
+import ResourceListAction from '@/Components/ResourceList/ResourceListAction';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
 import { Badge, Button, Group, Text } from '@mantine/core';
@@ -32,122 +33,14 @@ const List: InertiaView<ListProps> = ({ territories }) => {
         { value: 'created_at', label: 'Created At', icon: CalendarIcon },
     ];
 
-    const columns: ResourceColumn<Models.Territory>[] = [
-        {
-            header: 'Name',
-            accessor: 'name',
-            dataSpan: '1',
-            render: (territory) => <Navatar name={territory.name} />,
-        },
-        {
-            header: 'Operator',
-            accessor: 'operator',
-            dataSpan: 'hidden',
-            render: (territory) => (
-                <Text size="sm" c="dimmed">
-                    {territory.__operator_name ?? '—'}
-                </Text>
-            ),
-        },
-        {
-            header: 'Merchant Account',
-            accessor: 'merchant_account',
-            dataSpan: 'hidden',
-            render: () => (
-                <Text size="sm" c="dimmed">
-                    —
-                </Text>
-            ),
-        },
-        {
-            header: 'Last Transaction',
-            accessor: 'last_transaction_at',
-            dataSpan: 'hidden',
-            render: (territory) => (
-                <Text size="sm" c="dimmed">
-                    <Cast.Datetime
-                        format="DD/MM/YYYY HH:mm"
-                        children={territory.last_transaction_at}
-                        fallback="—"
-                    />
-                </Text>
-            ),
-        },
-        {
-            header: 'Status',
-            accessor: 'status',
-            dataSpan: 'hidden',
-            render: (territory) => (
-                <Badge variant="light" color={territory.closed_at ? 'red' : 'green'}>
-                    {territory.closed_at ? 'Closed' : 'Active'}
-                </Badge>
-            ),
-        },
-        {
-            header: 'Created',
-            accessor: 'created_at',
-            dataSpan: 'hidden',
-            render: (territory) => (
-                <Text size="sm" c="dimmed">
-                    <Cast.Datetime
-                        format="DD/MM/YYYY"
-                        children={territory.created_at}
-                        fallback="—"
-                    />
-                </Text>
-            ),
-        },
-    ];
-
     return (
-        <ResourceList
-            headTitle="Territories"
-            title="Territories"
-            items={territories}
-            resource={{ singular: 'territory', plural: 'territories' }}
-            rowKey={(territory) => territory.id}
-            columns={columns}
-            actionsColumnProps={{ width: '120px' }}
-            actions={(territory: Models.Territory) => [
-                {
-                    visible: !territory.closed_at,
-                    icon: PencilIcon,
-                    tooltip: 'Edit Territory',
-                    href: route('territories.update', territory.id),
-                    type: 'modal',
-                    color: 'blue',
-                },
-                {
-                    visible: !territory.closed_at,
-                    icon: XIcon,
-                    tooltip: 'Close Territory',
-                    href: route('territories.close', territory.id),
-                    type: 'modal',
-                    color: 'orange',
-                },
-                {
-                    visible: !!territory.closed_at,
-                    icon: RotateCcwIcon,
-                    tooltip: 'Reopen Territory',
-                    href: route('territories.reopen', territory.id),
-                    type: 'modal',
-                    color: 'green',
-                },
-                {
-                    visible: !!territory.closed_at,
-                    icon: TrashIcon,
-                    tooltip: 'Destroy Territory',
-                    href: route('territories.destroy', territory.id),
-                    type: 'modal',
-                    color: 'red',
-                },
-            ]}
-            emptyState={{
-                title: 'No territories found',
-                subtitle: 'Create a new territory to get started.',
-            }}
-            headerAction={
-                <Group gap="xs">
+        <ResourceList<Models.Territory>
+            data={territories}
+            resource="territories"
+            headerProps={{
+                title: 'Territories',
+                subtitle: `Showing ${territories.total} territories`,
+                action: (
                     <Navigate type="modal" href={route('territories.create')}>
                         <Button
                             size="xs"
@@ -158,24 +51,163 @@ const List: InertiaView<ListProps> = ({ territories }) => {
                             Create
                         </Button>
                     </Navigate>
-                </Group>
-            }
-            filters={
-                <Filters>
-                    <Filters.Search attribute="territories" className="order-1" />
-                    <Filters.Sort data={sortOptions} attribute="territories" />
-                    <Filters.Status
-                        data={[
-                            { value: 'active', label: 'Active' },
-                            { value: 'closed', label: 'Closed' },
-                        ]}
-                        attribute="territories"
-                        className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
-                    />
-                </Filters>
-            }
-            paginationAttribute="territories"
-            getRowTestId={(territory) => `territory-row-${territory.id}`}
+                ),
+                filters: (
+                    <Filters>
+                        <Filters.Search attribute="territories" className="order-1" />
+                        <Filters.Sort data={sortOptions} attribute="territories" />
+                        <Filters.Status
+                            data={[
+                                { value: 'active', label: 'Active' },
+                                { value: 'closed', label: 'Closed' },
+                            ]}
+                            attribute="territories"
+                            className="order-2 flex-1 lg:order-3 lg:ml-auto lg:flex-none"
+                        />
+                    </Filters>
+                ),
+            }}
+            columns={[
+                {
+                    name: 'Territory',
+                    cellProps: {
+                        className: 'col-span-full p-3!',
+                    },
+                    cell: (territory) => <Navatar name={territory.name} />,
+                },
+                {
+                    name: 'Operator',
+                    cell: (territory) => (
+                        <Text size="sm" c="dimmed">
+                            {territory.__operator_name ?? '—'}
+                        </Text>
+                    ),
+                },
+                {
+                    name: 'Merchant Account',
+                    cell: () => (
+                        <Text size="sm" c="dimmed">
+                            —
+                        </Text>
+                    ),
+                },
+                {
+                    name: 'Last Transaction',
+                    cell: (territory) => (
+                        <Text size="sm" c="dimmed">
+                            <Cast.Datetime
+                                format="DD/MM/YYYY HH:mm"
+                                children={territory.last_transaction_at}
+                                fallback="—"
+                            />
+                        </Text>
+                    ),
+                },
+                {
+                    name: 'Status',
+                    cell: (territory) => (
+                        <Badge variant="light" color={territory.closed_at ? 'red' : 'green'}>
+                            {territory.closed_at ? 'Closed' : 'Active'}
+                        </Badge>
+                    ),
+                },
+                {
+                    name: 'Created',
+                    cell: (territory) => (
+                        <Text size="sm" c="dimmed">
+                            <Cast.Datetime
+                                format="DD/MM/YYYY"
+                                children={territory.created_at}
+                                fallback="—"
+                            />
+                        </Text>
+                    ),
+                },
+                {
+                    name: 'Actions',
+                    cellProps: {
+                        'data-title': '',
+                        className: 'col-span-full',
+                        onClick: (e: React.MouseEvent<HTMLTableCellElement>) => e.stopPropagation(),
+                    },
+                    cell: (territory: Models.Territory) => (
+                        <span className="flex items-center justify-end gap-2">
+                            <ResourceListAction
+                                visible={!territory.closed_at}
+                                href={route('territories.update', territory.id)}
+                                type="modal"
+                                color="blue"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Edit',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <PencilIcon className="size-4" />,
+                                    tooltip: 'Edit Territory',
+                                }}
+                            />
+                            <ResourceListAction
+                                visible={!territory.closed_at}
+                                href={route('territories.close', territory.id)}
+                                type="modal"
+                                color="orange"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Close',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <XIcon className="size-4" />,
+                                    tooltip: 'Close Territory',
+                                }}
+                            />
+                            <ResourceListAction
+                                visible={!!territory.closed_at}
+                                href={route('territories.reopen', territory.id)}
+                                type="modal"
+                                color="green"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Reopen',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <RotateCcwIcon className="size-4" />,
+                                    tooltip: 'Reopen Territory',
+                                }}
+                            />
+                            <ResourceListAction
+                                visible={!!territory.closed_at}
+                                href={route('territories.destroy', territory.id)}
+                                type="modal"
+                                color="red"
+                                mobileProps={{
+                                    variant: 'subtle',
+                                    children: 'Destroy',
+                                    className: 'col-span-1/2',
+                                    fullWidth: true,
+                                }}
+                                desktopProps={{
+                                    radius: 'xl',
+                                    variant: 'subtle',
+                                    children: <TrashIcon className="size-4" />,
+                                    tooltip: 'Destroy Territory',
+                                }}
+                            />
+                        </span>
+                    ),
+                },
+            ]}
         />
     );
 };

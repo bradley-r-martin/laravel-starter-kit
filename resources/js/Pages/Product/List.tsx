@@ -52,7 +52,7 @@ const List: InertiaView<ListProps> = (props) => {
             resource="products"
             headerProps={{
                 title: 'Products',
-                subtitle: `Showing ${products.data.length} products`,
+                subtitle: `Showing ${products.total} products`,
                 action: (
                     <Navigate type="modal" href={route('products.create')}>
                         <Button
@@ -163,7 +163,7 @@ const List: InertiaView<ListProps> = (props) => {
                                 }}
                                 desktopProps={{
                                     radius: 'xl',
-                                    variant: 'light',
+                                    variant: 'subtle',
                                     children: <PencilIcon className="size-4" />,
                                     tooltip: 'Edit Product',
                                 }}
@@ -181,7 +181,7 @@ const List: InertiaView<ListProps> = (props) => {
                                 }}
                                 desktopProps={{
                                     radius: 'xl',
-                                    variant: 'light',
+                                    variant: 'subtle',
                                     children: <XIcon className="size-4" />,
                                     tooltip: 'Close Product',
                                 }}
@@ -199,7 +199,7 @@ const List: InertiaView<ListProps> = (props) => {
                                 }}
                                 desktopProps={{
                                     radius: 'xl',
-                                    variant: 'light',
+                                    variant: 'subtle',
                                     children: <TrashIcon className="size-4" />,
                                     tooltip: 'Destroy Product',
                                 }}
@@ -217,7 +217,7 @@ const List: InertiaView<ListProps> = (props) => {
                                 }}
                                 desktopProps={{
                                     radius: 'xl',
-                                    variant: 'light',
+                                    variant: 'subtle',
                                     children: <RotateCcwIcon className="size-4" />,
                                     tooltip: 'Reinstate',
                                 }}
