@@ -27,7 +27,6 @@ use App\Models\Wholesaler;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use SplFileInfo;
 
 use function Laravel\Prompts\progress;
 
@@ -75,7 +74,7 @@ final class Import extends Command
         }
 
         $this->tables = collect(Storage::disk('public')->allFiles($normalisedPath))
-            ->map(fn (SplFileInfo $file): string => $file->getFilenameWithoutExtension());
+            ->map(fn (string $file): string => basename($file, '.json'));
 
         $this->normalised = fluent([]);
 
