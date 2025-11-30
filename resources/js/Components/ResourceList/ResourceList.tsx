@@ -4,10 +4,8 @@ import Table from '@/Components/Table/Table';
 import Header from '@/Parts/Header';
 import { Paginated } from '@/Types';
 import { Head } from '@inertiajs/react';
-import { ActionIcon, Tooltip } from '@mantine/core';
-import { ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react';
-import Navigate from '../Navigate';
-
+import { ComponentPropsWithoutRef, CSSProperties, ReactNode, useState } from 'react';
+import ResourceListAction from './ResourceListAction';
 
 export interface ResourceAction {
     visible?: boolean;
@@ -18,7 +16,6 @@ export interface ResourceAction {
     type: 'modal' | 'page';
     color: string;
 }
-
 
 interface ResourceIdentifiers {
     singular: string;
@@ -91,6 +88,7 @@ const ResourceList = <TItem,>({
     tableProps,
     actions,
 }: ResourceListProps<TItem>) => {
+    const [selectedRow, setSelectedRow] = useState<null | string | number>(null);
     const count = items.data.length;
     const resolvedPaginationAttribute = paginationAttribute ?? resource.plural;
     const renderCountLabel =
@@ -109,7 +107,8 @@ const ResourceList = <TItem,>({
     const actionsHeader = actionsColumn?.header ?? actionsColumnProps?.header ?? 'Actions';
     const actionsAccessor = actionsColumn?.accessor ?? 'actions';
     const actionsWidth = actionsColumn?.width ?? actionsColumnProps?.width;
-    const actionsHeaderClassName = actionsColumn?.headerClassName ?? actionsColumnProps?.headerClassName;
+    const actionsHeaderClassName =
+        actionsColumn?.headerClassName ?? actionsColumnProps?.headerClassName;
     const actionsHeaderStyle = actionsColumn?.headerStyle ?? actionsColumnProps?.headerStyle;
     const actionsCellClassName = actionsColumn?.cellClassName ?? actionsColumnProps?.cellClassName;
     const actionsCellStyle = actionsColumn?.cellStyle ?? actionsColumnProps?.cellStyle;
@@ -165,7 +164,12 @@ const ResourceList = <TItem,>({
                                     `${resource.singular}-row-${String(key)}`;
 
                                 return (
-                                    <Table.Tbody.Tr key={key} data-testid={rowTestId}>
+                                    <Table.Tbody.Tr
+                                        key={key}
+                                        data-testid={rowTestId}
+                                        onClick={() => setSelectedRow(key)}
+                                        data-selected={selectedRow === key}
+                                    >
                                         {columns.map((column) => (
                                             <Table.Tbody.Td
                                                 key={column.accessor}
@@ -185,22 +189,12 @@ const ResourceList = <TItem,>({
                                                 className={actionsCellClassName}
                                                 style={actionsCellStyle}
                                             >
-                                                {actions?.(item).map((action) => {
-                                                    if (!action.visible) return null;
-                                                    const Icon = action.icon;
-                                                    return (<Tooltip label={action.tooltip} position="left">
-                                                        <Navigate type={action.type} href={action.href}>
-                                                            <ActionIcon
-                                                                variant="subtle"
-                                                                color={action.color}
-                                                                size="md"
-                                                                radius="xl"
-                                                            >
-                                                              <Icon className="size-4" />  
-                                                            </ActionIcon>
-                                                        </Navigate>
-                                                    </Tooltip>)
-                                                })}
+                                                {actions?.(item).map((action) => (
+                                                    <ResourceListAction
+                                                        key={action.href}
+                                                        {...action}
+                                                    />
+                                                ))}
                                             </Table.Tbody.Td>
                                         )}
                                     </Table.Tbody.Tr>

@@ -16,13 +16,13 @@ import Data from '@/Components/Data/Data';
 
 ## Props
 
-| Prop       | Type                    | Default   | Description                                                                                                 |
-| ---------- | ----------------------- | --------- | ----------------------------------------------------------------------------------------------------------- |
-| `parameter` | `string`                | required  | The name of the prop to extract from Inertia page props or modal props                                       |
-| `property`  | `string`                | `'data'`  | The property name to pass the data to child components                                                       |
-| `map`       | `(value: any) => any`   | optional  | Transformation function to map each item in the data array                                                   |
-| `fallback`  | `any`                   | optional  | Value to use when data is not available or is empty                                                         |
-| `children`  | `ReactNode`             | required  | Child component(s) that will receive the data as a prop                                                     |
+| Prop        | Type                  | Default  | Description                                                            |
+| ----------- | --------------------- | -------- | ---------------------------------------------------------------------- |
+| `parameter` | `string`              | required | The name of the prop to extract from Inertia page props or modal props |
+| `property`  | `string`              | `'data'` | The property name to pass the data to child components                 |
+| `map`       | `(value: any) => any` | optional | Transformation function to map each item in the data array             |
+| `fallback`  | `any`                 | optional | Value to use when data is not available or is empty                    |
+| `children`  | `ReactNode`           | required | Child component(s) that will receive the data as a prop                |
 
 ## How It Works
 
@@ -57,11 +57,7 @@ Transform data to match the expected format of child components (e.g., `{ value,
             label: item.name,
         })}
     >
-        <Select
-            label="Product Type"
-            name="product_type_id"
-            searchable
-        />
+        <Select label="Product Type" name="product_type_id" searchable />
     </Data>
 </Field>
 ```
@@ -79,9 +75,7 @@ Pass data with a custom property name (useful for components that expect differe
             renderItem={(item) => (
                 <span className="flex flex-col items-start space-x-2">
                     <span>{item.label}</span>
-                    <span className="text-xs text-zinc-500">
-                        {item.group}
-                    </span>
+                    <span className="text-xs text-zinc-500">{item.group}</span>
                 </span>
             )}
         />
@@ -142,11 +136,7 @@ Transform complex data structures:
                     label: i.name,
                 })}
             >
-                <Select
-                    label="Product Type"
-                    name="product_type_id"
-                    searchable
-                />
+                <Select label="Product Type" name="product_type_id" searchable />
             </Data>
         </Field>
 
@@ -158,11 +148,7 @@ Transform complex data structures:
                     label: i.name,
                 })}
             >
-                <Select
-                    label="Manufacturer"
-                    name="manufacturer_id"
-                    searchable
-                />
+                <Select label="Manufacturer" name="manufacturer_id" searchable />
             </Data>
         </Field>
     </Stack>
@@ -173,16 +159,8 @@ Transform complex data structures:
 
 ```tsx
 <Field name="product_id" type="select" live>
-    <Data
-        parameter="products"
-        map={(d: any) => ({ value: d.id, label: d.name })}
-    >
-        <Select
-            variant="transparent"
-            placeholder="Select a product"
-            searchable
-            clearable
-        />
+    <Data parameter="products" map={(d: any) => ({ value: d.id, label: d.name })}>
+        <Select variant="transparent" placeholder="Select a product" searchable clearable />
     </Data>
 </Field>
 ```
@@ -268,4 +246,3 @@ return inertia()->modal('Product/Create')->baseRoute('products.index')->with([
 - `../Slot/Slot.tsx` - Slot component used for prop passing
 - `@inertiajs/react` - Inertia React integration
 - `@inertiaui/modal-react` - Modal context provider
-

@@ -32,10 +32,10 @@ const Pagination: FunctionComponent<PaginationProps> = (props) => {
 
     return (
         <div className="sticky bottom-5 mb-20 ml-[50%] inline-flex -translate-x-1/2 flex-col">
-            <div className="absolute inset-0 border-8 border-blue-500 blur-2xl"></div>
+            <div className="absolute inset-0 border-8 border-slate-500 blur-2xl"></div>
             <MantinePagination
                 classNames={{
-                    root: ' items-center justify-center w-auto inline-flex rounded-full bg-zinc-50 p-2 px-2 ring-1 ring-zinc-950/20 drop-shadow drop-shadow-zinc-950/10',
+                    root: ' items-center *:flex-nowrap! justify-center w-auto inline-flex rounded-full bg-zinc-50 p-2 px-2 ring-1 ring-zinc-950/20 drop-shadow drop-shadow-zinc-950/10',
                 }}
                 size="sm"
                 radius={100}

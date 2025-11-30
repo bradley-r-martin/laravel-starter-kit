@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from 'motion/react';
 import { FunctionComponent, useRef } from 'react';
 import HeaderFilters from './HeaderFilters';
 
-interface HeaderProps {
+export interface HeaderProps {
     title?: React.ReactNode;
     action?: React.ReactNode;
     filters?: React.ReactNode;
@@ -56,7 +56,7 @@ const Header: FunctionComponent<HeaderProps> = ({ title, action, filters, subtit
                         : {}
                 }
             >
-                {subtitle}
+                <div className="text-xs text-zinc-500">{subtitle}</div>
             </motion.div>
             <motion.div
                 ref={headerRef}

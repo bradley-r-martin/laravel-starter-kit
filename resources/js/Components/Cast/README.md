@@ -38,43 +38,43 @@ Formats address objects as strings or envelope-style multi-line addresses.
 
 ### Cast.Currency Props
 
-| Prop          | Type                    | Default      | Description                                                                 |
-| ------------- | ----------------------- | ------------ | --------------------------------------------------------------------------- |
-| `children`    | `number \| null`        | required     | The numeric value to format (stored in cents, will be divided by 100)       |
-| `format`      | `string`                | `'$0,0.00'`  | Numbro format string for currency display                                   |
-| `fallback`    | `ReactNode`             | `'Err'`      | Content to display when formatting fails or value is invalid                |
-| `leftSection` | `ReactNode`             | optional     | Content to display before the formatted value                               |
-| `rightSection`| `ReactNode`             | optional     | Content to display after the formatted value                                |
+| Prop           | Type             | Default     | Description                                                           |
+| -------------- | ---------------- | ----------- | --------------------------------------------------------------------- |
+| `children`     | `number \| null` | required    | The numeric value to format (stored in cents, will be divided by 100) |
+| `format`       | `string`         | `'$0,0.00'` | Numbro format string for currency display                             |
+| `fallback`     | `ReactNode`      | `'Err'`     | Content to display when formatting fails or value is invalid          |
+| `leftSection`  | `ReactNode`      | optional    | Content to display before the formatted value                         |
+| `rightSection` | `ReactNode`      | optional    | Content to display after the formatted value                          |
 
 ### Cast.Percentage Props
 
-| Prop          | Type                    | Default      | Description                                                                 |
-| ------------- | ----------------------- | ------------ | --------------------------------------------------------------------------- |
-| `children`    | `number \| null`        | required     | The numeric value to format as a percentage                                |
-| `format`      | `string`                | `'0.00%'`    | Numbro format string for percentage display                                 |
-| `fallback`    | `ReactNode`             | `'Err'`      | Content to display when formatting fails or value is invalid                |
-| `leftSection` | `ReactNode`             | optional     | Content to display before the formatted value                               |
-| `rightSection`| `ReactNode`             | optional     | Content to display after the formatted value                                |
+| Prop           | Type             | Default   | Description                                                  |
+| -------------- | ---------------- | --------- | ------------------------------------------------------------ |
+| `children`     | `number \| null` | required  | The numeric value to format as a percentage                  |
+| `format`       | `string`         | `'0.00%'` | Numbro format string for percentage display                  |
+| `fallback`     | `ReactNode`      | `'Err'`   | Content to display when formatting fails or value is invalid |
+| `leftSection`  | `ReactNode`      | optional  | Content to display before the formatted value                |
+| `rightSection` | `ReactNode`      | optional  | Content to display after the formatted value                 |
 
 ### Cast.Datetime Props
 
-| Prop          | Type                    | Default      | Description                                                                 |
-| ------------- | ----------------------- | ------------ | --------------------------------------------------------------------------- |
-| `children`    | `string \| null`        | required     | The date/time string to format                                              |
-| `format`      | `string`                | `'DD/MM/YYYY'`| Dayjs format string for date display                                        |
-| `fallback`    | `ReactNode`             | `'Err'`      | Content to display when formatting fails or value is null/invalid          |
-| `leftSection` | `ReactNode`             | optional     | Content to display before the formatted value                               |
-| `rightSection`| `ReactNode`             | optional     | Content to display after the formatted value                                |
+| Prop           | Type             | Default        | Description                                                       |
+| -------------- | ---------------- | -------------- | ----------------------------------------------------------------- |
+| `children`     | `string \| null` | required       | The date/time string to format                                    |
+| `format`       | `string`         | `'DD/MM/YYYY'` | Dayjs format string for date display                              |
+| `fallback`     | `ReactNode`      | `'Err'`        | Content to display when formatting fails or value is null/invalid |
+| `leftSection`  | `ReactNode`      | optional       | Content to display before the formatted value                     |
+| `rightSection` | `ReactNode`      | optional       | Content to display after the formatted value                      |
 
 ### Cast.Address Props
 
-| Prop          | Type                    | Default      | Description                                                                 |
-| ------------- | ----------------------- | ------------ | --------------------------------------------------------------------------- |
-| `children`    | `Domain.Address \| null`| required     | The address object to format                                                |
-| `format`      | `'envelope' \| 'string'`| `'string'`   | Format style: 'string' for single-line, 'envelope' for multi-line          |
-| `fallback`    | `ReactNode`             | `'Err'`      | Content to display when formatting fails or value is null/invalid          |
-| `leftSection` | `ReactNode`             | optional     | Content to display before the formatted value                               |
-| `rightSection`| `ReactNode`             | optional     | Content to display after the formatted value                                |
+| Prop           | Type                     | Default    | Description                                                       |
+| -------------- | ------------------------ | ---------- | ----------------------------------------------------------------- |
+| `children`     | `Domain.Address \| null` | required   | The address object to format                                      |
+| `format`       | `'envelope' \| 'string'` | `'string'` | Format style: 'string' for single-line, 'envelope' for multi-line |
+| `fallback`     | `ReactNode`              | `'Err'`    | Content to display when formatting fails or value is null/invalid |
+| `leftSection`  | `ReactNode`              | optional   | Content to display before the formatted value                     |
+| `rightSection` | `ReactNode`              | optional   | Content to display after the formatted value                      |
 
 ## Usage Examples
 
@@ -160,11 +160,7 @@ Formats address objects as strings or envelope-style multi-line addresses.
 
 ```tsx
 <Tooltip
-    label={
-        <Cast.Currency rightSection=" lost revenue">
-            {site.__shrinkage_value}
-        </Cast.Currency>
-    }
+    label={<Cast.Currency rightSection=" lost revenue">{site.__shrinkage_value}</Cast.Currency>}
 >
     <span>
         <Cast.Percentage>{site.__shrinkage_percentage}</Cast.Percentage>
@@ -235,9 +231,7 @@ Formats address objects as strings or envelope-style multi-line addresses.
 
 ```tsx
 // Envelope format (multi-line, uppercase)
-<Cast.Address format="envelope">
-    {site.address}
-</Cast.Address>
+<Cast.Address format="envelope">{site.address}</Cast.Address>
 // Output:
 // BUILDING NAME, Level 2
 // 123 MAIN STREET
@@ -248,9 +242,7 @@ Formats address objects as strings or envelope-style multi-line addresses.
 #### With Fallback
 
 ```tsx
-<Cast.Address fallback="No address provided">
-    {customer.address}
-</Cast.Address>
+<Cast.Address fallback="No address provided">{customer.address}</Cast.Address>
 ```
 
 #### In Description Lists
@@ -259,9 +251,7 @@ Formats address objects as strings or envelope-style multi-line addresses.
 <DescriptionList.Item>
     <DescriptionList.Item.Label>Address</DescriptionList.Item.Label>
     <DescriptionList.Item.Value className="whitespace-pre-wrap">
-        <Cast.Address format="envelope">
-            {site.address}
-        </Cast.Address>
+        <Cast.Address format="envelope">{site.address}</Cast.Address>
     </DescriptionList.Item.Value>
 </DescriptionList.Item>
 ```
@@ -389,12 +379,12 @@ See [Day.js format documentation](https://day.js.org/docs/en/display/format) for
 
 - `'string'` - Single-line format: "123 Main Street, Suburb, State 1234, Country"
 - `'envelope'` - Multi-line format (uppercase, postal style):
-  ```
-  BUILDING NAME, Level 2
-  123 MAIN STREET
-  SUBURB STATE 1234
-  COUNTRY
-  ```
+    ```
+    BUILDING NAME, Level 2
+    123 MAIN STREET
+    SUBURB STATE 1234
+    COUNTRY
+    ```
 
 ## Technical Details
 
@@ -416,19 +406,16 @@ All Cast components include error handling:
 
 - If formatting fails, the `fallback` prop is used (defaults to `'Err'`)
 - Null values are handled gracefully:
-  - Currency/Percentage: Uses `0` if null
-  - Datetime: Returns `fallback` if null
-  - Address: Returns `fallback` if null
+    - Currency/Percentage: Uses `0` if null
+    - Datetime: Returns `fallback` if null
+    - Address: Returns `fallback` if null
 
 ### Section Props
 
 The `leftSection` and `rightSection` props allow you to add content before or after the formatted value:
 
 ```tsx
-<Cast.Currency 
-    leftSection={<Icon />}
-    rightSection=" per unit"
->
+<Cast.Currency leftSection={<Icon />} rightSection=" per unit">
     {product.price}
 </Cast.Currency>
 ```
@@ -480,4 +467,3 @@ protected $casts = [
 - `@/Utilities/Transformers.ts` - Address transformation utilities
 - `numbro` - Number formatting library
 - `dayjs` - Date/time formatting library
-

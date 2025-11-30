@@ -35,12 +35,13 @@ const List: InertiaView<ListProps> = (props) => {
             header: 'Name',
             accessor: 'name',
             dataSpan: '1',
+            //  cellClassName: 'col-span-full',
             render: (snackware) => <Navatar name={snackware.name} />,
         },
         {
             header: 'Type',
             accessor: 'type',
-            dataSpan: 'hidden',
+            //  cellClassName: 'col-span-1/2 bg-red-500',
             render: (snackware) => (
                 <Badge variant="light" color="blue">
                     {snackware.type}
@@ -117,7 +118,7 @@ const List: InertiaView<ListProps> = (props) => {
             resource={{ singular: 'snackware', plural: 'snackwares' }}
             rowKey={(snackware) => snackware.id}
             columns={columns}
-            actionsColumnProps={{ width: '140px' }}
+            actionsColumnProps={{ width: '140px', cellClassName: 'col-span-full' }}
             actions={(snackware: Models.Snackware) => [
                 {
                     visible: !snackware.closed_at,

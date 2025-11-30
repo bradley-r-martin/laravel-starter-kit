@@ -6,7 +6,7 @@ import { ResourceColumn, ResourceList } from '@/Components/ResourceList';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
 import { Asset } from '@/Utilities/Asset';
-import {  Badge, Button, Group, Text } from '@mantine/core';
+import { Badge, Button, Group, Text } from '@mantine/core';
 import {
     BanIcon,
     Building2Icon,
@@ -146,7 +146,7 @@ const List: InertiaView<ListProps> = (props) => {
             rowKey={(user) => user.id}
             columns={columns}
             actionsColumnProps={{ width: '180px' }}
-            actions={(user: Models.User)=>[
+            actions={(user: Models.User) => [
                 {
                     visible: !user.closed_at && !user.suspended_at,
                     icon: PencilIcon,
@@ -202,7 +202,7 @@ const List: InertiaView<ListProps> = (props) => {
                     href: route('users.destroy', user.id),
                     type: 'modal',
                     color: 'red',
-                }
+                },
             ]}
             emptyState={{
                 title: 'No users found',
