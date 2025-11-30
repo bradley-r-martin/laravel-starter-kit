@@ -6,7 +6,7 @@ namespace App\Console\Commands\Migrate;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use SplFileInfo;
@@ -33,11 +33,11 @@ final class Normalise extends Command
 
     public function load(): void
     {
-        $this->tables = collect(File::allFiles(storage_path('app/migrate/downloaded')))->map(fn (SplFileInfo $file): string => $file->getFilenameWithoutExtension());
+        $this->tables = collect(Storage::disk('public')->allFiles('migrate/downloaded'))->map(fn (SplFileInfo $file): string => $file->getFilenameWithoutExtension());
         $this->data = fluent([]);
         $this->normalised = fluent([]);
         $this->tables->each(function (string $table, mixed $key): void {
-            $this->data->{$table} = collect(json_decode(File::get(storage_path('app/migrate/downloaded/'.$table.'.json')), true));
+            $this->data->{$table} = collect(json_decode(Storage::disk('public')->get('migrate/downloaded/'.$table.'.json'), true));
             if ($table !== 'snackware_products') {
                 $this->data->{$table} = $this->data->{$table}->keyBy('id');
             }
@@ -51,7 +51,7 @@ final class Normalise extends Command
         $this->tables->each(function (string $table, mixed $key): void {
             if (method_exists($this, $table)) {
                 $this->{$table}();
-                File::put(storage_path('app/migrate/normalised/'.$table.'.json'), $this->normalised->{$table}->toJson(JSON_PRETTY_PRINT));
+                Storage::disk('public')->put('migrate/normalised/'.$table.'.json', $this->normalised->{$table}->toJson(JSON_PRETTY_PRINT));
             }
         });
 
@@ -63,7 +63,7 @@ final class Normalise extends Command
                 $productCount = $snackwareProductsBySnackware->get($snackware->id)?->count() ?? 0;
                 $snackware->__product_count = $productCount;
             });
-            File::put(storage_path('app/migrate/normalised/snackware.json'), $this->normalised->snackware->toJson(JSON_PRETTY_PRINT));
+            Storage::disk('public')->put('migrate/normalised/snackware.json', $this->normalised->snackware->toJson(JSON_PRETTY_PRINT));
         }
     }
 

@@ -26,7 +26,7 @@ use App\Models\User;
 use App\Models\Wholesaler;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use SplFileInfo;
 
 use function Laravel\Prompts\progress;
@@ -67,20 +67,20 @@ final class Import extends Command
 
     public function load(): void
     {
-        $normalisedPath = storage_path('app/migrate/normalised');
+        $normalisedPath = 'migrate/normalised';
 
-        if (! File::exists($normalisedPath)) {
+        if (! Storage::disk('public')->exists($normalisedPath)) {
             $this->error("Normalised data directory not found at {$normalisedPath}");
             exit(1);
         }
 
-        $this->tables = collect(File::allFiles($normalisedPath))
+        $this->tables = collect(Storage::disk('public')->allFiles($normalisedPath))
             ->map(fn (SplFileInfo $file): string => $file->getFilenameWithoutExtension());
 
         $this->normalised = fluent([]);
 
         $this->tables->each(function (string $table, mixed $key) use ($normalisedPath): void {
-            $content = File::get("{$normalisedPath}/{$table}.json");
+            $content = Storage::disk('public')->get("{$normalisedPath}/{$table}.json");
             $data = json_decode($content, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
