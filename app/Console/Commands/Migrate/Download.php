@@ -6,7 +6,7 @@ namespace App\Console\Commands\Migrate;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use stdClass;
 
 use function Laravel\Prompts\progress;
@@ -133,7 +133,7 @@ final class Download extends Command
                 }
 
                 $progress->hint("Saving {$table}.json");
-                File::put(storage_path('app/migrate/downloaded/'.$table.'.json'), $data->toJson(JSON_PRETTY_PRINT));
+                Storage::disk('public')->put('migrate/downloaded/'.$table.'.json', $data->toJson(JSON_PRETTY_PRINT));
             }
         );
     }
