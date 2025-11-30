@@ -174,7 +174,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         icon={<GaugeIcon className="size-7 shrink-0" />}
                                         label="Dashboard"
                                         opened={opened}
-                                        href="/mobile"
+                                        href="/dashboard"
                                         onClose={onClose}
                                         data-active={component.startsWith('Dashboard')}
                                     />
@@ -184,8 +184,8 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         label="Sites"
                                         opened={opened}
                                         onClose={onClose}
-                                        href="/roles"
-                                        data-active={component.startsWith('Role')}
+                                        href="/sites"
+                                        data-active={component.startsWith('Site')}
                                     />
 
                                     <TabbarItem
@@ -193,8 +193,8 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         label="Routes"
                                         opened={opened}
                                         onClose={onClose}
-                                        href="/users"
-                                        data-active={component.startsWith('User')}
+                                        href="/routes"
+                                        data-active={component.startsWith('Route')}
                                     />
 
                                     <TabbarItem
@@ -202,6 +202,8 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         label="Runs"
                                         opened={opened}
                                         onClose={onClose}
+                                        href="/runs"
+                                        data-active={component.startsWith('Run')}
                                     />
 
                                     <TabbarItem
@@ -209,6 +211,8 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         label="Expenses"
                                         opened={opened}
                                         onClose={onClose}
+                                        href="/expenses"
+                                        data-active={component.startsWith('Expense')}
                                     />
 
                                     <TabbarItem
@@ -216,6 +220,8 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         label="QR Codes"
                                         opened={opened}
                                         onClose={onClose}
+                                        href="/qr-codes"
+                                        data-active={component.startsWith('QRCode')}
                                     />
 
                                     <TabbarItem
@@ -223,6 +229,8 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                         label="Reports"
                                         opened={opened}
                                         onClose={onClose}
+                                        href="/reports"
+                                        data-active={component.startsWith('Reports')}
                                     />
 
                                     <TabbarItem
@@ -239,7 +247,7 @@ const Tabbar: FunctionComponent<TabbarProps> = (props) => {
                                     <TabbarItem
                                         icon={<LogOutIcon className="size-7 shrink-0" />}
                                         label="Logout"
-                                        href={'/login'}
+                                        href={'/logout'}
                                         opened={opened}
                                         onClose={onClose}
                                     />
