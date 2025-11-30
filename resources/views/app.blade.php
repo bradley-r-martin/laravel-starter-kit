@@ -9,6 +9,13 @@
     
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="vapid-public-key" content="{{ config('webpush.vapid.public_key') }}">
+    @php
+        $swVersionPath = public_path('sw-version.txt');
+        $swVersion = file_exists($swVersionPath) ? trim(file_get_contents($swVersionPath)) : null;
+    @endphp
+    @if($swVersion)
+    <meta name="sw-version" content="{{ $swVersion }}">
+    @endif
 
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
 

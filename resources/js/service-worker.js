@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 
 // This version will be replaced during build
-const CACHE_VERSION = '7ff4e7bc';
+const CACHE_VERSION = '__CACHE_VERSION__';
 const CACHE_NAME = `app-cache-v${CACHE_VERSION}`;
 const RUNTIME_CACHE = `app-runtime-v${CACHE_VERSION}`;
 const IMAGE_CACHE = `app-images-v${CACHE_VERSION}`;
@@ -14,16 +14,33 @@ const PRECACHE_ASSETS = [
 
 // Install event - precache assets
 self.addEventListener('install', (event) => {
-    console.log('[Service Worker] Installing...', CACHE_VERSION);
+    // Check if there's already an active service worker (update scenario)
+    // If there's no active worker, this is a first-time install
+    const isFirstInstall = !self.registration.active;
+    
+    if (isFirstInstall) {
+        console.log('[Service Worker] Installing for the first time...', CACHE_VERSION);
+    }
     
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log('[Service Worker] Precaching assets');
-                return cache.addAll(PRECACHE_ASSETS);
+                // Check if assets are already cached
+                return cache.match('/').then((cached) => {
+                    const needsPrecache = !cached || isFirstInstall;
+                    
+                    if (needsPrecache) {
+                        if (isFirstInstall) {
+                            console.log('[Service Worker] Precaching assets');
+                        }
+                        return cache.addAll(PRECACHE_ASSETS);
+                    }
+                    return Promise.resolve();
+                });
             })
             .then(() => {
                 // Force the waiting service worker to become the active service worker
+                // This allows immediate activation without waiting for all tabs to close
                 return self.skipWaiting();
             })
             .catch((error) => {
@@ -34,23 +51,34 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-    console.log('[Service Worker] Activating...', CACHE_VERSION);
-    
     event.waitUntil(
         caches.keys()
             .then((cacheNames) => {
+                const oldCaches = cacheNames.filter(
+                    (cacheName) =>
+                        cacheName !== CACHE_NAME &&
+                        cacheName !== RUNTIME_CACHE &&
+                        cacheName !== IMAGE_CACHE &&
+                        cacheName.startsWith('app-')
+                );
+
+                const isFirstActivation = !self.registration.active;
+                const hasVersionUpdate = oldCaches.length > 0;
+
+                // Only log if this is a first activation or version update
+                if (isFirstActivation || hasVersionUpdate) {
+                    if (isFirstActivation) {
+                        console.log('[Service Worker] Activating for the first time...', CACHE_VERSION);
+                    } else {
+                        console.log('[Service Worker] Activating new version...', CACHE_VERSION);
+                        console.log(`[Service Worker] Cleaning up ${oldCaches.length} old cache(s)`);
+                    }
+                }
+
                 return Promise.all(
-                    cacheNames.map((cacheName) => {
-                        // Delete all caches that don't match the current version
-                        if (
-                            cacheName !== CACHE_NAME &&
-                            cacheName !== RUNTIME_CACHE &&
-                            cacheName !== IMAGE_CACHE &&
-                            cacheName.startsWith('app-')
-                        ) {
-                            console.log('[Service Worker] Deleting old cache:', cacheName);
-                            return caches.delete(cacheName);
-                        }
+                    oldCaches.map((cacheName) => {
+                        console.log('[Service Worker] Deleting old cache:', cacheName);
+                        return caches.delete(cacheName);
                     })
                 );
             })

@@ -1,4 +1,5 @@
 import { router } from '@inertiajs/react';
+import serviceWorkerService from './ServiceWorkerService';
 
 export interface PushSubscription {
     endpoint: string;
@@ -218,8 +219,20 @@ class PushNotificationService {
                 };
             }
 
-            // Register service worker
-            const registration = await navigator.serviceWorker.register('/service-worker.js');
+            // Get service worker registration (will register if not already registered)
+            let registration = serviceWorkerService.getRegistration();
+            
+            if (!registration) {
+                // Register service worker if not already registered
+                registration = await serviceWorkerService.register();
+            }
+
+            if (!registration) {
+                return {
+                    success: false,
+                    error: 'Failed to register service worker',
+                };
+            }
 
             // Wait for service worker to be ready
             await navigator.serviceWorker.ready;

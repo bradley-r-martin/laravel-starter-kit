@@ -5,12 +5,20 @@ import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import MantineServiceProvider from './Providers/MantineServiceProvider';
 import iosPwaNavigationLockService from './Services/IosPwaNavigationLockService';
+import serviceWorkerService from './Services/ServiceWorkerService';
 import { isStandalone } from './Utilities/Environment';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 if (isStandalone()) {
     iosPwaNavigationLockService.activate();
+}
+
+// Register service worker for PWA caching
+if (import.meta.env.PROD) {
+    serviceWorkerService.register().catch((error) => {
+        console.error('[Service Worker] Registration error:', error);
+    });
 }
 
 createInertiaApp({

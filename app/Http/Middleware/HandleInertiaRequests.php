@@ -38,9 +38,17 @@ final class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        // Get service worker version if it exists
+        $swVersion = null;
+        $swVersionPath = public_path('sw-version.txt');
+        if (file_exists($swVersionPath)) {
+            $swVersion = trim(file_get_contents($swVersionPath));
+        }
+
         return [
             ...parent::share($request),
             'version' => parent::version($request),
+            'swVersion' => $swVersion,
             'user' => $request->user(),
             'toast' => $request->session()->get('toast'),
             'policies' => $request->user()?->policies()
