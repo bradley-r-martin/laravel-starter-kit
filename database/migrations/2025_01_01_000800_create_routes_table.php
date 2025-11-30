@@ -42,7 +42,6 @@ return new class extends Migration
         /* Performance indexes */
         Schema::table('routes', function (Blueprint $table): void {
             $table->index('territory_id');
-            $table->index('operator_id');
             $table->index('name');
             $table->index('closed_at');
             $table->index('skipped_until');
