@@ -145,7 +145,7 @@ final class Site extends Model
     {
         return [
             'address' => AddressCast::class,
-            'opening_hours' => 'array',
+            'opening_hours' => 'json',
             'closed_at' => 'datetime',
         ];
     }

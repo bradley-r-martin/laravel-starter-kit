@@ -91,6 +91,14 @@ const List: InertiaView<ListProps> = (props) => {
                     ),
                 },
                 {
+                    name: 'Expenses',
+                    cell: (wholesaler) => (
+                        <Text size="sm" c="dimmed">
+                            {wholesaler.__expenses_count}
+                        </Text>
+                    ),
+                },
+                {
                     name: 'Created',
                     cell: (wholesaler) => (
                         <Text size="sm" c="dimmed">

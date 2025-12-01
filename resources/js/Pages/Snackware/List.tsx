@@ -85,7 +85,7 @@ const List: InertiaView<ListProps> = (props) => {
                     name: 'Products',
                     cell: (snackware) => (
                         <Text size="sm" c="dimmed">
-                            {snackware.__product_count}
+                            {snackware.__products_count}
                         </Text>
                     ),
                 },

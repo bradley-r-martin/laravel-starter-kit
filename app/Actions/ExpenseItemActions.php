@@ -35,12 +35,12 @@ final class ExpenseItemActions
         $expenseItem = ExpenseItem::create([
             'expense_id' => $data['expense_id'],
             'item' => null,
-            'units' => 1,
-            'cost' => 0,
-            'rebate' => 0,
-            'royalty' => 0,
-            'quantity' => 0,
+            'quantity' => 1,
             'price' => 0,
+            'product_rebate' => 0,
+            'product_royalty' => 0,
+            'product_units' => 0,
+            'product_retail_price' => 0,
             'product_id' => null,
         ]);
 
@@ -56,40 +56,27 @@ final class ExpenseItemActions
     public function update(array $data): ExpenseItem
     {
 
-        // Handle product assignment/change
-        if (array_key_exists('product_id', $data)) {
-            $product = Product::find($data['product_id']);
-
-            $newProductId = $data['product_id'];
-
-            if ($newProductId !== null) {
-                /** @var Product $product */
-                $product = Product::find($newProductId);
-                $data['__product_name'] = $product->name;
-            } else {
+        // Handle product
+        if (array_key_exists('product_id', $data) || array_key_exists('quantity', $data)) {
+            if (array_key_exists('product_id', $data) && $data['product_id'] === null) {
                 $data['__product_name'] = null;
-                $data['price'] = 0;
-                $data['quantity'] = 0;
-                $data['rebate'] = 0;
-                $data['royalty'] = 0;
+                $data['product_retail_price'] = 0;
+                $data['product_units'] = 0;
+                $data['product_rebate'] = 0;
+                $data['product_royalty'] = 0;
+            } else {
+                $id = $data['product_id'] ?? $this->expenseItem->product_id;
+                $product = Product::find($id);
+                $data['__product_name'] = $product->name;
+                $data['product_retail_price'] = $product->price;
+                $quantity = $data['quantity'] ?? $this->expenseItem->quantity;
+                $data['product_units'] = $product->units * $quantity;
+                $data['product_rebate'] = $product->rebate * $quantity;
+                $data['product_royalty'] = $product->royalty * $quantity;
             }
         }
 
-        if ((array_key_exists('product_id', $data) && $data['product_id'] !== null)) {
-            /** @var Product $product */
-            $product = Product::find($data['product_id']);
-            $data['price'] = $product->price;
-            $data['quantity'] = $product->units * $this->expenseItem->units;
-            $data['rebate'] = $product->rebate * $data['quantity'];
-            $data['royalty'] = $product->royalty * $data['quantity'];
-        }
-
         $this->expenseItem->update($data);
-
-        // Update expense totals after item update
-        $this->updateExpenseTotals();
-
-        $this->expenseItem->refresh();
 
         return $this->expenseItem;
     }
@@ -112,9 +99,10 @@ final class ExpenseItemActions
     {
         $totals = ExpenseItem::where('expense_id', $expense->id)
             ->selectRaw('
-                SUM(cost) as total_cost,
-                SUM(rebate) as total_rebate,
-                SUM(royalty) as total_royalty
+                SUM(product_retail_price) as total_product_retail_price,
+                SUM(product_rebate) as total_product_rebate,
+                SUM(product_royalty) as total_product_royalty,
+                SUM(product_units) as total_product_units
             ')
             ->first();
 

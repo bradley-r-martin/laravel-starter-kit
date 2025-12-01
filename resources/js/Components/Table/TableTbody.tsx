@@ -1,5 +1,5 @@
 import { TableTbody, TableTbodyProps } from '@mantine/core';
-import { AnimatePresence, motion, MotionProps } from 'motion/react';
+import {  motion, MotionProps } from 'motion/react';
 import { forwardRef, ReactNode } from 'react';
 import TableTBodyTd from './TableTBodyTd';
 import TableTBodyTr from './TableTBodyTr';
@@ -14,19 +14,14 @@ function asTableTbody<TProps extends object>(WrappedComponent: React.ComponentTy
     const Component = forwardRef<HTMLTableSectionElement, EnhancedProps>((props, ref) => {
         const { children, ...restProps } = props as TProps & { children: ReactNode };
         const additionalProps: Partial<
-            TableTbodyProps & MotionProps & { component: typeof motion.tbody }
+            TableTbodyProps & MotionProps & {  }
         > = {
-            animate: { opacity: 1, height: 'auto' },
-            initial: { opacity: 0, height: 0 },
-            exit: { opacity: 0, height: 0 },
-            component: motion.tbody,
+         
         };
 
         return (
             <WrappedComponent {...additionalProps} {...(restProps as TProps)} ref={ref}>
-                <AnimatePresence mode="wait" initial={false}>
                     {children}
-                </AnimatePresence>
             </WrappedComponent>
         );
     }) as React.ForwardRefExoticComponent<

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->ulid('territory_id');
             $table->foreign('territory_id')->references('id')->on('territories')->cascadeOnDelete();
+            $table->ulid('operator_id');
+            $table->foreign('operator_id')->references('id')->on('operators')->cascadeOnDelete();
             $table->string('name');
             $table->string('schedule')->nullable();
             $table->timestamp('closed_at')->nullable();

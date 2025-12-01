@@ -90,12 +90,13 @@ declare namespace Models {
     export type ExpenseItem = {
         id: string;
         item: string;
-        units: number;
-        cost: number;
-        rebate: number;
-        royalty: number;
         quantity: number;
         price: number;
+     
+        product_rebate: number;
+        product_royalty: number;
+        product_units: number;
+        product_retail_price: number;
         product_id: string;
         expense_id: string;
         refreshed_at: string;
@@ -103,6 +104,7 @@ declare namespace Models {
         created_at: string;
         updated_at: string;
         __product_name: string;
+
     };
 
     export type Manufacturer = {
@@ -336,7 +338,7 @@ declare namespace Models {
         closed_at: string;
         created_at: string;
         updated_at: string;
-        __product_count?: number;
+        __products_count?: number;
         __placements_count?: number;
         __wholesale_from?: number;
         __wholesale_to?: number;

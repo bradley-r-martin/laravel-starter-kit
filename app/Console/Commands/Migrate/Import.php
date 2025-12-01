@@ -45,7 +45,8 @@ final class Import extends Command
         'snackware_products',
         'expenses',
         'expense_items',
-        'runs',
+        'routes',
+        'sites',
     ];
 
     public function handle(): void
@@ -53,6 +54,32 @@ final class Import extends Command
         $this->load();
         $this->invoke();
         $this->info('Import completed successfully!');
+    }
+
+    private function load(): void
+    {
+        $disk = Storage::disk('public');
+
+        $this->data = collect(
+            collect($disk->allFiles('migrate/enriched'))
+                ->map(fn (string $file): string => basename($file, '.json'))
+                ->mapWithKeys(function (string $table) use ($disk): array {
+                    $items = collect(json_decode((string) $disk->get("migrate/enriched/{$table}.json"), true));
+
+                    return [$table => $table !== 'snackware_products' ? $items->keyBy('id') : $items];
+                })
+        );
+    }
+
+    private function invoke(): void
+    {
+        collect($this->order)
+            ->sortBy(fn (string $table): int|string|false => array_search($table, $this->order))
+            ->each(function (string $table, mixed $key): void {
+                if (method_exists($this, $table)) {
+                    $this->{$table}();
+                }
+            });
     }
 
     private function expense_items(): void
@@ -90,7 +117,7 @@ final class Import extends Command
         progress(
             label: 'Importing routes',
             steps: $this->data->get('routes'),
-            callback: function (array $run, mixed $progress): void {
+            callback: function (array $route, mixed $progress): void {
                 $progress->hint("Importing route {$route['name']}...");
                 Route::updateOrCreate(
                     ['id' => $route['id']],
@@ -156,6 +183,9 @@ final class Import extends Command
             steps: $this->data->get('sites'),
             callback: function (array $site, mixed $progress): void {
                 $progress->hint("Importing site {$site['name']}...");
+                if (! array_key_exists('order', $site) || $site['order'] === null) {
+                    $site['order'] = 0;
+                }
                 Site::updateOrCreate(
                     ['id' => $site['id']],
                     $site,
@@ -267,32 +297,6 @@ final class Import extends Command
                     $operator,
                 );
             },
-        );
-    }
-
-    private function invoke(): void
-    {
-        collect($this->order)
-            ->sortBy(fn (string $table): int|string|false => array_search($table, $this->order))
-            ->each(function (string $table, mixed $key): void {
-                if (method_exists($this, $table)) {
-                    $this->{$table}();
-                }
-            });
-    }
-
-    private function load(): void
-    {
-        $disk = Storage::disk('public');
-
-        $this->data = collect(
-            collect($disk->allFiles('migrate/enriched'))
-                ->map(fn (string $file): string => basename($file, '.json'))
-                ->mapWithKeys(function (string $table) use ($disk): array {
-                    $items = collect(json_decode((string) $disk->get("migrate/enriched/{$table}.json"), true));
-
-                    return [$table => $table !== 'snackware_products' ? $items->keyBy('id') : $items];
-                })
         );
     }
 }

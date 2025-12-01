@@ -1,5 +1,5 @@
 import { TableTrProps } from '@mantine/core';
-import { motion, MotionProps } from 'motion/react';
+import { MotionProps } from 'motion/react';
 import { forwardRef } from 'react';
 import { twMerge } from 'tailwind-merge';
 import TableTr from './TableTr';
@@ -14,16 +14,12 @@ function asTableTbodyTr<TProps extends object>(WrappedComponent: React.Component
     const Component = forwardRef<HTMLTableRowElement, EnhancedProps>((props, ref) => {
         const { disabled, className, ...restProps } = props as EnhancedProps;
         const additionalProps: Partial<
-            TableTrProps & MotionProps & { component: typeof motion.tr }
+            TableTrProps & MotionProps & {  }
         > = {
             className: twMerge(
                 `grid grid-cols-2 gap-px md:table-row text-xs ${disabled ? 'disabled-bg text-slate-400' : 'text-slate-600'}`,
                 className
-            ),
-            // animate: { opacity: 1, height: 'auto' },
-            // initial: { opacity: 0, height: 0 },
-            // exit: { opacity: 0, height: 0 },
-            component: motion.tr,
+            )
         };
 
         return <WrappedComponent {...additionalProps} {...(restProps as TProps)} ref={ref} />;

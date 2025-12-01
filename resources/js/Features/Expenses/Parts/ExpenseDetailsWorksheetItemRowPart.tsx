@@ -21,17 +21,13 @@ interface ExpenseItemRowProps {
 }
 
 const ExpenseItemRow: FunctionComponent<ExpenseItemRowProps> = ({ item, index, isCompleted }) => {
-    const form = useForm({
-        product_id: item.product_id,
-        units: item.units,
-        cost: item.cost,
-    });
+    const form = useForm(item);
 
     return (
         <Table.Tbody.Tr
             key={item.id}
             layoutId={String(item.id)}
-            className={`group ${!item.product_id ? '' : ''}`}
+            className={`group transition-opacity duration-200 ${form.processing ? 'opacity-20' : ''} ${!item.product_id ? '' : ''}`}
         >
             <Table.Tbody.Td p={0} className="text-center font-bold text-slate-600">
                 <div
@@ -77,11 +73,13 @@ const ExpenseItemRow: FunctionComponent<ExpenseItemRowProps> = ({ item, index, i
                         >
                             <Select
                                 variant="transparent"
-                                placeholder={item.item as string}
+                                placeholder={item?.data?.name as string}
                                 searchable
                                 clearable
+                                limit={10}
                                 styles={{ root: { width: '100%' } }}
                                 radius={0}
+                              
                                 classNames={{
                                     wrapper: 'focus-within:bg-white',
                                     input: 'disabled:!bg-white disabled:!opacity-100 disabled:!cursor-default placeholder:!text-amber-600 !border !border-transparent hover:!outline-1 hover:!outline-slate-950/40 hover:!outline-offset-[-2px] hover:focus:!outline-none disabled:hover:outline-none  focus:!bg-blue-500/5 !shadow-none !drop-shadow-none focus:!shadow-inner focus:placeholder:!text-slate-600 focus:!bg-blue-500/5 focus:!drop-shadow focus:!border focus:!border-blue-500 focus:!ring-blue-500/20',
@@ -107,7 +105,7 @@ const ExpenseItemRow: FunctionComponent<ExpenseItemRowProps> = ({ item, index, i
                         method: 'patch',
                     }}
                 >
-                    <Field name="units" type="number" live>
+                    <Field name="quantity" type="number" live>
                         <NumberInput
                             disabled={isCompleted}
                             variant="transparent"
@@ -131,7 +129,7 @@ const ExpenseItemRow: FunctionComponent<ExpenseItemRowProps> = ({ item, index, i
                         method: 'patch',
                     }}
                 >
-                    <Field name="cost" type="number" live>
+                    <Field name="price" type="number" live>
                         <CurrencyInput>
                             <NumberInput
                                 disabled={isCompleted}
@@ -153,21 +151,21 @@ const ExpenseItemRow: FunctionComponent<ExpenseItemRowProps> = ({ item, index, i
                 </Form>
             </Table.Tbody.Td>
             <Table.Tbody.Td p={0} data-title="Units" className="disabled-bg">
-                <div className="p-2 px-3 text-sm">{item.product_id ? item.quantity : ''}</div>
+                <div className="p-2 px-3 text-sm">{item.product_id ? item.product_units : ''}</div>
             </Table.Tbody.Td>
             <Table.Tbody.Td p={0} data-title="RRP" className="disabled-bg">
                 <div className="p-2 px-3 text-sm">
-                    {item.product_id ? <Cast.Currency>{item.price}</Cast.Currency> : ''}
+                    {item.product_id ? <Cast.Currency>{item.product_retail_price}</Cast.Currency> : ''}
                 </div>
             </Table.Tbody.Td>
             <Table.Tbody.Td p={0} data-title="Royalty" className="disabled-bg">
                 <div className="p-2 px-3 text-sm">
-                    {item.product_id ? <Cast.Currency>{item.royalty}</Cast.Currency> : ''}
+                    {item.product_id ? <Cast.Currency>{item.product_royalty}</Cast.Currency> : ''}
                 </div>
             </Table.Tbody.Td>
             <Table.Tbody.Td p={0} data-title="Rebate" className="disabled-bg">
                 <div className="p-2 px-3 text-sm">
-                    {item.product_id ? <Cast.Currency>{item.rebate}</Cast.Currency> : ''}
+                    {item.product_id ? <Cast.Currency>{item.product_rebate}</Cast.Currency> : ''}
                 </div>
             </Table.Tbody.Td>
         </Table.Tbody.Tr>
