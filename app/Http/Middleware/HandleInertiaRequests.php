@@ -53,7 +53,7 @@ final class HandleInertiaRequests extends Middleware
             'toast' => $request->session()->get('toast'),
             'policies' => $request->user()?->policies()
                 ->get()
-                ->map(fn (Policy $policy): string => $policy->policy.'@'.$policy->ability)
+                ->map(fn (Policy $policy): string => $policy->namespace)
                 ->values()
                 ->toArray() ?? [],
         ];

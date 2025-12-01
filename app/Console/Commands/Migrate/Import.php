@@ -8,6 +8,7 @@ use App\Models\Expense;
 use App\Models\ExpenseItem;
 use App\Models\Manufacturer;
 use App\Models\Operator;
+use App\Models\Policy;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\Role;
@@ -54,6 +55,20 @@ final class Import extends Command
         $this->load();
         $this->invoke();
         $this->info('Import completed successfully!');
+
+        // Attached to the role: 01H65Q3CKHZC3QS7BX80Z6SGET every policy using the policy discovery service.
+        $policies = Policy::available();
+
+        foreach ($policies as $policy) {
+            Policy::create([
+                'role_id' => '01H65Q3CKHZC3QS7BX80Z6SGET',
+                'namespace' => $policy['namespace'],
+                'policy' => $policy['policy'],
+                'ability' => $policy['ability'],
+                'hidden' => false,
+            ]);
+        }
+
     }
 
     private function load(): void

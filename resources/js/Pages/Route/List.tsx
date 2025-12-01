@@ -106,11 +106,11 @@ const List: InertiaView<ListProps> = (props) => {
                         className: 'col-span-full',
                         onClick: (e: React.MouseEvent<HTMLTableCellElement>) => e.stopPropagation(),
                     },
-                    cell: (route: Models.Route) => (
+                    cell: (item: Models.Route) => (
                         <span className="flex items-center justify-end gap-2">
                             <ResourceListAction
-                                visible={!route.closed_at}
-                                href={route('routes.update', route.id)}
+                                visible={!item.closed_at}
+                                href={route('routes.update', item.id)}
                                 type="modal"
                                 color="blue"
                                 mobileProps={{

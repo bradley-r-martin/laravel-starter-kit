@@ -35,7 +35,6 @@ final class RoleActions
      */
     public function update(array $data): Role
     {
-        $this->role->update($data);
 
         // Derived data column updates
         if (array_key_exists('name', $data)) {
@@ -43,6 +42,18 @@ final class RoleActions
                 '__role_name' => $this->role->name,
             ]);
         }
+
+        // Handle policies
+        if (array_key_exists('policies', $data)) {
+            $this->role->policies()->delete();
+            $policies = Policy::available();
+
+            $this->role->policies()->createMany($policies->whereIn('namespace', $data['policies']));
+
+            unset($data['policies']);
+        }
+
+        $this->role->update($data);
 
         return $this->role;
     }

@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('policies', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('role_id');
+            $table->string('namespace');
             $table->string('policy');
             $table->string('ability');
-            $table->string('description');
             $table->boolean('hidden')->default(false);
             $table->timestamps();
 

@@ -55,15 +55,18 @@ export default function Create() {
                                 </Field>
 
                                 <Field name="policies" type="transfer">
-                                    <Data parameter="availablePolicies" property="items">
+                                    <Data parameter="policies" property="items" map={(item) => ({
+                                        value: item.namespace,
+                                        ...item
+                                    })}>
                                         <TransferInput
                                             label="Policies"
                                             className="max-h-[300px]"
                                             renderItem={(item) => (
                                                 <span className="flex flex-col items-start space-x-2">
-                                                    <span>{item.label}</span>
+                                                    <span>{item.ability}</span>
                                                     <span className="text-xs text-zinc-500">
-                                                        {item.group}
+                                                        {item.policy}
                                                     </span>
                                                 </span>
                                             )}
