@@ -24,6 +24,7 @@ return new class extends Migration
             $table->integer('order')->default(0);
             $table->string('name');
             $table->json('address')->nullable();
+
             $table->json('opening_hours')->nullable();
             $table->string('manager_code')->nullable();
             $table->timestamp('closed_at')->nullable();

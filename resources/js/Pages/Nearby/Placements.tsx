@@ -1,12 +1,17 @@
 import NearbyNoPlacementsFoundView from '@/Features/Nearby/Views/NearbyNoPlacementsFoundView';
+import useLocation from '@/Hooks/useLocation';
 import AppLayout from '@/Layouts/AppLayout';
+import Header from '@/Parts/Header';
 import { InertiaView } from '@/Types';
+import { router } from '@inertiajs/core';
+import { usePage } from '@inertiajs/react';
 import { useModalStack } from '@inertiaui/modal-react';
 import { Button, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
+import { MapPinnedIcon, QrCodeIcon } from 'lucide-react';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface NearbyProps {}
 
@@ -14,11 +19,75 @@ const Nearby: InertiaView<NearbyProps> = () => {
     const [scannerOpened, scannerControls] = useDisclosure(false);
     const modalStack = useModalStack();
 
+    const { props: { nearby } } = usePage<{
+        nearby: Models.Site[];
+    }>();
+
+    const { latitude, longitude, requestPermission, status } = useLocation();
+
+    useEffect(() => {
+            requestPermission();
+    }, []);
+
+    useEffect(() => {
+        if (latitude && longitude && status === 'watching') {
+            router.reload({only: ['nearby'], data: {latitude, longitude}});
+        }
+    },[latitude, longitude]);
+
     const [data, setData] = useState<IDetectedBarcode[] | null>(null);
 
     return (
-        <div className="flex h-full flex-col items-center justify-center">
-            <NearbyNoPlacementsFoundView open={scannerControls.open} />
+        <div className="flex h-full w-full flex-col">
+          
+     
+            {status === 'requesting' && (
+              <span>Requesting Permission</span>
+            )}
+            {status === 'unauthorised' && (
+              <span>Unauthorised</span>
+            )}
+            {status === 'error' && (
+              <span>Error</span>
+            )}
+            {status === 'unsupported' && (
+              <span>Unsupported</span>
+            )}
+            {status === 'watching' && (
+              <span>
+                {nearby && <div className='flex flex-col '>
+                    <Header
+                title="Nearby placements"
+                
+            />
+                    {nearby?.map((site) => (
+                        <div key={site.id} onClick={()=>  modalStack.visitModal('/nearby/placement')}>
+                            <span>{site.name}</span>
+                        </div>
+                    ))}
+                    <div className='flex flex-col items-center justify-center gap-2 bottom-24 inset-x-5 absolute'>
+                        <Button
+                            variant="filled"
+                            color="zinc"
+                            size="md"
+                            leftSection={<QrCodeIcon className="size-4" />}
+                            onClick={() => {
+                                scannerControls.open();
+                            }}
+                            fullWidth
+                        >
+                            Scan QR Code
+                        </Button>
+                        <div className="text-xs text-zinc-500">Scan to load a machine that doesn't appear nearby</div>
+                        </div>
+                    </div>}
+                {nearby?.length === 0 && (
+                     <NearbyNoPlacementsFoundView  />
+
+                )}
+              </span>
+            )}
+
             <Drawer
                 radius="xl"
                 opened={scannerOpened}

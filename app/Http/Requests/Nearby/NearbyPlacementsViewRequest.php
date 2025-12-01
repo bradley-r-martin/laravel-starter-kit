@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Nearby;
 
+use App\Models\Site;
 use Illuminate\Foundation\Http\FormRequest;
+use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
 final class NearbyPlacementsViewRequest extends FormRequest
@@ -27,8 +29,25 @@ final class NearbyPlacementsViewRequest extends FormRequest
         return [];
     }
 
+    public function nearby()
+    {
+        $radius = 0.2; // 200 meters
+        $latitude = (float) $this->query('latitude', 0);
+        $longitude = (float) $this->query('longitude', 0);
+
+        // Get sites within 200m of the given latitude and longitude, using address.latitude and address.longitude
+        $sites = Site::query()
+            ->filterNearby($latitude, $longitude, $radius)
+            ->get();
+
+        return $sites;
+    }
+
     public function respond(): Response
     {
-        return inertia()->render('Nearby/Placements', [])->toResponse($this);
+
+        return inertia()->render('Nearby/Placements', [
+            'nearby' => Inertia::defer(fn () => $this->nearby()),
+        ])->toResponse($this);
     }
 }

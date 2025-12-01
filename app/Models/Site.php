@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 final class Site extends Model
@@ -59,6 +60,22 @@ final class Site extends Model
         return $query->when($search, fn (Builder $q) => $q->where(fn (Builder $q) => $q
             ->where('name', 'like', "%{$search}%")
         ));
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeFilterNearby(Builder $query, float $lat, float $lng, float $radius = 0.2): Builder
+    {
+        if (DB::getDriverName() === 'pgsql') {
+            return $query->whereRaw("(address->>'latitude')::float BETWEEN ? AND ?", [$lat - $radius, $lat + $radius])
+                ->whereRaw("(address->>'longitude')::float BETWEEN ? AND ?", [$lng - $radius, $lng + $radius]);
+        }
+
+        return $query
+            ->whereRaw("CAST(JSON_EXTRACT(address, '$.latitude') AS REAL) BETWEEN ? AND ?", [$lat - $radius, $lat + $radius])
+            ->whereRaw("CAST(JSON_EXTRACT(address, '$.longitude') AS REAL) BETWEEN ? AND ?", [$lng - $radius, $lng + $radius]);
     }
 
     /**
