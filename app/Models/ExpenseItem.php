@@ -48,6 +48,7 @@ final class ExpenseItem extends Model
             'quantity' => 'integer',
             'unit_price' => 'integer',
             'total_price' => 'integer',
+            'data' => 'json',
         ];
     }
 }

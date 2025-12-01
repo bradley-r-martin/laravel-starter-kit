@@ -221,7 +221,7 @@ class PushNotificationService {
 
             // Get service worker registration (will register if not already registered)
             let registration = serviceWorkerService.getRegistration();
-            
+
             if (!registration) {
                 // Register service worker if not already registered
                 registration = await serviceWorkerService.register();

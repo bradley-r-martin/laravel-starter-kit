@@ -42,7 +42,7 @@ final class HandleInertiaRequests extends Middleware
         $swVersion = null;
         $swVersionPath = public_path('sw-version.txt');
         if (file_exists($swVersionPath)) {
-            $swVersion = trim(file_get_contents($swVersionPath));
+            $swVersion = mb_trim(file_get_contents($swVersionPath));
         }
 
         return [

@@ -35,9 +35,12 @@ class ServiceWorkerService {
                 this.setupUpdateHandling();
                 // Don't set up interval again if already set up
                 if (!this.updateCheckInterval) {
-                    this.updateCheckInterval = window.setInterval(() => {
-                        this.checkForUpdates();
-                    }, 60 * 60 * 1000);
+                    this.updateCheckInterval = window.setInterval(
+                        () => {
+                            this.checkForUpdates();
+                        },
+                        60 * 60 * 1000
+                    );
                 }
                 return this.registration;
             }
@@ -49,9 +52,12 @@ class ServiceWorkerService {
             this.registration = existingRegistration;
             this.setupUpdateHandling();
             if (!this.updateCheckInterval) {
-                this.updateCheckInterval = window.setInterval(() => {
-                    this.checkForUpdates();
-                }, 60 * 60 * 1000);
+                this.updateCheckInterval = window.setInterval(
+                    () => {
+                        this.checkForUpdates();
+                    },
+                    60 * 60 * 1000
+                );
             }
             return this.registration;
         }
@@ -69,9 +75,12 @@ class ServiceWorkerService {
 
             // Check for updates periodically (every hour)
             if (!this.updateCheckInterval) {
-                this.updateCheckInterval = window.setInterval(() => {
-                    this.checkForUpdates();
-                }, 60 * 60 * 1000);
+                this.updateCheckInterval = window.setInterval(
+                    () => {
+                        this.checkForUpdates();
+                    },
+                    60 * 60 * 1000
+                );
             }
 
             return this.registration;
@@ -98,7 +107,9 @@ class ServiceWorkerService {
                 if (newWorker.state === 'installed') {
                     if (navigator.serviceWorker.controller) {
                         // New service worker is waiting
-                        console.log('[Service Worker] New service worker installed, waiting to activate');
+                        console.log(
+                            '[Service Worker] New service worker installed, waiting to activate'
+                        );
                         this.handleUpdateAvailable();
                     } else {
                         // First time installation
@@ -191,4 +202,3 @@ class ServiceWorkerService {
 
 const serviceWorkerService = new ServiceWorkerService();
 export default serviceWorkerService;
-

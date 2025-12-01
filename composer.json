@@ -91,6 +91,7 @@
         ],
         "migrate:download": "php -d memory_limit=512M artisan migrate:download",
         "migrate:normalise": "php -d memory_limit=512M artisan migrate:normalise",
+        "migrate:enrich": "php -d memory_limit=512M artisan migrate:enrich",
         "migrate:import": "php -d memory_limit=512M artisan migrate:import"
     },
     "extra": {

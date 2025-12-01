@@ -16,18 +16,23 @@ return new class extends Migration
         Schema::create('expense_items', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('item')->nullable();
-            $table->integer('units')->default(1);
-            $table->integer('cost')->default(0);
-            $table->integer('rebate')->default(0);
-            $table->integer('royalty')->default(0);
-            $table->integer('quantity')->default(0);
+            $table->integer('quantity')->default(1);
             $table->integer('price')->default(0);
+
+            $table->integer('product_rebate')->default(0);
+            $table->integer('product_royalty')->default(0);
+            $table->integer('product_units')->default(0);
+            $table->integer('product_retail_price')->default(0);
+
+            $table->json('data')->nullable();
+
             $table->ulid('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete();
             $table->ulid('expense_id');
             $table->foreign('expense_id')->references('id')->on('expenses')->cascadeOnDelete();
             $table->timestamp('refreshed_at')->nullable();
             $table->timestamp('completed_at')->nullable();
+
             $table->timestamps();
         });
         /* Derived data columns */

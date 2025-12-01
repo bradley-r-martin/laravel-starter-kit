@@ -4,20 +4,17 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Migrate;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Fluent;
-use Illuminate\Support\Str;
-use SplFileInfo;
 
 use function Laravel\Prompts\progress;
 
 final class Normalise extends Command
 {
-    public Collection $tables;
-
-    public Fluent $data;
+    public Collection $data;
 
     public Fluent $normalised;
 
@@ -28,72 +25,50 @@ final class Normalise extends Command
     public function handle(): void
     {
         $this->load();
-        $this->normalise();
+        $this->invoke();
     }
 
-    public function load(): void
+    private function load(): void
     {
-        $this->tables = collect(Storage::disk('public')->allFiles('migrate/downloaded'))->map(fn (SplFileInfo $file): string => $file->getFilenameWithoutExtension());
-        $this->data = fluent([]);
-        $this->normalised = fluent([]);
-        $this->tables->each(function (string $table, mixed $key): void {
-            $this->data->{$table} = collect(json_decode(Storage::disk('public')->get('migrate/downloaded/'.$table.'.json'), true));
-            if ($table !== 'snackware_products') {
-                $this->data->{$table} = $this->data->{$table}->keyBy('id');
-            }
-            $this->normalised->{$table} = collect([]);
-        });
+        $disk = Storage::disk('public');
+
+        $this->data = collect(
+            collect($disk->allFiles('migrate/downloaded'))
+                ->map(fn (string $file): string => basename($file, '.json'))
+                ->mapWithKeys(function (string $table) use ($disk): array {
+                    $items = collect(json_decode((string) $disk->get("migrate/downloaded/{$table}.json"), true));
+
+                    return [$table => $table !== 'snackware_products' ? $items->keyBy('id') : $items];
+                })
+        );
+
+        $this->normalised = fluent(
+            $this->data->keys()->mapWithKeys(fn (string $table): array => [$table => collect()])
+        );
     }
 
-    public function normalise(): void
+    private function invoke(): void
     {
-
-        $this->tables->each(function (string $table, mixed $key): void {
+        $this->data->keys()->each(function (string $table): void {
             if (method_exists($this, $table)) {
                 $this->{$table}();
-                Storage::disk('public')->put('migrate/normalised/'.$table.'.json', $this->normalised->{$table}->toJson(JSON_PRETTY_PRINT));
+                Storage::disk('public')->put(
+                    "migrate/normalised/{$table}.json",
+                    $this->normalised->{$table}->toJson(JSON_PRETTY_PRINT)
+                );
             }
         });
-
-        // Recalculate snackware __product_count based on final normalised snackware_products
-        // This ensures counts are correct even if snackware() ran before snackware_products()
-        if (method_exists($this, 'snackware') && $this->normalised->snackware->isNotEmpty()) {
-            $snackwareProductsBySnackware = $this->normalised->snackware_products->groupBy('snackware_id');
-            $this->normalised->snackware->each(function (Fluent $snackware) use ($snackwareProductsBySnackware): void {
-                $productCount = $snackwareProductsBySnackware->get($snackware->id)?->count() ?? 0;
-                $snackware->__product_count = $productCount;
-            });
-            Storage::disk('public')->put('migrate/normalised/snackware.json', $this->normalised->snackware->toJson(JSON_PRETTY_PRINT));
-        }
     }
 
-    public function operators(): void
+    private function operators(): void
     {
-        /** @var Collection<int, array<string, mixed>> $operators */
-        $operators = $this->data->operators;
-        /** @var Collection<int, array<string, mixed>> $territories */
-        $territories = $this->data->territories;
-        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedOperators */
-        $normalisedOperators = $this->normalised->operators;
-
         progress(
             label: 'Normalising operators',
-            steps: $operators,
-            callback: function (array $operator, mixed $progress) use ($territories, $normalisedOperators): void {
+            steps: $this->data->get('operators'),
+            callback: function (array $operator, mixed $progress): void {
                 $progress->hint("Normalising operator {$operator['name']}...");
-
-                // Count only active territories (not closed/suspended)
-                // Based on TerritoryActions: __territories_count is decremented when territories are closed
-                $activeTerritories = $territories
-                    ->where('operator_id', $operator['id'])
-                    ->filter(function (array $territory): bool {
-                        $status = $territory['status'] ?? null;
-
-                        return $status !== 'closed' && $status !== 'suspended';
-                    });
-
-                $normalisedOperators->push(fluent([
-                    'id' => ($operator['id']),
+                $this->normalised->operators->push(fluent([
+                    'id' => mb_strtoupper((string) $operator['id']),
                     'name' => $operator['name'],
                     'email' => $operator['email'],
                     'phone' => $operator['phone'] ? json_decode((string) $operator['phone']) : null,
@@ -101,253 +76,177 @@ final class Normalise extends Command
                     'closed_at' => $operator['status'] === 'closed' ? $operator['updated_at'] : null,
                     'created_at' => $operator['created_at'],
                     'updated_at' => $operator['updated_at'],
-                    '__territories_count' => $activeTerritories->count(),
                 ]));
             }
         );
+        Storage::disk('public')->put(
+            'migrate/normalised/operators.json',
+            $this->normalised->operators->toJson(JSON_PRETTY_PRINT)
+        );
     }
 
-    public function territories(): void
+    private function territories(): void
     {
-        /** @var Collection<int, array<string, mixed>> $territories */
-        $territories = $this->data->territories;
-        /** @var Collection<int, array<string, mixed>> $operators */
-        $operators = $this->data->operators;
-        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedTerritories */
-        $normalisedTerritories = $this->normalised->territories;
-
         progress(
             label: 'Normalising territories',
-            steps: $territories,
-            callback: function (array $territory, mixed $progress) use ($operators, $normalisedTerritories): void {
+            steps: $this->data->get('territories'),
+            callback: function (array $territory, mixed $progress): void {
                 $progress->hint("Normalising territory {$territory['name']}...");
-                $operator = $operators->get($territory['operator_id']);
-                $normalisedTerritories->push(fluent([
-                    'id' => ($territory['id']),
+                $this->normalised->territories->push(fluent([
+                    'id' => mb_strtoupper((string) $territory['id']),
                     'name' => $territory['name'],
-                    'operator_id' => ($territory['operator_id']),
+                    'operator_id' => mb_strtoupper((string) $territory['operator_id']),
                     'closed_at' => $territory['status'] === 'suspended' ? $territory['updated_at'] : null,
                     'created_at' => $territory['created_at'],
                     'updated_at' => $territory['updated_at'],
-                    '__operator_name' => $operator['name'] ?? null,
                 ]));
             }
         );
-
+        Storage::disk('public')->put(
+            'migrate/normalised/territories.json',
+            $this->normalised->territories->toJson(JSON_PRETTY_PRINT)
+        );
     }
 
-    public function roles(): void
+    private function roles(): void
     {
         progress(
             label: 'Normalising roles',
-            steps: $this->data->roles,
+            steps: $this->data->get('roles'),
             callback: function (array $role, mixed $progress): void {
                 $progress->hint("Normalising role {$role['name']}...");
-
-                // Count only active users (not closed, not suspended)
-                // Based on UserActions: __users_count is decremented when users are closed or suspended
-                $users = $this->data->users
-                    ->where('role_id', $role['id'])
-                    ->filter(function (array $user): bool {
-                        $status = $user['status'] ?? null;
-
-                        return $status !== 'closed' && $status !== 'suspended';
-                    });
                 $this->normalised->roles->push(fluent([
-                    'id' => ($role['id']),
+                    'id' => mb_strtoupper((string) $role['id']),
                     'name' => $role['name'],
                     'description' => $role['description'],
                     'closed_at' => $role['status'] === 'closed' ? $role['updated_at'] : null,
                     'created_at' => $role['created_at'],
                     'updated_at' => $role['updated_at'],
-                    '__users_count' => $users->count(),
                 ]));
             }
         );
-
+        Storage::disk('public')->put(
+            'migrate/normalised/roles.json',
+            $this->normalised->roles->toJson(JSON_PRETTY_PRINT)
+        );
     }
 
-    public function users(): void
+    private function users(): void
     {
-        /** @var Collection<int, array<string, mixed>> $users */
-        $users = $this->data->users;
-        /** @var Collection<int, array<string, mixed>> $operators */
-        $operators = $this->data->operators;
-        /** @var Collection<int, array<string, mixed>> $roles */
-        $roles = $this->data->roles;
-        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedUsers */
-        $normalisedUsers = $this->normalised->users;
-
         progress(
             label: 'Normalising users',
-            steps: $users,
-            callback: function (array $user, mixed $progress) use ($operators, $roles, $normalisedUsers): void {
+            steps: $this->data->get('users'),
+            callback: function (array $user, mixed $progress): void {
                 $progress->hint("Normalising user {$user['first_name']} {$user['last_name']}...");
-                $operator = $operators->get($user['operator_id']);
-                $role = $roles->get($user['role_id']);
-
-                $normalisedUsers->push(fluent([
-                    'id' => ($user['id']),
-                    'operator_id' => ($user['operator_id']),
-                    'role_id' => ($user['role_id']),
+                $this->normalised->users->push(fluent([
+                    'id' => mb_strtoupper((string) $user['id']),
+                    'operator_id' => mb_strtoupper((string) $user['operator_id']),
+                    'role_id' => mb_strtoupper((string) $user['role_id']),
                     'first_name' => $user['first_name'],
                     'last_name' => $user['last_name'],
-                    'phone' => null,
-                    'address' => null,
                     'email' => $user['email'],
                     'email_verified_at' => $user['created_at'],
                     'password' => $user['password'],
                     'remember_token' => $user['remember_token'],
+                    'closed_at' => $user['status'] === 'closed' ? $user['updated_at'] : null,
                     'created_at' => $user['created_at'],
                     'updated_at' => $user['updated_at'],
-                    '__operator_name' => $operator['name'],
-                    '__role_name' => $role['name'],
                 ]));
             }
         );
+        Storage::disk('public')->put(
+            'migrate/normalised/users.json',
+            $this->normalised->users->toJson(JSON_PRETTY_PRINT)
+        );
     }
 
-    public function _sites(): void
+    private function product_types(): void
     {
-        $territories = $this->data->territories->keyBy('id');
-        $this->normalised->sites = $this->data->sites->map(function (array $site, mixed $key) use ($territories): Fluent {
-            $territory = $territories->get($site['territory_id']);
-
-            return fluent([
-                'id' => ($site['id']),
-                'name' => $site['name'],
-                'address' => $site['address'] ? array_merge((array) json_decode((string) $site['address']), [
-                    'latitude' => $site['latitude'],
-                    'longitude' => $site['longitude'],
-                ]) : null,
-                'opening_hours' => $site['opening_hours'] ? json_decode((string) $site['opening_hours']) : null,
-                'territory_id' => ($site['territory_id']),
-                'operator_id' => ($territory['operator_id']),
-                'run_id' => $site['run_id'] ?: null,
-                'run_order' => $site['order'],
-                'manager_code' => $site['manager_code'] ?? mb_str_pad(''.random_int(0, 9999), 4, '0', STR_PAD_LEFT),
-                'closed_at' => $site['status'] === 'closed' ? $site['updated_at'] : null,
-                'created_at' => $site['created_at'],
-                'updated_at' => $site['updated_at'],
-            ]);
-        });
-    }
-
-    public function _placements(): void
-    {
-        $sites = $this->data->sites->keyBy('id');
-        $territories = $this->data->territories->keyBy('id');
-        $this->normalised->placements = $this->data->placements->map(function (array $placement) use ($sites, $territories): Fluent {
-            $site = $sites->get($placement['site_id']);
-            $territory = $territories->get($site['territory_id']);
-
-            return fluent([
-                'id' => ($placement['id']),
-                'site_id' => ($placement['site_id']),
-                'territory_id' => ($site['territory_id']),
-                'operator_id' => ($territory['operator_id']),
-                'snackware_id' => ($placement['snackware_id']),
-                'location' => $placement['location'],
-                'note' => $placement['note'],
-                'closed_at' => $placement['status'] === 'closed' ? $placement['updated_at'] : null,
-                'created_at' => $placement['created_at'],
-                'updated_at' => $placement['updated_at'],
-            ]);
-        });
-    }
-
-    public function snackware(): void
-    {
-        /** @var Collection<int, array<string, mixed>> $snackwareData */
-        $snackwareData = $this->data->snackware;
-        /** @var Collection<int, array<string, mixed>> $territories */
-        $territories = $this->data->territories;
-        /** @var Collection<int, array<string, mixed>> $snackwareProducts */
-        $snackwareProducts = $this->data->snackware_products;
-        /** @var Collection<int, array<string, mixed>> $products */
-        $products = $this->data->products;
-        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedSnackware */
-        $normalisedSnackware = $this->normalised->snackware;
-
         progress(
-            label: 'Normalising snackware',
-            steps: $snackwareData,
-            callback: function (array $snackware, mixed $progress) use ($territories, $snackwareProducts, $products, $normalisedSnackware): void {
-                $progress->hint("Normalising snackware {$snackware['name']}...");
-                $territory = $territories->get($snackware['territory_id']);
-                $snackware_products = $snackwareProducts->where('snackware_id', $snackware['id']);
-                $productsList = $products->whereIn('id', $snackware_products->pluck('product_id'));
-
-                // Calculate __cost_per_unit for each product and get min/max
-                $costPerUnitValues = $productsList->map(fn (array $product): int => $product['units'] > 0 ? (int) ($product['wholesale_cost'] / $product['units']) : 0);
-
-                $normalisedSnackware->push(fluent([
-                    'id' => ($snackware['id']),
-                    'territory_id' => ($snackware['territory_id']),
-                    'operator_id' => ($territory['operator_id']),
-                    'name' => $snackware['name'],
-                    'type' => $snackware['type'],
-                    'price' => $snackware['legacy_price'],
-                    'closed_at' => $snackware['status'] === 'closed' ? $snackware['updated_at'] : null,
-                    'created_at' => $snackware['created_at'],
-                    'updated_at' => $snackware['updated_at'],
-                    '__product_count' => $productsList->count(),
-                    '__wholesale_from' => $costPerUnitValues->min() ?? 0,
-                    '__wholesale_to' => $costPerUnitValues->max() ?? 0,
+            label: 'Normalising product types',
+            steps: $this->data->get('product_types'),
+            callback: function (array $product_type, mixed $progress): void {
+                $progress->hint("Normalising product type {$product_type['name']}...");
+                $this->normalised->product_types->push(fluent([
+                    'id' => mb_strtoupper((string) $product_type['id']),
+                    'name' => $product_type['name'],
+                    'short_name' => $product_type['short_name'],
+                    'closed_at' => $product_type['status'] === 'closed' ? $product_type['updated_at'] : null,
+                    'created_at' => $product_type['created_at'],
+                    'updated_at' => $product_type['updated_at'],
                 ]));
             }
         );
+        // Add an unspecified product type.
+        $this->normalised->product_types->push(fluent([
+            'id' => '01K1F5HGTW2B4N29ZK2P31KK0Z',
+            'name' => 'Unspecified',
+            'short_name' => 'Unspecified',
+            'closed_at' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]));
+        Storage::disk('public')->put(
+            'migrate/normalised/product_types.json',
+            $this->normalised->product_types->toJson(JSON_PRETTY_PRINT)
+        );
     }
 
-    public function runs(): void
+    private function manufacturers(): void
     {
-        /* Runs table from legacy system is now routes table */
         progress(
-            label: 'Normalising runs',
-            steps: $this->data->runs,
-            callback: function (array $run, mixed $progress): void {
-                $progress->hint("Normalising route {$run['name']}...");
-
-                $territory = $this->data->territories->get($run['territory_id']);
-                if (! $territory) {
-                    // Skip runs where the territory does not exist
-                    return;
-                }
-                $this->normalised->runs->push(fluent([
-                    'id' => ($run['id']),
-                    'name' => $run['name'],
-                    'territory_id' => ($run['territory_id']),
-                    'schedule' => $run['schedule'],
-                    'closed_at' => $run['status'] === 'closed' ? $run['updated_at'] : null,
-                    'created_at' => $run['created_at'],
-                    'updated_at' => $run['updated_at'],
+            label: 'Normalising manufacturers',
+            steps: $this->data->get('manufacturers'),
+            callback: function (array $manufacturer, mixed $progress): void {
+                $progress->hint("Normalising manufacturer {$manufacturer['name']}...");
+                $this->normalised->manufacturers->push(fluent([
+                    'id' => mb_strtoupper((string) $manufacturer['id']),
+                    'name' => $manufacturer['name'],
+                    'closed_at' => $manufacturer['status'] === 'closed' ? $manufacturer['updated_at'] : null,
+                    'created_at' => $manufacturer['created_at'],
+                    'updated_at' => $manufacturer['updated_at'],
                 ]));
             }
         );
+        Storage::disk('public')->put(
+            'migrate/normalised/manufacturers.json',
+            $this->normalised->manufacturers->toJson(JSON_PRETTY_PRINT)
+        );
     }
 
-    public function products(): void
+    private function wholesalers(): void
     {
-        /** @var Collection<int, array<string, mixed>> $products */
-        $products = $this->data->products;
-        /** @var Collection<int, array<string, mixed>> $manufacturers */
-        $manufacturers = $this->data->manufacturers;
-        /** @var Collection<int, array<string, mixed>> $productTypes */
-        $productTypes = $this->data->product_types;
-        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedProducts */
-        $normalisedProducts = $this->normalised->products;
+        progress(
+            label: 'Normalising wholesalers',
+            steps: $this->data->get('wholesalers'),
+            callback: function (array $wholesaler, mixed $progress): void {
+                $progress->hint("Normalising wholesaler {$wholesaler['name']}...");
+                $this->normalised->wholesalers->push(fluent([
+                    'id' => mb_strtoupper((string) $wholesaler['id']),
+                    'name' => $wholesaler['name'],
+                    'closed_at' => $wholesaler['status'] === 'closed' ? $wholesaler['updated_at'] : null,
+                    'created_at' => $wholesaler['created_at'],
+                    'updated_at' => $wholesaler['updated_at'],
+                ]));
+            }
+        );
+        Storage::disk('public')->put(
+            'migrate/normalised/wholesalers.json',
+            $this->normalised->wholesalers->toJson(JSON_PRETTY_PRINT)
+        );
+    }
 
+    private function products(): void
+    {
         progress(
             label: 'Normalising products',
-            steps: $products,
-            callback: function (array $product, mixed $progress) use ($manufacturers, $productTypes, $normalisedProducts): void {
+            steps: $this->data->get('products'),
+            callback: function (array $product, mixed $progress): void {
                 $progress->hint("Normalising product {$product['name']}...");
-                $manufacturer = $manufacturers->get($product['manufacturer_id']);
-                $product_type = $productTypes->get($product['product_type_id']);
-                $normalisedProducts->push(fluent([
-                    'id' => ($product['id']),
-                    'manufacturer_id' => ($product['manufacturer_id']),
-                    'product_type_id' => ($product['product_type_id']),
+                $this->normalised->products->push(fluent([
+                    'id' => mb_strtoupper((string) $product['id']),
+                    'manufacturer_id' => mb_strtoupper((string) $product['manufacturer_id']),
+                    'product_type_id' => mb_strtoupper((string) $product['product_type_id']),
                     'name' => $product['name'],
                     'sku' => $product['sku'],
                     'units' => $product['units'],
@@ -358,13 +257,10 @@ final class Normalise extends Command
                     'closed_at' => $product['status'] === 'closed' ? $product['updated_at'] : null,
                     'created_at' => $product['created_at'],
                     'updated_at' => $product['updated_at'],
-                    '__cost_per_unit' => $product['units'] > 0 ? (int) ($product['wholesale_cost'] / $product['units']) : 0,
-                    '__manufacturer_name' => $manufacturer['name'],
-                    '__product_type_name' => $product_type['name'],
                 ]));
             }
         );
-
+        // Add an unspecified product so that all snackwares have an associated product
         $this->normalised->products->push(fluent([
             'id' => '01K1F5J88D0J9DZK63T1AMNH52',
             'manufacturer_id' => '01J0NV0YQBRD1DK70RMRVXTKKV',
@@ -379,429 +275,193 @@ final class Normalise extends Command
             'closed_at' => null,
             'created_at' => now(),
             'updated_at' => now(),
-            '__cost_per_unit' => 0,
         ]));
-    }
-
-    public function product_types(): void
-    {
-        /** @var Collection<int, array<string, mixed>> $productTypes */
-        $productTypes = $this->data->product_types;
-        /** @var Collection<int, array<string, mixed>> $products */
-        $products = $this->data->products;
-        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedProductTypes */
-        $normalisedProductTypes = $this->normalised->product_types;
-
-        progress(
-            label: 'Normalising product types',
-            steps: $productTypes,
-            callback: function (array $product_type, mixed $progress) use ($products, $normalisedProductTypes): void {
-                $progress->hint("Normalising product type {$product_type['name']}...");
-
-                // Count only active products (not closed)
-                // Based on ProductActions: __products_count is decremented when products are closed
-                $productsList = $products
-                    ->where('product_type_id', $product_type['id'])
-                    ->filter(function (array $product): bool {
-                        $status = $product['status'] ?? null;
-
-                        return $status !== 'closed';
-                    });
-
-                $normalisedProductTypes->push(fluent([
-                    'id' => ($product_type['id']),
-                    'name' => $product_type['name'],
-                    'short_name' => $product_type['short_name'],
-                    'closed_at' => $product_type['status'] === 'inactive' ? $product_type['updated_at'] : null,
-                    'created_at' => $product_type['created_at'],
-                    'updated_at' => $product_type['updated_at'],
-                    '__products_count' => $productsList->count(),
-                ]));
-            }
-        );
-        $this->normalised->product_types->push(fluent([
-            'id' => '01K1F5HGTW2B4N29ZK2P31KK0Z',
-            'name' => 'Unspecified',
-            'short_name' => 'Unspecified',
-            'closed_at' => null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]));
-    }
-
-    public function manufacturers(): void
-    {
-        /** @var Collection<int, array<string, mixed>> $manufacturers */
-        $manufacturers = $this->data->manufacturers;
-        /** @var Collection<int, array<string, mixed>> $products */
-        $products = $this->data->products;
-        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedManufacturers */
-        $normalisedManufacturers = $this->normalised->manufacturers;
-
-        progress(
-            label: 'Normalising manufacturers',
-            steps: $manufacturers,
-            callback: function (array $manufacturer, mixed $progress) use ($products, $normalisedManufacturers): void {
-                $progress->hint("Normalising manufacturer {$manufacturer['name']}...");
-
-                // Count only active products (not closed)
-                // Based on ProductActions: __products_count is decremented when products are closed
-                $productsList = $products
-                    ->where('manufacturer_id', $manufacturer['id'])
-                    ->filter(function (array $product): bool {
-                        $status = $product['status'] ?? null;
-
-                        return $status !== 'closed';
-                    });
-
-                $normalisedManufacturers->push(fluent([
-                    'id' => ($manufacturer['id']),
-                    'name' => $manufacturer['name'],
-                    'closed_at' => $manufacturer['status'] === 'inactive' ? $manufacturer['updated_at'] : null,
-                    'created_at' => $manufacturer['created_at'],
-                    'updated_at' => $manufacturer['updated_at'],
-                    '__products_count' => $productsList->count(),
-                ]));
-            }
+        Storage::disk('public')->put(
+            'migrate/normalised/products.json',
+            $this->normalised->products->toJson(JSON_PRETTY_PRINT)
         );
     }
 
-    public function wholesalers(): void
+    private function snackware(): void
     {
-        /** @var Collection<int, array<string, mixed>> $wholesalers */
-        $wholesalers = $this->data->wholesalers;
-        /** @var Collection<int, array<string, mixed>> $expenses */
-        $expenses = $this->data->expenses;
-        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedWholesalers */
-        $normalisedWholesalers = $this->normalised->wholesalers;
-
         progress(
-            label: 'Normalising wholesalers',
-            steps: $wholesalers,
-            callback: function (array $wholesaler, mixed $progress) use ($expenses, $normalisedWholesalers): void {
-                $progress->hint("Normalising wholesaler {$wholesaler['name']}...");
-
-                // Count expenses for this wholesaler
-                // Based on ExpenseActions: __expenses_count is incremented/decremented when expenses are created/destroyed
-                $expensesCount = $expenses->where('wholesaler_id', $wholesaler['id'])->count();
-
-                $normalisedWholesalers->push(fluent([
-                    'id' => ($wholesaler['id']),
-                    'name' => $wholesaler['name'],
-                    'closed_at' => $wholesaler['status'] === 'inactive' ? $wholesaler['updated_at'] : null,
-                    'created_at' => $wholesaler['created_at'],
-                    'updated_at' => $wholesaler['updated_at'],
-                    '__expenses_count' => $expensesCount,
+            label: 'Normalising snackware',
+            steps: $this->data->get('snackware'),
+            callback: function (array $snackware, mixed $progress): void {
+                $progress->hint("Normalising snackware {$snackware['name']}...");
+                $territory = $this->data->get('territories')->get(mb_strtoupper((string) $snackware['territory_id']));
+                if (! $territory) {
+                    dd('no territory found');
+                }
+                $this->normalised->snackware->push(fluent([
+                    'id' => mb_strtoupper((string) $snackware['id']),
+                    'territory_id' => mb_strtoupper((string) $snackware['territory_id']),
+                    'operator_id' => mb_strtoupper((string) $territory['operator_id']),
+                    'name' => $snackware['name'],
+                    'type' => $snackware['type'],
+                    'price' => $snackware['legacy_price'],
+                    'closed_at' => $snackware['status'] === 'closed' ? $snackware['updated_at'] : null,
+                    'created_at' => $snackware['created_at'],
+                    'updated_at' => $snackware['updated_at'],
                 ]));
             }
         );
+        Storage::disk('public')->put(
+            'migrate/normalised/snackware.json',
+            $this->normalised->snackware->toJson(JSON_PRETTY_PRINT)
+        );
     }
 
-    public function _transactions(): void
+    private function snackware_products(): void
     {
-        $territories = $this->data->territories->keyBy('id');
-        $sites = $this->data->sites->keyBy('id');
-        $placements = $this->data->placements->keyBy('id');
-        $resupplies = $this->data->resupplies->keyBy('id');
-        $this->normalised->transactions = $this->data->transactions->map(function (array $transaction) use ($territories, $placements, $sites, $resupplies): Fluent {
-            $placement = $placements->get($transaction['placement_id']);
-            $site = $sites->get(optional($placement)['site_id']);
-            $territory = $territories->get(optional($site)['territory_id']);
-            $resupply = $resupplies->get(optional($transaction)['resupply_id']);
-
-            return fluent([
-                'id' => ($transaction['id']),
-                'placement_id' => ($transaction['placement_id']),
-                'resupply_id' => $transaction['resupply_id'] ?: null,
-                'reconciliation_id' => $transaction['resupply_id'] ? ($resupply['reconciliation_id']) : null,
-                'territory_id' => (optional($territory)['id']),
-                'operator_id' => (optional($territory)['operator_id']),
-                'site_id' => (optional($site)['id']),
-                'snackware_id' => (optional($placement)['snackware_id']),
-                'customer_id' => ($transaction['customer_id']),
-                'qr_code_id' => $transaction['q_r_code_id'],
-                'amount' => $transaction['amount'],
-                'merchant_fee' => $transaction['merchant_fee'],
-                'type' => $transaction['type'],
-                'method' => $transaction['method'],
-                'details' => $transaction['details'] ? json_decode((string) $transaction['details']) : null,
-                'refunded_at' => $transaction['status'] === 'refunded' ? $transaction['updated_at'] : null,
-                'created_at' => $transaction['created_at'],
-                'updated_at' => $transaction['updated_at'],
-            ]);
-        });
-    }
-
-    public function _resupplies(): void
-    {
-        $territories = $this->data->territories->keyBy('id');
-        $sites = $this->data->sites->keyBy('id');
-        $placements = $this->data->placements->keyBy('id');
-        $reconciliations = $this->data->reconciliations->keyBy('id');
-        $this->normalised->resupplies = $this->data->resupplies->map(function (array $resupply) use ($territories, $sites, $placements, $reconciliations): Fluent {
-            $placement = $placements->get(($resupply['placement_id']));
-            $site = $sites->get($placement['site_id']);
-            $territory = $territories->get(($site['territory_id']));
-            $reconciliation = $reconciliations->get($resupply['reconciliation_id']);
-
-            return fluent([
-                'id' => ($resupply['id']),
-                'reconciliation_id' => ($resupply['reconciliation_id']),
-                'placement_id' => ($resupply['placement_id']),
-                'territory_id' => ($territory['id']),
-                'operator_id' => ($territory['operator_id']),
-                'site_id' => ($site['id']),
-                'snackware_id' => ($placement['snackware_id']),
-                'run_id' => $reconciliation['run_id'] ?: null,
-                'stock_opening' => $resupply['stock_opening'],
-                'stock_remaining' => $resupply['stock_remaining'],
-                'stock_damaged' => $resupply['stock_breakage'],
-                'average_unit_price' => $resupply['average_unit_price'],
-                'completed_at' => $resupply['status'] === 'completed' ? $resupply['updated_at'] : null,
-                'created_at' => $resupply['created_at'],
-                'updated_at' => $resupply['updated_at'],
-            ]);
-        });
-    }
-
-    public function _reconciliations(): void
-    {
-        $runs = $this->data->runs->keyBy('id');
-        $territories = $this->data->territories->keyBy('id');
-        $resupplies = $this->data->resupplies->groupBy('reconciliation_id');
-        $placements = $this->data->placements->keyBy('id');
-        $sites = $this->data->sites->keyBy('id');
-        $this->normalised->reconciliations = $this->data->reconciliations->map(function (array $reconciliation) use ($runs, $territories, $resupplies, $placements, $sites): Fluent {
-
-            $run = $runs->get($reconciliation['run_id']);
-            $territory = $territories->get(optional($run)['territory_id']);
-
-            if (! $run) {
-                $resupplies = $resupplies->get($reconciliation['id']);
-                $placement = $placements->get($resupplies->first()['placement_id']);
-                $site = $sites->get($placement['site_id']);
-                $run = $runs->get($site['run_id']);
-                $territory = $territories->get($site['territory_id']);
-            }
-
-            return fluent([
-                'id' => ($reconciliation['id']),
-                'run_id' => $reconciliation['run_id'] ?: null,
-                'territory_id' => $territory['id'] ?: null,
-                'operator_id' => $territory['operator_id'] ?: null,
-                'type' => $reconciliation['type'],
-                'start_at' => $reconciliation['start_at'],
-                'end_at' => $reconciliation['end_at'],
-                'completed_at' => $reconciliation['completed_at'],
-                'created_at' => $reconciliation['created_at'],
-                'updated_at' => $reconciliation['updated_at'],
-            ]);
-        });
-    }
-
-    public function _contacts(): void
-    {
-        $sites = $this->data->sites->keyBy('id');
-        $territories = $this->data->territories->keyBy('id');
-        $this->normalised->contacts = $this->data->contacts->map(function (array $contact) use ($sites, $territories): Fluent {
-            $site = $sites->get($contact['site_id']);
-            $territory = $territories->get($site['territory_id']);
-
-            return fluent([
-                'id' => ($contact['id']),
-                'site_id' => ($contact['site_id']),
-                'operator_id' => ($territory['operator_id']),
-                'territory_id' => ($site['territory_id']),
-                'first_name' => $contact['first_name'],
-                'last_name' => $contact['last_name'],
-                'email' => $contact['email'],
-                'phone' => $contact['phone'] ? json_decode((string) $contact['phone']) : null,
-                'created_at' => $contact['created_at'],
-                'updated_at' => $contact['updated_at'],
-            ]);
-        });
-
-        $site_without_contacts = $this->data->sites->whereNotIn('id', $this->normalised->contacts->pluck('site_id'));
-        $territories = $this->data->territories->keyBy('id');
-        $site_without_contacts->each(function (array $site, mixed $key) use ($territories): void {
-            $territory = $territories->get($site['territory_id']);
-            $this->normalised->contacts->push(fluent([
-                'id' => ((string) Str::ulid()),
-                'site_id' => ($site['id']),
-                'operator_id' => ($territory['operator_id']),
-                'territory_id' => ($territory['id']),
-                'first_name' => 'Unknown',
-                'last_name' => null,
-                'email' => null,
-                'phone' => null,
-                'created_at' => $site['created_at'],
-                'updated_at' => $site['updated_at'],
-            ]));
-        });
-    }
-
-    public function _customers(): void
-    {
-        $this->normalised->customers = $this->data->customers->map(fn (array $customer): Fluent => fluent([
-            'id' => ($customer['id']),
-            'first_name' => $customer['first_name'],
-            'last_name' => $customer['last_name'],
-            'email' => $customer['email'],
-            'phone' => $customer['phone'] ? json_decode((string) $customer['phone']) : null,
-            'address' => null,
-            'created_at' => $customer['created_at'],
-            'updated_at' => $customer['updated_at'],
-        ]));
-    }
-
-    public function _placement_proportions(): void
-    {
-
-        $snackware_products = $this->data->snackware_products->groupBy('snackware_id');
-        $placements = $this->data->placements->keyBy('id');
-        $snackware = $this->data->snackware->keyBy('id');
-        $this->normalised->placement_proportions = $this->data->placement_proportions->map(function (array $placement_proportion) use ($snackware_products, $placements, $snackware): Fluent {
-            $placement = $placements->get($placement_proportion['placement_id']);
-            $snackware = $snackware->get($placement['snackware_id']);
-            $products = $snackware_products->get($snackware['id']) ?? collect([]);
-            $product_type_ids = $products->pluck('product_type_id');
-
-            $valid = $product_type_ids->contains($placement_proportion['product_type_id']);
-
-            return fluent([
-                'placement_id' => ($placement_proportion['placement_id']),
-                'product_type_id' => $valid ? ($placement_proportion['product_type_id']) : '01K1F5HGTW2B4N29ZK2P31KK0Z',
-                'proportion' => $placement_proportion['proportion'],
-            ]);
-        });
-        // add a placement proportion for each placement that has no placement proportion
-        $placement_proportion_ids = $this->data->placement_proportions->pluck('placement_id');
-        $this->data->placements->whereNotIn('id', $placement_proportion_ids);
-
-        // $placements_without_proportions->each(function($placement) {
-        //     $this->normalised->placement_proportions->push(fluent([
-        //         'placement_id' => strtoupper($placement['id']),
-        //         'product_type_id' => '01K1F5HGTW2B4N29ZK2P31KK0Z',
-        //         'proportion' => $placement['legacy_stock'] ?? 0,
-        //     ]));
-        // });
-
-    }
-
-    public function _q_r_codes(): void
-    {
-        $this->normalised->q_r_codes = $this->data->q_r_codes->map(fn (array $q_r_code): Fluent => fluent([
-            'id' => ($q_r_code['id']),
-            'operator_id' => ($q_r_code['operator_id']),
-            'code' => $q_r_code['code'],
-            'placement_id' => $q_r_code['placement_id'] ?: null,
-            'created_at' => $q_r_code['created_at'],
-            'updated_at' => $q_r_code['updated_at'],
-            'last_printed_at' => $q_r_code['last_printed_at'],
-        ]));
-    }
-
-    public function snackware_products(): void
-    {
-
         progress(
             label: 'Normalising snackware products',
-            steps: $this->data->snackware_products,
-            callback: function (array $snackware_product, mixed $progress) {
+            steps: $this->data->get('snackware_products'),
+            callback: function (array $snackware_product, mixed $progress): void {
                 $progress->hint("Normalising snackware product {$snackware_product['snackware_id']}...");
-                if (! $this->data->products->get($snackware_product['product_id'])) {
-                    return null;
-                }
-                if (! $this->data->snackware->get($snackware_product['snackware_id'])) {
-                    return null;
-                }
                 $this->normalised->snackware_products->push(fluent([
-                    'snackware_id' => ($snackware_product['snackware_id']),
-                    'product_id' => ($snackware_product['product_id']),
+                    'snackware_id' => mb_strtoupper((string) $snackware_product['snackware_id']),
+                    'product_id' => mb_strtoupper((string) $snackware_product['product_id']),
                 ]));
             }
         );
-
-        $snackware_without_products = $this->data->snackware->whereNotIn('id', $this->normalised->snackware_products->pluck('snackware_id'));
-
-        $snackware_without_products->each(function (array $snackware, mixed $key): void {
-            $this->normalised->snackware_products->push(fluent([
-                'snackware_id' => ($snackware['id']),
-                'product_id' => '01K1F5J88D0J9DZK63T1AMNH52',
-            ]));
-        });
+        // Add an unspecified product to all snackwares that have no products.
+        $this->data->get('snackware')
+            ->whereNotIn('id', $this->data->get('snackware_products')->pluck('snackware_id'))
+            ->each(function (array $snackware, mixed $key): void {
+                $this->normalised->snackware_products->push(fluent([
+                    'snackware_id' => mb_strtoupper((string) $snackware['id']),
+                    'product_id' => '01K1F5J88D0J9DZK63T1AMNH52',
+                ]));
+            });
+        Storage::disk('public')->put(
+            'migrate/normalised/snackware_products.json',
+            $this->normalised->snackware_products->toJson(JSON_PRETTY_PRINT)
+        );
     }
 
-    public function expenses(): void
+    private function sites(): void
     {
-        /** @var Collection<int, array<string, mixed>> $expenses */
-        $expenses = $this->data->expenses;
-        /** @var Collection<int, array<string, mixed>> $wholesalers */
-        $wholesalers = $this->data->wholesalers;
-        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedExpenses */
-        $normalisedExpenses = $this->normalised->expenses;
+        progress(
+            label: 'Normalising sites',
+            steps: $this->data->get('sites'),
+            callback: function (array $site, mixed $progress): void {
+                $progress->hint("Normalising site {$site['name']}...");
+                $territory = $this->data->get('territories')->get(mb_strtoupper((string) $site['territory_id']));
+                if (! $territory) {
+                    dd('no territory found');
+                }
+                $this->normalised->sites->push(fluent([
+                    'id' => mb_strtoupper((string) $site['id']),
+                    'territory_id' => mb_strtoupper((string) $site['territory_id']),
+                    'operator_id' => mb_strtoupper((string) $territory['operator_id']),
+                    'route_id' => $site['run_id'] ? mb_strtoupper((string) $site['run_id']) : null,
+                    'name' => $site['name'],
+                    'address' => $site['address'] ? array_merge((array) json_decode((string) $site['address']), [
+                        'latitude' => $site['latitude'],
+                        'longitude' => $site['longitude'],
+                    ]) : null,
+                    'opening_hours' => $site['opening_hours'] ? json_decode((string) $site['opening_hours']) : null,
+                    'order' => $site['order'],
+                    'manager_code' => $site['manager_code'] ?? mb_str_pad(''.random_int(0, 9999), 4, '0', STR_PAD_LEFT),
+                    'closed_at' => $site['status'] === 'closed' ? $site['updated_at'] : null,
+                    'created_at' => $site['created_at'],
+                    'updated_at' => $site['updated_at'],
+                ]));
+            }
+        );
+        Storage::disk('public')->put(
+            'migrate/normalised/sites.json',
+            $this->normalised->sites->toJson(JSON_PRETTY_PRINT)
+        );
+    }
 
+    // Runs table from legacy system is now routes table
+    private function runs(): void
+    {
+        progress(
+            label: 'Normalising routes',
+            steps: $this->data->get('runs'), // Runs table from legacy system is now routes table
+            callback: function (array $route, mixed $progress): void {
+                $progress->hint("Normalising route {$route['name']}...");
+                $territory = $this->data->get('territories')->get(mb_strtoupper((string) $route['territory_id']));
+                if (! $territory) {
+                    dd('no territory found');
+                }
+                $this->normalised->runs->push(fluent([
+                    'id' => mb_strtoupper((string) $route['id']),
+                    'name' => $route['name'],
+                    'territory_id' => mb_strtoupper((string) $route['territory_id']),
+                    'operator_id' => mb_strtoupper((string) $territory['operator_id']),
+                    'schedule' => $route['schedule'] ? json_decode((string) $route['schedule']) : null,
+                    'closed_at' => $route['status'] === 'closed' ? $route['updated_at'] : null,
+                    'created_at' => $route['created_at'],
+                    'updated_at' => $route['updated_at'],
+                ]));
+            }
+        );
+        Storage::disk('public')->put(
+            'migrate/normalised/routes.json',
+            $this->normalised->runs->toJson(JSON_PRETTY_PRINT)
+        );
+    }
+
+    private function expenses(): void
+    {
         progress(
             label: 'Normalising expenses',
-            steps: $expenses,
-            callback: function (array $expense, mixed $progress) use ($wholesalers, $normalisedExpenses): void {
-                $progress->hint("Normalising expense {$expense['invoice_no']}...");
-                $wholesaler = $wholesalers->get($expense['wholesaler_id']);
-                $expense_items = $this->data->expense_items->where('expense_id', $expense['id']);
-
-                $normalisedExpenses->push(fluent([
-                    'id' => ($expense['id']),
-                    'wholesaler_id' => ($expense['wholesaler_id']),
-                    'operator_id' => ($expense['operator_id']),
+            steps: $this->data->get('expenses'),
+            callback: function (array $expense, mixed $progress): void {
+                $progress->hint("Normalising expense {$expense['id']}...");
+                $this->normalised->expenses->push(fluent([
+                    'id' => mb_strtoupper((string) $expense['id']),
+                    'wholesaler_id' => mb_strtoupper((string) $expense['wholesaler_id']),
+                    'operator_id' => mb_strtoupper((string) $expense['operator_id']),
                     'invoice_no' => $expense['invoice_no'],
-                    'invoice_date' => $expense['invoice_date'],
+                    'invoice_date' => Carbon::parse($expense['invoice_date'])->startOfDay(),
                     'completed_at' => $expense['status'] === 'complete' ? $expense['updated_at'] : null,
                     'created_at' => $expense['created_at'],
                     'updated_at' => $expense['updated_at'],
-                    '__wholesaler_name' => $wholesaler['name'],
-                    '__rebate' => $expense_items->sum('product_rebate'),
-                    '__royalty' => $expense_items->sum('product_royalty'),
-                    '__cost' => $expense_items->sum('wholesale_cost'),
-
                 ]));
             }
         );
+        Storage::disk('public')->put(
+            'migrate/normalised/expenses.json',
+            $this->normalised->expenses->toJson(JSON_PRETTY_PRINT)
+        );
     }
 
-    public function expense_items(): void
+    private function expense_items(): void
     {
-        /** @var Collection<int, array<string, mixed>> $expenseItems */
-        $expenseItems = $this->data->expense_items;
-        /** @var Collection<int, array<string, mixed>> $products */
-        $products = $this->data->products;
-        /** @var Collection<int, array<string, mixed>|Fluent> $normalisedExpenseItems */
-        $normalisedExpenseItems = $this->normalised->expense_items;
-
         progress(
             label: 'Normalising expense items',
-            steps: $expenseItems,
-            callback: function (array $expense_item, mixed $progress) use ($products, $normalisedExpenseItems): void {
-                $progress->hint("Normalising expense item {$expense_item['id']}...");
-
-                $product = $products->get($expense_item['product_id']);
-
-                $normalisedExpenseItems->push(fluent([
-                    'id' => $expense_item['id'],
-                    'expense_id' => $expense_item['expense_id'],
-                    'product_id' => $expense_item['product_id'],
-                    'item' => $expense_item['name'],
+            steps: $this->data->get('expense_items'),
+            callback: function (array $expense_item, mixed $progress): void {
+                $progress->hint("Normalising expense item {$expense_item['name']}...");
+                $product = $this->data->get('products')->get(mb_strtoupper((string) $expense_item['product_id']));
+                $this->normalised->expense_items->push(fluent([
+                    'id' => mb_strtoupper((string) $expense_item['id']),
+                    'expense_id' => mb_strtoupper((string) $expense_item['expense_id']),
+                    'product_id' => mb_strtoupper((string) $expense_item['product_id']),
                     'quantity' => $expense_item['units'],
-                    'cost' => $expense_item['wholesale_cost'],
-                    'price' => $expense_item['product_rrp'],
-                    'units' => $expense_item['product_units'],
-                    'rebate' => $expense_item['product_rebate'],
-                    'royalty' => $expense_item['product_royalty'],
+                    'price' => $expense_item['wholesale_cost'],
+                    'product_units' => $expense_item['product_units'],
+                    'product_retail_price' => $expense_item['product_rrp'],
+                    'product_royalty' => $expense_item['product_royalty'],
+                    'product_rebate' => $expense_item['product_rebate'],
+                    'data' => [
+                        'name' => $expense_item['name'],
+                        'sku' => $product['sku'],
+                    ],
                     'completed_at' => $expense_item['status'] === 'complete' ? $expense_item['updated_at'] : null,
                     'created_at' => $expense_item['created_at'],
                     'updated_at' => $expense_item['updated_at'],
-                    '__product_name' => $product ? $product['name'] : null,
                 ]));
             }
+        );
+        Storage::disk('public')->put(
+            'migrate/normalised/expense_items.json',
+            $this->normalised->expense_items->toJson(JSON_PRETTY_PRINT)
         );
     }
 }

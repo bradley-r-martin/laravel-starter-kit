@@ -31,7 +31,7 @@ const Pagination: FunctionComponent<PaginationProps> = (props) => {
     };
 
     return (
-        <div className="sticky bottom-22 lg:bottom-5 mb-20  inline-flex items-center w-full max-w-full flex-col">
+        <div className="sticky bottom-22 mb-20 inline-flex w-full max-w-full flex-col items-center lg:bottom-5">
             <div className="absolute inset-0 border-8 border-slate-500 blur-2xl"></div>
             <MantinePagination
                 classNames={{

@@ -100,7 +100,9 @@ const List: InertiaView<ListProps> = (props) => {
                 },
                 {
                     name: 'Price',
-                    cell: (snackware) => <Text size="sm">${(snackware.price / 100).toFixed(2)}</Text>,
+                    cell: (snackware) => (
+                        <Text size="sm">${(snackware.price / 100).toFixed(2)}</Text>
+                    ),
                 },
                 {
                     name: 'Status',

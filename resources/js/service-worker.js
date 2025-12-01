@@ -7,28 +7,26 @@ const RUNTIME_CACHE = `app-runtime-v${CACHE_VERSION}`;
 const IMAGE_CACHE = `app-images-v${CACHE_VERSION}`;
 
 // Assets to cache on install
-const PRECACHE_ASSETS = [
-    '/',
-    '/favicon.ico',
-];
+const PRECACHE_ASSETS = ['/', '/favicon.ico'];
 
 // Install event - precache assets
 self.addEventListener('install', (event) => {
     // Check if there's already an active service worker (update scenario)
     // If there's no active worker, this is a first-time install
     const isFirstInstall = !self.registration.active;
-    
+
     if (isFirstInstall) {
         console.log('[Service Worker] Installing for the first time...', CACHE_VERSION);
     }
-    
+
     event.waitUntil(
-        caches.open(CACHE_NAME)
+        caches
+            .open(CACHE_NAME)
             .then((cache) => {
                 // Check if assets are already cached
                 return cache.match('/').then((cached) => {
                     const needsPrecache = !cached || isFirstInstall;
-                    
+
                     if (needsPrecache) {
                         if (isFirstInstall) {
                             console.log('[Service Worker] Precaching assets');
@@ -52,7 +50,8 @@ self.addEventListener('install', (event) => {
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys()
+        caches
+            .keys()
             .then((cacheNames) => {
                 const oldCaches = cacheNames.filter(
                     (cacheName) =>
@@ -68,10 +67,15 @@ self.addEventListener('activate', (event) => {
                 // Only log if this is a first activation or version update
                 if (isFirstActivation || hasVersionUpdate) {
                     if (isFirstActivation) {
-                        console.log('[Service Worker] Activating for the first time...', CACHE_VERSION);
+                        console.log(
+                            '[Service Worker] Activating for the first time...',
+                            CACHE_VERSION
+                        );
                     } else {
                         console.log('[Service Worker] Activating new version...', CACHE_VERSION);
-                        console.log(`[Service Worker] Cleaning up ${oldCaches.length} old cache(s)`);
+                        console.log(
+                            `[Service Worker] Cleaning up ${oldCaches.length} old cache(s)`
+                        );
                     }
                 }
 
@@ -91,26 +95,41 @@ self.addEventListener('activate', (event) => {
 
 // Helper: Check if request is for a static asset
 function isStaticAsset(url) {
-    const staticExtensions = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.woff', '.woff2', '.ttf', '.eot', '.ico'];
+    const staticExtensions = [
+        '.js',
+        '.css',
+        '.png',
+        '.jpg',
+        '.jpeg',
+        '.gif',
+        '.svg',
+        '.webp',
+        '.woff',
+        '.woff2',
+        '.ttf',
+        '.eot',
+        '.ico',
+    ];
     const pathname = new URL(url, self.location.origin).pathname;
-    return staticExtensions.some(ext => pathname.endsWith(ext)) || 
-           pathname.startsWith('/build/assets/') ||
-           pathname.startsWith('/build/manifest.json');
+    return (
+        staticExtensions.some((ext) => pathname.endsWith(ext)) ||
+        pathname.startsWith('/build/assets/') ||
+        pathname.startsWith('/build/manifest.json')
+    );
 }
 
 // Helper: Check if request is for an image
 function isImage(url) {
     const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico'];
     const pathname = new URL(url, self.location.origin).pathname;
-    return imageExtensions.some(ext => pathname.endsWith(ext));
+    return imageExtensions.some((ext) => pathname.endsWith(ext));
 }
 
 // Helper: Check if request is for an API call
 function isApiCall(url) {
     try {
         const urlObj = new URL(url, self.location.origin);
-        return urlObj.pathname.startsWith('/api/') || 
-               urlObj.pathname.startsWith('/inertia/');
+        return urlObj.pathname.startsWith('/api/') || urlObj.pathname.startsWith('/inertia/');
     } catch {
         return false;
     }
@@ -134,34 +153,31 @@ self.addEventListener('fetch', (event) => {
     // Handle static assets (JS, CSS, images from build) - Cache First
     if (isStaticAsset(request.url)) {
         event.respondWith(
-            caches.open(CACHE_NAME)
-                .then((cache) => {
-                    return cache.match(request)
-                        .then((cachedResponse) => {
-                            if (cachedResponse) {
-                                // Return cached version, but also fetch in background to update cache
-                                fetch(request)
-                                    .then((networkResponse) => {
-                                        if (networkResponse.ok) {
-                                            cache.put(request, networkResponse.clone());
-                                        }
-                                    })
-                                    .catch(() => {
-                                        // Network fetch failed, ignore
-                                    });
-                                return cachedResponse;
-                            }
-                            
-                            // Not in cache, fetch from network
-                            return fetch(request)
-                                .then((networkResponse) => {
-                                    if (networkResponse.ok) {
-                                        cache.put(request, networkResponse.clone());
-                                    }
-                                    return networkResponse;
-                                });
-                        });
-                })
+            caches.open(CACHE_NAME).then((cache) => {
+                return cache.match(request).then((cachedResponse) => {
+                    if (cachedResponse) {
+                        // Return cached version, but also fetch in background to update cache
+                        fetch(request)
+                            .then((networkResponse) => {
+                                if (networkResponse.ok) {
+                                    cache.put(request, networkResponse.clone());
+                                }
+                            })
+                            .catch(() => {
+                                // Network fetch failed, ignore
+                            });
+                        return cachedResponse;
+                    }
+
+                    // Not in cache, fetch from network
+                    return fetch(request).then((networkResponse) => {
+                        if (networkResponse.ok) {
+                            cache.put(request, networkResponse.clone());
+                        }
+                        return networkResponse;
+                    });
+                });
+            })
         );
         return;
     }
@@ -169,23 +185,20 @@ self.addEventListener('fetch', (event) => {
     // Handle images - Cache First with longer TTL
     if (isImage(request.url)) {
         event.respondWith(
-            caches.open(IMAGE_CACHE)
-                .then((cache) => {
-                    return cache.match(request)
-                        .then((cachedResponse) => {
-                            if (cachedResponse) {
-                                return cachedResponse;
-                            }
-                            
-                            return fetch(request)
-                                .then((networkResponse) => {
-                                    if (networkResponse.ok) {
-                                        cache.put(request, networkResponse.clone());
-                                    }
-                                    return networkResponse;
-                                });
-                        });
-                })
+            caches.open(IMAGE_CACHE).then((cache) => {
+                return cache.match(request).then((cachedResponse) => {
+                    if (cachedResponse) {
+                        return cachedResponse;
+                    }
+
+                    return fetch(request).then((networkResponse) => {
+                        if (networkResponse.ok) {
+                            cache.put(request, networkResponse.clone());
+                        }
+                        return networkResponse;
+                    });
+                });
+            })
         );
         return;
     }
@@ -198,22 +211,19 @@ self.addEventListener('fetch', (event) => {
                     // Cache successful GET responses
                     if (networkResponse.ok) {
                         const responseClone = networkResponse.clone();
-                        caches.open(RUNTIME_CACHE)
-                            .then((cache) => {
-                                cache.put(request, responseClone);
-                            });
+                        caches.open(RUNTIME_CACHE).then((cache) => {
+                            cache.put(request, responseClone);
+                        });
                     }
                     return networkResponse;
                 })
                 .catch(() => {
                     // Network failed, try cache
-                    return caches.open(RUNTIME_CACHE)
-                        .then((cache) => {
-                            return cache.match(request)
-                                .then((cachedResponse) => {
-                                    return cachedResponse || new Response('Network error', { status: 408 });
-                                });
+                    return caches.open(RUNTIME_CACHE).then((cache) => {
+                        return cache.match(request).then((cachedResponse) => {
+                            return cachedResponse || new Response('Network error', { status: 408 });
                         });
+                    });
                 })
         );
         return;
@@ -227,25 +237,25 @@ self.addEventListener('fetch', (event) => {
                     // Always update cache with fresh HTML
                     if (networkResponse.ok) {
                         const responseClone = networkResponse.clone();
-                        caches.open(RUNTIME_CACHE)
-                            .then((cache) => {
-                                cache.put(request, responseClone);
-                            });
+                        caches.open(RUNTIME_CACHE).then((cache) => {
+                            cache.put(request, responseClone);
+                        });
                     }
                     return networkResponse;
                 })
                 .catch(() => {
                     // Network failed, try cache
-                    return caches.open(RUNTIME_CACHE)
-                        .then((cache) => {
-                            return cache.match(request)
-                                .then((cachedResponse) => {
-                                    return cachedResponse || new Response('Offline', { 
-                                        status: 503,
-                                        headers: { 'Content-Type': 'text/html' }
-                                    });
-                                });
+                    return caches.open(RUNTIME_CACHE).then((cache) => {
+                        return cache.match(request).then((cachedResponse) => {
+                            return (
+                                cachedResponse ||
+                                new Response('Offline', {
+                                    status: 503,
+                                    headers: { 'Content-Type': 'text/html' },
+                                })
+                            );
                         });
+                    });
                 })
         );
         return;
@@ -257,18 +267,16 @@ self.addEventListener('fetch', (event) => {
             .then((networkResponse) => {
                 if (networkResponse.ok) {
                     const responseClone = networkResponse.clone();
-                    caches.open(RUNTIME_CACHE)
-                        .then((cache) => {
-                            cache.put(request, responseClone);
-                        });
+                    caches.open(RUNTIME_CACHE).then((cache) => {
+                        cache.put(request, responseClone);
+                    });
                 }
                 return networkResponse;
             })
             .catch(() => {
-                return caches.open(RUNTIME_CACHE)
-                    .then((cache) => {
-                        return cache.match(request);
-                    });
+                return caches.open(RUNTIME_CACHE).then((cache) => {
+                    return cache.match(request);
+                });
             })
     );
 });
@@ -308,21 +316,19 @@ self.addEventListener('notificationclick', function (event) {
 
     // Open the app when notification is clicked
     event.waitUntil(
-        clients
-            .matchAll({ type: 'window', includeUncontrolled: true })
-            .then(function (clientList) {
-                // If a window is already open, focus it and navigate to notifications
-                for (let i = 0; i < clientList.length; i++) {
-                    const client = clientList[i];
-                    if ('focus' in client) {
-                        return client.focus().then(() => client.navigate('/notifications'));
-                    }
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
+            // If a window is already open, focus it and navigate to notifications
+            for (let i = 0; i < clientList.length; i++) {
+                const client = clientList[i];
+                if ('focus' in client) {
+                    return client.focus().then(() => client.navigate('/notifications'));
                 }
-                // Otherwise, open a new window to notifications
-                if (clients.openWindow) {
-                    return clients.openWindow('/notifications');
-                }
-            }),
+            }
+            // Otherwise, open a new window to notifications
+            if (clients.openWindow) {
+                return clients.openWindow('/notifications');
+            }
+        })
     );
 });
 
@@ -330,4 +336,3 @@ self.addEventListener('notificationclick', function (event) {
 self.addEventListener('notificationclose', function (event) {
     console.log('Notification closed:', event.notification.tag);
 });
-

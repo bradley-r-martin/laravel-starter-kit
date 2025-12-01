@@ -29,7 +29,7 @@ return new class extends Migration
 
         /* Derived data columns */
         Schema::table('snackware', function (Blueprint $table): void {
-            $table->unsignedInteger('__product_count')->default(0)->comment('Number of products in this snackware');
+            $table->unsignedInteger('__products_count')->default(0)->comment('Number of products in this snackware');
             $table->unsignedInteger('__placements_count')->default(0)->comment('Number of placements using this snackware');
             $table->unsignedBigInteger('__wholesale_from')->default(0)->comment('Minimum wholesale price for products in this snackware');
             $table->unsignedBigInteger('__wholesale_to')->default(0)->comment('Maximum wholesale price for products in this snackware');

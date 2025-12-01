@@ -6,7 +6,7 @@ import ResourceList from '@/Components/ResourceList';
 import ResourceListAction from '@/Components/ResourceList/ResourceListAction';
 import AppLayout from '@/Layouts/AppLayout';
 import { InertiaView, Paginated } from '@/Types';
-import { Badge, Button, Group, Text } from '@mantine/core';
+import { Badge, Button, Text } from '@mantine/core';
 import {
     BuildingIcon,
     CalendarIcon,

@@ -158,7 +158,11 @@ const List: InertiaView<ListProps> = (props) => {
                     name: 'Created',
                     cell: (user) => (
                         <Text size="sm" c="dimmed">
-                            <Cast.Datetime format="DD/MM/YYYY" children={user.created_at} fallback="—" />
+                            <Cast.Datetime
+                                format="DD/MM/YYYY"
+                                children={user.created_at}
+                                fallback="—"
+                            />
                         </Text>
                     ),
                 },

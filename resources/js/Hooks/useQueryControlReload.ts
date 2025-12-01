@@ -1,4 +1,3 @@
-import { isStandalone } from '@/Utilities/Environment';
 import { ReloadOptions } from '@inertiajs/core';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
@@ -22,7 +21,7 @@ export default function useQueryControlReload(
             data: {
                 [`${attribute}_${parameter}`]: value,
             },
-        //    preserveUrl: isStandalone(),
+            //    preserveUrl: isStandalone(),
             ...options,
             onFinish: () => setReloading(false),
         });
